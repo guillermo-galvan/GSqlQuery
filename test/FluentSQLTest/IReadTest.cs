@@ -1,4 +1,3 @@
-using FluentSQL;
 using FluentSQLTest.Models;
 
 namespace FluentSQLTest
@@ -21,8 +20,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = IRead<Test1>.Select();
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal("SELECT Id,Name,Create,IsTest FROM Test1;", queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal("SELECT Id,Name,Create,IsTest FROM Test1;", queryBuilder.Build());
         }
 
         [Fact]
@@ -50,8 +49,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = IRead<Test1>.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal(query, queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal(query, queryBuilder.Build());
         }
 
         [Theory]
@@ -61,8 +60,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = IRead<Test1>.Select(key, x => new { x.Id, x.Name, x.Create });
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal(query, queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal(query, queryBuilder.Build());
         }
 
         [Fact]
@@ -78,8 +77,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = IRead<Test3>.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal(query, queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal(query, queryBuilder.Build());
         }
 
         [Theory]
@@ -89,8 +88,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = IRead<Test4>.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal(query, queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal(query, queryBuilder.Build());
         }
     }
 }

@@ -1,9 +1,4 @@
 ﻿using FluentSQL.Default;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQLTest.Default
 {
@@ -17,20 +12,20 @@ namespace FluentSQLTest.Default
             Assert.NotNull(statements.Format);
             Assert.Equal("{0}", statements.Format);
 
-            Assert.NotNull(statements.SelectText);
-            Assert.Equal("SELECT {0} FROM {1};", statements.SelectText);
+            Assert.NotNull(statements.Select);
+            Assert.Equal("SELECT {0} FROM {1};", statements.Select);
 
-            Assert.NotNull(statements.SelectWhereText);
-            Assert.Equal("SELECT {0} FROM {1} WHERE {2};", statements.SelectWhereText);
+            Assert.NotNull(statements.SelectWhere);
+            Assert.Equal("SELECT {0} FROM {1} WHERE {2};", statements.SelectWhere);
 
-            Assert.NotNull(statements.InsertText);
-            Assert.Equal("INSERT INTO {0} ({1}) VALUES ({2});", statements.InsertText);
+            Assert.NotNull(statements.Insert);
+            Assert.Equal("INSERT INTO {0} ({1}) VALUES ({2});", statements.Insert);
 
-            Assert.NotNull(statements.UpdateText);
-            Assert.Equal("UPDATE {0} SET {1} WHERE {2};", statements.UpdateText);
+            Assert.NotNull(statements.Update);
+            Assert.Equal("UPDATE {0} SET {1} WHERE {2};", statements.Update);
 
-            Assert.NotNull(statements.DeleteWhereText);
-            Assert.Equal("DELETE FROM {0} WHERE {1};", statements.DeleteWhereText);
+            Assert.NotNull(statements.DeleteWhere);
+            Assert.Equal("DELETE FROM {0} WHERE {1};", statements.DeleteWhere);
         }
     }
 }

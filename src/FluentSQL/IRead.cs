@@ -2,14 +2,8 @@
 using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL
 {
@@ -42,7 +36,7 @@ namespace FluentSQL
                 throw new InvalidOperationException($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Select(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }}) ");
             }
 
-            return new QueryBuilder(options, memberInfos.Select(x => x.Name), FluentSQLManagement._options.StatementsCollection[key]);
+            return new QueryBuilder(options, memberInfos.Select(x => x.Name), FluentSQLManagement._options.StatementsCollection[key], QueryType.Select);
         }
 
         /// <summary>
@@ -56,7 +50,7 @@ namespace FluentSQL
         {
             key.NullValidate("Parameter cannot be null or empty", nameof(key));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new QueryBuilder(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key]);
+            return new QueryBuilder(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key], QueryType.Select);
         }
 
         /// <summary>

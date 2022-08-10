@@ -1,11 +1,4 @@
-﻿using FluentSQL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FluentSQLTest.Models
+﻿namespace FluentSQLTest.Models
 {
     [TableAttribute("TableName")]
     internal class Test3 : Entity<Test3>

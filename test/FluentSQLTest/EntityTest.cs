@@ -1,9 +1,4 @@
 ﻿using FluentSQLTest.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQLTest
 {
@@ -25,8 +20,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = Test3.Select();
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal("SELECT Id,Name,Create,IsTests FROM TableName;", queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal("SELECT Id,Name,Create,IsTests FROM TableName;", queryBuilder.Build());
         }
 
         [Fact]
@@ -54,8 +49,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = Test3.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal(query, queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal(query, queryBuilder.Build());
         }
 
         [Theory]
@@ -65,8 +60,8 @@ namespace FluentSQLTest
         {
             IQueryBuilder queryBuilder = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates });
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Text);
-            Assert.Equal(query, queryBuilder.Text);
+            Assert.NotEmpty(queryBuilder.Build());
+            Assert.Equal(query, queryBuilder.Build());
         }
     }
 }
