@@ -18,10 +18,10 @@ namespace FluentSQLTest
         [Fact]
         public void Retrieve_all_properties_from_the_query()
         {
-            IQueryBuilder queryBuilder = IRead<Test1>.Select();
+            IQueryBuilder<Test1> queryBuilder = IRead<Test1>.Select();
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal("SELECT Id,Name,Create,IsTest FROM Test1;", queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal("SELECT Id,Name,Create,IsTest FROM Test1;", queryBuilder.Build().Text);
         }
 
         [Fact]
@@ -47,10 +47,10 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create],[IsTest] FROM [Test1];")]        
         public void Retrieve_all_properties_of_the_query_with_the_key(string key, string query)
         {
-            IQueryBuilder queryBuilder = IRead<Test1>.Select(key);
+            IQueryBuilder<Test1> queryBuilder = IRead<Test1>.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal(query, queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
         }
 
         [Theory]
@@ -58,10 +58,10 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create] FROM [Test1];")]
         public void Retrieve_some_properties_from_the_query_with_the_key(string key, string query)
         {
-            IQueryBuilder queryBuilder = IRead<Test1>.Select(key, x => new { x.Id, x.Name, x.Create });
+            IQueryBuilder<Test1> queryBuilder = IRead<Test1>.Select(key, x => new { x.Id, x.Name, x.Create });
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal(query, queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
         }
 
         [Fact]
@@ -75,10 +75,10 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create],[IsTests] FROM [TableName];")]
         public void Retrieve_all_properties_from_the_query_with_attributes(string key, string query)
         {
-            IQueryBuilder queryBuilder = IRead<Test3>.Select(key);
+            IQueryBuilder<Test3> queryBuilder = IRead<Test3>.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal(query, queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
         }
 
         [Theory]
@@ -86,10 +86,10 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create],[IsTests] FROM [Scheme].[TableName];")]
         public void Retrieve_all_properties_from_the_query_with_attributes_and_scheme(string key, string query)
         {
-            IQueryBuilder queryBuilder = IRead<Test4>.Select(key);
+            IQueryBuilder<Test4> queryBuilder = IRead<Test4>.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal(query, queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
         }
     }
 }

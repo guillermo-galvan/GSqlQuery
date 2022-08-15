@@ -6,7 +6,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public string TableName { get; private set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// 
@@ -16,25 +16,25 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tableName"></param>
+        /// <param name="name"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public TableAttribute( string tableName) 
+        public TableAttribute( string name) 
         {
-            if (string.IsNullOrWhiteSpace(tableName))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException(nameof(tableName));
+                throw new ArgumentNullException(nameof(name));
             }
 
-            TableName = tableName;
+            Name = name;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="scheme"></param>
-        /// <param name="tableName"></param>
+        /// <param name="name"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public TableAttribute(string scheme, string tableName) : this(tableName)
+        public TableAttribute(string scheme, string name) : this(name)
         {
             if (string.IsNullOrWhiteSpace(scheme))
             {

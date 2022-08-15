@@ -3,16 +3,23 @@
     /// <summary>
     /// Query Builder
     /// </summary>
-    public interface IQueryBuilder
+    /// <typeparam name="T">The type to query</typeparam>
+    public interface IQueryBuilder<T> where T : class, new()
     {
         /// <summary>
-        /// Get Columns of the query
+        /// Statements to use in the query
         /// </summary>
-        IEnumerable<ColumnAttribute> Columns { get; }
+        IStatements Statements { get; }
 
         /// <summary>
         /// Build Query
         /// </summary>
-        string Build();
+        IQuery<T> Build();
+
+        /// <summary>
+        /// Add where statement in query
+        /// </summary>
+        /// <returns>Implementation of the IWhere interface</returns>
+        IWhere<T> Where();
     }
 }

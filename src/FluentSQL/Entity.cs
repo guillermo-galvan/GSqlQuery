@@ -13,7 +13,7 @@ namespace FluentSQL
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder Select<TProperties>(Expression<Func<T, TProperties>> expression)
+        public static IQueryBuilder<T> Select<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             return IRead<T>.Select(expression);
         }
@@ -24,7 +24,7 @@ namespace FluentSQL
         /// <returns>Instance of IQueryBuilder with which to create the query</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder Select()
+        public static IQueryBuilder<T> Select()
         {
             return IRead<T>.Select();
         }
@@ -39,7 +39,7 @@ namespace FluentSQL
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder Select<TProperties>(string key, Expression<Func<T, TProperties>> expression)
+        public static IQueryBuilder<T> Select<TProperties>(string key, Expression<Func<T, TProperties>> expression)
         {
             return IRead<T>.Select(key, expression);
         }
@@ -51,7 +51,7 @@ namespace FluentSQL
         /// <returns>Instance of IQueryBuilder with which to create the query</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder Select(string key)
+        public static IQueryBuilder<T> Select(string key)
         {
             return IRead<T>.Select(key);
         }

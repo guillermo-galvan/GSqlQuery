@@ -1,4 +1,5 @@
-﻿using FluentSQLTest.Models;
+﻿using FluentSQL.SearchCriteria;
+using FluentSQLTest.Models;
 
 namespace FluentSQLTest
 {
@@ -18,10 +19,10 @@ namespace FluentSQLTest
         [Fact]
         public void Retrieve_all_properties_from_the_query()
         {
-            IQueryBuilder queryBuilder = Test3.Select();
+            IQueryBuilder<Test3> queryBuilder = Test3.Select();
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal("SELECT Id,Name,Create,IsTests FROM TableName;", queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal("SELECT Id,Name,Create,IsTests FROM TableName;", queryBuilder.Build().Text);
         }
 
         [Fact]
@@ -47,10 +48,10 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create],[IsTests] FROM [TableName];")]
         public void Retrieve_all_properties_of_the_query_with_the_key(string key, string query)
         {
-            IQueryBuilder queryBuilder = Test3.Select(key);
+            IQueryBuilder<Test3> queryBuilder = Test3.Select(key);
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal(query, queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
         }
 
         [Theory]
@@ -58,10 +59,32 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create] FROM [TableName];")]
         public void Retrieve_some_properties_from_the_query_with_the_key(string key, string query)
         {
-            IQueryBuilder queryBuilder = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilder<Test3> queryBuilder = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates });
             Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build());
-            Assert.Equal(query, queryBuilder.Build());
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
         }
+
+        [Theory]
+        [InlineData("Default", "SELECT Id,Name,Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;")]
+        [InlineData("My", "SELECT [Id],[Name],[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;")]
+        public void Should_return_the_query_with_where(string key, string queryText)
+        {
+            var query = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = result.Replace(item.ParameterName, "@Param");
+                }
+            }
+
+            Assert.Equal(queryText, result);
+        }
+
     }
 }

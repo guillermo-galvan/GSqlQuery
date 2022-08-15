@@ -1,5 +1,6 @@
 ﻿using FluentSQL.Models;
 using System.Runtime.CompilerServices;
+using FluentSQL.Extensions;
 
 [assembly: InternalsVisibleTo("FluentSQLTest")]
 
@@ -8,24 +9,28 @@ namespace FluentSQL.Default
     /// <summary>
     /// Query Builder
     /// </summary>
-    internal class QueryBuilder : IQueryBuilder
+    /// <typeparam name="T">The type to query</typeparam>
+    internal class QueryBuilder<T> : IQueryBuilder<T> where T : class, new()
     {
         private readonly ClassOptions _options;
         private readonly IStatements _statements;
-        private IEnumerable<ColumnAttribute> _columns;
-        private readonly QueryType _queryType;
+        private readonly IEnumerable<ColumnAttribute> _columns;
+        private QueryType _queryType;
+        private IEnumerable<CriteriaDetail>? _criteria = null;
+        private IAndOr<T> _andOr;
 
         /// <summary>
-        /// Get Columns of the query
+        /// Statements to use in the query
         /// </summary>
-        public IEnumerable<ColumnAttribute> Columns => _columns;
+        public IStatements Statements => _statements;
 
         /// <summary>
-        /// Create QueryBuilder object with default declarations
+        /// Create QueryBuilder object 
         /// </summary>
         /// <param name="options">Detail of the class to transform</param>
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="statements">Statements to build the query</param>
+        /// <param name="queryType">Type of query</param>
         /// <exception cref="ArgumentNullException"></exception>
         public QueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, QueryType queryType)
         {
@@ -43,26 +48,67 @@ namespace FluentSQL.Default
                      select prop.ColumnAttribute).ToArray();
         }
 
-        private string GetTable()
+        private void ChangeQueryType()
         {
-            return string.IsNullOrWhiteSpace(_options.Table.Scheme) ? string.Format(_statements.Format, _options.Table.TableName) :
-                   $"{string.Format(_statements.Format, _options.Table.Scheme)}.{string.Format(_statements.Format, _options.Table.TableName)}";
+            switch (_queryType)
+            {
+                case QueryType.Select:
+                    _queryType = QueryType.SelectWhere;
+                    break;                
+                case QueryType.Insert:
+                    break;
+                case QueryType.Update:
+                    break;
+                case QueryType.Delete:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private string GetCriteria()
+        {
+            if (_criteria is null)
+            {
+                _criteria = _andOr.BuildCriteria();
+            }
+
+            return string.Join(" ", _criteria.Select(x => x.Criterion));
+        }
+
+        private string GetQuery()
+        {
+            string tableName = _options.Table.GetTableName(_statements);
+
+            return _queryType switch
+            {
+                QueryType.Select => string.Format(_statements.Select, string.Join(",", _columns.Select(x => x.GetColumnName(tableName,_statements))), tableName),
+                QueryType.SelectWhere => string.Format(_statements.SelectWhere, string.Join(",", _columns.Select(x => x.GetColumnName(tableName,_statements))), tableName, GetCriteria()),
+                QueryType.Insert => _statements.Insert,
+                QueryType.Update => _statements.Update,
+                QueryType.Delete => _statements.DeleteWhere,
+                _ => string.Empty,
+            };
         }
 
         /// <summary>
         /// Build Query
         /// </summary>
-        public string Build()
+        public IQuery<T> Build()
         {
-            return _queryType switch
-            {
-                QueryType.Select => string.Format(_statements.Select, string.Join(",", _columns.Select(x => string.Format(_statements.Format, x.Name))), GetTable()),
-                QueryType.SelectWhere => string.Empty,
-                QueryType.Insert => string.Empty,
-                QueryType.Update => string.Empty,
-                QueryType.Delete => string.Empty,
-                _ => string.Empty,
-            };
+            string query = GetQuery();
+            return new Query<T>(_columns, _criteria, _statements, query);
+        }
+
+        /// <summary>
+        /// Add where statement in query
+        /// </summary>
+        /// <returns>Implementation of the IWhere interface</returns>
+        public IWhere<T> Where()
+        {
+            ChangeQueryType();
+            _andOr = new Where<T>(this);
+            return (IWhere<T>)_andOr;
         }
     }
 }

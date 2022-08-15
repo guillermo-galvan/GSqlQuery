@@ -1,4 +1,7 @@
-﻿namespace FluentSQLTest
+﻿using FluentSQL.Default;
+using FluentSQL.Extensions;
+
+namespace FluentSQLTest
 {
     public class ColumnAttributeTest
     {
@@ -60,6 +63,27 @@
             Assert.Equal(isPrimaryKey, column.IsPrimaryKey);
             Assert.Equal(size, column.Size);
             Assert.Equal(name, column.Name);
+        }
+
+        [Fact]
+        public void Should_get_the_column_name()
+        {
+            ColumnAttribute column = new("Test");
+            var result = column.GetColumnName("Test", new Statements());
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal("Test", result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_any_null_parameters_are_passed()
+        {
+            ColumnAttribute column = new("Test");
+
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new Statements()));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", null));
+            column = null;
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new Statements()));
         }
     }
 }
