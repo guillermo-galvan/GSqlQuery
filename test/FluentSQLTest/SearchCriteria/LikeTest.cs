@@ -1,24 +1,24 @@
 ﻿using FluentSQL.Default;
 using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
+using FluentSQLTest.Extensions;
 using FluentSQLTest.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FluentSQLTest.Extensions;
 
 namespace FluentSQLTest.SearchCriteria
 {
-    public class EqualTest
+    public class LikeTest
     {
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
         private readonly IStatements _statements;
         private readonly QueryBuilder<Test1> _queryBuilder;
-        
-        public EqualTest()
+
+        public LikeTest()
         {
             _columnAttribute = new ColumnAttribute("Id");
             _tableAttribute = new TableAttribute("Test1");
@@ -30,21 +30,21 @@ namespace FluentSQLTest.SearchCriteria
         [Fact]
         public void Should_create_an_instance()
         {
-            Equal<int> test = new (_tableAttribute, _columnAttribute, 1);
+            Like test = new(_tableAttribute, _columnAttribute, "1");
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
             Assert.NotNull(test.Column);
-            Assert.Equal(1,test.Value);
+            Assert.Equal("1", test.Value);
             Assert.Null(test.LogicalOperator);
         }
 
         [Theory]
-        [InlineData("AND", 4)]
-        [InlineData("OR", 5)]
-        public void Should_create_an_instance_1(string logicalOperator,int value)
+        [InlineData("AND", "re")]
+        [InlineData("OR", "der")]
+        public void Should_create_an_instance_1(string logicalOperator, string value)
         {
-            Equal<int> test = new(_tableAttribute, _columnAttribute, value, logicalOperator);
+            Like test = new(_tableAttribute, _columnAttribute, value, logicalOperator);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -55,12 +55,12 @@ namespace FluentSQLTest.SearchCriteria
         }
 
         [Theory]
-        [InlineData(null, 4, "Test1.Id = @Param")]
-        [InlineData("AND", 4, "AND Test1.Id = @Param")]
-        [InlineData("OR", 5, "OR Test1.Id = @Param")]
-        public void Should_get_criteria_detail(string logicalOperator, int value, string querypart)
+        [InlineData(null, "venga", "Test1.Id LIKE '%@Param%'")]
+        [InlineData("AND", "res", "AND Test1.Id LIKE '%@Param%'")]
+        [InlineData("OR", "pollo", "OR Test1.Id LIKE '%@Param%'")]
+        public void Should_get_criteria_detail(string logicalOperator, string value, string querypart)
         {
-            Equal<int> test = new(_tableAttribute, _columnAttribute, value, logicalOperator);
+            Like test = new(_tableAttribute, _columnAttribute, value, logicalOperator);
             var result = test.GetCriteria(_statements);
 
             Assert.NotNull(result);
@@ -74,7 +74,7 @@ namespace FluentSQLTest.SearchCriteria
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);
             Assert.NotNull(result.QueryPart);
-            Assert.NotEmpty(result.QueryPart);            
+            Assert.NotEmpty(result.QueryPart);
             Assert.Equal(querypart, result.ParameterReplace());
         }
 
@@ -82,7 +82,7 @@ namespace FluentSQLTest.SearchCriteria
         public void Should_add_the_equality_query()
         {
             IWhere<Test1> where = new Where<Test1>(_queryBuilder);
-            var andOr = where.Equal(x => x.Id, 1);
+            var andOr = where.Like(x => x.Id, "ds");
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria();
             Assert.NotNull(result);
@@ -94,7 +94,7 @@ namespace FluentSQLTest.SearchCriteria
         public void Should_add_the_equality_query_with_and()
         {
             IWhere<Test1> where = new Where<Test1>(_queryBuilder);
-            var andOr = where.Equal(x => x.Id, 1).AndEqual(x => x.IsTest, true);
+            var andOr = where.Like(x => x.Id, "1256").AndLike(x => x.IsTest, "1");
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria();
             Assert.NotNull(result);
@@ -106,7 +106,7 @@ namespace FluentSQLTest.SearchCriteria
         public void Should_add_the_equality_query_with_or()
         {
             IWhere<Test1> where = new Where<Test1>(_queryBuilder);
-            var andOr = where.Equal(x => x.Id, 1).OrEqual(x => x.IsTest, true);
+            var andOr = where.Like(x => x.Id, "1256").OrLike(x => x.IsTest, "45981");
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria();
             Assert.NotNull(result);

@@ -11,6 +11,7 @@ namespace FluentSQL
         /// <summary>
         /// Build Query
         /// </summary>
+        /// <returns>Instance of IQuery</returns>
         IQuery<T> Build();
     }
 }

@@ -28,16 +28,16 @@ namespace FluentSQLTest.Default
         {
             Where<Test1> query = new(_queryBuilder);
             Assert.NotNull(query);
+            query.Add(_equal);
+            Assert.True(true);
+        }
 
-            try
-            {
-                query.Add(_equal);
-                Assert.True(true);
-            }
-            catch (Exception)
-            {
-                Assert.True(false);
-            }
+        [Fact]
+        public void Throw_exception_if_null_ISearchCriteria_is_added()
+        {
+            Where<Test1> query = new(_queryBuilder);
+            Assert.NotNull(query);
+            Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace FluentSQLTest.Default
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface()
+        public void Should_get_the_IAndOr_interface_with_expression()
         {
             IWhere<Test1> where = new Where<Test1>(_queryBuilder);
             IAndOr<Test1> andOr= where.GetAndOr(x => x.Id);
@@ -61,7 +61,7 @@ namespace FluentSQLTest.Default
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null()
+        public void Throw_exception_if_expression_is_null_with_expression()
         {
             IWhere<Test1> where = null;            
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr(x => x.Id));
@@ -87,6 +87,21 @@ namespace FluentSQLTest.Default
         {
             IAndOr<Test1> where = null;
             Assert.Throws<ArgumentNullException>(() => where.Validate(x => x.Id));
+        }
+
+        [Fact]
+        public void Should_get_the_IAndOr_interface()
+        {
+            IWhere<Test1> where = new Where<Test1>(_queryBuilder);
+            IAndOr<Test1> andOr = where.GetAndOr();
+            Assert.NotNull(andOr);
+        }
+
+        [Fact]
+        public void Throw_exception_if_expression_is_null()
+        {
+            IWhere<Test1> where = null;
+            Assert.Throws<ArgumentNullException>(() => where.GetAndOr());
         }
     }
 }

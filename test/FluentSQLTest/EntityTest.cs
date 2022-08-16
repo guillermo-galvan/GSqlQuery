@@ -1,4 +1,5 @@
 ﻿using FluentSQL.SearchCriteria;
+using FluentSQLTest.Extensions;
 using FluentSQLTest.Models;
 
 namespace FluentSQLTest
@@ -79,7 +80,7 @@ namespace FluentSQLTest
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = result.Replace(item.ParameterName, "@Param");
+                    result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
 

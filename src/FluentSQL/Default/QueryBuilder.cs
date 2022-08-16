@@ -73,7 +73,7 @@ namespace FluentSQL.Default
                 _criteria = _andOr.BuildCriteria();
             }
 
-            return string.Join(" ", _criteria.Select(x => x.Criterion));
+            return string.Join(" ", _criteria.Select(x => x.QueryPart));
         }
 
         private string GetQuery()

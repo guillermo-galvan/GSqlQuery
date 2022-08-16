@@ -2,22 +2,38 @@
 
 namespace FluentSQL
 {
+    /// <summary>
+    /// Contains the details of the criteria
+    /// </summary>
     public class CriteriaDetail
     {
-        public string Criterion { get; }
+        /// <summary>
+        /// Get Query part 
+        /// </summary>
+        public string QueryPart { get; }
 
-        public object ParameterValue { get; }
+        /// <summary>
+        /// Get Parameter Details
+        /// </summary>
+        public IEnumerable<ParameterDetail> ParameterDetails { get; }
 
-        public string ParameterName { get; }
-
+        /// <summary>
+        /// Get Search Criteria
+        /// </summary>
         public ISearchCriteria SearchCriteria { get; }
 
-        public CriteriaDetail(ISearchCriteria searchCriteria, string criterion, string parameterName, object parameterValue)
+        /// <summary>
+        /// Initializes a new instance of the CriteriaDetail class.
+        /// </summary>
+        /// <param name="searchCriteria">Search Criteria</param>
+        /// <param name="queryPart">Query part</param>
+        /// <param name="parameterDetails">Parameter Details</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public CriteriaDetail(ISearchCriteria searchCriteria, string queryPart, IEnumerable<ParameterDetail> parameterDetails)
         {
             SearchCriteria = searchCriteria ?? throw new ArgumentNullException(nameof(searchCriteria));
-            Criterion = criterion ?? throw new ArgumentNullException(nameof(criterion));
-            ParameterValue = parameterValue;
-            ParameterName = parameterName;
+            QueryPart = queryPart ?? throw new ArgumentNullException(nameof(queryPart));
+            ParameterDetails = parameterDetails;
         }
     }
 }

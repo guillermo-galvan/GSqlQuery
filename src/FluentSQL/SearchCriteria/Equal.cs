@@ -13,13 +13,26 @@ namespace FluentSQL.SearchCriteria
         protected virtual string ParameterPrefix => "PE";
 
         /// <summary>
-        /// Value for equality
+        /// Get equality value
         /// </summary>
         public T Value { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the Equal class.
+        /// </summary>
+        /// <param name="table">Table Attribute</param>
+        /// <param name="columnAttribute">Column Attribute</param>
+        /// <param name="value">Equality value</param>
         public Equal(TableAttribute table, ColumnAttribute columnAttribute, T value) : this(table,columnAttribute,value,null)
         {}
 
+        /// <summary>
+        /// Initializes a new instance of the Equal class.
+        /// </summary>
+        /// <param name="table">TableAttribute</param>
+        /// <param name="columnAttribute">ColumnAttribute</param>
+        /// <param name="value">Equality value</param>
+        /// <param name="logicalOperator">Logical Operator</param>
         public Equal(TableAttribute table, ColumnAttribute columnAttribute,T value,string? logicalOperator) : base(table,columnAttribute, logicalOperator)
         {
             Value = value;
@@ -28,8 +41,8 @@ namespace FluentSQL.SearchCriteria
         /// <summary>
         /// Get Criteria detail
         /// </summary>
-        /// <param name="statements">Statements to use in the query</param>
-        /// <returns></returns>
+        /// <param name="statements">Statements</param>
+        /// <returns>Details of the criteria</returns>
         public override CriteriaDetail GetCriteria(IStatements statements)
         {
             string tableName = Table.GetTableName(statements);
@@ -39,7 +52,7 @@ namespace FluentSQL.SearchCriteria
                 $"{tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}" :
                 $"{LogicalOperator} {tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}";
 
-            return new CriteriaDetail(this, criterion, parameterName, Value);
+            return new CriteriaDetail(this, criterion, new ParameterDetail[] { new ParameterDetail(parameterName, Value)} );
         }
     }
 }

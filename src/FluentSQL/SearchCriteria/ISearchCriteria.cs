@@ -18,8 +18,8 @@
         /// <summary>
         /// Get Criteria detail
         /// </summary>
-        /// <param name="statements"></param>
-        /// <returns></returns>
+        /// <param name="statements">Statements</param>
+        /// <returns>Details of the criteria</returns>
         CriteriaDetail GetCriteria(IStatements statements);
     }
 }
