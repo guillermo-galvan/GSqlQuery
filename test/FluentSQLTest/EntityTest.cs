@@ -1,4 +1,5 @@
 ﻿using FluentSQL.SearchCriteria;
+using FluentSQLTest.Default;
 using FluentSQLTest.Extensions;
 using FluentSQLTest.Models;
 
@@ -85,6 +86,49 @@ namespace FluentSQLTest
             }
 
             Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [InlineData("Default", "INSERT INTO TableName (Id,Name,Create,IsTests) VALUES (@Param,@Param,@Param,@Param);")]
+        [InlineData("My", "INSERT INTO [TableName] ([Id],[Name],[Create],[IsTests]) VALUES (@Param,@Param,@Param,@Param);")]
+        public void Should_generate_the_insert_query_with_key(string key, string queryResult)
+        {
+            Test3 test = new (1, null, DateTime.Now, true);
+            var query = test.Insert(key);
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryResult, result);
+        }
+
+        [Theory]
+        [InlineData("INSERT INTO TableName (Id,Name,Create,IsTests) VALUES (@Param,@Param,@Param,@Param);")]        
+        public void Should_generate_the_insert_query(string queryResult)
+        {
+            Test3 test = new (1, null, DateTime.Now, true);
+            var query = test.Insert();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryResult, result);
         }
 
     }

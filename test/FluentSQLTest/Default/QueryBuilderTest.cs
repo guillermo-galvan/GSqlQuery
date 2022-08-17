@@ -32,5 +32,16 @@ namespace FluentSQLTest.Default
             IWhere<Test1> where = queryBuilder.Where();
             Assert.NotNull(where);
         }
+
+        [Fact]
+        public void Should_return_an_insert_query()
+        {
+            QueryBuilder<Test3> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) },
+                new FluentSQL.Default.Statements(), QueryType.Insert, new Test3(1, null, DateTime.Now, true));
+            IQuery<Test3> query = queryBuilder.Build();
+            Assert.NotNull(query);
+            Assert.NotNull(query.Text);
+            Assert.NotEmpty(query.Text);
+        }
     }
 }

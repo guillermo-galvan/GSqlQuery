@@ -18,6 +18,7 @@ namespace FluentSQL.Default
         private QueryType _queryType;
         private IEnumerable<CriteriaDetail>? _criteria = null;
         private IAndOr<T> _andOr;
+        private readonly object _entity;
 
         /// <summary>
         /// Statements to use in the query
@@ -37,6 +38,25 @@ namespace FluentSQL.Default
             _options = options ?? throw new ArgumentNullException(nameof(options));
             selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
             _statements = statements ?? throw new ArgumentNullException(nameof(selectMember));
+            _columns = GetColumnsQuery(selectMember);
+            _queryType = queryType;
+        }
+
+        /// <summary>
+        /// Create QueryBuilder object 
+        /// </summary>
+        /// <param name="options">Detail of the class to transform</param>
+        /// <param name="selectMember">Selected Member Set</param>
+        /// <param name="statements">Statements to build the query</param>
+        /// <param name="queryType">Type of query</param>
+        /// <param name="entity">Entity</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public QueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, QueryType queryType, object entity)
+        {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
+            _statements = statements ?? throw new ArgumentNullException(nameof(selectMember));
+            _entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _columns = GetColumnsQuery(selectMember);
             _queryType = queryType;
         }
@@ -76,6 +96,35 @@ namespace FluentSQL.Default
             return string.Join(" ", _criteria.Select(x => x.QueryPart));
         }
 
+        private (string columnName, ParameterDetail parameterDetail) GetParameterValue(string tableName,ColumnAttribute column)
+        {
+            PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
+            var value = options.PropertyInfo.GetValue(_entity, null) ?? DBNull.Value;
+            return (column.GetColumnName(tableName, _statements), new ParameterDetail($"@PI{options.PropertyInfo.Name}", value));
+        }
+
+        private List<(string columnName, ParameterDetail parameterDetail)> GetValues(string tableName)
+        {
+            List<(string columnName, ParameterDetail parameterDetail)> values = new();
+            foreach (var item in _columns)
+            {
+                values.Add(GetParameterValue(tableName, item));
+            }
+            return values;
+        }
+
+        private string GetInsertQuery(string tableName)
+        {
+            if (_entity == null)
+            {
+                throw new InvalidOperationException("Entity could not be found");
+            }
+            List<(string columnName, ParameterDetail parameterDetail)> values = GetValues(tableName);
+            CriteriaDetail criteriaDetail = new (string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
+            _criteria = new CriteriaDetail[] { criteriaDetail };
+            return string.Format(_statements.Insert, tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
+        }
+
         private string GetQuery()
         {
             string tableName = _options.Table.GetTableName(_statements);
@@ -84,7 +133,7 @@ namespace FluentSQL.Default
             {
                 QueryType.Select => string.Format(_statements.Select, string.Join(",", _columns.Select(x => x.GetColumnName(tableName,_statements))), tableName),
                 QueryType.SelectWhere => string.Format(_statements.SelectWhere, string.Join(",", _columns.Select(x => x.GetColumnName(tableName,_statements))), tableName, GetCriteria()),
-                QueryType.Insert => _statements.Insert,
+                QueryType.Insert =>  GetInsertQuery(tableName),
                 QueryType.Update => _statements.Update,
                 QueryType.Delete => _statements.DeleteWhere,
                 _ => string.Empty,

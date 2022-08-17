@@ -20,7 +20,7 @@ namespace FluentSQL
         /// <summary>
         /// Get Search Criteria
         /// </summary>
-        public ISearchCriteria SearchCriteria { get; }
+        public ISearchCriteria? SearchCriteria { get; }
 
         /// <summary>
         /// Initializes a new instance of the CriteriaDetail class.
@@ -32,6 +32,19 @@ namespace FluentSQL
         public CriteriaDetail(ISearchCriteria searchCriteria, string queryPart, IEnumerable<ParameterDetail> parameterDetails)
         {
             SearchCriteria = searchCriteria ?? throw new ArgumentNullException(nameof(searchCriteria));
+            QueryPart = queryPart ?? throw new ArgumentNullException(nameof(queryPart));
+            ParameterDetails = parameterDetails;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CriteriaDetail class.
+        /// </summary>
+        /// <param name="searchCriteria">Search Criteria</param>
+        /// <param name="queryPart">Query part</param>
+        /// <param name="parameterDetails">Parameter Details</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public CriteriaDetail(string queryPart, IEnumerable<ParameterDetail> parameterDetails)
+        {
             QueryPart = queryPart ?? throw new ArgumentNullException(nameof(queryPart));
             ParameterDetails = parameterDetails;
         }
