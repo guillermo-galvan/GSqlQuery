@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace FluentSQL
 {
-    public abstract class Entity<T> : IRead<T>, ICreate<T>, IUpdate<T> where T : class, new()
+    public abstract class Entity<T> : IRead<T>, ICreate<T>, IUpdate<T>, IDelete<T> where T : class, new()
     {
         /// <summary>
         /// Defines the property or properties to perform the query, taking into account the name of the first statement collection 
@@ -133,8 +133,26 @@ namespace FluentSQL
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Update(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Update(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-
             return new Set<T>(this,options, memberInfos.Select(x => x.Name), FluentSQLManagement._options.StatementsCollection[key]);
+        }
+
+        /// <summary>
+        /// Generate the delete query
+        /// </summary>
+        /// <returns>Instance of IQueryBuilder</returns>
+        public static IQueryBuilder<T> Delete()
+        {
+            return IDelete<T>.Delete();
+        }
+
+        /// <summary>
+        /// Generate the delete query, taking into account the name of the first statement collection  
+        /// </summary>
+        /// <param name="key">The name of the statement collection</param>
+        /// <returns>Instance of IQueryBuilder</returns>
+        public static IQueryBuilder<T> Delete(string key)
+        {
+            return IDelete<T>.Delete(key);
         }
     }
 }

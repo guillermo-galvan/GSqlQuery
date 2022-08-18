@@ -23,12 +23,12 @@
         public virtual string Insert => "INSERT INTO {0} ({1}) VALUES ({2});";
 
         /// <summary>
-        /// Instrucciones para formatear el update, ejemplo "UPDATE {0} SET {1};"
+        /// Instructions to format the update, example "UPDATE {0} SET {1};"
         /// </summary>
         public virtual string Update => "UPDATE {0} SET {1};";
 
         /// <summary>
-        /// Instrucciones para formatear el update, ejemplo "UPDATE {0} SET {1} WHERE {2};"
+        /// Instructions to format the update, example "UPDATE {0} SET {1} WHERE {2};"
         /// </summary>
         public string UpdateWhere => "UPDATE {0} SET {1} WHERE {2};";
 
@@ -36,5 +36,10 @@
         /// Instructions to format the delete, example "DELETE FROM {0} WHERE {1};"
         /// </summary>
         public virtual string DeleteWhere => "DELETE FROM {0} WHERE {1};";
+
+        /// <summary>
+        /// Instructions to format the delete, example "DELETE FROM {0};"
+        /// </summary>
+        public string Delete => "DELETE FROM {0};";
     }
 }

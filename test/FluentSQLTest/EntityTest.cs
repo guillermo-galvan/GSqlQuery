@@ -258,5 +258,74 @@ namespace FluentSQLTest
             Assert.Equal(queryResult, result);
         }
 
+        [Fact]
+        public void Should_generate_the_delete_query()
+        {
+            var query = Test3.Delete().Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+            Assert.Equal("DELETE FROM TableName;", query.Text);
+        }
+
+        [Theory]
+        [InlineData("Default", "DELETE FROM TableName;")]
+        [InlineData("My", "DELETE FROM [TableName];")]
+        public void Should_generate_the_delete_query_with_key(string key, string queryResult)
+        {
+            var query = Test3.Delete(key).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+            Assert.Equal(queryResult, query.Text);
+        }
+
+        [Fact]
+        public void Should_generate_the_delete_where_query()
+        {
+            var query = Test3.Delete().Where().Equal(x => x.IsTests,true).AndIsNotNull(x => x.Creates).Build();
+
+            Assert.NotNull(query);
+            Assert.NotNull(query.Text);            
+            Assert.NotEmpty(query.Text);
+            Assert.NotNull(query.Columns);
+            Assert.NotEmpty(query.Columns);
+            Assert.NotNull(query.Statements);
+            Assert.NotNull(query.Criteria);
+            Assert.NotEmpty(query.Criteria);
+
+            string result = query.Text;
+            foreach (var item in query.Criteria)
+            {
+                result = item.ParameterDetails.ParameterReplace(result);
+            }
+            Assert.Equal("DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;", result);
+        }
+
+
+        [Theory]
+        [InlineData("Default", "DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;")]
+        [InlineData("My", "DELETE FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] IS NOT NULL;")]
+        public void Should_generate_the_delete_where_query_with_key(string key, string queryResult)
+        {
+            var query = Test3.Delete(key).Where().Equal(x => x.IsTests, true).AndIsNotNull(x => x.Creates).Build();
+
+            Assert.NotNull(query);
+            Assert.NotNull(query.Text);
+            Assert.NotEmpty(query.Text);
+            Assert.NotNull(query.Columns);
+            Assert.NotEmpty(query.Columns);
+            Assert.NotNull(query.Statements);
+            Assert.NotNull(query.Criteria);
+            Assert.NotEmpty(query.Criteria);
+
+            string result = query.Text;
+            foreach (var item in query.Criteria)
+            {
+                result = item.ParameterDetails.ParameterReplace(result);
+            }
+            Assert.Equal(queryResult, result);
+        }
+
     }
 }

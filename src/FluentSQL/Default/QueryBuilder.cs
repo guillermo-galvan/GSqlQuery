@@ -91,6 +91,7 @@ namespace FluentSQL.Default
                     _queryType = QueryType.UpdateWhere;
                     break;
                 case QueryType.Delete:
+                    _queryType = QueryType.DeleteWhere;
                     break;
                 default:
                     break;
@@ -182,7 +183,8 @@ namespace FluentSQL.Default
                 QueryType.Insert =>  GetInsertQuery(tableName),
                 QueryType.Update => GetUpdateQuery(tableName),
                 QueryType.UpdateWhere => GetUpdateQuery(tableName),
-                QueryType.Delete => _statements.DeleteWhere,
+                QueryType.Delete => string.Format(_statements.Delete, tableName),
+                QueryType.DeleteWhere => string.Format(_statements.DeleteWhere, tableName, GetCriteria()),
                 _ => string.Empty,
             };
         }

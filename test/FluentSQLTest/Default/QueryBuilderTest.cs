@@ -57,6 +57,21 @@ namespace FluentSQLTest.Default
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
+
+        }
+
+        [Fact]
+        public void Should_return_an_delete_query()
+        {
+            QueryBuilder<Test1> queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+                new FluentSQL.Default.Statements(), QueryType.Delete);
+            IQuery<Test1> query = queryBuilder.Build();
+            Assert.NotNull(query.Text);
+            Assert.NotEmpty(query.Text);
+            Assert.NotNull(query.Columns);
+            Assert.NotEmpty(query.Columns);
+            Assert.NotNull(query.Statements);
+            Assert.Null(query.Criteria);
         }
     }
 }

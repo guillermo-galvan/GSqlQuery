@@ -7,6 +7,7 @@
         Insert,
         Update,
         UpdateWhere,
-        Delete
+        Delete,
+        DeleteWhere
     }
 }

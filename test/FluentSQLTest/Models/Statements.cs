@@ -14,6 +14,8 @@
 
         public string UpdateWhere => "UPDATE {0} SET {1} WHERE {2};";
 
+        public string Delete => "DELETE FROM {0};";
+
         public string DeleteWhere => "DELETE FROM {0} WHERE {1};";
     }
 }

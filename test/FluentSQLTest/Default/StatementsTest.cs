@@ -27,6 +27,9 @@ namespace FluentSQLTest.Default
             Assert.NotNull(statements.UpdateWhere);
             Assert.Equal("UPDATE {0} SET {1} WHERE {2};", statements.UpdateWhere);
 
+            Assert.NotNull(statements.Delete);
+            Assert.Equal("DELETE FROM {0};", statements.Delete);
+
             Assert.NotNull(statements.DeleteWhere);
             Assert.Equal("DELETE FROM {0} WHERE {1};", statements.DeleteWhere);
         }
