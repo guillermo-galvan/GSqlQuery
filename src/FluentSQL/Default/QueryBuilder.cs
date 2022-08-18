@@ -116,7 +116,10 @@ namespace FluentSQL.Default
             List<(string columnName, ParameterDetail parameterDetail)> values = new();
             foreach (var item in _columns)
             {
-                values.Add(GetParameterValue(tableName, item));
+                if (!item.IsAutoIncrementing)
+                {
+                    values.Add(GetParameterValue(tableName, item));
+                }
             }
             return values;
         }
