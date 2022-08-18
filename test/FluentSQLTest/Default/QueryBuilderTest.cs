@@ -43,5 +43,20 @@ namespace FluentSQLTest.Default
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
         }
+
+        [Fact]
+        public void Should_return_an_update_query()
+        {
+            Dictionary<ColumnAttribute, object?> columnsValue = new();
+            columnsValue.Add(new ColumnAttribute("Create"), DateTime.Now.Ticks);
+            columnsValue.Add(new ColumnAttribute("Id"), "test");
+            columnsValue.Add(new ColumnAttribute(nameof(Test3.IsTests)), true);
+
+            QueryBuilder<Test3> queryBuilder = new(new ClassOptions(typeof(Test3)), new FluentSQL.Default.Statements(), QueryType.Update, columnsValue);
+            IQuery<Test3> query = queryBuilder.Build();
+            Assert.NotNull(query);
+            Assert.NotNull(query.Text);
+            Assert.NotEmpty(query.Text);
+        }
     }
 }

@@ -22,7 +22,10 @@ namespace FluentSQLTest.Default
             Assert.Equal("INSERT INTO {0} ({1}) VALUES ({2});", statements.Insert);
 
             Assert.NotNull(statements.Update);
-            Assert.Equal("UPDATE {0} SET {1} WHERE {2};", statements.Update);
+            Assert.Equal("UPDATE {0} SET {1};", statements.Update);
+
+            Assert.NotNull(statements.UpdateWhere);
+            Assert.Equal("UPDATE {0} SET {1} WHERE {2};", statements.UpdateWhere);
 
             Assert.NotNull(statements.DeleteWhere);
             Assert.Equal("DELETE FROM {0} WHERE {1};", statements.DeleteWhere);

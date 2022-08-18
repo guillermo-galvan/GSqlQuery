@@ -26,16 +26,8 @@ namespace FluentSQL
         public static IQueryBuilder<T> Select<TProperties>(string key, Expression<Func<T, TProperties>> expression)
         {
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
-            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
-
-            IEnumerable<MemberInfo> memberInfos = expression.GetMembers();
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-
-            if (!memberInfos.Any())
-            {
-                throw new InvalidOperationException($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Select(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }}) ");
-            }
-
+            var (options, memberInfos) = expression.GetOptionsAndMembers();
+            memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Select(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
             return new QueryBuilder<T>(options, memberInfos.Select(x => x.Name), FluentSQLManagement._options.StatementsCollection[key], QueryType.Select);
         }
 

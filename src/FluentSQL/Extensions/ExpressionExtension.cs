@@ -51,7 +51,7 @@ namespace FluentSQL.Extensions
                 result = memberExpression.Member;
             }
 
-            return result ?? throw new InvalidOperationException($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name})");
+            return result ?? throw new InvalidOperationException($"Could not infer property name for expression.");
         }
 
         /// <summary>
@@ -66,14 +66,7 @@ namespace FluentSQL.Extensions
         {
             MemberInfo memberInfo = expression.GetMember();
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            PropertyOptions? result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
-
-            if (result == null)
-            {
-                throw new InvalidOperationException($"Could not find property {memberInfo.Name} on type {options.Type.Name}");
-            }
-
-            return result.ColumnAttribute;
+            return memberInfo.ValidateMemberInfo(options).ColumnAttribute;
         }
 
         private static Expression RemoveUnary(Expression toUnwrap)

@@ -26,9 +26,14 @@
         string Insert { get; }
 
         /// <summary>
-        /// Instrucciones para formatear el update, ejemplo "UPDATE {0} SET {1} WHERE {2};"
+        /// Instrucciones para formatear el update, ejemplo "UPDATE {0} SET {1};"
         /// </summary>
         string Update { get; }
+
+        /// <summary>
+        /// Instrucciones para formatear el update, ejemplo "UPDATE {0} SET {1} WHERE {2};"
+        /// </summary>
+        string UpdateWhere { get; }
 
         /// <summary>
         /// Instructions to format the delete, example "DELETE FROM {0} WHERE {1};"

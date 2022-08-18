@@ -131,5 +131,132 @@ namespace FluentSQLTest
             Assert.Equal(queryResult, result);
         }
 
+        [Fact]        
+        public void Should_generate_the_update_query()
+        {
+            Test3 test = new(1, null, DateTime.Now, true);
+            var query = test.Update(x => new { x.Ids, x.Names, x.Creates, x.IsTests }).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal("UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;", result);
+        }
+
+        [Theory]
+        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param;")]
+        public void Should_generate_the_update_query_with_key(string key, string queryResult)
+        {
+            Test3 test = new(1, null, DateTime.Now, true);
+            var query = test.Update(key,x => new { x.Ids,x.Names,x.Creates}).Add(x => x.IsTests).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryResult, result);
+        }
+
+        [Theory]
+        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
+        public void Should_generate_the_update_query_with_key_and_where(string key, string queryResult)
+        {
+            Test3 test = new(1, null, DateTime.Now, true);
+            var query = test.Update(key, x => new { x.Ids, x.Names, x.Creates }).Add(x => x.IsTests)
+                            .Where().Equal(x => x.IsTests,true).AndEqual(x => x.Creates, DateTime.Now).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryResult, result);
+        }
+
+        [Fact]
+        public void Should_generate_the_static_update_query()
+        {
+            var query = Test3.Update(x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal("UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;", result);
+        }
+
+        [Theory]
+        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param;")]
+        public void Should_generate_the_static_update_query_with_key(string key, string queryResult)
+        {
+            var query = Test3.Update(key,x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryResult, result);
+        }
+
+        [Theory]
+        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
+        public void Should_generate_the_static_update_query_with_key_and_where(string key, string queryResult)
+        {
+            var query = Test3.Update(key, x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false)
+                            .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryResult, result);
+        }
+
     }
 }

@@ -6,6 +6,7 @@
         SelectWhere,
         Insert,
         Update,
+        UpdateWhere,
         Delete
     }
 }
