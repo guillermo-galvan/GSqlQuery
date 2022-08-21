@@ -36,8 +36,8 @@ namespace FluentSQL.SearchCriteria
             string tableName = Table.GetTableName(statements);
 
             string criterion =  string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator}" :
-                $"{LogicalOperator} {tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator}";
+                $"{Column.GetColumnName(tableName, statements)} {RelationalOperator}" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator}";
 
             return new CriteriaDetail(this, criterion, Enumerable.Empty<ParameterDetail>());
         }

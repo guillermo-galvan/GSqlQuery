@@ -72,7 +72,7 @@ namespace FluentSQLTest
             var result = column.GetColumnName("Test", new Statements());
             Assert.NotNull(result);
             Assert.NotEmpty(result);
-            Assert.Equal("Test", result);
+            Assert.Equal("Test.Test", result);
         }
 
         [Fact]

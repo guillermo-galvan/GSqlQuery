@@ -22,7 +22,7 @@ namespace FluentSQL.Extensions
             tableName.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableName));
             statements.NullValidate(ErrorMessages.ParameterNotNull, nameof(statements));
 
-            return string.Format(statements.Format, column.Name);//$"{tableName}.{string.Format(statements.Format, column.Name)}";
+            return $"{tableName}.{string.Format(statements.Format, column.Name)}";
         }
     }
 }

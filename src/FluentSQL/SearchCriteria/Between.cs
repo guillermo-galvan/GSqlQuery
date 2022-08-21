@@ -51,8 +51,8 @@ namespace FluentSQL.SearchCriteria
             string parameterName1 = $"@{ParameterPrefix}{DateTime.Now.Ticks}";
 
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1}" :
-                $"{LogicalOperator} {tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1}";
+                $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1}" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1}";
 
             return new CriteriaDetail(this, criterion, new ParameterDetail[] 
             { 
@@ -109,8 +109,8 @@ namespace FluentSQL.SearchCriteria
             string parameterName2 = $"@{ParameterPrefix}2{DateTime.Now.Ticks}";
 
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
-                $"{LogicalOperator} {tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}";
+                $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}";
 
             return new CriteriaDetail(this, criterion, new ParameterDetail[]
             {

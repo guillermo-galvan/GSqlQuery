@@ -48,8 +48,8 @@ namespace FluentSQL.SearchCriteria
 
             string parameterName = $"@{ParameterPrefix}{DateTime.Now.Ticks}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} '%{parameterName}%'" :
-                $"{LogicalOperator} {tableName}.{Column.GetColumnName(tableName, statements)} {RelationalOperator} '%{parameterName}%'";
+                $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} '%{parameterName}%'" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} '%{parameterName}%'";
 
             return new CriteriaDetail(this, criterion, new ParameterDetail[] { new ParameterDetail(parameterName, Value) });
         }

@@ -24,7 +24,7 @@ namespace FluentSQLTest
             IQueryBuilderWithWhere<Test3,SelectQuery<Test3>> queryBuilder = Test3.Select();
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
-            Assert.Equal("SELECT Id,Name,Create,IsTests FROM TableName;", queryBuilder.Build().Text);
+            Assert.Equal("SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;", queryBuilder.Build().Text);
         }
 
         [Fact]
@@ -46,8 +46,8 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "SELECT Id,Name,Create,IsTests FROM TableName;")]
-        [InlineData("My", "SELECT [Id],[Name],[Create],[IsTests] FROM [TableName];")]
+        [InlineData("Default", "SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;")]
+        [InlineData("My", "SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests] FROM [TableName];")]
         public void Retrieve_all_properties_of_the_query_with_the_key(string key, string query)
         {
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(key);
@@ -57,8 +57,8 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "SELECT Id,Name,Create FROM TableName;")]
-        [InlineData("My", "SELECT [Id],[Name],[Create] FROM [TableName];")]
+        [InlineData("Default", "SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;")]
+        [InlineData("My", "SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName];")]
         public void Retrieve_some_properties_from_the_query_with_the_key(string key, string query)
         {
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates });
@@ -68,8 +68,8 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "SELECT Id,Name,Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;")]
-        [InlineData("My", "SELECT [Id],[Name],[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;")]
+        [InlineData("Default", "SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;")]
+        [InlineData("My", "SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;")]
         public void Should_return_the_query_with_where(string key, string queryText)
         {
             var query = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
@@ -89,8 +89,8 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "INSERT INTO TableName (Name,Create,IsTests) VALUES (@Param,@Param,@Param);")]
-        [InlineData("My", "INSERT INTO [TableName] ([Name],[Create],[IsTests]) VALUES (@Param,@Param,@Param);")]
+        [InlineData("Default", "INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param);")]
+        [InlineData("My", "INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param);")]
         public void Should_generate_the_insert_query_with_key_and_auto_incrementing(string key, string queryResult)
         {
             Test3 test = new (1, null, DateTime.Now, true);
@@ -111,8 +111,8 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "INSERT INTO TableName (Id,Name,Create,IsTests) VALUES (@Param,@Param,@Param,@Param);")]
-        [InlineData("My", "INSERT INTO [TableName] ([Id],[Name],[Create],[IsTests]) VALUES (@Param,@Param,@Param,@Param);")]
+        [InlineData("Default", "INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);")]
+        [InlineData("My", "INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param,@Param);")]
         public void Should_generate_the_insert_query_with_key(string key, string queryResult)
         {
             Test6 test = new(1, null, DateTime.Now, true);
@@ -133,7 +133,7 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("INSERT INTO TableName (Id,Name,Create,IsTests) VALUES (@Param,@Param,@Param,@Param);")]        
+        [InlineData("INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);")]        
         public void Should_generate_the_insert_query(string queryResult)
         {
             Test6 test = new (1, null, DateTime.Now, true);
@@ -170,12 +170,12 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal("UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;", result);
+            Assert.Equal("UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;", result);
         }
 
         [Theory]
-        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param;")]
+        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;")]
         public void Should_generate_the_update_query_with_key(string key, string queryResult)
         {
             Test3 test = new(1, null, DateTime.Now, true);
@@ -196,8 +196,8 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
+        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
         public void Should_generate_the_update_query_with_key_and_where(string key, string queryResult)
         {
             Test3 test = new(1, null, DateTime.Now, true);
@@ -234,12 +234,12 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal("UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;", result);
+            Assert.Equal("UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;", result);
         }
 
         [Theory]
-        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param;")]
+        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;")]
         public void Should_generate_the_static_update_query_with_key(string key, string queryResult)
         {
             var query = Test3.Update(key,x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false).Build();
@@ -259,8 +259,8 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "UPDATE TableName SET Id=@Param,Name=@Param,Create=@Param,IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [Id]=@Param,[Name]=@Param,[Create]=@Param,[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
+        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
+        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
         public void Should_generate_the_static_update_query_with_key_and_where(string key, string queryResult)
         {
             var query = Test3.Update(key, x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false)
