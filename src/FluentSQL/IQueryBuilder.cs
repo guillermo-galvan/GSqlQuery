@@ -1,4 +1,6 @@
-﻿namespace FluentSQL
+﻿using FluentSQL.Models;
+
+namespace FluentSQL
 {
     /// <summary>
     /// Query Builder
@@ -9,7 +11,7 @@
         /// <summary>
         /// Statements to use in the query
         /// </summary>
-        IStatements Statements { get; }
+        ConnectionOptions ConnectionOptions { get; }
 
         /// <summary>
         /// Build Query

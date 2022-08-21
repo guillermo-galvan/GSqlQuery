@@ -1,15 +1,17 @@
-﻿namespace FluentSQL
+﻿using FluentSQL.Models;
+
+namespace FluentSQL
 {
-    public class StatementsCollection
+    public class ConnectionCollection
     {
-        private readonly Dictionary<string, IStatements> _statements = new();
+        private readonly Dictionary<string, ConnectionOptions> _statements = new();
 
         /// <summary>
         /// Get IStatements by key
         /// </summary>
         /// <param name="Key">The key of the element to add.</param>
         /// <returns>Associated IStatements</returns>
-        public IStatements this[string Key]
+        public ConnectionOptions this[string Key]
         {
             get
             {
@@ -24,7 +26,7 @@
         /// <param name="statements">Associated IStatements></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void Add(string Key, IStatements statements)
+        public void Add(string Key, ConnectionOptions statements)
         {
             if (string.IsNullOrWhiteSpace(Key))
                 throw new ArgumentNullException(nameof(Key));

@@ -12,6 +12,7 @@ namespace FluentSQLTest.Default
     public class UpdateQueryBuilderTest
     {
         private Dictionary<ColumnAttribute, object?> _columnsValue;
+        private readonly ConnectionOptions _connectionOptions;
 
         public UpdateQueryBuilderTest()
         {
@@ -21,30 +22,32 @@ namespace FluentSQLTest.Default
                 { new ColumnAttribute("Id"), "test" },
                 { new ColumnAttribute(nameof(Test3.IsTests)), true }
             };
+            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements());
         }
 
         [Fact]
         public void Properties_cannot_be_null()
         {
-            UpdateQueryBuilder<Test1> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new FluentSQL.Default.Statements(), _columnsValue);
+            UpdateQueryBuilder<Test1> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, _connectionOptions, _columnsValue);
 
             Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.Statements);
+            Assert.NotNull(queryBuilder.ConnectionOptions);
+            Assert.NotNull(queryBuilder.ConnectionOptions.Statements);
         }
 
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(null, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new FluentSQL.Default.Statements(), _columnsValue));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), null, new FluentSQL.Default.Statements(), _columnsValue));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(null, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, _connectionOptions, _columnsValue));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), null, _connectionOptions, _columnsValue));
             Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, null, _columnsValue));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new FluentSQL.Default.Statements(), null));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, _connectionOptions, null));
         }
 
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            UpdateQueryBuilder<Test1> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new FluentSQL.Default.Statements(), _columnsValue);
+            UpdateQueryBuilder<Test1> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, _connectionOptions, _columnsValue);
             IWhere<Test1, UpdateQuery<Test1>> where = queryBuilder.Where();
             Assert.NotNull(where);
         }
@@ -52,14 +55,15 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Should_return_an_update_query()
         {
-            UpdateQueryBuilder<Test3> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new FluentSQL.Default.Statements(), _columnsValue);
+            UpdateQueryBuilder<Test3> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, _connectionOptions, _columnsValue);
             UpdateQuery<Test3> query = queryBuilder.Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Statements);
+            Assert.NotNull(query.ConnectionOptions);
+            Assert.NotNull(query.ConnectionOptions.Statements);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
 

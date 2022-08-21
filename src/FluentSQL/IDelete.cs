@@ -23,7 +23,7 @@ namespace FluentSQL
         /// <returns>Instance of IQueryBuilder</returns>
         public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete()
         {
-            return Delete(FluentSQLManagement._options.StatementsCollection.GetFirstStatements());
+            return Delete(FluentSQLManagement._options.ConnectionCollection.GetFirstStatements());
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace FluentSQL
         {
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new DeleteQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key]);
+            return new DeleteQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.ConnectionCollection[key]);
         }
     }
 }

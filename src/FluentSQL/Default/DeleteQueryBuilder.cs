@@ -15,8 +15,8 @@ namespace FluentSQL.Default
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="statements">Statements to build the query</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        public DeleteQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements)
-            : base(options, selectMember, statements, QueryType.Delete)
+        public DeleteQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions)
+            : base(options, selectMember, connectionOptions, QueryType.Delete)
         {
         }
 
@@ -26,11 +26,11 @@ namespace FluentSQL.Default
 
             if (_queryType == QueryType.Delete)
             {
-                result = string.Format(_statements.Delete, _tableName);
+                result = string.Format(_connectionOptions.Statements.Delete, _tableName);
             }
             else if (_queryType == QueryType.DeleteWhere)
             {
-                result = string.Format(_statements.DeleteWhere, _tableName, GetCriteria());
+                result = string.Format(_connectionOptions.Statements.DeleteWhere, _tableName, GetCriteria());
             }
 
             return result;
@@ -41,7 +41,7 @@ namespace FluentSQL.Default
         /// </summary>
         public virtual DeleteQuery<T> Build()
         {
-            return new DeleteQuery<T>(GenerateQuery(), _columns, _criteria, _statements);
+            return new DeleteQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions);
         }
 
         /// <summary>

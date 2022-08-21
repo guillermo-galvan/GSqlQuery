@@ -7,11 +7,11 @@ namespace FluentSQLTest
     {
         public IReadTest()
         {
-            if (!FluentSQLManagement.Options.StatementsCollection.GetAllKeys().Any())
+            if (!FluentSQLManagement.Options.ConnectionCollection.GetAllKeys().Any())
             {
                 FluentSQLOptions options = new();
-                options.StatementsCollection.Add("Default", new FluentSQL.Default.Statements());
-                options.StatementsCollection.Add("My", new Models.Statements());
+                options.ConnectionCollection.Add("Default", new FluentSQL.Models.ConnectionOptions(new FluentSQL.Default.Statements()));
+                options.ConnectionCollection.Add("My", new FluentSQL.Models.ConnectionOptions(new Models.Statements()));
                 FluentSQLManagement.SetOptions(options);
             }
         }

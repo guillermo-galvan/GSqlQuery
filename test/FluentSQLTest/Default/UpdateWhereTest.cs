@@ -26,7 +26,7 @@ namespace FluentSQLTest.Default
                 { new ColumnAttribute(nameof(Test3.IsTests)), true }
             };
 
-            _queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new FluentSQL.Default.Statements(), _columnsValue); ;
+            _queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new ConnectionOptions(new FluentSQL.Default.Statements()), _columnsValue); ;
         }
 
         [Fact]

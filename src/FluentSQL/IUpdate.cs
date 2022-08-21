@@ -46,7 +46,7 @@ namespace FluentSQL
         /// <exception cref="InvalidOperationException"></exception>
         public static ISet<T, UpdateQuery<T>> Update<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            return Update(FluentSQLManagement._options.StatementsCollection.GetFirstStatements(), expression, value);
+            return Update(FluentSQLManagement._options.ConnectionCollection.GetFirstStatements(), expression, value);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace FluentSQL
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             var (options, memberInfos) = expression.GetOptionsAndMember();
             memberInfos.ValidateMemberInfo(options);
-            return new Set<T>(options, new string[] { memberInfos.Name }, FluentSQLManagement._options.StatementsCollection[key], value);
+            return new Set<T>(options, new string[] { memberInfos.Name }, FluentSQLManagement._options.ConnectionCollection[key], value);
         }
     }
 }

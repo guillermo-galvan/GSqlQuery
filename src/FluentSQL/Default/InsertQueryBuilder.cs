@@ -19,8 +19,8 @@ namespace FluentSQL.Default
         /// <param name="statements">Statements to build the query</param>        
         /// <param name="entity">Entity</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public InsertQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements,object entity)
-            : base(options, selectMember, statements, QueryType.Insert)
+        public InsertQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions, object entity)
+            : base(options, selectMember, connectionOptions, QueryType.Insert)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
@@ -34,13 +34,13 @@ namespace FluentSQL.Default
             List<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
             CriteriaDetail criteriaDetail = new(string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
             _criteria = new CriteriaDetail[] { criteriaDetail };
-            return string.Format(_statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
+            return string.Format(_connectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
         }
 
         private (string columnName, ParameterDetail parameterDetail) GetParameterValue(ColumnAttribute column)
         {
             PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
-            return (column.GetColumnName(_tableName, _statements), new ParameterDetail($"@PI{options.PropertyInfo.Name}", options.GetValue(_entity)));
+            return (column.GetColumnName(_tableName, _connectionOptions.Statements), new ParameterDetail($"@PI{options.PropertyInfo.Name}", options.GetValue(_entity)));
         }
 
         private List<(string columnName, ParameterDetail parameterDetail)> GetValues()
@@ -61,7 +61,7 @@ namespace FluentSQL.Default
         /// </summary>
         public InsertQuery<T> Build()
         {
-            return new InsertQuery<T>(GenerateQuery(), _columns, _criteria, _statements);
+            return new InsertQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions);
         }
        
         protected override string GenerateQuery()

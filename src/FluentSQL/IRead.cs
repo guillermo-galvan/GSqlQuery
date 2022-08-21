@@ -28,7 +28,7 @@ namespace FluentSQL
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Select(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new SelectQueryBuilder<T>(options, memberInfos.Select(x => x.Name), FluentSQLManagement._options.StatementsCollection[key]);
+            return new SelectQueryBuilder<T>(options, memberInfos.Select(x => x.Name), FluentSQLManagement._options.ConnectionCollection[key]);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace FluentSQL
         {
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new SelectQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key]);
+            return new SelectQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.ConnectionCollection[key]);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace FluentSQL
         /// <exception cref="Exception"></exception>
         public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            return Select(FluentSQLManagement._options.StatementsCollection.GetFirstStatements(), expression);
+            return Select(FluentSQLManagement._options.ConnectionCollection.GetFirstStatements(), expression);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace FluentSQL
         /// <exception cref="Exception"></exception>
         public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select()
         {
-            return Select(FluentSQLManagement._options.StatementsCollection.GetFirstStatements());
+            return Select(FluentSQLManagement._options.ConnectionCollection.GetFirstStatements());
         }
     }
 }

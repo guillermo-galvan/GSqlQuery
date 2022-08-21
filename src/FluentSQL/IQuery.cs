@@ -1,4 +1,6 @@
-﻿namespace FluentSQL
+﻿using FluentSQL.Models;
+
+namespace FluentSQL
 {
     /// <summary>
     /// Query
@@ -17,9 +19,9 @@
         IEnumerable<CriteriaDetail> Criteria { get; }
 
         /// <summary>
-        /// Statements to use in the query
+        /// Options to use in the query
         /// </summary>
-        IStatements Statements { get; }
+        ConnectionOptions ConnectionOptions { get; }
 
         /// <summary>
         /// The Query

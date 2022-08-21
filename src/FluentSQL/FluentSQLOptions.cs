@@ -15,7 +15,7 @@ namespace FluentSQL
         /// <summary>
         /// Statements Collection to add or remove configurations.
         /// </summary>
-        public StatementsCollection StatementsCollection { get; } = new StatementsCollection();
+        public ConnectionCollection ConnectionCollection { get; } = new ConnectionCollection();
     }
 
     

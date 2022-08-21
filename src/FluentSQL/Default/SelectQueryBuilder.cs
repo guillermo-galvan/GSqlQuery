@@ -19,8 +19,8 @@ namespace FluentSQL.Default
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="statements">Statements to build the query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements)
-            : base(options, selectMember, statements, QueryType.Select)
+        public SelectQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions)
+            : base(options, selectMember, connectionOptions, QueryType.Select)
         {   
         }
 
@@ -30,11 +30,15 @@ namespace FluentSQL.Default
 
             if (_queryType == QueryType.Select)
             {
-                result = string.Format(_statements.Select, string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, _statements))), _tableName);
+                result = string.Format(_connectionOptions.Statements.Select, 
+                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, _connectionOptions.Statements))), 
+                    _tableName);
             }
             else if (_queryType == QueryType.SelectWhere)
             {
-                result = string.Format(_statements.SelectWhere, string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, _statements))), _tableName, GetCriteria());
+                result = string.Format(_connectionOptions.Statements.SelectWhere, 
+                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, _connectionOptions.Statements))), 
+                    _tableName, GetCriteria());
             }
 
             return result;
@@ -46,7 +50,7 @@ namespace FluentSQL.Default
         /// <returns>SelectQuery</returns>
         public virtual SelectQuery<T> Build()
         {
-            return new SelectQuery<T>(GenerateQuery(), _columns, _criteria, _statements);
+            return new SelectQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions);
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace FluentSQL.Default
+﻿using FluentSQL.Models;
+
+namespace FluentSQL.Default
 {
     /// <summary>
     /// Query
@@ -9,7 +11,7 @@
         private readonly string _text;
         private readonly IEnumerable<ColumnAttribute> _columns;
         private readonly IEnumerable<CriteriaDetail>? _criteria;
-        private readonly IStatements _statements;
+        private readonly ConnectionOptions _connectionOptions;
 
         /// <summary>
         /// Columns of the query
@@ -22,9 +24,9 @@
         public IEnumerable<CriteriaDetail>? Criteria => _criteria;
 
         /// <summary>
-        /// Statements to use in the query
+        /// Options to use in the query
         /// </summary>
-        public IStatements Statements => _statements;
+        public ConnectionOptions ConnectionOptions => _connectionOptions;
 
         /// <summary>
         /// The Query
@@ -39,10 +41,10 @@
         /// <param name="statements">Statements to use in the query</param>
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements)
+        public Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions)
         {
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));            
-            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
+            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
             _text = text ?? throw new ArgumentNullException(nameof(text));
             _criteria = criteria;
         }
