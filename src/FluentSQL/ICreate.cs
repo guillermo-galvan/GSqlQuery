@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentSQL.Default;
 
 namespace FluentSQL
 {
@@ -16,13 +12,13 @@ namespace FluentSQL
         /// Generate the insert query,taking into account the name of the first statement collection 
         /// </summary>        
         /// <returns>Instance of IQuery</returns>
-        IQuery<T> Insert();
+        InsertQuery<T> Insert();
 
         /// <summary>
         /// Generate the insert query
         /// </summary>
         /// <param name="key">The name of the statement collection</param>        
         /// <returns>Instance of IQuery</returns>
-        IQuery<T> Insert(string key);
+        InsertQuery<T> Insert(string key);
     }
 }

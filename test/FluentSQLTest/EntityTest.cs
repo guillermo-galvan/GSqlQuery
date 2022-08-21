@@ -1,5 +1,5 @@
-﻿using FluentSQL.SearchCriteria;
-using FluentSQLTest.Default;
+﻿using FluentSQL.Default;
+using FluentSQL.SearchCriteria;
 using FluentSQLTest.Extensions;
 using FluentSQLTest.Models;
 
@@ -13,7 +13,7 @@ namespace FluentSQLTest
             {
                 FluentSQLOptions options = new();
                 options.StatementsCollection.Add("Default", new FluentSQL.Default.Statements());
-                options.StatementsCollection.Add("My", new Statements());
+                options.StatementsCollection.Add("My", new Models.Statements());
                 FluentSQLManagement.SetOptions(options);
             }
         }
@@ -21,7 +21,7 @@ namespace FluentSQLTest
         [Fact]
         public void Retrieve_all_properties_from_the_query()
         {
-            IQueryBuilder<Test3> queryBuilder = Test3.Select();
+            IQueryBuilderWithWhere<Test3,SelectQuery<Test3>> queryBuilder = Test3.Select();
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal("SELECT Id,Name,Create,IsTests FROM TableName;", queryBuilder.Build().Text);
@@ -50,7 +50,7 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create],[IsTests] FROM [TableName];")]
         public void Retrieve_all_properties_of_the_query_with_the_key(string key, string query)
         {
-            IQueryBuilder<Test3> queryBuilder = Test3.Select(key);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(key);
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);
@@ -61,7 +61,7 @@ namespace FluentSQLTest
         [InlineData("My", "SELECT [Id],[Name],[Create] FROM [TableName];")]
         public void Retrieve_some_properties_from_the_query_with_the_key(string key, string query)
         {
-            IQueryBuilder<Test3> queryBuilder = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates });
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);

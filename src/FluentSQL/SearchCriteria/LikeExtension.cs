@@ -15,9 +15,10 @@ namespace FluentSQL.SearchCriteria
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T> Like<T, TProperties>(this IWhere<T> where, Expression<Func<T, TProperties>> expression, string value) where T : class, new()
+        public static IAndOr<T, TReturn> Like<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, string value) 
+            where T : class, new() where TReturn : IQuery<T>
         {
-            IAndOr<T> andor = where.GetAndOr(expression);
+            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             andor.Add(new Like(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value));
             return andor;
         }
@@ -31,7 +32,8 @@ namespace FluentSQL.SearchCriteria
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T> AndLike<T, TProperties>(this IAndOr<T> andOr, Expression<Func<T, TProperties>> expression, string value) where T : class, new()
+        public static IAndOr<T, TReturn> AndLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, string value) 
+            where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             andOr.Add(new Like(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "AND"));
@@ -47,7 +49,8 @@ namespace FluentSQL.SearchCriteria
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T> OrLike<T, TProperties>(this IAndOr<T> andOr, Expression<Func<T, TProperties>> expression, string value) where T : class, new()
+        public static IAndOr<T, TReturn> OrLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, string value) 
+            where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             andOr.Add(new Like(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "OR"));

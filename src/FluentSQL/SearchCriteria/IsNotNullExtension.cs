@@ -15,9 +15,10 @@ namespace FluentSQL.SearchCriteria
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T> IsNotNull<T, TProperties>(this IWhere<T> where, Expression<Func<T, TProperties>> expression) where T : class, new()
+        public static IAndOr<T, TReturn> IsNotNull<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression) 
+            where T : class, new() where TReturn : IQuery<T>
         {
-            IAndOr<T> andor = where.GetAndOr(expression);
+            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             andor.Add(new IsNotNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute()));
             return andor;
         }
@@ -31,7 +32,8 @@ namespace FluentSQL.SearchCriteria
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T> AndIsNotNull<T, TProperties>(this IAndOr<T> andOr, Expression<Func<T, TProperties>> expression) where T : class, new()
+        public static IAndOr<T, TReturn> AndIsNotNull<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression) 
+            where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             andOr.Add(new IsNotNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), "AND"));
@@ -47,7 +49,8 @@ namespace FluentSQL.SearchCriteria
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T> OrIsNotNull<T, TProperties>(this IAndOr<T> andOr, Expression<Func<T, TProperties>> expression) where T : class, new()
+        public static IAndOr<T, TReturn> OrIsNotNull<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression) 
+            where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             andOr.Add(new IsNotNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), "OR"));

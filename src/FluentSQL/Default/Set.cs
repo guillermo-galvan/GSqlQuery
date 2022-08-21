@@ -1,13 +1,6 @@
 ﻿using FluentSQL.Extensions;
 using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL.Default
 {
@@ -15,17 +8,17 @@ namespace FluentSQL.Default
     /// Base class to generate the set query
     /// </summary>
     /// <typeparam name="T">The type of object from which the query is generated</typeparam>
-    internal class Set<T> : ISet<T> where T : class, new()
+    internal class Set<T> : ISet<T, UpdateQuery<T>> where T : class, new()
     {
         private readonly Dictionary<ColumnAttribute, object?> _columnValues;
         private readonly ClassOptions _options;
         private readonly IStatements _statements;
-        private readonly object _entity;
+        private readonly object? _entity;
 
         /// <summary>
         /// Get column values
         /// </summary>
-        IDictionary<ColumnAttribute, object?> ISet<T>.ColumnValues => _columnValues;
+        public IDictionary<ColumnAttribute, object?> ColumnValues => _columnValues;
 
         public Set(ClassOptions options,IEnumerable<string> selectMember, IStatements statements, object? value)
         {
@@ -58,18 +51,18 @@ namespace FluentSQL.Default
         /// Build Query
         /// </summary>
         /// <returns>Implementation of the IQuery interface</returns>
-        public IQuery<T> Build()
+        public UpdateQuery<T> Build()
         {
-            return new QueryBuilder<T>(_options, _statements, QueryType.Update, _columnValues).Build();
+            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(),_statements,  _columnValues).Build();
         }
 
         /// <summary>
         /// Add where statement in query
         /// </summary>
         /// <returns>Implementation of the IWhere interface</returns>
-        public IWhere<T> Where()
+        public IWhere<T, UpdateQuery<T>> Where()
         {
-            return new QueryBuilder<T>(_options, _statements, QueryType.Update, _columnValues).Where();
+            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(), _statements, _columnValues).Where();
         }
 
         /// <summary>
@@ -79,7 +72,7 @@ namespace FluentSQL.Default
         /// <param name="expression">The expression representing the property</param>
         /// <param name="value"></param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T> Add<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
+        public ISet<T, UpdateQuery<T>> Add<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
             var (options, memberInfos) = expression.GetOptionsAndMember();
             var column = memberInfos.ValidateMemberInfo(options).ColumnAttribute;
@@ -93,7 +86,7 @@ namespace FluentSQL.Default
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T> Add<TProperties>(Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>> Add<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             if (_entity == null)
             {

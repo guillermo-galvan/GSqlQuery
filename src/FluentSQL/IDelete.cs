@@ -21,7 +21,7 @@ namespace FluentSQL
         /// Generate the delete query
         /// </summary>
         /// <returns>Instance of IQueryBuilder</returns>
-        public static IQueryBuilder<T> Delete()
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete()
         {
             return Delete(FluentSQLManagement._options.StatementsCollection.GetFirstStatements());
         }
@@ -31,11 +31,11 @@ namespace FluentSQL
         /// </summary>
         /// <param name="key">The name of the statement collection</param>
         /// <returns>Instance of IQueryBuilder</returns>
-        public static IQueryBuilder<T> Delete(string key)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete(string key)
         {
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new QueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key], QueryType.Delete);
+            return new DeleteQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key]);
         }
     }
 }

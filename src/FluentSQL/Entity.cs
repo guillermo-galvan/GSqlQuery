@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace FluentSQL
 {
-    public abstract class Entity<T> : IRead<T>, ICreate<T>, IUpdate<T>, IDelete<T> where T : class, new()
+    public abstract class Entity<T> : ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T> where T : class, new()
     {
         /// <summary>
         /// Defines the property or properties to perform the query, taking into account the name of the first statement collection 
@@ -17,7 +17,7 @@ namespace FluentSQL
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder<T> Select<TProperties>(Expression<Func<T, TProperties>> expression)
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             return IRead<T>.Select(expression);
         }
@@ -28,7 +28,7 @@ namespace FluentSQL
         /// <returns>Instance of IQueryBuilder with which to create the query</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder<T> Select()
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select()
         {
             return IRead<T>.Select();
         }
@@ -43,7 +43,7 @@ namespace FluentSQL
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder<T> Select<TProperties>(string key, Expression<Func<T, TProperties>> expression)
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(string key, Expression<Func<T, TProperties>> expression)
         {
             return IRead<T>.Select(key, expression);
         }
@@ -55,7 +55,7 @@ namespace FluentSQL
         /// <returns>Instance of IQueryBuilder with which to create the query</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilder<T> Select(string key)
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select(string key)
         {
             return IRead<T>.Select(key);
         }
@@ -64,7 +64,7 @@ namespace FluentSQL
         /// Generate the insert query,taking into account the name of the first statement collection 
         /// </summary>        
         /// <returns>Instance of IQuery</returns>
-        public IQuery<T> Insert()
+        public InsertQuery<T> Insert()
         {
             return Insert(FluentSQLManagement._options.StatementsCollection.GetFirstStatements());
         }
@@ -74,11 +74,11 @@ namespace FluentSQL
         /// </summary>
         /// <param name="key">The name of the statement collection</param>        
         /// <returns>Instance of IQuery</returns>
-        public IQuery<T> Insert(string key)
+        public InsertQuery<T> Insert(string key)
         {
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new QueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key], QueryType.Insert, this).Build();
+            return new InsertQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), FluentSQLManagement._options.StatementsCollection[key], this).Build();
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace FluentSQL
         /// <returns>Instance of ISet</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public static ISet<T> Update<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
+        public static ISet<T, UpdateQuery<T>> Update<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
             return IUpdate<T>.Update(expression, value);
         }
@@ -105,7 +105,7 @@ namespace FluentSQL
         /// <returns>Instance of ISet</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public static ISet<T> Update<TProperties>(string key, Expression<Func<T, TProperties>> expression, TProperties value)
+        public static ISet<T, UpdateQuery<T>> Update<TProperties>(string key, Expression<Func<T, TProperties>> expression, TProperties value)
         { 
             return IUpdate<T>.Update(key, expression, value);
         }
@@ -116,7 +116,7 @@ namespace FluentSQL
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T> Update<TProperties>(Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>> Update<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             return Update(FluentSQLManagement._options.StatementsCollection.GetFirstStatements(), expression);
         }
@@ -128,7 +128,7 @@ namespace FluentSQL
         /// <param name="key">The name of the statement collection</param>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T> Update<TProperties>(string key, Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>> Update<TProperties>(string key, Expression<Func<T, TProperties>> expression)
         {
             key.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(key));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
@@ -140,7 +140,7 @@ namespace FluentSQL
         /// Generate the delete query
         /// </summary>
         /// <returns>Instance of IQueryBuilder</returns>
-        public static IQueryBuilder<T> Delete()
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete()
         {
             return IDelete<T>.Delete();
         }
@@ -150,7 +150,7 @@ namespace FluentSQL
         /// </summary>
         /// <param name="key">The name of the statement collection</param>
         /// <returns>Instance of IQueryBuilder</returns>
-        public static IQueryBuilder<T> Delete(string key)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete(string key)
         {
             return IDelete<T>.Delete(key);
         }

@@ -4,7 +4,7 @@
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class Query<T> : IQuery<T> where T : class, new()
+    public class Query<T> : IQuery<T> where T : class, new()
     {
         private readonly string _text;
         private readonly IEnumerable<ColumnAttribute> _columns;
@@ -32,14 +32,14 @@
         public string Text => _text;
 
         /// <summary>
-        /// Create IQuery object 
+        /// Create Query object 
         /// </summary>
         /// <param name="columns">Columns of the query</param>
         /// <param name="criteria">Query criteria</param>
         /// <param name="statements">Statements to use in the query</param>
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements, string text)
+        public Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements)
         {
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));            
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));

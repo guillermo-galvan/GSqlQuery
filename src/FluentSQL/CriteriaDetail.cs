@@ -29,11 +29,9 @@ namespace FluentSQL
         /// <param name="queryPart">Query part</param>
         /// <param name="parameterDetails">Parameter Details</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public CriteriaDetail(ISearchCriteria searchCriteria, string queryPart, IEnumerable<ParameterDetail> parameterDetails)
+        public CriteriaDetail(ISearchCriteria searchCriteria, string queryPart, IEnumerable<ParameterDetail> parameterDetails) : this(queryPart, parameterDetails)
         {
             SearchCriteria = searchCriteria ?? throw new ArgumentNullException(nameof(searchCriteria));
-            QueryPart = queryPart ?? throw new ArgumentNullException(nameof(queryPart));
-            ParameterDetails = parameterDetails;
         }
 
         /// <summary>

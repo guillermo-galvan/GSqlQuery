@@ -14,7 +14,7 @@
         /// <summary>
         /// Query criteria
         /// </summary>
-        IEnumerable<CriteriaDetail>? Criteria { get; }
+        IEnumerable<CriteriaDetail> Criteria { get; }
 
         /// <summary>
         /// Statements to use in the query

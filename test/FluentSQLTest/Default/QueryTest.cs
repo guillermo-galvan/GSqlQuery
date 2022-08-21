@@ -27,7 +27,7 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Properties_cannot_be_null()
         {
-            Query<Test1> query = new(new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, _statements, "query");
+            Query<Test1> query = new("query",new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, _statements);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Columns);
@@ -42,9 +42,9 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new Query<Test1>(null, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, _statements, "query"));            
-            Assert.Throws<ArgumentNullException>(() => new Query<Test1>(new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, null, "query"));
-            Assert.Throws<ArgumentNullException>(() => new Query<Test1>(new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, _statements, null));
+            Assert.Throws<ArgumentNullException>(() => new Query<Test1>("query",null, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, _statements));            
+            Assert.Throws<ArgumentNullException>(() => new Query<Test1>("query",new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, null));
+            Assert.Throws<ArgumentNullException>(() => new Query<Test1>(null,new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements) }, _statements));
         }
     }
 }

@@ -11,10 +11,11 @@ namespace FluentSQL.SearchCriteria
         /// <typeparam name="T">The type to query</typeparam>
         /// <param name="where">Instance of IWhere</param>
         /// <returns>Instance of IWhere</returns>
-        public static IWhere<T> BeginGroup<T>(this IWhere<T> where) where T : class, new()
+        public static IWhere<T, TReturn> BeginGroup<T, TReturn>(this IWhere<T, TReturn> where) 
+            where T : class, new() where TReturn :IQuery<T>
         {
-            IAndOr<T> andor = where.GetAndOr();
-            var result = new Group<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, null, andor);
+            IAndOr<T, TReturn> andor = where.GetAndOr();
+            var result = new Group<T, TReturn>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, null, andor);
             andor.Add(result);
             return result;
         }
@@ -26,9 +27,10 @@ namespace FluentSQL.SearchCriteria
         /// <param name="andOr">Instance of IAndOr</param>
         /// <returns>Instance of IAndOr</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IAndOr<T> CloseGroup<T>(this IAndOr<T> andOr) where T : class, new()
+        public static IAndOr<T, TReturn> CloseGroup<T, TReturn>(this IAndOr<T, TReturn> andOr) 
+            where T : class, new() where TReturn : IQuery<T>
         {
-            if (andOr is Group<T> group)
+            if (andOr is Group<T, TReturn> group)
             {
                 return group.AndOr;
             }
@@ -42,9 +44,10 @@ namespace FluentSQL.SearchCriteria
         /// <typeparam name="T">The type to query</typeparam>
         /// <param name="andOr">Instance of IAndOr</param>
         /// <returns>Instance of IWhere</returns>
-        public static IWhere<T> AndBeginGroup<T>(this IAndOr<T> andOr) where T : class, new()
+        public static IWhere<T, TReturn> AndBeginGroup<T, TReturn>(this IAndOr<T, TReturn> andOr) 
+            where T : class, new() where TReturn : IQuery<T>
         {
-            var result = new Group<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "AND", andOr);
+            var result = new Group<T, TReturn>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "AND", andOr);
             andOr.Add(result);
             return result;
         }
@@ -55,9 +58,10 @@ namespace FluentSQL.SearchCriteria
         /// <typeparam name="T">The type to query</typeparam>
         /// <param name="andOr">Instance of IAndOr</param>
         /// <returns>Instance of IWhere</returns>
-        public static IWhere<T> OrBeginGroup<T>(this IAndOr<T> andOr) where T : class, new()
+        public static IWhere<T, TReturn> OrBeginGroup<T, TReturn>(this IAndOr<T, TReturn> andOr) 
+            where T : class, new() where TReturn : IQuery<T>
         {
-            var result = new Group<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "OR", andOr);
+            var result = new Group<T, TReturn>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "OR", andOr);
             andOr.Add(result);
             return result;
         }

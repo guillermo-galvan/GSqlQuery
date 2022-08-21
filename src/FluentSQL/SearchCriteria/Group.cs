@@ -4,15 +4,15 @@
     /// Represents the search criteria group ()
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class Group<T> : Criteria, ISearchCriteria, IWhere<T>, IAndOr<T> where T : class, new()
+    internal class Group<T, TReturn> : Criteria, ISearchCriteria, IWhere<T, TReturn>, IAndOr<T, TReturn> where T : class, new() where TReturn : IQuery<T>
     {
         private List<ISearchCriteria> _searchCriterias = new();
-        private readonly IAndOr<T> _andOr;
+        private readonly IAndOr<T, TReturn> _andOr;
 
         /// <summary>
         /// Get IAndOr
         /// </summary>
-        public IAndOr<T> AndOr => _andOr;
+        public IAndOr<T, TReturn> AndOr => _andOr;
 
         /// <summary>
         /// Initializes a new instance of the Group class.
@@ -21,7 +21,7 @@
         /// <param name="logicalOperator">Logical operator</param>
         /// <param name="andOr">IAndOr</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Group(TableAttribute table, string? logicalOperator, IAndOr<T> andOr) : base(table, new ColumnAttribute("Group"), logicalOperator)
+        public Group(TableAttribute table, string? logicalOperator, IAndOr<T, TReturn> andOr) : base(table, new ColumnAttribute("Group"), logicalOperator)
         {
             _andOr = andOr ?? throw new ArgumentNullException(nameof(andOr));
         }
@@ -68,7 +68,7 @@
         /// Build Query
         /// </summary>
         /// <returns>Instance of IQuery</returns>
-        public IQuery<T> Build()
+        public TReturn Build()
         {
             return _andOr.Build();
         }

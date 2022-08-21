@@ -13,7 +13,7 @@
         /// <summary>
         /// Get Value
         /// </summary>
-        public object? Value { get; }
+        public object? Value { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the ParameterDetail class.

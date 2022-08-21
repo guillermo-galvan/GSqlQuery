@@ -26,9 +26,9 @@ namespace FluentSQLTest.Default
                 _statements, null);
 
             Assert.NotNull(test);
-            Assert.NotNull(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.NotEmpty(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.Equal(3, ((FluentSQL.ISet<Test1>)test).ColumnValues.Count);
+            Assert.NotNull(test.ColumnValues);
+            Assert.NotEmpty(test.ColumnValues);
+            Assert.Equal(3, test.ColumnValues.Count);
         }
 
         [Fact]
@@ -39,9 +39,9 @@ namespace FluentSQLTest.Default
                 _statements);
 
             Assert.NotNull(test);
-            Assert.NotNull(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.NotEmpty(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.Equal(3, ((FluentSQL.ISet<Test1>)test).ColumnValues.Count);
+            Assert.NotNull(test.ColumnValues);
+            Assert.NotEmpty(test.ColumnValues);
+            Assert.Equal(3, test.ColumnValues.Count);
         }
 
         [Fact]
@@ -52,9 +52,9 @@ namespace FluentSQLTest.Default
 
             test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now);
 
-            Assert.NotNull(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.NotEmpty(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.Equal(3, ((FluentSQL.ISet<Test1>)test).ColumnValues.Count);
+            Assert.NotNull(test.ColumnValues);
+            Assert.NotEmpty(test.ColumnValues);
+            Assert.Equal(3, test.ColumnValues.Count);
         }
 
         [Fact]
@@ -66,9 +66,9 @@ namespace FluentSQLTest.Default
 
             test.Add(x => x.Id).Add(x => x.Create);
 
-            Assert.NotNull(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.NotEmpty(((FluentSQL.ISet<Test1>)test).ColumnValues);
-            Assert.Equal(3, ((FluentSQL.ISet<Test1>)test).ColumnValues.Count);
+            Assert.NotNull(test.ColumnValues);
+            Assert.NotEmpty(test.ColumnValues);
+            Assert.Equal(3, test.ColumnValues.Count);
         }
 
         [Fact]

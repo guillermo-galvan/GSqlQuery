@@ -16,7 +16,7 @@ namespace FluentSQLTest.SearchCriteria
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
         private readonly IStatements _statements;
-        private readonly QueryBuilder<Test1> _queryBuilder;
+        private readonly SelectQueryBuilder<Test1> _queryBuilder;
 
         public NotEqualTest()
         {
@@ -24,7 +24,7 @@ namespace FluentSQLTest.SearchCriteria
             _tableAttribute = new TableAttribute("Test1");
             _statements = new FluentSQL.Default.Statements();
             _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new FluentSQL.Default.Statements(), QueryType.Select);
+                new FluentSQL.Default.Statements());
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace FluentSQLTest.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            IWhere<Test1> where = new Where<Test1>(_queryBuilder);
+            SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.NotEqual(x => x.Id, 1);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria();
@@ -93,7 +93,7 @@ namespace FluentSQLTest.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            IWhere<Test1> where = new Where<Test1>(_queryBuilder);
+            SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.NotEqual(x => x.Id, 1).AndNotEqual(x => x.IsTest, true);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria();
@@ -105,7 +105,7 @@ namespace FluentSQLTest.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            IWhere<Test1> where = new Where<Test1>(_queryBuilder);
+            SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.NotEqual(x => x.Id, 1).OrNotEqual(x => x.IsTest, true);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria();
