@@ -9,13 +9,7 @@ namespace FluentSQLTest
     {
         public EntityTest()
         {
-            if (!FluentSQLManagement.Options.ConnectionCollection.GetAllKeys().Any())
-            {
-                FluentSQLOptions options = new();
-                options.ConnectionCollection.Add("Default", new FluentSQL.Models.ConnectionOptions(new FluentSQL.Default.Statements()));
-                options.ConnectionCollection.Add("My", new FluentSQL.Models.ConnectionOptions(new Models.Statements()));
-                FluentSQLManagement.SetOptions(options);
-            }
+            LoadFluentOptions.Load();
         }
 
         [Fact]

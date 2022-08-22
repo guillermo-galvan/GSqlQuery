@@ -1,10 +1,17 @@
-﻿namespace FluentSQL
+﻿using FluentSQL.Models;
+
+namespace FluentSQL
 {
     /// <summary>
     /// Parameter detail 
     /// </summary>
     public class ParameterDetail
     {
+        /// <summary>
+        /// Get Column
+        /// </summary>
+        public PropertyOptions PropertyOptions { get; }
+
         /// <summary>
         /// Get Name
         /// </summary>
@@ -21,10 +28,11 @@
         /// <param name="name">Name parameter</param>
         /// <param name="value">Value parameter</param>
         /// <exception cref="ArgumentNullException">Name must not be null or empty</exception>
-        public ParameterDetail(string name, object? value)
+        public ParameterDetail(string name, object? value, PropertyOptions propertyOptions)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Value = value;
+            PropertyOptions = propertyOptions;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace FluentSQL.SearchCriteria
+﻿using FluentSQL.Models;
+
+namespace FluentSQL.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria group ()
@@ -31,7 +33,7 @@
         /// </summary>
         /// <param name="statements">Statements</param>
         /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IStatements statements)
+        public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string criterion = string.Empty;
             List<CriteriaDetail> criterias = new();
@@ -39,7 +41,7 @@
 
             foreach (var item in _searchCriterias)
             {
-                criterias.Add(item.GetCriteria(statements));
+                criterias.Add(item.GetCriteria(statements, propertyOptions));
             }
 
             criterion = string.IsNullOrEmpty(LogicalOperator) ? $"({string.Join(" ", criterias.Select(x => x.QueryPart))})" :

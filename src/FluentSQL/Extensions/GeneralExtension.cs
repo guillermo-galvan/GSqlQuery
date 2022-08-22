@@ -2,6 +2,7 @@
 using FluentSQL.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -62,6 +63,22 @@ namespace FluentSQL.Extensions
         internal static object GetValue(this PropertyOptions options, object entity)
         {
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
+        }
+
+        internal static IEnumerable<IDataParameter> GetParameters<T>(this IQuery<T> query) where T : class, new()
+        {
+            List<ParameterDetail> parameters = new();
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria.Where(x => x.ParameterDetails is not null))
+                {
+                    parameters.AddRange(item.ParameterDetails);
+                }
+            }
+
+#pragma warning disable CS8602 // Possible null reference argument.
+            return query.ConnectionOptions.DatabaseManagment.Events.GetParameter(typeof(T), parameters);
+#pragma warning restore CS8602 // Possible null reference argument.
         }
     }
 }

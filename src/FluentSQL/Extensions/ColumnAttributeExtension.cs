@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentSQL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace FluentSQL.Extensions
             statements.NullValidate(ErrorMessages.ParameterNotNull, nameof(statements));
 
             return $"{tableName}.{string.Format(statements.Format, column.Name)}";
+        }
+
+        public static PropertyOptions GetPropertyOptions(this ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
+        {
+            return propertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
         }
     }
 }

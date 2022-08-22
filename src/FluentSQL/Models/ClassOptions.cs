@@ -63,7 +63,7 @@ namespace FluentSQL.Models
                 if (parameters.Length > 0 && parameters.Length == PropertyOptions.Count())
                 {
                     bool find = true;
-                    byte position = 1;
+                    byte position = 0;
                     for (int i = 0; i < parameters.Length; i++)
                     {
                         ParameterInfo param = parameters[i];

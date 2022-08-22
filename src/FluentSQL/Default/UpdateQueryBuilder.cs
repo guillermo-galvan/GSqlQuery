@@ -35,7 +35,7 @@ namespace FluentSQL.Default
                 PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{options.PropertyInfo.Name}";
                 criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, _connectionOptions.Statements)}={paramName}",
-                    new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value) }));
+                    new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
             return criteriaDetails;
         }

@@ -17,12 +17,11 @@
         public Test4()
         { }
 
-        public Test4(int ids, string names, DateTime creates, bool isTests)
+        public Test4(int ids, string names, DateTime creates)
         {
             Ids = ids;
             Names = names;
             Creates = creates;
-            IsTests = isTests;
         }
     }
 }

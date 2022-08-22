@@ -1,5 +1,8 @@
 ﻿using FluentSQL.Default;
 using FluentSQL.Extensions;
+using FluentSQL.Helpers;
+using FluentSQL.Models;
+using FluentSQLTest.Models;
 
 namespace FluentSQLTest
 {
@@ -69,7 +72,7 @@ namespace FluentSQLTest
         public void Should_get_the_column_name()
         {
             ColumnAttribute column = new("Test");
-            var result = column.GetColumnName("Test", new Statements());
+            var result = column.GetColumnName("Test", new FluentSQL.Default.Statements());
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal("Test.Test", result);
@@ -80,10 +83,26 @@ namespace FluentSQLTest
         {
             ColumnAttribute column = new("Test");
 
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new Statements()));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new FluentSQL.Default.Statements()));
             Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", null));
             column = null;
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new Statements()));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new FluentSQL.Default.Statements()));
+        }
+
+        [Theory]
+        [InlineData(typeof(Test1))]
+        [InlineData(typeof(Test3))]
+        [InlineData(typeof(Test4))]
+        [InlineData(typeof(Test6))]
+        public void Should_get_property_options(Type type)
+        {
+            ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(type);
+
+            foreach (var item in classOptions.PropertyOptions)
+            {
+                var tmp = item.ColumnAttribute.GetPropertyOptions(classOptions.PropertyOptions);
+                Assert.Equal(item.ColumnAttribute, tmp.ColumnAttribute);
+            }
         }
     }
 }

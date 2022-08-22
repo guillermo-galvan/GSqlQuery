@@ -1,4 +1,6 @@
-﻿namespace FluentSQL.SearchCriteria
+﻿using FluentSQL.Models;
+
+namespace FluentSQL.SearchCriteria
 {
     public abstract class Criteria : ISearchCriteria
     {
@@ -36,6 +38,6 @@
         /// </summary>
         /// <param name="statements">Statements</param>
         /// <returns>Details of the criteria</returns>
-        public abstract CriteriaDetail GetCriteria(IStatements statements);
+        public abstract CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions);
     }
 }

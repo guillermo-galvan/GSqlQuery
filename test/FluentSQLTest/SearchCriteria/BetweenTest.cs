@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Default;
+using FluentSQL.Helpers;
 using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
 using FluentSQLTest.Extensions;
@@ -17,14 +18,16 @@ namespace FluentSQLTest.SearchCriteria
         private readonly TableAttribute _tableAttribute;
         private readonly IStatements _statements;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
+        private readonly ClassOptions _classOptions;
 
         public BetweenTest()
         {
-            _columnAttribute = new ColumnAttribute("Id");
-            _tableAttribute = new TableAttribute("Test1");
             _statements = new FluentSQL.Default.Statements();
             _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions(new FluentSQL.Default.Statements()));
+            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            _tableAttribute = _classOptions.Table;
         }
 
         [Fact]
@@ -61,7 +64,7 @@ namespace FluentSQLTest.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int value, string querypart)
         {
             Between<int> equal = new(_tableAttribute, _columnAttribute, value, logicalOperator);
-            var result = equal.GetCriteria(_statements);
+            var result = equal.GetCriteria(_statements, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
@@ -73,6 +76,8 @@ namespace FluentSQLTest.SearchCriteria
             Assert.Equal(value, parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);
+            Assert.NotNull(parameter.PropertyOptions);
+            Assert.Equal(_columnAttribute.Name,parameter.PropertyOptions.ColumnAttribute.Name);
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);            
             Assert.Equal(querypart, result.ParameterReplace());
@@ -121,14 +126,16 @@ namespace FluentSQLTest.SearchCriteria
         private readonly TableAttribute _tableAttribute;
         private readonly IStatements _statements;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
+        private readonly ClassOptions _classOptions;
 
         public BetweenTest2()
         {
-            _columnAttribute = new ColumnAttribute("Id");
-            _tableAttribute = new TableAttribute("Test1");
             _statements = new FluentSQL.Default.Statements();
             _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions(new FluentSQL.Default.Statements()));
+            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            _tableAttribute = _classOptions.Table;
         }
 
         [Fact]
@@ -167,7 +174,7 @@ namespace FluentSQLTest.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int inicialValue, int finalValue,string querypart)
         {
             Between2<int> equal = new(_tableAttribute, _columnAttribute, inicialValue, finalValue, logicalOperator);
-            var result = equal.GetCriteria(_statements);
+            var result = equal.GetCriteria(_statements, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
@@ -179,6 +186,8 @@ namespace FluentSQLTest.SearchCriteria
             Assert.Equal(inicialValue, parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);
+            Assert.NotNull(parameter.PropertyOptions);
+            Assert.Equal(_columnAttribute.Name, parameter.PropertyOptions.ColumnAttribute.Name);
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);
             Assert.Equal(querypart, result.ParameterReplace());

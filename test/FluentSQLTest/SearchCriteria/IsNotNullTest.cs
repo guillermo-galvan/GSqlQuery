@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Default;
+using FluentSQL.Helpers;
 using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
 using FluentSQLTest.Models;
@@ -16,14 +17,16 @@ namespace FluentSQLTest.SearchCriteria
         private readonly TableAttribute _tableAttribute;
         private readonly IStatements _statements;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
+        private readonly ClassOptions _classOptions;
 
         public IsNotNullTest()
         {
-            _columnAttribute = new ColumnAttribute("Id");
-            _tableAttribute = new TableAttribute("Test1");
             _statements = new FluentSQL.Default.Statements();
             _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions(new FluentSQL.Default.Statements()));
+            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            _tableAttribute = _classOptions.Table;
         }
 
         [Fact]
@@ -58,7 +61,7 @@ namespace FluentSQLTest.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, string querypart)
         {
             IsNotNull test = new(_tableAttribute, _columnAttribute, logicalOperator);
-            var result = test.GetCriteria(_statements);
+            var result = test.GetCriteria(_statements, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

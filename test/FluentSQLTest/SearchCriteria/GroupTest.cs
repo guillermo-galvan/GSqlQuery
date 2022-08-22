@@ -1,5 +1,6 @@
 ﻿using FluentSQL;
 using FluentSQL.Default;
+using FluentSQL.Helpers;
 using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
 using FluentSQLTest.Extensions;
@@ -18,13 +19,15 @@ namespace FluentSQLTest.SearchCriteria
         private readonly TableAttribute _tableAttribute;
         private readonly IStatements _statements;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
+        private readonly ClassOptions _classOptions;
 
         public GroupTest()
         {
-            _tableAttribute = new TableAttribute("Test1");
             _statements = new FluentSQL.Default.Statements();
             _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions(new FluentSQL.Default.Statements()));
+            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            _tableAttribute = _classOptions.Table;
         }
 
         [Fact]
@@ -65,7 +68,7 @@ namespace FluentSQLTest.SearchCriteria
             SelectWhere<Test1> andOr = new(_queryBuilder);
             Group<Test1, SelectQuery<Test1>> test = new(_tableAttribute, logicalOperator, andOr);
             test.Equal(x => x.Name, value).AndNotEqual(x => x.Create, DateTime.Now);
-            var result = test.GetCriteria(_statements);
+            var result = test.GetCriteria(_statements, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
@@ -77,6 +80,7 @@ namespace FluentSQLTest.SearchCriteria
             Assert.Equal(value, parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);
+            Assert.NotNull(parameter.PropertyOptions);            
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);
             var a = result.ParameterReplace();

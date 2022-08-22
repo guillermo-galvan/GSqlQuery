@@ -1,4 +1,5 @@
-﻿using FluentSQL.SearchCriteria;
+﻿using FluentSQL.Helpers;
+using FluentSQL.SearchCriteria;
 
 namespace FluentSQL.Default
 {
@@ -15,7 +16,7 @@ namespace FluentSQL.Default
         /// </summary>
         /// <param name="queryBuilder">SelectQueryBuilder</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectWhere(SelectQueryBuilder<T> queryBuilder)
+        public SelectWhere(SelectQueryBuilder<T> queryBuilder) : base(ClassOptionsFactory.GetClassOptions(typeof(T)))
         {
             _queryBuilder = queryBuilder ?? throw new ArgumentNullException(nameof(queryBuilder));
         }
@@ -35,7 +36,7 @@ namespace FluentSQL.Default
         /// <returns>Implementation of the IWhere interface</returns>
         public override IEnumerable<CriteriaDetail> BuildCriteria()
         {
-            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.ConnectionOptions.Statements)).ToArray();
+            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.ConnectionOptions.Statements, _classOptions.PropertyOptions)).ToArray();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Extensions;
+using FluentSQL.Models;
 
 namespace FluentSQL.SearchCriteria
 {
@@ -43,7 +44,7 @@ namespace FluentSQL.SearchCriteria
         /// </summary>
         /// <param name="statements">Statements</param>
         /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IStatements statements)
+        public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
 
@@ -52,7 +53,7 @@ namespace FluentSQL.SearchCriteria
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}";
 
-            return new CriteriaDetail(this, criterion, new ParameterDetail[] { new ParameterDetail(parameterName, Value)} );
+            return new CriteriaDetail(this, criterion, new ParameterDetail[] { new ParameterDetail(parameterName, Value, Column.GetPropertyOptions(propertyOptions))} );
         }
     }
 }

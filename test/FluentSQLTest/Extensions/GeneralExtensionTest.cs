@@ -7,11 +7,29 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentSQL.Extensions;
 using System.Linq.Expressions;
+using FluentSQL.Default;
+using FluentSQL.Models;
+using FluentSQL.SearchCriteria;
 
 namespace FluentSQLTest.Extensions
 {
     public class GeneralExtensionTest
     {
+        private readonly ColumnAttribute _columnAttribute;        
+        private readonly TableAttribute _tableAttribute;
+        private readonly Equal<int> _equal;
+        private readonly ConnectionOptions _connectionOptions;
+        private readonly ClassOptions _classOptions;
+
+        public GeneralExtensionTest()
+        {
+            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            _tableAttribute = _classOptions.Table;
+            _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
+        }
+
         [Fact]
         public void Should_return_the_column_attribute()
         {
@@ -77,6 +95,50 @@ namespace FluentSQLTest.Extensions
             var result = propertyOptions.GetValue(model);
             Assert.NotNull(result);
             Assert.NotEmpty(result.ToString());
+        }
+
+        [Fact]
+        public void Should_get_parameters_in_delete_query()
+        {
+            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            var result = query.GetParameters();
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void Should_get_parameters_in_select_query()
+        {
+            SelectQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            var result = query.GetParameters();
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void Should_get_parameters_in_update_query()
+        {
+            UpdateQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            var result = query.GetParameters();
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void Should_get_parameters_in_insert_query()
+        {
+            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            var result = query.GetParameters();
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FluentSQL.Models
 {
-    internal class PropertyOptions
+    public class PropertyOptions
     {
         public int PositionConstructor { get; internal set; }
 

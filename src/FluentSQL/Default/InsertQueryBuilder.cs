@@ -40,7 +40,7 @@ namespace FluentSQL.Default
         private (string columnName, ParameterDetail parameterDetail) GetParameterValue(ColumnAttribute column)
         {
             PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
-            return (column.GetColumnName(_tableName, _connectionOptions.Statements), new ParameterDetail($"@PI{options.PropertyInfo.Name}", options.GetValue(_entity)));
+            return (column.GetColumnName(_tableName, _connectionOptions.Statements), new ParameterDetail($"@PI{options.PropertyInfo.Name}", options.GetValue(_entity), options));
         }
 
         private List<(string columnName, ParameterDetail parameterDetail)> GetValues()

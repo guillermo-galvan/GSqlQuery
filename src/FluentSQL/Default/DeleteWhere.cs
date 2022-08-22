@@ -1,4 +1,5 @@
-﻿using FluentSQL.SearchCriteria;
+﻿using FluentSQL.Helpers;
+using FluentSQL.SearchCriteria;
 
 namespace FluentSQL.Default
 {
@@ -16,7 +17,7 @@ namespace FluentSQL.Default
         /// <param name="queryBuilder">DeleteQueryBuilder</param>
         /// <exception cref="ArgumentNullException"></exception>
 
-        public DeleteWhere(DeleteQueryBuilder<T> queryBuilder)
+        public DeleteWhere(DeleteQueryBuilder<T> queryBuilder) : base(ClassOptionsFactory.GetClassOptions(typeof(T)))
         {
             _queryBuilder = queryBuilder ?? throw new ArgumentNullException(nameof(queryBuilder));
         }
@@ -36,7 +37,7 @@ namespace FluentSQL.Default
         /// <returns>Criteria detail enumerable</returns>
         public override IEnumerable<CriteriaDetail> BuildCriteria()
         {
-            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.ConnectionOptions.Statements)).ToArray();
+            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.ConnectionOptions.Statements, _classOptions.PropertyOptions)).ToArray();
         }
     }
 }

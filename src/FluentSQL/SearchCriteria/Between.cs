@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Extensions;
+using FluentSQL.Models;
 
 namespace FluentSQL.SearchCriteria
 {
@@ -45,7 +46,7 @@ namespace FluentSQL.SearchCriteria
         /// </summary>
         /// <param name="statements">Statements</param>
         /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IStatements statements)
+        public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
             string parameterName1 = $"@{ParameterPrefix}{DateTime.Now.Ticks}";
@@ -54,9 +55,10 @@ namespace FluentSQL.SearchCriteria
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1}" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1}";
 
-            return new CriteriaDetail(this, criterion, new ParameterDetail[] 
-            { 
-                new ParameterDetail(parameterName1, Initial)
+
+            return new CriteriaDetail(this, criterion, new ParameterDetail[]
+            {
+                new ParameterDetail(parameterName1, Initial, Column.GetPropertyOptions(propertyOptions))
             });
         }
     }
@@ -102,7 +104,7 @@ namespace FluentSQL.SearchCriteria
         /// </summary>
         /// <param name="statements">Statements</param>
         /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IStatements statements)
+        public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
             string parameterName1 = $"@{ParameterPrefix}1{DateTime.Now.Ticks}";
@@ -112,10 +114,12 @@ namespace FluentSQL.SearchCriteria
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}";
 
+            var property = Column.GetPropertyOptions(propertyOptions);
+
             return new CriteriaDetail(this, criterion, new ParameterDetail[]
             {
-                new ParameterDetail(parameterName1, Initial),
-                new ParameterDetail(parameterName2, Final)
+                new ParameterDetail(parameterName1, Initial,property),
+                new ParameterDetail(parameterName2, Final,property)
             });
         }
     }
