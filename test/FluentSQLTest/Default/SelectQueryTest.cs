@@ -1,4 +1,5 @@
-﻿using FluentSQL.Default;
+﻿using FluentSQL;
+using FluentSQL.Default;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
@@ -22,10 +23,10 @@ namespace FluentSQLTest.Default
         public SelectQueryTest()
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            _columnAttribute = _classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements());
+            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]
@@ -50,6 +51,24 @@ namespace FluentSQLTest.Default
             Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
             Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, null));
             Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
+        }
+
+        [Fact]
+        public void Should_execute_the_query()
+        {
+            SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            var result = query.Exec();
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found()
+        {
+            SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, new ConnectionOptions(new FluentSQL.Default.Statements()));
+            Assert.Throws<ArgumentNullException>(() => query.Exec());
         }
     }
 }

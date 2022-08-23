@@ -1,4 +1,6 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.Helpers;
+using FluentSQL.Models;
+using FluentSQL.Extensions;
 
 namespace FluentSQL.Default
 {
@@ -6,7 +8,7 @@ namespace FluentSQL.Default
     /// Select query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class SelectQuery<T> : Query<T> where T : class, new()
+    public class SelectQuery<T> : Query<T>, IExecute<IEnumerable<T>> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the SelectQuery class.
@@ -19,5 +21,19 @@ namespace FluentSQL.Default
         public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions) :
             base(text, columns, criteria, connectionOptions)
         { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<T> Exec()
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            ConnectionOptions.DatabaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment));
+            ConnectionOptions.DatabaseManagment.Events.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment.Events));
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            return ConnectionOptions.DatabaseManagment.ExecuteReader(this, ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions, this.GetParameters());
+        }
     }
 }

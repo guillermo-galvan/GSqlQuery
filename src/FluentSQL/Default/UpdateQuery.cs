@@ -1,4 +1,6 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.Extensions;
+using FluentSQL.Helpers;
+using FluentSQL.Models;
 
 namespace FluentSQL.Default
 {
@@ -6,7 +8,7 @@ namespace FluentSQL.Default
     /// Update query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class UpdateQuery<T> : Query<T> where T : class, new()
+    public class UpdateQuery<T> : Query<T>, IExecute<int> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the UpdateQuery class.
@@ -19,5 +21,16 @@ namespace FluentSQL.Default
         public UpdateQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions) :
             base(text, columns, criteria, connectionOptions)
         { }
+
+        public int Exec()
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            ConnectionOptions.DatabaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment));
+            ConnectionOptions.DatabaseManagment.Events.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment.Events));
+#pragma warning restore CS8604 // Possible null reference argument.
+            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
+
+            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, classOptions.PropertyOptions, this.GetParameters());
+        }
     }
 }

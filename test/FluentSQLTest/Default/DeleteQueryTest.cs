@@ -21,7 +21,7 @@ namespace FluentSQLTest.Default
 
         public DeleteQueryTest()
         {
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements());
+            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -50,6 +50,27 @@ namespace FluentSQLTest.Default
             Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
             Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, null));
             Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
+        }
+
+        [Fact]
+        public void Should_execute_the_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            DeleteQuery<Test3> query = new("DELETE FROM [TableName];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions);
+            var result = query.Exec();
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found()
+        {
+            DeleteQuery<Test1> query = new("DELETE FROM [TableName];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
+                new ConnectionOptions(new FluentSQL.Default.Statements()));
+            Assert.Throws<ArgumentNullException>(() => query.Exec());
         }
     }
 }

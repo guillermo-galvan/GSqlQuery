@@ -25,7 +25,7 @@ namespace FluentSQLTest.Default
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements());
+            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]
@@ -50,6 +50,27 @@ namespace FluentSQLTest.Default
             Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
             Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, null));
             Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
+        }
+
+        [Fact]
+        public void Should_execute_the_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            UpdateQuery<Test3> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions);
+            var result = query.Exec();
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found()
+        {
+            UpdateQuery<Test1> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
+                new ConnectionOptions(new FluentSQL.Default.Statements()));
+            Assert.Throws<ArgumentNullException>(() => query.Exec());
         }
     }
 }

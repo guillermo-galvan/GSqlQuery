@@ -22,7 +22,7 @@ namespace FluentSQLTest.Default
 
         public InsertQueryTest()
         {
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements());
+            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -52,6 +52,43 @@ namespace FluentSQLTest.Default
             Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, null, _test1));
             Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1));
             Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, null));
+        }
+
+        [Fact]
+        public void Should_execute_the_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            InsertQuery<Test3> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions, new Test3(0, null, DateTime.Now, true));
+            var result = query.Exec();
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Ids);
+        }
+
+        [Fact]
+        public void Should_execute_the_query2()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
+
+            InsertQuery<Test6> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions, new Test6(1, null, DateTime.Now, true));
+            var result = query.Exec();
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found()
+        {
+            InsertQuery<Test1> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                new ColumnAttribute[] { _columnAttribute },
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
+                new ConnectionOptions(new FluentSQL.Default.Statements()), new Test6(1, null, DateTime.Now, true));
+            Assert.Throws<ArgumentNullException>(() => query.Exec());
         }
     }
 }

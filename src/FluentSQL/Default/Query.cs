@@ -6,7 +6,7 @@ namespace FluentSQL.Default
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class Query<T> : IQuery<T> where T : class, new()
+    public abstract class Query<T> : IQuery<T> where T : class, new()
     {
         private string _text;
         private readonly IEnumerable<ColumnAttribute> _columns;
