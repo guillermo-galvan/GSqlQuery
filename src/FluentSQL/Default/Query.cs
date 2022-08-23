@@ -8,7 +8,7 @@ namespace FluentSQL.Default
     /// <typeparam name="T">The type to query</typeparam>
     public class Query<T> : IQuery<T> where T : class, new()
     {
-        private readonly string _text;
+        private string _text;
         private readonly IEnumerable<ColumnAttribute> _columns;
         private readonly IEnumerable<CriteriaDetail>? _criteria;
         private readonly ConnectionOptions _connectionOptions;
@@ -31,7 +31,7 @@ namespace FluentSQL.Default
         /// <summary>
         /// The Query
         /// </summary>
-        public string Text => _text;
+        public string Text { get => _text; set  => _text = value;}
 
         /// <summary>
         /// Create Query object 

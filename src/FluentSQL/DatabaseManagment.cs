@@ -22,6 +22,8 @@ namespace FluentSQL
 
         public string ConnectionString => _connectionString;
 
+        public abstract string ValueAutoIncrementingQuery { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -96,6 +98,28 @@ namespace FluentSQL
         /// <param name="parameters"></param>
         /// <returns></returns>
         public abstract IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
-            IEnumerable<IDataParameter> parameters = null) where T : class, new();
+            IEnumerable<IDataParameter> parameters) where T : class, new();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public abstract int ExecuteNonQuery<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions,
+            IEnumerable<IDataParameter> parameters) where T : class, new();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public abstract object ExecuteScalar<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
+            IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
     }
 }

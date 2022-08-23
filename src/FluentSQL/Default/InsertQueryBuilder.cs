@@ -61,7 +61,7 @@ namespace FluentSQL.Default
         /// </summary>
         public InsertQuery<T> Build()
         {
-            return new InsertQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions);
+            return new InsertQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions, _entity);
         }
        
         protected override string GenerateQuery()

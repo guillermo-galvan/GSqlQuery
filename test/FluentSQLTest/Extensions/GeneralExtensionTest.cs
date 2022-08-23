@@ -133,7 +133,7 @@ namespace FluentSQLTest.Extensions
         [Fact]
         public void Should_get_parameters_in_insert_query()
         {
-            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, new Test1());
             var result = query.GetParameters();
 
             Assert.NotNull(result);

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace FluentSQLTest.Extensions
 {
@@ -30,7 +31,7 @@ namespace FluentSQLTest.Extensions
         }
 
         [Fact]
-        public void Should_get_the_list_of_Test1()
+        public void Should_get_the_list_of_Test1_in_the_select_query()
         {
             SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
             var result = query.Exec();
@@ -41,11 +42,37 @@ namespace FluentSQLTest.Extensions
         }
 
         [Fact]
-        public void Throw_exception_if_DatabaseManagment_not_found()
+        public void Throw_exception_if_DatabaseManagment_not_found_in_the_select_query()
         {
             SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, new ConnectionOptions(new FluentSQL.Default.Statements()));
             Assert.Throws<ArgumentNullException>(() => query.Exec());
         }
 
+        [Fact]
+        public void Should_get_the_list_of_Test3_in_the_insert_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            InsertQuery<Test3> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                classOption.PropertyOptions.Select(x => x.ColumnAttribute), 
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) }, 
+                _connectionOptions, new Test3(0, null, DateTime.Now, true));
+            var result = query.Exec();
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Ids);
+        }
+
+        [Fact]
+        public void Should_get_the_list_of_Test6_in_the_insert_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
+
+            InsertQuery<Test6> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions, new Test6(1, null, DateTime.Now, true));
+            var result = query.Exec();
+            Assert.NotNull(result);
+        }
     }
 }

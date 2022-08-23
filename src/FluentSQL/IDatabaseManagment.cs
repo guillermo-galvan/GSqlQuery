@@ -17,16 +17,6 @@ namespace FluentSQL
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="query"></param>
-        /// <param name="propertyOptions"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters = null) where T : class, new();
-
-        /// <summary>
-        /// 
-        /// </summary>
         DatabaseManagmentEvents? Events { get; set; }
 
         /// <summary>
@@ -34,5 +24,39 @@ namespace FluentSQL
         /// </summary>
         string ConnectionString { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        string ValueAutoIncrementingQuery { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        int ExecuteNonQuery<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        object ExecuteScalar<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
     }
 }

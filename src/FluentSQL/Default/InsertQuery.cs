@@ -8,6 +8,8 @@ namespace FluentSQL.Default
     /// <typeparam name="T">The type to query</typeparam>
     public class InsertQuery<T> : Query<T> where T : class, new()
     {
+        public object Entity { get; }
+
         /// <summary>
         /// Initializes a new instance of the InsertQuery class.
         /// </summary>
@@ -16,8 +18,10 @@ namespace FluentSQL.Default
         /// <param name="criteria">Query criteria</param>
         /// <param name="statements">Statements to use in the query</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions)
+        public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions, object entity)
             : base(text, columns, criteria, connectionOptions)
-        { }
+        {
+            Entity = entity ?? throw new ArgumentNullException(nameof(entity));
+        }
     }
 }

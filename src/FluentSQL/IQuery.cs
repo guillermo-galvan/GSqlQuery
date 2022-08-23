@@ -26,6 +26,6 @@ namespace FluentSQL
         /// <summary>
         /// The Query
         /// </summary>
-        string Text { get; }
+        string Text { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.Default;
+using FluentSQL.Models;
 using FluentSQLTest.Models;
 using Microsoft.Data.SqlClient;
 using Moq;
@@ -19,7 +20,7 @@ namespace FluentSQLTest
             {
                 FluentSQLOptions options = new();
                 options.ConnectionCollection.Add("Default", new ConnectionOptions(new FluentSQL.Default.Statements()));
-                options.ConnectionCollection.Add("My", new ConnectionOptions(new Statements()));
+                options.ConnectionCollection.Add("My", new ConnectionOptions(new Models.Statements()));
                 FluentSQLManagement.SetOptions(options);
             }
         }
@@ -29,8 +30,8 @@ namespace FluentSQLTest
             Mock<IDatabaseManagment> mock = new();
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<IQuery<Test1>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q,p,pa) => {
+            mock.Setup(x => x.ExecuteReader(It.IsAny<SelectQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<SelectQuery<Test1>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q,p,pa) => {
 
                     if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];")
                     {
@@ -39,6 +40,28 @@ namespace FluentSQLTest
 
                     return Enumerable.Empty<Test1>();
                 });
+            mock.Setup(x => x.ExecuteScalar(It.IsAny<InsertQuery<Test3>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
+                .Returns<InsertQuery<Test3>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>, Type>((q,p,pa,t) => {
+
+                    if (q.Text.Contains("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])"))
+                    {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+
+            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<InsertQuery<Test6>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<InsertQuery<Test6>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) => {
+
+                    if (q.Text.Contains("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])"))
+                    {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+
 
             return mock.Object;
         }
