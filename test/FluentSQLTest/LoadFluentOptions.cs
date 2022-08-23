@@ -62,6 +62,28 @@ namespace FluentSQLTest
                     return 0;
                 });
 
+            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<UpdateQuery<Test3>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<UpdateQuery<Test3>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) => {
+
+                    if (q.Text.Contains("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;"))
+                    {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+
+            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<DeleteQuery<Test3>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<DeleteQuery<Test3>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) => {
+
+                    if (q.Text.Contains("DELETE FROM [TableName];"))
+                    {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+
 
             return mock.Object;
         }

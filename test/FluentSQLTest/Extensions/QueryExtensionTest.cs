@@ -74,5 +74,58 @@ namespace FluentSQLTest.Extensions
             var result = query.Exec();
             Assert.NotNull(result);
         }
+
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found_in_the_insert_query()
+        {
+            InsertQuery<Test1> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])", 
+                new ColumnAttribute[] { _columnAttribute }, 
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, 
+                new ConnectionOptions(new FluentSQL.Default.Statements()), new Test6(1, null, DateTime.Now, true));
+            Assert.Throws<ArgumentNullException>(() => query.Exec());
+        }
+
+        [Fact]
+        public void Should_get_the_list_of_Test3_in_the_update_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            UpdateQuery<Test3> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;", 
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) }, 
+                _connectionOptions);
+            var result = query.Exec();
+            Assert.Equal(1,result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found_in_the_update_query()
+        {
+            UpdateQuery<Test1> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;", 
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, 
+                new ConnectionOptions(new FluentSQL.Default.Statements()));
+            Assert.Throws<ArgumentNullException>(() => query.Exec());
+        }
+
+        [Fact]
+        public void Should_get_the_list_of_Test3_in_the_delete_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            DeleteQuery<Test3> query = new("DELETE FROM [TableName];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions);
+            var result = query.Exec();
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found_in_the_delete_query()
+        {
+            DeleteQuery<Test1> query = new("DELETE FROM [TableName];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
+                new ConnectionOptions(new FluentSQL.Default.Statements()));
+            Assert.Throws<ArgumentNullException>(() => query.Exec());
+        }
     }
 }

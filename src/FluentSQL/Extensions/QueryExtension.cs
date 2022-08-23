@@ -44,12 +44,24 @@ namespace FluentSQL.Extensions
 
         public static int Exec<T>(this UpdateQuery<T> query) where T : class, new()
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8604 // Possible null reference argument.
+            query.ConnectionOptions.DatabaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(query.ConnectionOptions.DatabaseManagment));
+            query.ConnectionOptions.DatabaseManagment.Events.NullValidate(ErrorMessages.ParameterNotNull, nameof(query.ConnectionOptions.DatabaseManagment.Events));
+#pragma warning restore CS8604 // Possible null reference argument.
+            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
+
+            return query.ConnectionOptions.DatabaseManagment.ExecuteNonQuery(query, classOptions.PropertyOptions, query.GetParameters());
         }
 
         public static int Exec<T>(this DeleteQuery<T> query) where T : class, new()
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8604 // Possible null reference argument.
+            query.ConnectionOptions.DatabaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(query.ConnectionOptions.DatabaseManagment));
+            query.ConnectionOptions.DatabaseManagment.Events.NullValidate(ErrorMessages.ParameterNotNull, nameof(query.ConnectionOptions.DatabaseManagment.Events));
+#pragma warning restore CS8604 // Possible null reference argument.
+            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
+
+            return query.ConnectionOptions.DatabaseManagment.ExecuteNonQuery(query, classOptions.PropertyOptions, query.GetParameters());
         }
     }
 }
