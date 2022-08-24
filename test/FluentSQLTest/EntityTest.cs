@@ -1,5 +1,7 @@
 ﻿using FluentSQL.Default;
+using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
+using FluentSQLTest.Data;
 using FluentSQLTest.Extensions;
 using FluentSQLTest.Models;
 
@@ -7,19 +9,12 @@ namespace FluentSQLTest
 {
     public class EntityTest
     {
+        private readonly ConnectionOptions _connectionOptions;
+
         public EntityTest()
         {
-            LoadFluentOptions.Load();
-        }
-
-        [Fact]
-        public void Retrieve_all_properties_from_the_query()
-        {
-            IQueryBuilderWithWhere<Test3,SelectQuery<Test3>> queryBuilder = Test3.Select();
-            Assert.NotNull(queryBuilder);
-            Assert.NotEmpty(queryBuilder.Build().Text);
-            Assert.Equal("SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;", queryBuilder.Build().Text);
-        }
+            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+        }      
 
         [Fact]
         public void Throw_an_exception_if_null_key_is_passed()
@@ -36,37 +31,34 @@ namespace FluentSQLTest
         [Fact]
         public void Throw_exception_if_property_is_not_selected()
         {
-            Assert.Throws<InvalidOperationException>(() => Test3.Select(x => x));
+            Assert.Throws<InvalidOperationException>(() => Test3.Select(_connectionOptions,x => x));
         }
 
         [Theory]
-        [InlineData("Default", "SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;")]
-        [InlineData("My", "SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests] FROM [TableName];")]
-        public void Retrieve_all_properties_of_the_query_with_the_key(string key, string query)
+        [ClassData(typeof(Select_Test3_TestData))]
+        public void Retrieve_all_properties_of_the_query(ConnectionOptions connection, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(key);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(connection);
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);
         }
 
         [Theory]
-        [InlineData("Default", "SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;")]
-        [InlineData("My", "SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName];")]
-        public void Retrieve_some_properties_from_the_query_with_the_key(string key, string query)
+        [ClassData(typeof(Select_Test3_TestData2))]
+        public void Retrieve_some_properties_from_the_query(ConnectionOptions connection, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(connection, x => new { x.Ids, x.Names, x.Creates });
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);
         }
 
         [Theory]
-        [InlineData("Default", "SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;")]
-        [InlineData("My", "SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;")]
-        public void Should_return_the_query_with_where(string key, string queryText)
+        [ClassData(typeof(Select_Test3_TestData3))]
+        public void Should_return_the_query_with_where(ConnectionOptions connection, string queryText)
         {
-            var query = Test3.Select(key, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
+            var query = Test3.Select(connection, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
 
@@ -83,12 +75,11 @@ namespace FluentSQLTest
         }
 
         [Theory]
-        [InlineData("Default", "INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param);")]
-        [InlineData("My", "INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param);")]
-        public void Should_generate_the_insert_query_with_key_and_auto_incrementing(string key, string queryResult)
+        [ClassData(typeof(Insert_Test3_TestData))]
+        public void Should_generate_the_insert_query_with_auto_incrementing(ConnectionOptions connection, string queryText)
         {
             Test3 test = new (1, null, DateTime.Now, true);
-            var query = test.Insert(key);
+            var query = test.Insert(connection);
 
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
@@ -101,16 +92,15 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal(queryResult, result);
+            Assert.Equal(queryText, result);
         }
 
         [Theory]
-        [InlineData("Default", "INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);")]
-        [InlineData("My", "INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param,@Param);")]
-        public void Should_generate_the_insert_query_with_key(string key, string queryResult)
+        [ClassData(typeof(Insert_Test6_TestData))]
+        public void Should_generate_the_insert_query(ConnectionOptions connection, string queryText)
         {
             Test6 test = new(1, null, DateTime.Now, true);
-            var query = test.Insert(key);
+            var query = test.Insert(connection);
 
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
@@ -123,35 +113,15 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal(queryResult, result);
+            Assert.Equal(queryText, result);
         }
 
         [Theory]
-        [InlineData("INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);")]        
-        public void Should_generate_the_insert_query(string queryResult)
-        {
-            Test6 test = new (1, null, DateTime.Now, true);
-            var query = test.Insert();
-
-            Assert.NotNull(query);
-            Assert.NotEmpty(query.Text);
-
-            string result = query.Text;
-            if (query.Criteria != null)
-            {
-                foreach (var item in query.Criteria)
-                {
-                    result = item.ParameterDetails.ParameterReplace(result);
-                }
-            }
-            Assert.Equal(queryResult, result);
-        }
-
-        [Fact]        
-        public void Should_generate_the_update_query()
+        [ClassData(typeof(Update_Test3_TestData))]
+        public void Should_generate_the_update_query(ConnectionOptions connection, string queryText)
         {
             Test3 test = new(1, null, DateTime.Now, true);
-            var query = test.Update(x => new { x.Ids, x.Names, x.Creates, x.IsTests }).Build();
+            var query = test.Update(connection, x => new { x.Ids,x.Names,x.Creates}).Add(x => x.IsTests).Build();
 
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
@@ -164,38 +134,15 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal("UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;", result);
+            Assert.Equal(queryText, result);
         }
 
         [Theory]
-        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;")]
-        public void Should_generate_the_update_query_with_key(string key, string queryResult)
+        [ClassData(typeof(Update_Test3_TestData2))]
+        public void Should_generate_the_update_query_with_where(ConnectionOptions connection, string queryText)
         {
             Test3 test = new(1, null, DateTime.Now, true);
-            var query = test.Update(key,x => new { x.Ids,x.Names,x.Creates}).Add(x => x.IsTests).Build();
-
-            Assert.NotNull(query);
-            Assert.NotEmpty(query.Text);
-
-            string result = query.Text;
-            if (query.Criteria != null)
-            {
-                foreach (var item in query.Criteria)
-                {
-                    result = item.ParameterDetails.ParameterReplace(result);
-                }
-            }
-            Assert.Equal(queryResult, result);
-        }
-
-        [Theory]
-        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
-        public void Should_generate_the_update_query_with_key_and_where(string key, string queryResult)
-        {
-            Test3 test = new(1, null, DateTime.Now, true);
-            var query = test.Update(key, x => new { x.Ids, x.Names, x.Creates }).Add(x => x.IsTests)
+            var query = test.Update(connection, x => new { x.Ids, x.Names, x.Creates }).Add(x => x.IsTests)
                             .Where().Equal(x => x.IsTests,true).AndEqual(x => x.Creates, DateTime.Now).Build();
 
             Assert.NotNull(query);
@@ -209,13 +156,14 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal(queryResult, result);
+            Assert.Equal(queryText, result);
         }
 
-        [Fact]
-        public void Should_generate_the_static_update_query()
+        [Theory]
+        [ClassData(typeof(Update_Test3_TestData))]
+        public void Should_generate_the_static_update_query(ConnectionOptions connection, string queryText)
         {
-            var query = Test3.Update(x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false).Build();
+            var query = Test3.Update(connection, x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false).Build();
 
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
@@ -228,36 +176,14 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal("UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;", result);
+            Assert.Equal(queryText, result);
         }
 
         [Theory]
-        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;")]
-        public void Should_generate_the_static_update_query_with_key(string key, string queryResult)
+        [ClassData(typeof(Update_Test3_TestData2))]
+        public void Should_generate_the_static_update_query_with_where(ConnectionOptions connection, string queryText)
         {
-            var query = Test3.Update(key,x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false).Build();
-
-            Assert.NotNull(query);
-            Assert.NotEmpty(query.Text);
-
-            string result = query.Text;
-            if (query.Criteria != null)
-            {
-                foreach (var item in query.Criteria)
-                {
-                    result = item.ParameterDetails.ParameterReplace(result);
-                }
-            }
-            Assert.Equal(queryResult, result);
-        }
-
-        [Theory]
-        [InlineData("Default", "UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;")]
-        [InlineData("My", "UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;")]
-        public void Should_generate_the_static_update_query_with_key_and_where(string key, string queryResult)
-        {
-            var query = Test3.Update(key, x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false)
+            var query = Test3.Update(connection, x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
 
             Assert.NotNull(query);
@@ -271,61 +197,25 @@ namespace FluentSQLTest
                     result = item.ParameterDetails.ParameterReplace(result);
                 }
             }
-            Assert.Equal(queryResult, result);
-        }
-
-        [Fact]
-        public void Should_generate_the_delete_query()
-        {
-            var query = Test3.Delete().Build();
-
-            Assert.NotNull(query);
-            Assert.NotEmpty(query.Text);
-            Assert.Equal("DELETE FROM TableName;", query.Text);
+            Assert.Equal(queryText, result);
         }
 
         [Theory]
-        [InlineData("Default", "DELETE FROM TableName;")]
-        [InlineData("My", "DELETE FROM [TableName];")]
-        public void Should_generate_the_delete_query_with_key(string key, string queryResult)
+        [ClassData(typeof(Delete_Test3_TestData))]
+        public void Should_generate_the_delete_query(ConnectionOptions connection, string queryText)
         {
-            var query = Test3.Delete(key).Build();
+            var query = Test3.Delete(connection).Build();
 
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
-            Assert.Equal(queryResult, query.Text);
+            Assert.Equal(queryText, query.Text);
         }
-
-        [Fact]
-        public void Should_generate_the_delete_where_query()
-        {
-            var query = Test3.Delete().Where().Equal(x => x.IsTests,true).AndIsNotNull(x => x.Creates).Build();
-
-            Assert.NotNull(query);
-            Assert.NotNull(query.Text);            
-            Assert.NotEmpty(query.Text);
-            Assert.NotNull(query.Columns);
-            Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.ConnectionOptions);
-            Assert.NotNull(query.ConnectionOptions.Statements);
-            Assert.NotNull(query.Criteria);
-            Assert.NotEmpty(query.Criteria);
-
-            string result = query.Text;
-            foreach (var item in query.Criteria)
-            {
-                result = item.ParameterDetails.ParameterReplace(result);
-            }
-            Assert.Equal("DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;", result);
-        }
-
 
         [Theory]
-        [InlineData("Default", "DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;")]
-        [InlineData("My", "DELETE FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] IS NOT NULL;")]
-        public void Should_generate_the_delete_where_query_with_key(string key, string queryResult)
+        [ClassData(typeof(Delete_Test3_TestData2))]
+        public void Should_generate_the_delete_where_query(ConnectionOptions connection, string queryText)
         {
-            var query = Test3.Delete(key).Where().Equal(x => x.IsTests, true).AndIsNotNull(x => x.Creates).Build();
+            var query = Test3.Delete(connection).Where().Equal(x => x.IsTests, true).AndIsNotNull(x => x.Creates).Build();
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -342,7 +232,7 @@ namespace FluentSQLTest
             {
                 result = item.ParameterDetails.ParameterReplace(result);
             }
-            Assert.Equal(queryResult, result);
+            Assert.Equal(queryText, result);
         }
 
     }

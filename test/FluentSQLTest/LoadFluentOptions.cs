@@ -14,17 +14,6 @@ namespace FluentSQLTest
 {
     internal static class LoadFluentOptions
     {
-        public static void Load()
-        {
-            if (!FluentSQLManagement.Options.ConnectionCollection.GetAllKeys().Any())
-            {
-                FluentSQLOptions options = new();
-                options.ConnectionCollection.Add("Default", new ConnectionOptions(new FluentSQL.Default.Statements()));
-                options.ConnectionCollection.Add("My", new ConnectionOptions(new Models.Statements()));
-                FluentSQLManagement.SetOptions(options);
-            }
-        }
-
         public static IDatabaseManagment GetDatabaseManagmentMock()
         {
             Mock<IDatabaseManagment> mock = new();

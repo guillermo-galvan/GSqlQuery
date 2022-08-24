@@ -2,6 +2,7 @@
 using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,12 +18,18 @@ namespace FluentSQL
     public abstract class DatabaseManagment : IDatabaseManagment
     {
         protected readonly string _connectionString;
+        protected ILogger? _logger;
 
         public DatabaseManagmentEvents? Events { get; set; }
 
         public string ConnectionString => _connectionString;
 
         public abstract string ValueAutoIncrementingQuery { get; }
+
+        public DatabaseManagment(string connectionString, ILogger? logger) : this(connectionString)
+        {
+            _logger = logger;
+        }
 
         /// <summary>
         /// 
@@ -45,9 +52,8 @@ namespace FluentSQL
 
             if (classOptions.ConstructorInfo.GetParameters().Length == 0)
             {
-                FluentSQLManagement._options.Logger?.LogWarning<ClassOptions>("{0} constructor with properties {1} not found",
-                                                              classOptions.Type.Name,
-                                                              string.Join(", ", classOptions.PropertyOptions.Select(x => $"{x.PropertyInfo.Name}")));
+                _logger?.LogWarning("{0} constructor with properties {1} not found", classOptions.Type.Name,
+                    string.Join(", ", classOptions.PropertyOptions.Select(x => $"{x.PropertyInfo.Name}")));
                 return new TransformToByField<T>(classOptions.PropertyOptions.Count());
             }
             else

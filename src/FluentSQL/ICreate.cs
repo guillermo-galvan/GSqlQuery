@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Default;
+using FluentSQL.Models;
 
 namespace FluentSQL
 {
@@ -9,16 +10,10 @@ namespace FluentSQL
     public interface ICreate<T> where T : class, new()
     {
         /// <summary>
-        /// Generate the insert query,taking into account the name of the first statement collection 
-        /// </summary>        
-        /// <returns>Instance of IQuery</returns>
-        InsertQuery<T> Insert();
-
-        /// <summary>
         /// Generate the insert query
         /// </summary>
         /// <param name="key">The name of the statement collection</param>        
         /// <returns>Instance of IQuery</returns>
-        InsertQuery<T> Insert(string key);
+        InsertQuery<T> Insert(ConnectionOptions connectionOptions);
     }
 }
