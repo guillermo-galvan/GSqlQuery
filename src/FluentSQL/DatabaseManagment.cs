@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -95,6 +96,8 @@ namespace FluentSQL
             };
         }
 
+        public abstract DbConnection GetConnection();
+
         /// <summary>
         /// 
         /// </summary>
@@ -127,5 +130,16 @@ namespace FluentSQL
         /// <returns></returns>
         public abstract object ExecuteScalar<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
             IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
+
+        public abstract IEnumerable<T> ExecuteReader<T>(DbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
+            IEnumerable<IDataParameter> parameters) where T : class, new();
+
+
+        public abstract int ExecuteNonQuery<T>(DbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
+            IEnumerable<IDataParameter> parameters) where T : class, new();
+
+
+        public abstract object ExecuteScalar<T>(DbConnection connection, IQuery<T> query, 
+            IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
     }
 }

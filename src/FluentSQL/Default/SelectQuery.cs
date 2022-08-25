@@ -1,6 +1,7 @@
 ﻿using FluentSQL.Helpers;
 using FluentSQL.Models;
 using FluentSQL.Extensions;
+using System.Data.Common;
 
 namespace FluentSQL.Default
 {
@@ -8,7 +9,7 @@ namespace FluentSQL.Default
     /// Select query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class SelectQuery<T> : Query<T>, IExecute<IEnumerable<T>> where T : class, new()
+    public class SelectQuery<T> : Query<T, IEnumerable<T>>, IExecute<IEnumerable<T>> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the SelectQuery class.
@@ -26,14 +27,14 @@ namespace FluentSQL.Default
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<T> Exec()
+        public override IEnumerable<T> Exec()
         {
-#pragma warning disable CS8604 // Possible null reference argument.
-            ConnectionOptions.DatabaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment));
-            ConnectionOptions.DatabaseManagment.Events.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment.Events));
-#pragma warning restore CS8604 // Possible null reference argument.
+            return ConnectionOptions.DatabaseManagment.ExecuteReader(this, GetClassOptions().PropertyOptions, this.GetParameters());
+        }
 
-            return ConnectionOptions.DatabaseManagment.ExecuteReader(this, ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions, this.GetParameters());
+        public override IEnumerable<T> Exec(DbConnection connection)
+        {
+            return ConnectionOptions.DatabaseManagment.ExecuteReader(connection,this, GetClassOptions().PropertyOptions, this.GetParameters());
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.Extensions;
+using FluentSQL.Helpers;
+using FluentSQL.Models;
+using System.Data.Common;
 
 namespace FluentSQL.Default
 {
@@ -6,7 +9,7 @@ namespace FluentSQL.Default
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public abstract class Query<T> : IQuery<T> where T : class, new()
+    public abstract class Query<T,TResult> : IQuery<T>, IExecute<TResult> where T : class, new()
     {
         private string _text;
         private readonly IEnumerable<ColumnAttribute> _columns;
@@ -33,6 +36,15 @@ namespace FluentSQL.Default
         /// </summary>
         public string Text { get => _text; set  => _text = value;}
 
+        internal ClassOptions GetClassOptions()
+        {
+#pragma warning disable CS8604 // Possible null reference argument.
+            ConnectionOptions.DatabaseManagment.ValidateDatabaseManagment();
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            return ClassOptionsFactory.GetClassOptions(typeof(T));
+        }
+
         /// <summary>
         /// Create Query object 
         /// </summary>
@@ -48,5 +60,13 @@ namespace FluentSQL.Default
             _text = text ?? throw new ArgumentNullException(nameof(text));
             _criteria = criteria;
         }
+
+        public abstract TResult Exec();
+
+        object? IExecute.Exec() => Exec();
+
+        public abstract TResult Exec(DbConnection connection);        
+
+        object? IExecute.Exec(DbConnection connection) => Exec(connection);
     }
 }

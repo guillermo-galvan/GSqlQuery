@@ -1,6 +1,7 @@
 ﻿using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
+using System.Data.Common;
 
 namespace FluentSQL.Default
 {
@@ -8,7 +9,7 @@ namespace FluentSQL.Default
     /// Insert Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class InsertQuery<T> : Query<T> , IExecute<T> where T : class, new()
+    public class InsertQuery<T> : Query<T,T> , IExecute<T> where T : class, new()
     {
         public object Entity { get; }
 
@@ -26,30 +27,58 @@ namespace FluentSQL.Default
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
 
+        private void InsertAutoIncrementing(ClassOptions classOptions, DbConnection? connection = null)
+        {
+            var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
+            var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);
+            Text = $"{Text} {ConnectionOptions.DatabaseManagment.ValueAutoIncrementingQuery}";
+
+            object idResult;
+            if (connection == null)
+            {
+                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(this, classOptions.PropertyOptions, this.GetParameters(), 
+                    propertyOptions.PropertyInfo.PropertyType);
+            }
+            else
+            {
+                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(connection, this, classOptions.PropertyOptions, this.GetParameters(), 
+                    propertyOptions.PropertyInfo.PropertyType);
+            }
+            
+            propertyOptions.PropertyInfo.SetValue(Entity, idResult);
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public T Exec()
+        public override T Exec()
         {
-#pragma warning disable CS8604 // Possible null reference argument.
-            ConnectionOptions.DatabaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment));
-            ConnectionOptions.DatabaseManagment.Events.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment.Events));
-#pragma warning restore CS8604 // Possible null reference argument.
-
-            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
+            var classOptions = GetClassOptions();
 
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
-                var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
-                var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);
-                Text = $"{Text} {ConnectionOptions.DatabaseManagment.ValueAutoIncrementingQuery}";
-                object idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(this, classOptions.PropertyOptions, this.GetParameters(), propertyOptions.PropertyInfo.PropertyType);
-                propertyOptions.PropertyInfo.SetValue(Entity, idResult);
+                InsertAutoIncrementing(classOptions);
             }
             else
             {
                 ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, classOptions.PropertyOptions, this.GetParameters());
+            }
+
+            return (T)Entity;
+        }
+
+        public override T Exec(DbConnection connection)
+        {
+            var classOptions = GetClassOptions();
+
+            if (Columns.Any(x => x.IsAutoIncrementing))
+            {
+                InsertAutoIncrementing(classOptions,connection);
+            }
+            else
+            {
+                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, classOptions.PropertyOptions, this.GetParameters());
             }
 
             return (T)Entity;

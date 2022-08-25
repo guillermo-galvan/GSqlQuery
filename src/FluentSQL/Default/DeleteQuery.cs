@@ -1,6 +1,7 @@
 ﻿using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
+using System.Data.Common;
 
 namespace FluentSQL.Default
 {
@@ -8,7 +9,7 @@ namespace FluentSQL.Default
     /// Delete query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class DeleteQuery<T> : Query<T>, IExecute<int> where T : class, new()
+    public class DeleteQuery<T> : Query<T,int>, IExecute<int> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the DeleteQuery class.
@@ -26,15 +27,14 @@ namespace FluentSQL.Default
         /// 
         /// </summary>
         /// <returns></returns>
-        public int Exec()
+        public override int Exec()
         {
-#pragma warning disable CS8604 // Possible null reference argument.
-            ConnectionOptions.DatabaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment));
-            ConnectionOptions.DatabaseManagment.Events.NullValidate(ErrorMessages.ParameterNotNull, nameof(ConnectionOptions.DatabaseManagment.Events));
-#pragma warning restore CS8604 // Possible null reference argument.
-            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
+            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, GetClassOptions().PropertyOptions,this.GetParameters());
+        }
 
-            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, classOptions.PropertyOptions,this.GetParameters());
+        public override int Exec(DbConnection connection)
+        {
+            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, GetClassOptions().PropertyOptions, this.GetParameters());
         }
     }
 }

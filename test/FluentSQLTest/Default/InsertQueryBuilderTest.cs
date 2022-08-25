@@ -21,7 +21,7 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Properties_cannot_be_null()
         {
-            InsertQueryBuilder<Test1> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) }, _connectionOptions, new Test3(1, null, DateTime.Now, true));
+            InsertQueryBuilder<Test3> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) }, _connectionOptions, new Test3(1, null, DateTime.Now, true));
 
             Assert.NotNull(queryBuilder);
             Assert.NotNull(queryBuilder.ConnectionOptions);

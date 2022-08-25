@@ -90,5 +90,42 @@ namespace FluentSQLTest.Default
                 new ConnectionOptions(new FluentSQL.Default.Statements()), new Test6(1, null, DateTime.Now, true));
             Assert.Throws<ArgumentNullException>(() => query.Exec());
         }
+
+        [Fact]
+        public void Should_execute_the_query3()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            InsertQuery<Test3> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions, new Test3(0, null, DateTime.Now, true));
+            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Ids);
+        }
+
+        [Fact]
+        public void Should_execute_the_query4()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
+
+            InsertQuery<Test6> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
+                _connectionOptions, new Test6(1, null, DateTime.Now, true));
+            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_DatabaseManagment_not_found1()
+        {
+            InsertQuery<Test1> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+                new ColumnAttribute[] { _columnAttribute },
+                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
+                new ConnectionOptions(new FluentSQL.Default.Statements()), new Test6(1, null, DateTime.Now, true));
+            Assert.Throws<ArgumentNullException>(() => query.Exec(LoadFluentOptions.GetDbConnection()));
+        }
     }
 }
