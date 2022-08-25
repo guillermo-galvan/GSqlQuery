@@ -10,6 +10,8 @@ namespace FluentSQL.Default
     internal class InsertQueryBuilder<T> : QueryBuilderWithCriteria<T, InsertQuery<T>>, IQueryBuilder<T, InsertQuery<T>> where T : class, new()
     {
         private readonly object _entity;
+        private bool _includeAutoIncrementing;
+
 
         /// <summary>
         ///Initializes a new instance of the InsertQueryBuilder class.
@@ -34,23 +36,32 @@ namespace FluentSQL.Default
             List<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
             CriteriaDetail criteriaDetail = new(string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
             _criteria = new CriteriaDetail[] { criteriaDetail };
-            return string.Format(_connectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
+            string text = _includeAutoIncrementing ? 
+                $"{string.Format(_connectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart)} {ConnectionOptions.Statements.ValueAutoIncrementingQuery}"
+                : string.Format(_connectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
+
+            return text;
         }
 
         private (string columnName, ParameterDetail parameterDetail) GetParameterValue(ColumnAttribute column)
         {
             PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
-            return (column.GetColumnName(_tableName, _connectionOptions.Statements), new ParameterDetail($"@PI{options.PropertyInfo.Name}", options.GetValue(_entity), options));
+            return (column.GetColumnName(_tableName, _connectionOptions.Statements), new ParameterDetail($"@PI{DateTime.Now.Ticks}", options.GetValue(_entity), options));
         }
 
         private List<(string columnName, ParameterDetail parameterDetail)> GetValues()
         {
             List<(string columnName, ParameterDetail parameterDetail)> values = new();
+            _includeAutoIncrementing = false;
             foreach (var item in _columns)
             {
                 if (!item.IsAutoIncrementing)
                 {
                     values.Add(GetParameterValue(item));
+                }
+                else
+                {
+                    _includeAutoIncrementing = true;
                 }
             }
             return values;

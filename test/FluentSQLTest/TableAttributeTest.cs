@@ -55,10 +55,14 @@ namespace FluentSQLTest
         [Fact]
         public void Throw_exception_if_any_null_parameters_are_passed()
         {
-            TableAttribute table = new("Test");
+            Assert.Throws<ArgumentNullException>(() => new TableAttribute(null));
+            Assert.Throws<ArgumentNullException>(() => new TableAttribute(null,null));
+            Assert.Throws<ArgumentNullException>(() => new TableAttribute(null, "Test"));
+
+            TableAttribute table = new TableAttribute("Test");
             Assert.Throws<ArgumentNullException>(() => table.GetTableName(null));
             table = null;
-            Assert.Throws<ArgumentNullException>(() => table.GetTableName(new Statements()));
+            Assert.Throws<ArgumentNullException>(() => table.GetTableName(new Statements()));            
         }
     }
 }

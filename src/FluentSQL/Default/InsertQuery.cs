@@ -27,21 +27,21 @@ namespace FluentSQL.Default
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
 
-        private void InsertAutoIncrementing(ClassOptions classOptions, DbConnection? connection = null)
+        private void InsertAutoIncrementing(DbConnection? connection = null)
         {
+            var classOptions = GetClassOptions();
             var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
-            var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);
-            Text = $"{Text} {ConnectionOptions.DatabaseManagment.ValueAutoIncrementingQuery}";
+            var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);            
 
             object idResult;
             if (connection == null)
             {
-                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(this, classOptions.PropertyOptions, this.GetParameters(), 
+                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(this, this.GetParameters(), 
                     propertyOptions.PropertyInfo.PropertyType);
             }
             else
             {
-                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(connection, this, classOptions.PropertyOptions, this.GetParameters(), 
+                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(connection, this, this.GetParameters(), 
                     propertyOptions.PropertyInfo.PropertyType);
             }
             
@@ -54,15 +54,15 @@ namespace FluentSQL.Default
         /// <returns></returns>
         public override T Exec()
         {
-            var classOptions = GetClassOptions();
+            ValidateDbManagment();
 
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
-                InsertAutoIncrementing(classOptions);
+                InsertAutoIncrementing();
             }
             else
             {
-                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, classOptions.PropertyOptions, this.GetParameters());
+                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, this.GetParameters());
             }
 
             return (T)Entity;
@@ -70,15 +70,15 @@ namespace FluentSQL.Default
 
         public override T Exec(DbConnection connection)
         {
-            var classOptions = GetClassOptions();
+            ValidateDbManagment();
 
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
-                InsertAutoIncrementing(classOptions,connection);
+                InsertAutoIncrementing(connection);
             }
             else
             {
-                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, classOptions.PropertyOptions, this.GetParameters());
+                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, this.GetParameters());
             }
 
             return (T)Entity;

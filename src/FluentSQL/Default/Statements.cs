@@ -30,7 +30,7 @@
         /// <summary>
         /// Instructions to format the update, example "UPDATE {0} SET {1} WHERE {2};"
         /// </summary>
-        public string UpdateWhere => "UPDATE {0} SET {1} WHERE {2};";
+        public virtual string UpdateWhere => "UPDATE {0} SET {1} WHERE {2};";
 
         /// <summary>
         /// Instructions to format the delete, example "DELETE FROM {0} WHERE {1};"
@@ -40,6 +40,11 @@
         /// <summary>
         /// Instructions to format the delete, example "DELETE FROM {0};"
         /// </summary>
-        public string Delete => "DELETE FROM {0};";
+        public virtual string Delete => "DELETE FROM {0};";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual string ValueAutoIncrementingQuery => "";
     }
 }

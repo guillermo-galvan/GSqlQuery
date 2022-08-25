@@ -29,12 +29,14 @@ namespace FluentSQL.Default
         /// <returns></returns>
         public override int Exec()
         {
-            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, GetClassOptions().PropertyOptions,this.GetParameters());
+            ValidateDbManagment();
+            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, this.GetParameters());
         }
 
         public override int Exec(DbConnection connection)
         {
-            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, GetClassOptions().PropertyOptions, this.GetParameters());
+            ValidateDbManagment();
+            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, this.GetParameters());
         }
     }
 }

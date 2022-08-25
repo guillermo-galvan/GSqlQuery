@@ -1,12 +1,6 @@
 ﻿using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL
 {
@@ -24,11 +18,6 @@ namespace FluentSQL
         /// 
         /// </summary>
         string ConnectionString { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        string ValueAutoIncrementingQuery { get; }
 
         /// <summary>
         /// 
@@ -55,7 +44,7 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        int ExecuteNonQuery<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters);
 
         /// <summary>
         /// 
@@ -65,7 +54,7 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        object ExecuteScalar<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
+        object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type typeResult);
 
         /// <summary>
         /// 
@@ -85,7 +74,7 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        int ExecuteNonQuery<T>(DbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        int ExecuteNonQuery(DbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
         /// <summary>
         /// 
@@ -95,6 +84,6 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        object ExecuteScalar<T>(DbConnection connection,IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
+        object ExecuteScalar(DbConnection connection,IQuery query, IEnumerable<IDataParameter> parameters, Type result);
     }
 }

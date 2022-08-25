@@ -44,5 +44,10 @@
         /// Instructions to format the delete, example "DELETE FROM {0} WHERE {1};"
         /// </summary>
         string DeleteWhere { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        string ValueAutoIncrementingQuery { get; }
     }
 }

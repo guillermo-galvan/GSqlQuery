@@ -14,12 +14,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param);"
+                new ConnectionOptions(new FluentSQL.Default.Statements()),"INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param); "
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param);"
+                new ConnectionOptions(new Models.Statements()),"INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param); SELECT SCOPE_IDENTITY();"
             };
         }
 

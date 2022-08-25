@@ -33,7 +33,7 @@ namespace FluentSQL.Default
             foreach (var item in _columnValues)
             {
                 PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = $"@PU{options.PropertyInfo.Name}";
+                string paramName = $"@PU{DateTime.Now.Ticks}";
                 criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, _connectionOptions.Statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }

@@ -32,6 +32,9 @@ namespace FluentSQLTest.Default
 
             Assert.NotNull(statements.DeleteWhere);
             Assert.Equal("DELETE FROM {0} WHERE {1};", statements.DeleteWhere);
+
+            Assert.NotNull(statements.ValueAutoIncrementingQuery);
+            Assert.Equal("", statements.ValueAutoIncrementingQuery);
         }
     }
 }

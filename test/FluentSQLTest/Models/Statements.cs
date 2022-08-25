@@ -17,5 +17,7 @@
         public string Delete => "DELETE FROM {0};";
 
         public string DeleteWhere => "DELETE FROM {0} WHERE {1};";
+
+        public string ValueAutoIncrementingQuery => "SELECT SCOPE_IDENTITY();";
     }
 }

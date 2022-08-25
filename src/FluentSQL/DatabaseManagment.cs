@@ -3,13 +3,8 @@ using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL
 {
@@ -24,8 +19,6 @@ namespace FluentSQL
         public DatabaseManagmentEvents? Events { get; set; }
 
         public string ConnectionString => _connectionString;
-
-        public abstract string ValueAutoIncrementingQuery { get; }
 
         public DatabaseManagment(string connectionString, ILogger? logger) : this(connectionString)
         {
@@ -117,8 +110,7 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public abstract int ExecuteNonQuery<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions,
-            IEnumerable<IDataParameter> parameters) where T : class, new();
+        public abstract int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters);
 
         /// <summary>
         /// 
@@ -128,18 +120,15 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public abstract object ExecuteScalar<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
-            IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
+        public abstract object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type result);
 
         public abstract IEnumerable<T> ExecuteReader<T>(DbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
             IEnumerable<IDataParameter> parameters) where T : class, new();
 
 
-        public abstract int ExecuteNonQuery<T>(DbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
-            IEnumerable<IDataParameter> parameters) where T : class, new();
+        public abstract int ExecuteNonQuery(DbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
 
-        public abstract object ExecuteScalar<T>(DbConnection connection, IQuery<T> query, 
-            IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, Type result) where T : class, new();
+        public abstract object ExecuteScalar(DbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, Type result);
     }
 }
