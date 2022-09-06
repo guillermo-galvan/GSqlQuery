@@ -14,12 +14,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;"
+                new FluentSQL.Default.Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;"
+                new Models.Statements(),"UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;"
             };
         }
 
@@ -32,12 +32,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;"
+                new FluentSQL.Default.Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;"
+                new Models.Statements(),"UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;"
             };
         }
 

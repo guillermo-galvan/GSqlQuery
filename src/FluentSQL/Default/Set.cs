@@ -12,7 +12,7 @@ namespace FluentSQL.Default
     {
         private readonly Dictionary<ColumnAttribute, object?> _columnValues;
         private readonly ClassOptions _options;
-        private readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _statements;
         private readonly object? _entity;
 
         /// <summary>
@@ -20,11 +20,11 @@ namespace FluentSQL.Default
         /// </summary>
         public IDictionary<ColumnAttribute, object?> ColumnValues => _columnValues;
 
-        public Set(ClassOptions options,IEnumerable<string> selectMember, ConnectionOptions connectionOptions, object? value)
+        public Set(ClassOptions options,IEnumerable<string> selectMember, IStatements statements, object? value)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
-            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(selectMember));
+            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
             _columnValues = new Dictionary<ColumnAttribute, object?>();
             foreach (ColumnAttribute item in _options.GetColumnsQuery(selectMember))
             {
@@ -32,11 +32,11 @@ namespace FluentSQL.Default
             };
         }
 
-        public Set(object? entity,ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions)
+        public Set(object? entity,ClassOptions options, IEnumerable<string> selectMember, IStatements statements)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
-            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(selectMember));
+            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
             _columnValues = new Dictionary<ColumnAttribute, object?>();
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
             foreach (var item in from prop in _options.PropertyOptions
@@ -53,7 +53,7 @@ namespace FluentSQL.Default
         /// <returns>Implementation of the IQuery interface</returns>
         public UpdateQuery<T> Build()
         {
-            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(), _connectionOptions,  _columnValues).Build();
+            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(), _statements,  _columnValues).Build();
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace FluentSQL.Default
         /// <returns>Implementation of the IWhere interface</returns>
         public IWhere<T, UpdateQuery<T>> Where()
         {
-            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(), _connectionOptions, _columnValues).Where();
+            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(), _statements, _columnValues).Where();
         }
 
         /// <summary>

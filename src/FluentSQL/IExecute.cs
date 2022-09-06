@@ -1,28 +1,18 @@
-﻿using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FluentSQL
+﻿namespace FluentSQL
 {
-    public interface IExecute
-    { 
-        object? Exec();
-
-        object? Exec(DbConnection connection);
+    public interface ISetDatabaseManagement<TResult>
+    {
+        IExecute<TResult, TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment);
     }
 
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    public interface IExecute<TResult> : IExecute
+    public interface IExecute<TResult, TDbConnection>
     {
-        new TResult Exec();
+        TResult Exec();
 
-        new TResult Exec(DbConnection connection);
+        TResult Exec(TDbConnection dbConnection);
     }
 }

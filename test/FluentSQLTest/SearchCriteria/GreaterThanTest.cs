@@ -24,7 +24,7 @@ namespace FluentSQLTest.SearchCriteria
         {
             _statements = new FluentSQL.Default.Statements();
             _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new ConnectionOptions(new FluentSQL.Default.Statements()));
+                new FluentSQL.Default.Statements());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;

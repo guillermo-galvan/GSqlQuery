@@ -1,72 +1,48 @@
 ﻿using FluentSQL.Extensions;
 using FluentSQL.Internal;
-using FluentSQL.Models;
-using System.Data.Common;
 
 namespace FluentSQL
 {
-    public sealed class ContinueExecution<TResult>
+    public sealed class ContinueExecution<TResult, TDbConnection>
     {
-        private readonly ConnectionOptions _connectionOptions;
-        internal readonly ContinueExecutionResult _continueExecutionResult;
+        private readonly IStatements _statements;
+        internal readonly ContinueExecutionResult<TDbConnection> _continueExecutionResult;
+        private readonly IDatabaseManagement<TDbConnection> _databaseManagement;
 
-        internal ContinueExecution(ConnectionOptions connectionOptions, ContinueExecutionResult continueExecution)
+        internal ContinueExecution(IStatements statements, ContinueExecutionResult<TDbConnection> continueExecution, 
+            IDatabaseManagement<TDbConnection> databaseManagement)
         {
-            _connectionOptions = connectionOptions;
+            _statements = statements;
             _continueExecutionResult = continueExecution;
+            _databaseManagement = databaseManagement;
         }
 
-        public ContinueExecution<TNewResult> ContinueWith<TNewResult>(Func<ConnectionOptions, TResult, IExecute<TNewResult>> exec)
+        public ContinueExecution<TNewResult, TDbConnection> ContinueWith<TNewResult>(Func<IStatements, IDatabaseManagement<TDbConnection>, TResult, IExecute<TNewResult, TDbConnection>> exec)
         {
             exec.NullValidate(ErrorMessages.ParameterNotNull, nameof(exec));
-            _continueExecutionResult.Add(new ContinueExecutionResult<TResult, TNewResult>(_connectionOptions, exec));
-            return new ContinueExecution<TNewResult>(_connectionOptions, _continueExecutionResult);
-        }
-
-        private void ValidateDatabaseManagment()
-        {
-            _connectionOptions.DatabaseManagment.ValidateDatabaseManagment();
+            _continueExecutionResult.Add(new ContinueExecutionResult<TDbConnection, TResult, TNewResult>(_statements, exec, _databaseManagement));
+            return new ContinueExecution<TNewResult, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
         }
 
         public TResult? Start()
         {
-            ValidateDatabaseManagment();
-            
-            using DbConnection connection = _connectionOptions.DatabaseManagment.GetConnection();
-
-            if (connection.State == System.Data.ConnectionState.Closed)
+            TDbConnection connection = default;
+            try
             {
-                connection.Open();
+                connection = _databaseManagement.GetConnection();
+                TResult? result = Start(connection);
+                return result;
             }
-
-            TResult? result = Start(connection);
-            connection.Close();
-            return result;
+            finally 
+            {
+                if (connection is IDisposable disposable)
+                { 
+                    disposable.Dispose();
+                }
+            }
         }
 
-        public TResult? StartWithTransaction()
-        {
-            ValidateDatabaseManagment();
-            TResult? result = default;
-            using DbConnection connection = _connectionOptions.DatabaseManagment.GetConnection();
-            if (connection.State == System.Data.ConnectionState.Closed)
-            {
-                connection.Open();
-            }
-            using DbTransaction transaction = connection.BeginTransaction();
-            
-            if (transaction != null && transaction.Connection != null)
-            {
-                result = Start(transaction.Connection);
-                transaction.Commit();
-            }
-
-            
-            connection.Close();
-            return result;
-        }
-
-        public TResult? Start(DbConnection connection)
+        public TResult? Start(TDbConnection connection)
         {
             TResult? result = (TResult?)_continueExecutionResult.Start(connection);            
             return result;

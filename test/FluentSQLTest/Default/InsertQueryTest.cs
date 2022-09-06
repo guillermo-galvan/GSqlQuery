@@ -5,6 +5,7 @@ using FluentSQL.SearchCriteria;
 using FluentSQLTest.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,13 +17,13 @@ namespace FluentSQLTest.Default
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
         private readonly Equal<int> _equal;
-        private readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
         private readonly Test1 _test1;
 
         public InsertQueryTest()
         {
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+            _statements = new FluentSQL.Default.Statements();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -33,14 +34,14 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Properties_cannot_be_null()
         {
-            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1);
+            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
-            Assert.NotNull(query.ConnectionOptions);
+            Assert.NotNull(query.Statements);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
         }
@@ -48,10 +49,10 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, null, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, null));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null, _test1));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, null));
         }
 
         [Fact]
@@ -61,9 +62,9 @@ namespace FluentSQLTest.Default
 
             InsertQuery<Test3> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
-                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test3(0, null, DateTime.Now, true));
-            var result = query.Exec();
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _statements, new Test3(0, null, DateTime.Now, true));
+            var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec();
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -75,9 +76,9 @@ namespace FluentSQLTest.Default
 
             InsertQuery<Test6> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
-                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test6(1, null, DateTime.Now, true));
-            var result = query.Exec();
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _statements, new Test6(1, null, DateTime.Now, true));
+            var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec();
             Assert.NotNull(result);
         }
 
@@ -86,9 +87,10 @@ namespace FluentSQLTest.Default
         {
             InsertQuery<Test1> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 new ColumnAttribute[] { _columnAttribute },
-                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
-                new ConnectionOptions(new FluentSQL.Default.Statements()), new Test6(1, null, DateTime.Now, true));
-            Assert.Throws<ArgumentNullException>(() => query.Exec());
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
+               _statements, new Test6(1, null, DateTime.Now, true));
+            IDatabaseManagement<DbConnection> databaseManagement = null;
+            Assert.Throws<ArgumentNullException>(() => query.SetDatabaseManagement(databaseManagement).Exec());
         }
 
         [Fact]
@@ -98,9 +100,9 @@ namespace FluentSQLTest.Default
 
             InsertQuery<Test3> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
-                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test3(0, null, DateTime.Now, true));
-            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _statements, new Test3(0, null, DateTime.Now, true));
+            var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec(LoadFluentOptions.GetDbConnection());
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -112,9 +114,9 @@ namespace FluentSQLTest.Default
 
             InsertQuery<Test6> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
-                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test6(1, null, DateTime.Now, true));
-            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _statements, new Test6(1, null, DateTime.Now, true));
+            var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec(LoadFluentOptions.GetDbConnection());
             Assert.NotNull(result);
         }
 
@@ -123,9 +125,10 @@ namespace FluentSQLTest.Default
         {
             InsertQuery<Test1> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 new ColumnAttribute[] { _columnAttribute },
-                new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
-                new ConnectionOptions(new FluentSQL.Default.Statements()), new Test6(1, null, DateTime.Now, true));
-            Assert.Throws<ArgumentNullException>(() => query.Exec(LoadFluentOptions.GetDbConnection()));
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
+                _statements, new Test6(1, null, DateTime.Now, true));
+            IDatabaseManagement<DbConnection> databaseManagement = null;
+            Assert.Throws<ArgumentNullException>(() => query.SetDatabaseManagement(databaseManagement).Exec(LoadFluentOptions.GetDbConnection()));
         }
     }
 }

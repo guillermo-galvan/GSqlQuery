@@ -12,18 +12,18 @@ namespace FluentSQLTest.Default
 {
     public class SetTest
     {
-        private readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _stantements;
 
         public SetTest()
         {
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements());
+            _stantements = new FluentSQL.Default.Statements();
         }
 
         [Fact]
         public void Should_initializes_a_new_instance_of_the_Set_class()
         {
             Set<Test1> test = new (new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                _connectionOptions, null);
+                _stantements, null);
 
             Assert.NotNull(test);
             Assert.NotNull(test.ColumnValues);
@@ -36,7 +36,7 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             Set<Test1> test = new(model,new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                _connectionOptions);
+                _stantements);
 
             Assert.NotNull(test);
             Assert.NotNull(test.ColumnValues);
@@ -48,7 +48,7 @@ namespace FluentSQLTest.Default
         public void Should_add_a_new_column_value_with_set_value()
         {
             Set<Test1> test = new(new ClassOptions(typeof(Test1)), new List<string> {nameof(Test1.Name)},
-               _connectionOptions, null);
+               _stantements, null);
 
             test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now);
 
@@ -62,7 +62,7 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             Set<Test1> test = new(model, new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Name) },
-               _connectionOptions);
+               _stantements);
 
             test.Add(x => x.Id).Add(x => x.Create);
 
@@ -74,19 +74,19 @@ namespace FluentSQLTest.Default
         [Fact]
         public void TThrow_exception_if_any_null_parameters_are_passed()
         {
-            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(null, new List<string> { nameof(Test1.Id) }, _connectionOptions, null));
-            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(new ClassOptions(typeof(Test1)), null, _connectionOptions, null));
+            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(null, new List<string> { nameof(Test1.Id) }, _stantements, null));
+            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(new ClassOptions(typeof(Test1)), null, _stantements, null));
             Assert.Throws<ArgumentNullException>(() => new Set<Test1>(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id) }, null, null));
-            Assert.Throws<InvalidOperationException>(() => new Set<Test1>(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id) }, _connectionOptions, null).Add(x => x.Name));
+            Assert.Throws<InvalidOperationException>(() => new Set<Test1>(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id) }, _stantements, null).Add(x => x.Name));
         }
 
         [Fact]
         public void TThrow_exception_if_any_null_parameters_are_passed2()
         {
             Test1 model = new(1, null, DateTime.Now, true);
-            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(null,new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id) }, _connectionOptions));
-            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(model, null, new List<string> { nameof(Test1.Id) }, _connectionOptions));
-            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(model, new ClassOptions(typeof(Test1)), null, _connectionOptions));
+            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(null,new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id) }, _stantements));
+            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(model, null, new List<string> { nameof(Test1.Id) }, _stantements));
+            Assert.Throws<ArgumentNullException>(() => new Set<Test1>(model, new ClassOptions(typeof(Test1)), null, _stantements));
             Assert.Throws<ArgumentNullException>(() => new Set<Test1>(model, new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id) }, null));
         }
 
@@ -95,15 +95,14 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             Set<Test1> test = new(model, new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-               _connectionOptions);
+               _stantements);
             var query =test.Add(x => x.Id).Add(x => x.Create).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.ConnectionOptions);
-            Assert.NotNull(query.ConnectionOptions.Statements);
+            Assert.NotNull(query.Statements);            
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
         }
@@ -111,15 +110,14 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Should_generate_the_query2()
         {
-            Set<Test1> test = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Name) },_connectionOptions, null);
+            Set<Test1> test = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Name) },_stantements, null);
             var query = test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.ConnectionOptions);
-            Assert.NotNull(query.ConnectionOptions.Statements);
+            Assert.NotNull(query.Statements);            
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
         }
@@ -130,7 +128,7 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             Set<Test1> test = new(model, new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-               _connectionOptions);
+               _stantements);
             var where = test.Add(x => x.Id).Add(x => x.Create).Where();
             Assert.NotNull(where);
         }
@@ -138,7 +136,7 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Should_get_the_where_query2()
         {
-            Set<Test1> test = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Name) }, _connectionOptions, null);
+            Set<Test1> test = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Name) }, _stantements, null);
             var where = test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now).Where();
             Assert.NotNull(where);
         }

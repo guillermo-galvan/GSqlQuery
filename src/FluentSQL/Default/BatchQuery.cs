@@ -1,28 +1,25 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.Extensions;
 using System.Data;
-using System.Data.Common;
 
 namespace FluentSQL.Default
 {
-    internal class BatchQuery : Query
+    internal class BatchQuery : QueryBase, ISetDatabaseManagement<int>
     {
         private IEnumerable<IDataParameter> _parameters;
 
-        public BatchQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions,
+        internal IEnumerable<IDataParameter> Parameters => _parameters;
+
+        public BatchQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements,
             IEnumerable<IDataParameter> parameters) 
-            : base(text, columns, criteria, connectionOptions)
+            : base(text, columns, criteria, statements)
         {
             _parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
         }
 
-        public override object? Exec()
+        public IExecute<int, TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment)
         {
-            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, _parameters);
-        }
-
-        public override object? Exec(DbConnection connection)
-        {
-            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, _parameters);
+            databaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(databaseManagment));
+            return new BatchQueryExecute<TDbConnection>(databaseManagment, this);
         }
     }
 }

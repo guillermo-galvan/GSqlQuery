@@ -20,7 +20,7 @@ namespace FluentSQLTest.Default
         {
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
             _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new ConnectionOptions(new FluentSQL.Default.Statements()));
+               new FluentSQL.Default.Statements());
         }
 
         [Fact]

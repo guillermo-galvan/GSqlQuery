@@ -1,13 +1,8 @@
 ﻿using FluentSQL.Helpers;
 using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL.Extensions
 {
@@ -65,7 +60,8 @@ namespace FluentSQL.Extensions
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
         }
 
-        internal static IEnumerable<IDataParameter> GetParameters<T>(this IQuery<T> query) where T : class, new()
+        internal static IEnumerable<IDataParameter> GetParameters<T, TDbConnection>(this IQuery<T> query, 
+            IDatabaseManagement<TDbConnection> databaseManagment) where T : class, new()
         {
             List<ParameterDetail> parameters = new();
             if (query.Criteria != null)
@@ -76,9 +72,7 @@ namespace FluentSQL.Extensions
                 }
             }
 
-#pragma warning disable CS8602 // Possible null reference argument.
-            return query.ConnectionOptions.DatabaseManagment.Events.GetParameter(typeof(T), parameters);
-#pragma warning restore CS8602 // Possible null reference argument.
+            return databaseManagment.Events.GetParameter(typeof(T), parameters);
         }
     }
 }

@@ -19,8 +19,8 @@ namespace FluentSQL.Default
         /// <param name="statements">Statements to build the query</param>
         /// <param name="columnValues">Column values</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions, IDictionary<ColumnAttribute, object?> columnValues) : 
-            base(options, selectMember, connectionOptions, QueryType.Update)
+        public UpdateQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, IDictionary<ColumnAttribute, object?> columnValues) : 
+            base(options, selectMember, statements, QueryType.Update)
         {
             _columnValues = columnValues ?? throw new ArgumentNullException(nameof(columnValues));
             _columns = _columnValues.Keys;
@@ -34,7 +34,7 @@ namespace FluentSQL.Default
             {
                 PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{DateTime.Now.Ticks}";
-                criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, _connectionOptions.Statements)}={paramName}",
+                criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, Statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
             return criteriaDetails;
@@ -52,12 +52,12 @@ namespace FluentSQL.Default
 
             if (_queryType == QueryType.Update)
             {
-                query = string.Format(_connectionOptions.Statements.Update, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)));
+                query = string.Format(Statements.Update, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)));
             }
             else
             {
                 string where = GetCriteria();
-                query = string.Format(_connectionOptions.Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
+                query = string.Format(Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
 #pragma warning disable CS8604 // Possible null reference argument.
                 criteria.AddRange(_criteria);
 #pragma warning restore CS8604 // Possible null reference argument.
@@ -73,7 +73,7 @@ namespace FluentSQL.Default
         /// <returns>UpdateQuery</returns>
         public UpdateQuery<T> Build()
         {
-            return new UpdateQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions);
+            return new UpdateQuery<T>(GenerateQuery(), _columns, _criteria, Statements);
         }
 
         /// <summary>

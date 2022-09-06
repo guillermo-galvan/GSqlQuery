@@ -14,12 +14,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"DELETE FROM TableName;"
+                new FluentSQL.Default.Statements(),"DELETE FROM TableName;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"DELETE FROM [TableName];"
+                new Models.Statements(),"DELETE FROM [TableName];"
             };
         }
 
@@ -32,12 +32,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;"
+                new FluentSQL.Default.Statements(),"DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"DELETE FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] IS NOT NULL;"
+                new Models.Statements(),"DELETE FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] IS NOT NULL;"
             };
         }
 

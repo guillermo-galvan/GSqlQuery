@@ -21,24 +21,20 @@ namespace FluentSQL.Default
         /// <param name="statements">Statements to build the query</param>        
         /// <param name="entity">Entity</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public InsertQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions, object entity)
-            : base(options, selectMember, connectionOptions, QueryType.Insert)
+        public InsertQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, object entity)
+            : base(options, selectMember, statements, QueryType.Insert)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
 
         private string GetInsertQuery()
         {
-            if (_entity == null)
-            {
-                throw new InvalidOperationException(ErrorMessages.EntityNotFound);
-            }
             List<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
             CriteriaDetail criteriaDetail = new(string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
             _criteria = new CriteriaDetail[] { criteriaDetail };
             string text = _includeAutoIncrementing ? 
-                $"{string.Format(_connectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart)} {ConnectionOptions.Statements.ValueAutoIncrementingQuery}"
-                : string.Format(_connectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
+                $"{string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart)} {Statements.ValueAutoIncrementingQuery}"
+                : string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
 
             return text;
         }
@@ -46,7 +42,7 @@ namespace FluentSQL.Default
         private (string columnName, ParameterDetail parameterDetail) GetParameterValue(ColumnAttribute column)
         {
             PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
-            return (column.GetColumnName(_tableName, _connectionOptions.Statements), new ParameterDetail($"@PI{DateTime.Now.Ticks}", options.GetValue(_entity), options));
+            return (column.GetColumnName(_tableName, Statements), new ParameterDetail($"@PI{DateTime.Now.Ticks}", options.GetValue(_entity), options));
         }
 
         private List<(string columnName, ParameterDetail parameterDetail)> GetValues()
@@ -72,7 +68,7 @@ namespace FluentSQL.Default
         /// </summary>
         public InsertQuery<T> Build()
         {
-            return new InsertQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions, _entity);
+            return new InsertQuery<T>(GenerateQuery(), _columns, _criteria, Statements, _entity);
         }
        
         protected override string GenerateQuery()

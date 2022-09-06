@@ -37,7 +37,7 @@ namespace FluentSQL.Default
         /// <returns>Criteria detail enumerable</returns>
         public override IEnumerable<CriteriaDetail> BuildCriteria()
         {
-            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.ConnectionOptions.Statements, _classOptions.PropertyOptions)).ToArray();
+            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.Statements, _classOptions.PropertyOptions)).ToArray();
         }
     }
 }

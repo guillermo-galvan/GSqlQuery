@@ -5,6 +5,7 @@ using FluentSQL.SearchCriteria;
 using FluentSQLTest.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,12 +17,12 @@ namespace FluentSQLTest.Default
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
         private readonly Equal<int> _equal;
-        private readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
 
         public DeleteQueryTest()
         {
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+            _statements = new FluentSQL.Default.Statements();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -31,7 +32,7 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Properties_cannot_be_null()
         {
-            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -40,16 +41,15 @@ namespace FluentSQLTest.Default
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
-            Assert.NotNull(query.ConnectionOptions);
-            Assert.NotNull(query.ConnectionOptions.Statements);
+            Assert.NotNull(query.Statements);
         }
 
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
-            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, null));
-            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions));
+            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements));
+            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null));
+            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements));
         }
 
         [Fact]
@@ -58,9 +58,9 @@ namespace FluentSQLTest.Default
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             DeleteQuery<Test3> query = new("DELETE FROM [TableName];",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
-                _connectionOptions);
-            var result = query.Exec();
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _statements);
+            var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec();
             Assert.Equal(1, result);
         }
 
@@ -68,18 +68,21 @@ namespace FluentSQLTest.Default
         public void Throw_exception_if_DatabaseManagment_not_found()
         {
             DeleteQuery<Test1> query = new("DELETE FROM [TableName];",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
-                new ConnectionOptions(new FluentSQL.Default.Statements()));
-            Assert.Throws<ArgumentNullException>(() => query.Exec());
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
+                new FluentSQL.Default.Statements());
+            IDatabaseManagement<DbConnection> databaseManagement = null;
+            Assert.Throws<ArgumentNullException>(() => query.SetDatabaseManagement(databaseManagement).Exec());
         }
 
         [Fact]
         public void Throw_exception_if_DatabaseManagment_not_found2()
         {
             DeleteQuery<Test1> query = new("DELETE FROM [TableName];",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) },
-                new ConnectionOptions(new FluentSQL.Default.Statements()));
-            Assert.Throws<ArgumentNullException>(() => query.Exec(LoadFluentOptions.GetDbConnection()));
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
+                new FluentSQL.Default.Statements());
+            IDatabaseManagement<DbConnection> databaseManagement = null;
+            Assert.Throws<ArgumentNullException>(() => query.SetDatabaseManagement(databaseManagement)
+                                                            .Exec(LoadFluentOptions.GetDbConnection()));
         }
 
         [Fact]
@@ -88,9 +91,9 @@ namespace FluentSQLTest.Default
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             DeleteQuery<Test3> query = new("DELETE FROM [TableName];",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, classOption.PropertyOptions) },
-                _connectionOptions);
-            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _statements);
+            var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec(LoadFluentOptions.GetDbConnection());
             Assert.Equal(1, result);
         }
     }

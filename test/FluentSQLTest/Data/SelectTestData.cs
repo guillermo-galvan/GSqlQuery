@@ -15,12 +15,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[] 
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;"
+                new FluentSQL.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests] FROM [TableName];"
+                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests] FROM [TableName];"
             };
         }
 
@@ -33,12 +33,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
+               new FluentSQL.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName];"
+                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName];"
             };
         }
 
@@ -51,12 +51,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
+                new FluentSQL.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;"
+                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;"
             };
         }
 
@@ -69,12 +69,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
+                new FluentSQL.Default.Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];"
+                new Models.Statements(),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];"
             };
         }
 
@@ -87,12 +87,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
+               new FluentSQL.Default.Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create] FROM [Test1];"
+                new Models.Statements(),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create] FROM [Test1];"
             };
         }
 
@@ -105,12 +105,12 @@ namespace FluentSQLTest.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions(new FluentSQL.Default.Statements()),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
+                new FluentSQL.Default.Statements(),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions(new Models.Statements()),"SELECT [Scheme].[TableName].[Id],[Scheme].[TableName].[Name],[Scheme].[TableName].[Create],[Scheme].[TableName].[IsTests] FROM [Scheme].[TableName];"
+                new Models.Statements(),"SELECT [Scheme].[TableName].[Id],[Scheme].[TableName].[Name],[Scheme].[TableName].[Create],[Scheme].[TableName].[IsTests] FROM [Scheme].[TableName];"
             };
         }
 

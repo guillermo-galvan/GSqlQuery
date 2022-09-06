@@ -11,18 +11,24 @@ namespace FluentSQL
     /// <summary>
     /// 
     /// </summary>
-    public abstract class DatabaseManagment : IDatabaseManagment
+    public abstract class DatabaseManagment<TDbConnection> : IDatabaseManagement<TDbConnection> where TDbConnection : DbConnection
     {
         protected readonly string _connectionString;
         protected ILogger? _logger;
 
-        public DatabaseManagmentEvents? Events { get; set; }
+        public DatabaseManagmentEvents Events { get; set; }
 
         public string ConnectionString => _connectionString;
 
-        public DatabaseManagment(string connectionString, ILogger? logger) : this(connectionString)
+        public DatabaseManagment(string connectionString) : this(connectionString, null, null)
         {
-            _logger = logger;
+
+        }
+
+        public DatabaseManagment(string connectionString, DatabaseManagmentEvents? events)
+                : this(connectionString, events, null)
+        {
+
         }
 
         /// <summary>
@@ -30,10 +36,13 @@ namespace FluentSQL
         /// </summary>
         /// <param name="connectionString"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DatabaseManagment(string connectionString)
+        public DatabaseManagment(string connectionString, DatabaseManagmentEvents? events, ILogger? logger)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            Events = events ?? throw new ArgumentNullException(nameof(events));
+            _logger = logger;
         }
+
 
         /// <summary>
         /// 
@@ -89,7 +98,7 @@ namespace FluentSQL
             };
         }
 
-        public abstract DbConnection GetConnection();
+        public abstract TDbConnection GetConnection();
 
         /// <summary>
         /// 
@@ -122,13 +131,11 @@ namespace FluentSQL
         /// <returns></returns>
         public abstract object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type result);
 
-        public abstract IEnumerable<T> ExecuteReader<T>(DbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
+        public abstract IEnumerable<T> ExecuteReader<T>(TDbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
             IEnumerable<IDataParameter> parameters) where T : class, new();
 
+        public abstract int ExecuteNonQuery(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
-        public abstract int ExecuteNonQuery(DbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
-
-
-        public abstract object ExecuteScalar(DbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, Type result);
+        public abstract object ExecuteScalar(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, Type result);
     }
 }

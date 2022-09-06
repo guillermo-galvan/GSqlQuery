@@ -2,12 +2,6 @@
 using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL
 {
@@ -22,11 +16,11 @@ namespace FluentSQL
         /// </summary>
         /// <param name="key">The name of the statement collection</param>
         /// <returns>Instance of IQueryBuilder</returns>
-        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete(ConnectionOptions connectionOptions)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete(IStatements statements)
         {
-            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new DeleteQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), connectionOptions);
+            return new DeleteQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), statements);
         }
     }
 }

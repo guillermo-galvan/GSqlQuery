@@ -6,7 +6,7 @@ namespace FluentSQL.Default
     internal abstract class QueryBuilderBase
     {
         protected readonly ClassOptions _options;
-        protected readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _statements;
         protected IEnumerable<ColumnAttribute> _columns;
         protected QueryType _queryType;
         protected readonly string _tableName;
@@ -14,16 +14,16 @@ namespace FluentSQL.Default
         /// <summary>
         /// Statements to use in the query
         /// </summary>
-        public ConnectionOptions ConnectionOptions => _connectionOptions;
+        public IStatements Statements => _statements;
 
-        public QueryBuilderBase(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions, QueryType queryType)
+        public QueryBuilderBase(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, QueryType queryType)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
             _columns = _options.GetColumnsQuery(selectMember);
             _queryType = queryType;
-            _tableName = _options.Table.GetTableName(_connectionOptions.Statements);
+            _tableName = _options.Table.GetTableName(_statements);
         }
 
         protected void ChangeQueryType()

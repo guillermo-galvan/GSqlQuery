@@ -4,14 +4,15 @@ namespace FluentSQL
 {
     public class Execute
     {
-        public static ContinuousExecution ContinuousExecutionFactory(ConnectionOptions connectionOptions)
+        public static ContinuousExecution<TDbConnection> ContinuousExecutionFactory<TDbConnection>(IStatements statements, 
+            IDatabaseManagement<TDbConnection> databaseManagement)
         {
-            return new ContinuousExecution(connectionOptions);
+            return new ContinuousExecution<TDbConnection>(statements, databaseManagement);
         }
 
-        public static BatchExecute BatchExecuteFactory(ConnectionOptions connectionOptions)
+        public static BatchExecute<TDbConnection> BatchExecuteFactory<TDbConnection>(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagement)
         {
-            return new BatchExecute(connectionOptions);
+            return new BatchExecute<TDbConnection>(statements, databaseManagement);
         }
     }
 }

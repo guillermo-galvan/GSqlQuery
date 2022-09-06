@@ -1,10 +1,4 @@
 ﻿using FluentSQL.Extensions;
-using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL.Default
 {
@@ -12,8 +6,9 @@ namespace FluentSQL.Default
     {
         private readonly IEnumerable<ColumnAttribute> _columns;
         private readonly IEnumerable<CriteriaDetail>? _criteria;
-        private readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _statements;
         private string _text;
+        
 
         public string Text { get => _text; set => _text = value; }
 
@@ -21,12 +16,12 @@ namespace FluentSQL.Default
 
         public IEnumerable<CriteriaDetail>? Criteria => _criteria;
 
-        public ConnectionOptions ConnectionOptions => _connectionOptions;
+        public IStatements Statements => _statements;
 
-        public QueryBase(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions)
+        public QueryBase(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements)
         {
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));
-            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
             text.NullValidate("", nameof(text));
             _text = text;
             _criteria = criteria;

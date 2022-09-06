@@ -1,7 +1,4 @@
 ﻿using FluentSQL.Extensions;
-using FluentSQL.Helpers;
-using FluentSQL.Models;
-using System.Data.Common;
 
 namespace FluentSQL.Default
 {
@@ -9,7 +6,7 @@ namespace FluentSQL.Default
     /// Insert Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class InsertQuery<T> : Query<T,T> , IExecute<T> where T : class, new()
+    public class InsertQuery<T> : Query<T> , ISetDatabaseManagement<T> where T : class, new()
     {
         public object Entity { get; }
 
@@ -21,67 +18,16 @@ namespace FluentSQL.Default
         /// <param name="criteria">Query criteria</param>
         /// <param name="statements">Statements to use in the query</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions connectionOptions, object entity)
-            : base(text, columns, criteria, connectionOptions)
+        public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements, object entity)
+            : base(text, columns, criteria, statements)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
 
-        private void InsertAutoIncrementing(DbConnection? connection = null)
+        public IExecute<T, TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment)
         {
-            var classOptions = GetClassOptions();
-            var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
-            var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);            
-
-            object idResult;
-            if (connection == null)
-            {
-                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(this, this.GetParameters(), 
-                    propertyOptions.PropertyInfo.PropertyType);
-            }
-            else
-            {
-                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(connection, this, this.GetParameters(), 
-                    propertyOptions.PropertyInfo.PropertyType);
-            }
-            
-            propertyOptions.PropertyInfo.SetValue(Entity, idResult);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override T Exec()
-        {
-            ValidateDbManagment();
-
-            if (Columns.Any(x => x.IsAutoIncrementing))
-            {
-                InsertAutoIncrementing();
-            }
-            else
-            {
-                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, this.GetParameters());
-            }
-
-            return (T)Entity;
-        }
-
-        public override T Exec(DbConnection connection)
-        {
-            ValidateDbManagment();
-
-            if (Columns.Any(x => x.IsAutoIncrementing))
-            {
-                InsertAutoIncrementing(connection);
-            }
-            else
-            {
-                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(connection,this, this.GetParameters());
-            }
-
-            return (T)Entity;
+            databaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(databaseManagment));
+            return new InsertExecute<TDbConnection, T>(databaseManagment, this);
         }
     }
 }

@@ -18,12 +18,12 @@ namespace FluentSQLTest.Extensions
         private readonly ColumnAttribute _columnAttribute;        
         private readonly TableAttribute _tableAttribute;
         private readonly Equal<int> _equal;
-        private readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _stantements;
         private readonly ClassOptions _classOptions;
 
         public GeneralExtensionTest()
         {
-            _connectionOptions = new ConnectionOptions(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+            _stantements = new FluentSQL.Default.Statements();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -100,8 +100,8 @@ namespace FluentSQLTest.Extensions
         [Fact]
         public void Should_get_parameters_in_delete_query()
         {
-            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            var result = query.GetParameters();
+            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
+            var result = query.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -111,8 +111,8 @@ namespace FluentSQLTest.Extensions
         [Fact]
         public void Should_get_parameters_in_select_query()
         {
-            SelectQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            var result = query.GetParameters();
+            SelectQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
+            var result = query.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -122,8 +122,8 @@ namespace FluentSQLTest.Extensions
         [Fact]
         public void Should_get_parameters_in_update_query()
         {
-            UpdateQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            var result = query.GetParameters();
+            UpdateQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
+            var result = query.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -133,8 +133,8 @@ namespace FluentSQLTest.Extensions
         [Fact]
         public void Should_get_parameters_in_insert_query()
         {
-            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_connectionOptions.Statements, _classOptions.PropertyOptions) }, _connectionOptions, new Test1());
-            var result = query.GetParameters();
+            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements, new Test1());
+            var result = query.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

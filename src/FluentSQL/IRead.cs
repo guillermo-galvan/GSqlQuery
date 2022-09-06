@@ -3,7 +3,6 @@ using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace FluentSQL
 {
@@ -23,12 +22,12 @@ namespace FluentSQL
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(ConnectionOptions connectionOptions, Expression<Func<T, TProperties>> expression)
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
         {
-            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Select(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new SelectQueryBuilder<T>(options, memberInfos.Select(x => x.Name), connectionOptions);
+            return new SelectQueryBuilder<T>(options, memberInfos.Select(x => x.Name), statements);
         }
 
         /// <summary>
@@ -38,11 +37,11 @@ namespace FluentSQL
         /// <returns>Instance of IQueryBuilder with which to create the query</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select(ConnectionOptions connectionOptions)
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select(IStatements statements)
         {
-            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new SelectQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), connectionOptions);
+            return new SelectQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), statements);
         }
     }
 }

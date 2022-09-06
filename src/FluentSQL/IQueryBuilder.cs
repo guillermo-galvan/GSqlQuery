@@ -11,7 +11,7 @@ namespace FluentSQL
         /// <summary>
         /// Statements to use in the query
         /// </summary>
-        ConnectionOptions ConnectionOptions { get; }
+        IStatements Statements { get; }
 
         /// <summary>
         /// Build Query

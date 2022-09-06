@@ -18,9 +18,9 @@ namespace FluentSQL
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(ConnectionOptions connectionOptions, Expression<Func<T, TProperties>> expression)
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
         {
-            return IRead<T>.Select(connectionOptions, expression);
+            return IRead<T>.Select(statements, expression);
         }
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace FluentSQL
         /// <returns>Instance of IQueryBuilder with which to create the query</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select(ConnectionOptions connectionOptions)
+        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select(IStatements statements)
         {
-            return IRead<T>.Select(connectionOptions);
+            return IRead<T>.Select(statements);
         }
 
         /// <summary>
@@ -40,11 +40,11 @@ namespace FluentSQL
         /// </summary>
         /// <param name="key">The name of the statement collection</param>        
         /// <returns>Instance of IQuery</returns>
-        public InsertQuery<T> Insert(ConnectionOptions connectionOptions)
+        public InsertQuery<T> Insert(IStatements statements)
         {
-            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new InsertQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), connectionOptions, this).Build();
+            return new InsertQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), statements, this).Build();
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace FluentSQL
         /// <returns>Instance of ISet</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public static ISet<T, UpdateQuery<T>> Update<TProperties>(ConnectionOptions connectionOptions, Expression<Func<T, TProperties>> expression, TProperties value)
+        public static ISet<T, UpdateQuery<T>> Update<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression, TProperties value)
         { 
-            return IUpdate<T>.Update(connectionOptions, expression, value);
+            return IUpdate<T>.Update(statements, expression, value);
         }
 
         /// <summary>
@@ -68,12 +68,12 @@ namespace FluentSQL
         /// <param name="key">The name of the statement collection</param>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T, UpdateQuery<T>> Update<TProperties>(ConnectionOptions connectionOptions, Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>> Update<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
         {
-            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Update(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Update(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new Set<T>(this,options, memberInfos.Select(x => x.Name), connectionOptions);
+            return new Set<T>(this,options, memberInfos.Select(x => x.Name), statements);
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace FluentSQL
         /// </summary>
         /// <param name="key">The name of the statement collection</param>
         /// <returns>Instance of IQueryBuilder</returns>
-        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete(ConnectionOptions connectionOptions)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete(IStatements statements)
         {
-            return IDelete<T>.Delete(connectionOptions);
+            return IDelete<T>.Delete(statements);
         }
     }
 }

@@ -7,8 +7,8 @@ namespace FluentSQL.Default
         protected IEnumerable<CriteriaDetail>? _criteria = null;
         protected IAndOr<T, TReturn>? _andOr;
 
-        protected QueryBuilderWithCriteria(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions, QueryType queryType) :
-            base(options, selectMember, connectionOptions, queryType)
+        protected QueryBuilderWithCriteria(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, QueryType queryType) :
+            base(options, selectMember, statements, queryType)
         { }
 
         protected string GetCriteria()

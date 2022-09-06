@@ -19,8 +19,8 @@ namespace FluentSQL.Default
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="statements">Statements to build the query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, ConnectionOptions connectionOptions)
-            : base(options, selectMember, connectionOptions, QueryType.Select)
+        public SelectQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements)
+            : base(options, selectMember, statements, QueryType.Select)
         {   
         }
 
@@ -30,14 +30,14 @@ namespace FluentSQL.Default
 
             if (_queryType == QueryType.Select)
             {
-                result = string.Format(_connectionOptions.Statements.Select, 
-                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, _connectionOptions.Statements))), 
+                result = string.Format(Statements.Select, 
+                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, Statements))), 
                     _tableName);
             }
             else if (_queryType == QueryType.SelectWhere)
             {
-                result = string.Format(_connectionOptions.Statements.SelectWhere, 
-                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, _connectionOptions.Statements))), 
+                result = string.Format(Statements.SelectWhere, 
+                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, Statements))), 
                     _tableName, GetCriteria());
             }
 
@@ -50,7 +50,7 @@ namespace FluentSQL.Default
         /// <returns>SelectQuery</returns>
         public virtual SelectQuery<T> Build()
         {
-            return new SelectQuery<T>(GenerateQuery(), _columns, _criteria, _connectionOptions);
+            return new SelectQuery<T>(GenerateQuery(), _columns, _criteria, Statements);
         }
 
         /// <summary>

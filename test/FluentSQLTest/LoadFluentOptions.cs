@@ -15,9 +15,9 @@ namespace FluentSQLTest
 {
     internal static class LoadFluentOptions
     {
-        public static IDatabaseManagment GetDatabaseManagmentMock()
+        public static IDatabaseManagement<DbConnection> GetDatabaseManagmentMock()
         {
-            Mock<IDatabaseManagment> mock = new();
+            Mock<IDatabaseManagement<DbConnection>> mock = new();
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.ExecuteReader(It.IsAny<SelectQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))

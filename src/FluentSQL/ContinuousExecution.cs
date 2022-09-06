@@ -1,22 +1,23 @@
-﻿using FluentSQL.Extensions;
-using FluentSQL.Internal;
-using FluentSQL.Models;
+﻿using FluentSQL.Internal;
 
 namespace FluentSQL
 {
-    public sealed class ContinuousExecution
+    public sealed class ContinuousExecution<TDbConnection>
     {
-        public readonly ConnectionOptions _connectionOptions;
+        private readonly IStatements _statements;
+        private readonly IDatabaseManagement<TDbConnection> _databaseManagement;
 
-        public ContinuousExecution(ConnectionOptions connectionOptions)
+        public ContinuousExecution(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagement)
         {
-            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
-            connectionOptions.DatabaseManagment.ValidateDatabaseManagment();
+            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
+            _databaseManagement = databaseManagement ?? throw new ArgumentNullException(nameof(databaseManagement));
         }
 
-        public ContinueExecution<TResult> New<TResult>(Func<ConnectionOptions, IExecute<TResult>> query)
+        public ContinueExecution<TResult, TDbConnection> New<TResult>(
+            Func<IStatements,IDatabaseManagement<TDbConnection>, IExecute<TResult, TDbConnection>> query)
         {
-            return new ContinueExecution<TResult>(_connectionOptions, new ContinueExecutionResult<TResult, TResult>(_connectionOptions, query));
+            return new ContinueExecution<TResult, TDbConnection>(_statements, 
+                new ContinueExecutionResult<TDbConnection, TResult, TResult>(_statements, query, _databaseManagement), _databaseManagement);
         }
     }
 }
