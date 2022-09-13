@@ -61,7 +61,7 @@ namespace FluentSQL.SearchCriteria
             _searchCriterias.Add(criteria);
         }
 
-        IEnumerable<CriteriaDetail> ISearchCriteriaBuilder.BuildCriteria()
+        IEnumerable<CriteriaDetail> ISearchCriteriaBuilder.BuildCriteria(IStatements statements)
         {
             throw new NotImplementedException();
         }

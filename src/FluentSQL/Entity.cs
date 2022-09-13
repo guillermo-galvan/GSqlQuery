@@ -42,9 +42,8 @@ namespace FluentSQL
         /// <returns>Instance of IQuery</returns>
         public InsertQuery<T> Insert(IStatements statements)
         {
-            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new InsertQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), statements, this).Build();
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));            
+            return new InsertQueryBuilder<T>(statements, this).Build();
         }
 
         /// <summary>
@@ -73,7 +72,7 @@ namespace FluentSQL
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Update(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Update(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new Set<T>(this,options, memberInfos.Select(x => x.Name), statements);
+            return new Set<T>(this,memberInfos.Select(x => x.Name), statements);
         }
 
         /// <summary>

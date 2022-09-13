@@ -1,6 +1,7 @@
 ﻿using FluentSQL.Models;
 using System.Runtime.CompilerServices;
 using FluentSQL.Extensions;
+using FluentSQL.Helpers;
 
 [assembly: InternalsVisibleTo("FluentSQLTest")]
 
@@ -19,9 +20,11 @@ namespace FluentSQL.Default
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="statements">Statements to build the query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements)
-            : base(options, selectMember, statements, QueryType.Select)
-        {   
+        public SelectQueryBuilder(IEnumerable<string> selectMember, IStatements statements)
+            : base(statements, QueryType.Select)
+        {
+            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
+            Columns = ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember);
         }
 
         protected override string GenerateQuery()
@@ -31,13 +34,13 @@ namespace FluentSQL.Default
             if (_queryType == QueryType.Select)
             {
                 result = string.Format(Statements.Select, 
-                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, Statements))), 
+                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, Statements))), 
                     _tableName);
             }
             else if (_queryType == QueryType.SelectWhere)
             {
                 result = string.Format(Statements.SelectWhere, 
-                    string.Join(",", _columns.Select(x => x.GetColumnName(_tableName, Statements))), 
+                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, Statements))), 
                     _tableName, GetCriteria());
             }
 
@@ -50,7 +53,7 @@ namespace FluentSQL.Default
         /// <returns>SelectQuery</returns>
         public virtual SelectQuery<T> Build()
         {
-            return new SelectQuery<T>(GenerateQuery(), _columns, _criteria, Statements);
+            return new SelectQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
 
         /// <summary>

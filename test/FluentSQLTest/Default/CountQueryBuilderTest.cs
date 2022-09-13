@@ -1,5 +1,5 @@
 ﻿using FluentSQL.Default;
-using FluentSQL.Models;
+using FluentSQL.Extensions;
 using FluentSQLTest.Models;
 using System;
 using System.Collections.Generic;
@@ -9,14 +9,15 @@ using System.Threading.Tasks;
 
 namespace FluentSQLTest.Default
 {
-    public class SelectQueryBuilderTest
+    public class CountQueryBuilderTest
     {
         private readonly IStatements _stantements;
 
-        public SelectQueryBuilderTest()
+        public CountQueryBuilderTest()
         {
             _stantements = new FluentSQL.Default.Statements();
         }
+
 
         [Fact]
         public void Properties_cannot_be_null()
@@ -24,17 +25,20 @@ namespace FluentSQLTest.Default
             SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _stantements);
 
-            Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.Statements);
-            Assert.NotNull(queryBuilder.Columns);
-            Assert.NotEmpty(queryBuilder.Columns);
+            var result = queryBuilder.Count();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Statements);
+            Assert.NotNull(result.Columns);
+            Assert.NotEmpty(result.Columns);
+            Assert.Equal(queryBuilder.Columns.Count(),result.Columns.Count());
         }
 
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(null, _stantements));
-            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, null));
+            SelectQueryBuilder<Test1> queryBuilder = null;
+            Assert.Throws<ArgumentNullException>(() => queryBuilder.Count());
         }
 
         [Fact]
@@ -42,16 +46,18 @@ namespace FluentSQLTest.Default
         {
             SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _stantements);
-            IWhere<Test1, SelectQuery<Test1>> where = queryBuilder.Where();
+            var result = queryBuilder.Count();
+            IWhere<Test1, CountQuery<Test1>> where = result.Where();
             Assert.NotNull(where);
         }
 
         [Fact]
-        public void Should_return_an_delete_query()
+        public void Should_return_an_count_query()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id) },
                 _stantements);
-            IQuery<Test1> query = queryBuilder.Build();
+            var result = queryBuilder.Count();
+            IQuery<Test1> query = result.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);

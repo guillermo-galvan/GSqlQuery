@@ -21,25 +21,25 @@ namespace FluentSQLTest.Default
         [Fact]
         public void Properties_cannot_be_null()
         {
-            InsertQueryBuilder<Test3> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) }, _statements, new Test3(1, null, DateTime.Now, true));
+            InsertQueryBuilder<Test3> queryBuilder = new(_statements, new Test3(1, null, DateTime.Now, true));
 
             Assert.NotNull(queryBuilder);
             Assert.NotNull(queryBuilder.Statements);
+            Assert.NotNull(queryBuilder.Columns);
+            Assert.NotEmpty(queryBuilder.Columns);
         }
 
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new InsertQueryBuilder<Test1>(null, new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) }, _statements, new Test3(1, null, DateTime.Now, true)));
-            Assert.Throws<ArgumentNullException>(() => new InsertQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), null, _statements, new Test3(1, null, DateTime.Now, true)));
-            Assert.Throws<ArgumentNullException>(() => new InsertQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) }, null, new Test3(1, null, DateTime.Now, true)));
-            Assert.Throws<ArgumentNullException>(() => new InsertQueryBuilder<Test1>(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) }, _statements, null));
+            Assert.Throws<ArgumentNullException>(() => new InsertQueryBuilder<Test1>( null, new Test3(1, null, DateTime.Now, true)));
+            Assert.Throws<ArgumentNullException>(() => new InsertQueryBuilder<Test1>( _statements, null));
         }
 
         [Fact]
         public void Should_return_an_insert_query()
         {
-            InsertQueryBuilder<Test1> queryBuilder = new(new ClassOptions(typeof(Test3)), new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates), nameof(Test3.Creates) }, _statements, new Test3(1, null, DateTime.Now, true));
+            InsertQueryBuilder<Test1> queryBuilder = new(_statements, new Test1(1, null, DateTime.Now, true));
             IQuery<Test1> query = queryBuilder.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);

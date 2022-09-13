@@ -15,6 +15,6 @@
         /// Build the criteria
         /// </summary>
         /// <returns>Criteria detail enumerable</returns>
-        internal IEnumerable<CriteriaDetail> BuildCriteria();
+        public IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements);
     }
 }

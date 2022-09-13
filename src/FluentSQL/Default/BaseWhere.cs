@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Extensions;
+using FluentSQL.Helpers;
 using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
 
@@ -7,15 +8,15 @@ namespace FluentSQL.Default
     /// <summary>
     /// Where
     /// </summary>
-    internal abstract class BaseWhere : ISearchCriteriaBuilder 
+    public abstract class BaseWhere : ISearchCriteriaBuilder 
     {
         protected readonly List<ISearchCriteria> _searchCriterias = new();
 
-        protected readonly ClassOptions _classOptions;
+        public IEnumerable<PropertyOptions> Columns { get; protected set; }
 
-        public BaseWhere(ClassOptions classOptions)
+        public BaseWhere(IEnumerable<PropertyOptions> columns)
         {
-            _classOptions = classOptions;
+            Columns = columns;
         }
 
         /// <summary>
@@ -32,6 +33,16 @@ namespace FluentSQL.Default
         /// Build the criteria
         /// </summary>
         /// <returns>Criteria detail enumerable</returns>
-        public abstract IEnumerable<CriteriaDetail> BuildCriteria();
+        public virtual IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
+        {
+            return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
+        }
+    }
+
+    public abstract class BaseWhere<T> : BaseWhere where T : class, new()
+    {
+        protected BaseWhere() : base(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions)
+        {
+        }
     }
 }

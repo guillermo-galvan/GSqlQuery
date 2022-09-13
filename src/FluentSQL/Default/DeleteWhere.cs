@@ -7,7 +7,7 @@ namespace FluentSQL.Default
     /// Delete where
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class DeleteWhere<T> : BaseWhere, ISearchCriteriaBuilder, IWhere<T, DeleteQuery<T>>, IAndOr<T, DeleteQuery<T>> where T : class, new()
+    internal class DeleteWhere<T> : BaseWhere<T>, ISearchCriteriaBuilder, IWhere<T, DeleteQuery<T>>, IAndOr<T, DeleteQuery<T>> where T : class, new()
     {
         private readonly DeleteQueryBuilder<T> _queryBuilder;
 
@@ -17,7 +17,7 @@ namespace FluentSQL.Default
         /// <param name="queryBuilder">DeleteQueryBuilder</param>
         /// <exception cref="ArgumentNullException"></exception>
 
-        public DeleteWhere(DeleteQueryBuilder<T> queryBuilder) : base(ClassOptionsFactory.GetClassOptions(typeof(T)))
+        public DeleteWhere(DeleteQueryBuilder<T> queryBuilder) : base()
         {
             _queryBuilder = queryBuilder ?? throw new ArgumentNullException(nameof(queryBuilder));
         }
@@ -35,9 +35,9 @@ namespace FluentSQL.Default
         /// Build the criteria
         /// </summary>
         /// <returns>Criteria detail enumerable</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria()
+        public override IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
         {
-            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.Statements, _classOptions.PropertyOptions)).ToArray();
+            return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
         }
     }
 }

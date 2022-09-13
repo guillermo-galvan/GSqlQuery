@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Extensions;
+using FluentSQL.Helpers;
 using FluentSQL.Models;
 using System.Linq.Expressions;
 
@@ -10,8 +11,7 @@ namespace FluentSQL.Default
     /// <typeparam name="T">The type of object from which the query is generated</typeparam>
     internal class Set<T> : ISet<T, UpdateQuery<T>> where T : class, new()
     {
-        private readonly Dictionary<ColumnAttribute, object?> _columnValues;
-        private readonly ClassOptions _options;
+        private readonly Dictionary<ColumnAttribute, object?> _columnValues;        
         private readonly IStatements _statements;
         private readonly object? _entity;
 
@@ -20,26 +20,24 @@ namespace FluentSQL.Default
         /// </summary>
         public IDictionary<ColumnAttribute, object?> ColumnValues => _columnValues;
 
-        public Set(ClassOptions options,IEnumerable<string> selectMember, IStatements statements, object? value)
+        public Set(IEnumerable<string> selectMember, IStatements statements, object? value)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
             selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            _columnValues = new Dictionary<ColumnAttribute, object?>();
-            foreach (ColumnAttribute item in _options.GetColumnsQuery(selectMember))
+            _columnValues = new Dictionary<ColumnAttribute, object?>();            
+            foreach (ColumnAttribute item in ClassOptionsFactory.GetClassOptions(typeof(T)).GetColumnsQuery(selectMember))
             {
                 _columnValues.Add(item, value);
             };
         }
 
-        public Set(object? entity,ClassOptions options, IEnumerable<string> selectMember, IStatements statements)
+        public Set(object? entity, IEnumerable<string> selectMember, IStatements statements)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
             selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));
             _columnValues = new Dictionary<ColumnAttribute, object?>();
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
-            foreach (var item in from prop in _options.PropertyOptions
+            foreach (var item in from prop in ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions
                                  join sel in selectMember on prop.PropertyInfo.Name equals sel
                                  select new { prop.ColumnAttribute , prop.PropertyInfo})
             {
@@ -53,7 +51,7 @@ namespace FluentSQL.Default
         /// <returns>Implementation of the IQuery interface</returns>
         public UpdateQuery<T> Build()
         {
-            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(), _statements,  _columnValues).Build();
+            return new UpdateQueryBuilder<T>(_statements,  _columnValues).Build();
         }
 
         /// <summary>
@@ -62,7 +60,7 @@ namespace FluentSQL.Default
         /// <returns>Implementation of the IWhere interface</returns>
         public IWhere<T, UpdateQuery<T>> Where()
         {
-            return new UpdateQueryBuilder<T>(_options, Enumerable.Empty<string>(), _statements, _columnValues).Where();
+            return new UpdateQueryBuilder<T>( _statements, _columnValues).Where();
         }
 
         /// <summary>

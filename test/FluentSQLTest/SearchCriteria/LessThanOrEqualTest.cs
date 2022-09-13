@@ -23,7 +23,7 @@ namespace FluentSQLTest.SearchCriteria
         public LessThanOrEqualTest()
         {
             _statements = new FluentSQL.Default.Statements();
-            _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            _queryBuilder = new( new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new FluentSQL.Default.Statements());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
@@ -89,7 +89,7 @@ namespace FluentSQLTest.SearchCriteria
             SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.LessThanOrEqual(x => x.Id, 1);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -101,7 +101,7 @@ namespace FluentSQLTest.SearchCriteria
             SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.LessThanOrEqual(x => x.Id, 1).AndLessThanOrEqual(x => x.IsTest, true);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -113,7 +113,7 @@ namespace FluentSQLTest.SearchCriteria
             SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.LessThanOrEqual(x => x.Id, 1).OrLessThanOrEqual(x => x.IsTest, true);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

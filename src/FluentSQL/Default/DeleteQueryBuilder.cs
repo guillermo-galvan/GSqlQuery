@@ -12,11 +12,10 @@ namespace FluentSQL.Default
         /// Initializes a new instance of the DeleteQueryBuilder class.
         /// </summary>
         /// <param name="options">Detail of the class to transform</param>
-        /// <param name="selectMember">Selected Member Set</param>
-        /// <param name="statements">Statements to build the query</param>        
+        /// <param name="statements">Statements to build the query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DeleteQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements)
-            : base(options, selectMember, statements, QueryType.Delete)
+        public DeleteQueryBuilder(IStatements statements)
+            : base( statements, QueryType.Delete)
         {
         }
 
@@ -41,7 +40,7 @@ namespace FluentSQL.Default
         /// </summary>
         public virtual DeleteQuery<T> Build()
         {
-            return new DeleteQuery<T>(GenerateQuery(), _columns, _criteria, Statements);
+            return new DeleteQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
 
         /// <summary>

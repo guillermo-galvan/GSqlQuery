@@ -140,5 +140,16 @@ namespace FluentSQLTest.Extensions
             Assert.NotEmpty(result);
             Assert.Single(result);
         }
+
+        [Fact]
+        public void Should_return_the_property_options()
+        {
+            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+            var result = classOptions.GetPropertyQuery(new string[] { nameof(Test3.Ids), nameof(Test3.IsTests), nameof(Test3.Creates) });
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(3, result.Count());
+        }
     }
 }

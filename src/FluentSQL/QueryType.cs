@@ -1,6 +1,6 @@
 ﻿namespace FluentSQL
 {
-    internal enum QueryType
+    public enum QueryType
     {
         Select,
         SelectWhere,
@@ -8,6 +8,7 @@
         Update,
         UpdateWhere,
         Delete,
-        DeleteWhere
+        DeleteWhere,
+        Custom
     }
 }

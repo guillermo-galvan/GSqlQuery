@@ -19,8 +19,7 @@ namespace FluentSQL
         public static IQueryBuilderWithWhere<T, DeleteQuery<T>> Delete(IStatements statements)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new DeleteQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), statements);
+            return new DeleteQueryBuilder<T>(statements);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace FluentSQL.Default
     /// Update where 
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class UpdateWhere<T> : BaseWhere, ISearchCriteriaBuilder, IWhere<T, UpdateQuery<T>>, IAndOr<T, UpdateQuery<T>> where T : class, new()
+    internal class UpdateWhere<T> : BaseWhere<T>, ISearchCriteriaBuilder, IWhere<T, UpdateQuery<T>>, IAndOr<T, UpdateQuery<T>> where T : class, new()
     {
         private readonly UpdateQueryBuilder<T> _queryBuilder;
 
@@ -16,7 +16,7 @@ namespace FluentSQL.Default
         /// </summary>
         /// <param name="queryBuilder">UpdateQueryBuilder</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateWhere(UpdateQueryBuilder<T> queryBuilder) : base(ClassOptionsFactory.GetClassOptions(typeof(T)))
+        public UpdateWhere(UpdateQueryBuilder<T> queryBuilder) : base()
         {
             _queryBuilder = queryBuilder ?? throw new ArgumentNullException(nameof(queryBuilder));
         }
@@ -34,9 +34,9 @@ namespace FluentSQL.Default
         /// 
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria()
+        public override IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
         {
-            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.Statements, _classOptions.PropertyOptions)).ToArray();
+            return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
         }
     }
 }

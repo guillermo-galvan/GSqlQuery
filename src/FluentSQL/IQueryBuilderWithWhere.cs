@@ -1,6 +1,6 @@
 ﻿namespace FluentSQL
 {
-    public interface IQueryBuilderWithWhere<T, TReturn> : IQueryBuilder<T, TReturn> where T : class, new() where TReturn : IQuery<T>
+    public interface IQueryBuilderWithWhere<T, TReturn> : IQueryBuilder<T, TReturn>, IBuilder<TReturn> where T : class, new() where TReturn : IQuery<T>
     {
         /// <summary>
         /// Add where statement in query

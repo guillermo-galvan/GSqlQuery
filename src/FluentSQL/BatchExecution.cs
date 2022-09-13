@@ -14,6 +14,8 @@ namespace FluentSQL
         private readonly List<ColumnAttribute> _columns;
         private readonly IDatabaseManagement<TDbConnection> _databaseManagment;
 
+        public IDatabaseManagement<TDbConnection> DatabaseManagement => _databaseManagment;
+
         public BatchExecute(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagment)
         {
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));

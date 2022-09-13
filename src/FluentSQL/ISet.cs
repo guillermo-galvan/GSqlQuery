@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
 namespace FluentSQL
 {
@@ -12,7 +6,7 @@ namespace FluentSQL
     /// Base class to generate the set query
     /// </summary>
     /// <typeparam name="T">The type of object from which the query is generated</typeparam>
-    public interface ISet<T, TReturn> where T : class, new() where TReturn : IQuery<T>
+    public interface ISet<T, TReturn> : IBuilder<TReturn> where T : class, new() where TReturn : IQuery<T>
     {
         /// <summary>
         /// Get column values
@@ -24,13 +18,7 @@ namespace FluentSQL
         /// </summary>
         /// <returns>Implementation of the IWhere interface</returns>
         IWhere<T, TReturn> Where();
-
-        /// <summary>
-        /// Build Query
-        /// </summary>
-        /// <returns>Implementation of the IQuery interface</returns>
-        TReturn Build();
-
+        
         /// <summary>
         /// add to query update another column with value
         /// </summary>

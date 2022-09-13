@@ -34,7 +34,7 @@ namespace FluentSQL
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             var (options, memberInfos) = expression.GetOptionsAndMember();
             memberInfos.ValidateMemberInfo(options);
-            return new Set<T>(options, new string[] { memberInfos.Name }, statements, value);
+            return new Set<T>(new string[] { memberInfos.Name }, statements, value);
         }
     }
 }

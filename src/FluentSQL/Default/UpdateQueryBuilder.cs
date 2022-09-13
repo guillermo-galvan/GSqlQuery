@@ -14,16 +14,14 @@ namespace FluentSQL.Default
         /// <summary>
         /// Initializes a new instance of the UpdateQueryBuilder class.
         /// </summary>
-        /// <param name="options">The Query</param>
-        /// <param name="selectMember">Selected Member Set</param>
+        /// <param name="options">The Query</param>        
         /// <param name="statements">Statements to build the query</param>
         /// <param name="columnValues">Column values</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, IDictionary<ColumnAttribute, object?> columnValues) : 
-            base(options, selectMember, statements, QueryType.Update)
+        public UpdateQueryBuilder(IStatements statements, IDictionary<ColumnAttribute, object?> columnValues) : 
+            base(statements, QueryType.Update)
         {
             _columnValues = columnValues ?? throw new ArgumentNullException(nameof(columnValues));
-            _columns = _columnValues.Keys;
         }
 
         private List<CriteriaDetail> GetUpdateCliterias()
@@ -32,7 +30,7 @@ namespace FluentSQL.Default
 
             foreach (var item in _columnValues)
             {
-                PropertyOptions options = _options.PropertyOptions.First(x => x.ColumnAttribute.Name == item.Key.Name);
+                PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{DateTime.Now.Ticks}";
                 criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, Statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
@@ -73,7 +71,7 @@ namespace FluentSQL.Default
         /// <returns>UpdateQuery</returns>
         public UpdateQuery<T> Build()
         {
-            return new UpdateQuery<T>(GenerateQuery(), _columns, _criteria, Statements);
+            return new UpdateQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
 
         /// <summary>

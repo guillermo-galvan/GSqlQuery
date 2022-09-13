@@ -59,7 +59,7 @@ namespace FluentSQLTest
             Assert.NotNull(queryBuilder);
             var result = queryBuilder.Build();
             Assert.NotEmpty(result.Text);
-            Assert.Equal(query, queryBuilder.Build().Text);
+            Assert.Equal(query, result.Text);
         }
 
         [Fact]

@@ -3,27 +3,25 @@ using FluentSQL.Models;
 
 namespace FluentSQL.Default
 {
-    internal abstract class QueryBuilderBase
+    public abstract class QueryBuilderBase
     {
-        protected readonly ClassOptions _options;
         private readonly IStatements _statements;
-        protected IEnumerable<ColumnAttribute> _columns;
         protected QueryType _queryType;
         protected readonly string _tableName;
+
+        public IEnumerable<PropertyOptions> Columns { get; protected set; }
 
         /// <summary>
         /// Statements to use in the query
         /// </summary>
         public IStatements Statements => _statements;
 
-        public QueryBuilderBase(ClassOptions options, IEnumerable<string> selectMember, IStatements statements, QueryType queryType)
+        public QueryBuilderBase(string tableName, IEnumerable<PropertyOptions> columns, IStatements statements, QueryType queryType)
         {
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            _options = options ?? throw new ArgumentNullException(nameof(options));
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            _columns = _options.GetColumnsQuery(selectMember);
+            Columns = columns ?? throw new ArgumentNullException(nameof(columns));
+            _tableName = tableName ?? throw new ArgumentNullException(nameof(tableName)); ;
             _queryType = queryType;
-            _tableName = _options.Table.GetTableName(_statements);
         }
 
         protected void ChangeQueryType()
@@ -40,6 +38,7 @@ namespace FluentSQL.Default
                     _queryType = QueryType.DeleteWhere;
                     break;
                 default:
+                    _queryType = QueryType.Custom;
                     break;
             }
         }

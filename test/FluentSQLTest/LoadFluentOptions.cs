@@ -64,6 +64,50 @@ namespace FluentSQLTest
                    return 0;
                });
 
+            mock.Setup(x => x.ExecuteScalar(It.IsAny<CountQuery<Test1>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
+                .Returns<CountQuery<Test1>, IEnumerable<IDataParameter>, Type>((q, pa, t) => {
+
+                    if (q.Text.Contains("SELECT COUNT([Test1].[Id]) FROM [Test1];"))
+                    {
+                        return Convert.ToInt64(1);
+                    }
+
+                    return Convert.ToInt64(0);
+                });
+
+            mock.Setup(x => x.ExecuteScalar(It.IsAny<DbConnection>(), It.IsAny<CountQuery<Test1>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
+               .Returns<DbConnection, CountQuery<Test1>, IEnumerable<IDataParameter>, Type>((c, q, pa, t) => {
+
+                   if (q.Text.Contains("SELECT COUNT([Test1].[Id]) FROM [Test1];"))
+                   {
+                       return Convert.ToInt64(1);
+                   }
+
+                   return Convert.ToInt64(0);
+               });
+
+            mock.Setup(x => x.ExecuteScalar(It.IsAny<CountQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
+                .Returns<CountQuery<Test3>, IEnumerable<IDataParameter>, Type>((q, pa, t) => {
+
+                    if (q.Text.Contains("SELECT COUNT(TableName.Id) FROM TableName;"))
+                    {
+                        return Convert.ToInt64(1);
+                    }
+
+                    return Convert.ToInt64(0);
+                });
+
+            mock.Setup(x => x.ExecuteScalar(It.IsAny<DbConnection>(), It.IsAny<CountQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
+               .Returns<DbConnection, CountQuery<Test3>, IEnumerable<IDataParameter>, Type>((c, q, pa, t) => {
+
+                   if (q.Text.Contains("SELECT COUNT([TableName].[Id]) FROM [TableName];"))
+                   {
+                       return Convert.ToInt64(1);
+                   }
+
+                   return Convert.ToInt64(0);//SELECT COUNT(TableName.Id) FROM TableName;
+               });
+
             mock.Setup(x => x.ExecuteNonQuery(It.IsAny<InsertQuery<Test6>>(),  It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<InsertQuery<Test6>, IEnumerable<IDataParameter>>((q, pa) => {
 

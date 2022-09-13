@@ -27,7 +27,7 @@ namespace FluentSQL
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Select(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new SelectQueryBuilder<T>(options, memberInfos.Select(x => x.Name), statements);
+            return new SelectQueryBuilder<T>(memberInfos.Select(x => x.Name), statements);
         }
 
         /// <summary>
@@ -39,9 +39,8 @@ namespace FluentSQL
         /// <exception cref="Exception"></exception>
         public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select(IStatements statements)
         {
-            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new SelectQueryBuilder<T>(options, options.PropertyOptions.Select(x => x.PropertyInfo.Name), statements);
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));            
+            return new SelectQueryBuilder<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions.Select(x => x.PropertyInfo.Name), statements);
         }
     }
 }

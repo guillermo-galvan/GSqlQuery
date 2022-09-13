@@ -7,7 +7,7 @@ namespace FluentSQL.Default
     /// Select where 
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class SelectWhere<T> : BaseWhere, ISearchCriteriaBuilder, IWhere<T, SelectQuery<T>>, IAndOr<T, SelectQuery<T>> where T : class, new()
+    internal class SelectWhere<T> : BaseWhere<T>, ISearchCriteriaBuilder, IWhere<T, SelectQuery<T>>, IAndOr<T, SelectQuery<T>> where T : class, new()
     {
         private readonly SelectQueryBuilder<T> _queryBuilder;
 
@@ -16,7 +16,7 @@ namespace FluentSQL.Default
         /// </summary>
         /// <param name="queryBuilder">SelectQueryBuilder</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectWhere(SelectQueryBuilder<T> queryBuilder) : base(ClassOptionsFactory.GetClassOptions(typeof(T)))
+        public SelectWhere(SelectQueryBuilder<T> queryBuilder) : base()
         {
             _queryBuilder = queryBuilder ?? throw new ArgumentNullException(nameof(queryBuilder));
         }
@@ -34,9 +34,9 @@ namespace FluentSQL.Default
         /// Add where query
         /// </summary>
         /// <returns>Implementation of the IWhere interface</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria()
+        public override IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
         {
-            return _searchCriterias.Select(x => x.GetCriteria(_queryBuilder.Statements, _classOptions.PropertyOptions)).ToArray();
+            return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
         }
     }
 }

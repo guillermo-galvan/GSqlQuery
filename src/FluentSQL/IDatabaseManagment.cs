@@ -12,9 +12,9 @@ namespace FluentSQL
 
         string ConnectionString { get; }
 
-        new TDbConnection GetConnection();
+        TDbConnection GetConnection();
 
-        new IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
 
         /// <summary>
         /// 
@@ -26,7 +26,7 @@ namespace FluentSQL
         /// <returns></returns>
         IEnumerable<T> ExecuteReader<T>(TDbConnection connection,IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
 
-        new int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters);
+        int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters);
 
         /// <summary>
         /// 
@@ -38,7 +38,7 @@ namespace FluentSQL
         /// <returns></returns>
         int ExecuteNonQuery(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
-        new object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type resultType);
+        object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type resultType);
 
         /// <summary>
         /// 

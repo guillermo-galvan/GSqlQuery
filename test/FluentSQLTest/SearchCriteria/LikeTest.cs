@@ -23,7 +23,7 @@ namespace FluentSQLTest.SearchCriteria
         public LikeTest()
         {
             _statements = new FluentSQL.Default.Statements();
-            _queryBuilder = new(new ClassOptions(typeof(Test1)), new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            _queryBuilder = new( new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                new FluentSQL.Default.Statements());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
@@ -58,9 +58,9 @@ namespace FluentSQLTest.SearchCriteria
         }
 
         [Theory]
-        [InlineData(null, "venga", "Test1.Id LIKE '%@Param%'")]
-        [InlineData("AND", "res", "AND Test1.Id LIKE '%@Param%'")]
-        [InlineData("OR", "pollo", "OR Test1.Id LIKE '%@Param%'")]
+        [InlineData(null, "venga", "Test1.Id LIKE CONCAT('%', @Param, '%')")]
+        [InlineData("AND", "res", "AND Test1.Id LIKE CONCAT('%', @Param, '%')")]
+        [InlineData("OR", "pollo", "OR Test1.Id LIKE CONCAT('%', @Param, '%')")]
         public void Should_get_criteria_detail(string logicalOperator, string value, string querypart)
         {
             Like test = new(_tableAttribute, _columnAttribute, value, logicalOperator);
@@ -80,6 +80,7 @@ namespace FluentSQLTest.SearchCriteria
             Assert.Equal(_columnAttribute.Name, parameter.PropertyOptions.ColumnAttribute.Name);
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);
+            var a = result.ParameterReplace();
             Assert.Equal(querypart, result.ParameterReplace());
         }
 
@@ -89,7 +90,7 @@ namespace FluentSQLTest.SearchCriteria
             SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.Like(x => x.Id, "ds");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -101,7 +102,7 @@ namespace FluentSQLTest.SearchCriteria
             SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.Like(x => x.Id, "1256").AndLike(x => x.IsTest, "1");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -113,7 +114,7 @@ namespace FluentSQLTest.SearchCriteria
             SelectWhere<Test1> where = new(_queryBuilder);
             var andOr = where.Like(x => x.Id, "1256").OrLike(x => x.IsTest, "45981");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
