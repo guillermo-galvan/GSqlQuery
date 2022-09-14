@@ -80,7 +80,7 @@ namespace FluentSQL.Extensions
                 }
             }
 
-            return databaseManagment.Events.GetParameter(typeof(T), parameters);
+            return databaseManagment.Events.GetParameter<T>(parameters);
         }
     }
 }

@@ -24,6 +24,12 @@ namespace FluentSQL.MySql
 
         }
 
+        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger<MySqlDatabaseManagment>? logger) :
+         base(connectionString, events, logger)
+        {
+
+        }
+
         public override int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters)
         {
             using MySqlConnection connection = new(_connectionString);

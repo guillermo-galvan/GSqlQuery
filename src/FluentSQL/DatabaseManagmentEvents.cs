@@ -15,7 +15,7 @@ namespace FluentSQL
         /// <summary>
         /// 
         /// </summary>
-        public abstract Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>> OnGetParameter { get; set; }
+        public virtual Func<Type,IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>>? OnGetParameter { get; set; }
 
         /// <summary>
         /// 
@@ -23,6 +23,6 @@ namespace FluentSQL
         /// <param name="type"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public virtual IEnumerable<IDataParameter> GetParameter(Type type, IEnumerable<ParameterDetail> parameters) => OnGetParameter(type, parameters);
+        public virtual IEnumerable<IDataParameter> GetParameter<T>(IEnumerable<ParameterDetail> parameters) => OnGetParameter!(typeof(T),parameters);
     }
 }

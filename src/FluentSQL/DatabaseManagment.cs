@@ -36,7 +36,7 @@ namespace FluentSQL
         /// </summary>
         /// <param name="connectionString"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DatabaseManagment(string connectionString, DatabaseManagmentEvents? events, ILogger? logger)
+        public DatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger? logger)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             Events = events ?? throw new ArgumentNullException(nameof(events));
