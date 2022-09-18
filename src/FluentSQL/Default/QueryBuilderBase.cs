@@ -1,5 +1,4 @@
-﻿using FluentSQL.Extensions;
-using FluentSQL.Models;
+﻿using FluentSQL.Models;
 
 namespace FluentSQL.Default
 {
@@ -19,6 +18,45 @@ namespace FluentSQL.Default
         public QueryBuilderBase(string tableName, IEnumerable<PropertyOptions> columns, IStatements statements, QueryType queryType)
         {
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));
+            Columns = columns ?? throw new ArgumentNullException(nameof(columns));
+            _tableName = tableName ?? throw new ArgumentNullException(nameof(tableName)); ;
+            _queryType = queryType;
+        }
+
+        protected void ChangeQueryType()
+        {
+            switch (_queryType)
+            {
+                case QueryType.Select:
+                    _queryType = QueryType.SelectWhere;
+                    break;
+                case QueryType.Update:
+                    _queryType = QueryType.UpdateWhere;
+                    break;
+                case QueryType.Delete:
+                    _queryType = QueryType.DeleteWhere;
+                    break;
+                default:
+                    _queryType = QueryType.Custom;
+                    break;
+            }
+        }
+
+        protected abstract string GenerateQuery();
+    }
+
+    public abstract class QueryBuilderBase<TDbConnection>
+    {
+        protected QueryType _queryType;
+        protected readonly string _tableName;
+
+        public IEnumerable<PropertyOptions> Columns { get; protected set; }
+
+        public ConnectionOptions<TDbConnection> ConnectionOptions { get; }
+
+        public QueryBuilderBase(string tableName, IEnumerable<PropertyOptions> columns, ConnectionOptions<TDbConnection> connectionOptions, QueryType queryType)
+        {
+            ConnectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
             Columns = columns ?? throw new ArgumentNullException(nameof(columns));
             _tableName = tableName ?? throw new ArgumentNullException(nameof(tableName)); ;
             _queryType = queryType;

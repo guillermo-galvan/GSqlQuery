@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Extensions;
+using FluentSQL.Models;
 
 namespace FluentSQL.Default
 {
@@ -19,5 +20,28 @@ namespace FluentSQL.Default
         public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         { }
+    }
+
+
+    public class SelectQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>, 
+        IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
+    {
+        public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions) : 
+            base(text, columns, criteria, connectionOptions)
+        {
+        }
+
+        public override IEnumerable<T> Exec()
+        {
+            return ConnectionOptions.DatabaseManagment.ExecuteReader<T>(this, GetClassOptions().PropertyOptions, 
+                this.GetParameters<T,TDbConnection>(ConnectionOptions.DatabaseManagment));
+        }
+
+        public override IEnumerable<T> Exec(TDbConnection dbConnection)
+        {
+            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            return ConnectionOptions.DatabaseManagment.ExecuteReader<T>(dbConnection,this, GetClassOptions().PropertyOptions, 
+                this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+        }
     }
 }

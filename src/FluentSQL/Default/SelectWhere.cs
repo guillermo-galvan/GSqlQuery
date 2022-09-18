@@ -1,5 +1,4 @@
-﻿using FluentSQL.Helpers;
-using FluentSQL.SearchCriteria;
+﻿using FluentSQL.SearchCriteria;
 
 namespace FluentSQL.Default
 {
@@ -29,14 +28,25 @@ namespace FluentSQL.Default
         {
             return _queryBuilder.Build();
         }
+    }
 
-        /// <summary>
-        /// Add where query
-        /// </summary>
-        /// <returns>Implementation of the IWhere interface</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
+    internal class SelectWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
+        IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, SelectQuery<T, TDbConnection>>,
+        IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<SelectQuery<T, TDbConnection>> where T : class, new()
+    {
+        private readonly SelectQueryBuilder<T, TDbConnection> _selectQueryBuilder;
+
+        public SelectWhere(SelectQueryBuilder<T, TDbConnection> selectQueryBuilder)
         {
-            return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
+            _selectQueryBuilder = selectQueryBuilder;
+        }
+
+        public SelectQuery<T, TDbConnection> Build()
+        {
+            return _selectQueryBuilder.Build();
         }
     }
+
 }

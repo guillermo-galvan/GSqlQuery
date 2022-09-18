@@ -16,7 +16,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> IsNull<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression) 
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             andor.Add(new IsNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute()));
@@ -33,7 +33,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndIsNull<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression) 
-            where T : class, new() where TReturn :IQuery<T>
+            where T : class, new() where TReturn :IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new IsNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), "AND"));
@@ -50,7 +50,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrIsNull<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression) 
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new IsNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), "OR"));

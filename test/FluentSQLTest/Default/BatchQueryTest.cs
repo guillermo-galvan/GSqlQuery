@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 using FluentSQL;
+using System.Data.Common;
 
 namespace FluentSQLTest.Default
 {
@@ -43,8 +44,8 @@ namespace FluentSQLTest.Default
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _statements, new Test3(0, null, DateTime.Now, true));
             
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null,  insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock())));
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, null, null, insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock())));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null,  insert.GetParameters<Test3, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock())));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, null, null, insert.GetParameters<Test3, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock())));
             Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, new ColumnAttribute[] { _columnAttribute }, null,  null));
         }
 

@@ -15,4 +15,16 @@ namespace FluentSQL
         /// </summary>
         IStatements Statements { get; }
     }
+
+    public interface IQueryBuilder<T, TReturn, TDbConnection, TResult> : IBuilder<TReturn> where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
+    {
+        IEnumerable<PropertyOptions> Columns { get; }
+
+        /// <summary>
+        /// Statements to use in the query
+        /// </summary>
+        ConnectionOptions<TDbConnection> ConnectionOptions { get; }
+    }
+
+
 }

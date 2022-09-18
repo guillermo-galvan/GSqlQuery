@@ -108,7 +108,7 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public abstract IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
+        public abstract IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
             IEnumerable<IDataParameter> parameters) where T : class, new();
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace FluentSQL
         /// <returns></returns>
         public abstract object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type result);
 
-        public abstract IEnumerable<T> ExecuteReader<T>(TDbConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, 
+        public abstract IEnumerable<T> ExecuteReader<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
             IEnumerable<IDataParameter> parameters) where T : class, new();
 
         public abstract int ExecuteNonQuery(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);

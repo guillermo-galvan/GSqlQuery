@@ -15,12 +15,12 @@ namespace FluentSQL.Default
 
         public long Exec()
         {
-            return (long)_databaseManagment.ExecuteScalar(_query, _query.GetParameters(_databaseManagment), typeof(long));
+            return (long)_databaseManagment.ExecuteScalar(_query, _query.GetParameters<T, TDbConnection>(_databaseManagment), typeof(long));
         }
 
         public long Exec(TDbConnection dbConnection)
         {
-            return (long)_databaseManagment.ExecuteScalar(dbConnection, _query, _query.GetParameters(_databaseManagment), typeof(long));
+            return (long)_databaseManagment.ExecuteScalar(dbConnection, _query, _query.GetParameters<T, TDbConnection>(_databaseManagment), typeof(long));
         }
     }
 }

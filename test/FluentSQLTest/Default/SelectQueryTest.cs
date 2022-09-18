@@ -20,6 +20,7 @@ namespace FluentSQLTest.Default
         private readonly Equal<int> _equal;
         private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
+        private readonly ConnectionOptions<DbConnection> _connectionOptions;
 
         public SelectQueryTest()
         {
@@ -28,6 +29,7 @@ namespace FluentSQLTest.Default
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _statements = new FluentSQL.Default.Statements();
+            _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]
@@ -54,41 +56,63 @@ namespace FluentSQLTest.Default
         }
 
         [Fact]
-        public void Should_execute_the_query()
+        public void Properties_cannot_be_null2()
         {
-            //SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
-            //var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec();
+            SelectQuery<Test1,DbConnection> query = new("query", new ColumnAttribute[] { _columnAttribute }, 
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
 
-            //Assert.NotNull(result);
-            //Assert.NotEmpty(result);
-            //Assert.Single(result);
+            Assert.NotNull(query);
+            Assert.NotNull(query.Text);
+            Assert.NotEmpty(query.Text);
+            Assert.NotNull(query.Columns);
+            Assert.NotEmpty(query.Columns);
+            Assert.NotNull(query.Criteria);
+            Assert.NotEmpty(query.Criteria);
+            Assert.NotNull(query.ConnectionOptions);
+            Assert.NotNull(query.ConnectionOptions.Statements);
+            Assert.NotNull(query.ConnectionOptions.DatabaseManagment);
         }
 
         [Fact]
-        public void Throw_exception_if_DatabaseManagment_not_found()
+        public void Throw_an_exception_if_nulls_are_passed_in_the_parameters2()
         {
-            //SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
-            //IDatabaseManagement<DbConnection> databaseManagement = null;
-            //Assert.Throws<ArgumentNullException>(() => query.SetDatabaseManagement(databaseManagement).Exec());
+            Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1, DbConnection>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions));
+            Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null));
+            Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1, DbConnection>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions));
+        }
+
+        [Fact]
+        public void Should_execute_the_query()
+        {
+            SelectQuery<Test1,DbConnection> query = 
+                new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, 
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
+
+            var result = query.Exec();
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void Throw_exception_if_connection_is_null()
+        {
+            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", 
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            Assert.Throws<ArgumentNullException>(() => query.Exec(null));
         }
 
         [Fact]
         public void Should_execute_the_query1()
         {
-            //SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
-            //var result = query.SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec(LoadFluentOptions.GetDbConnection());
+            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", 
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            var result = query.Exec(LoadFluentOptions.GetDbConnection());
 
-            //Assert.NotNull(result);
-            //Assert.NotEmpty(result);
-            //Assert.Single(result);
-        }
-
-        [Fact]
-        public void Throw_exception_if_DatabaseManagment_not_found2()
-        {
-            //SelectQuery<Test1> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, new FluentSQL.Default.Statements());
-            //IDatabaseManagement<DbConnection> databaseManagement = null;
-            //Assert.Throws<ArgumentNullException>(() => query.SetDatabaseManagement(databaseManagement).Exec(LoadFluentOptions.GetDbConnection()));
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
         }
     }
 }

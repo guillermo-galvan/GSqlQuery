@@ -14,13 +14,13 @@ namespace FluentSQL.Default
             _andOr = null;
         }
 
-        public CountQuery<T> Build()
+        public override CountQuery<T> Build()
         {
             _selectQuery = _queryBuilder.Build();
             return new CountQuery<T>(GenerateQuery(), _selectQuery.Columns, _criteria, _queryBuilder.Statements);
         }
 
-        public IWhere<T, CountQuery<T>> Where()
+        public override IWhere<T, CountQuery<T>> Where()
         {
             CountWhere<T> selectWhere = new(this);
             _andOr = selectWhere;

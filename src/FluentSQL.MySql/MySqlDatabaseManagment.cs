@@ -50,16 +50,16 @@ namespace FluentSQL.MySql
             return command.ExecuteNonQuery();
         }
 
-        public override IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+        public override IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
         {
             using MySqlConnection connection = new(_connectionString);
             connection.Open();
-            IEnumerable<T> result = ExecuteReader(connection, query, propertyOptions, parameters);
+            IEnumerable<T> result = ExecuteReader<T>(connection, query, propertyOptions, parameters);
             connection.Close();
             return result;
         }
 
-        public override IEnumerable<T> ExecuteReader<T>(MySqlConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+        public override IEnumerable<T> ExecuteReader<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
         {
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
             List<T> result = new();

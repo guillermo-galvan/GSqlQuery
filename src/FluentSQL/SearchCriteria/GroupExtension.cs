@@ -12,7 +12,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="where">Instance of IWhere</param>
         /// <returns>Instance of IWhere</returns>
         public static IWhere<T, TReturn> BeginGroup<T, TReturn>(this IWhere<T, TReturn> where) 
-            where T : class, new() where TReturn :IQuery<T>
+            where T : class, new() where TReturn :IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr();
             var result = new Group<T, TReturn>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, null, andor);
@@ -28,7 +28,7 @@ namespace FluentSQL.SearchCriteria
         /// <returns>Instance of IAndOr</returns>
         /// <exception cref="InvalidOperationException"></exception>
         public static IAndOr<T, TReturn> CloseGroup<T, TReturn>(this IAndOr<T, TReturn> andOr) 
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class, new() where TReturn : IQuery
         {
             if (andOr is Group<T, TReturn> group)
             {
@@ -45,7 +45,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="andOr">Instance of IAndOr</param>
         /// <returns>Instance of IWhere</returns>
         public static IWhere<T, TReturn> AndBeginGroup<T, TReturn>(this IAndOr<T, TReturn> andOr) 
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class, new() where TReturn : IQuery
         {
             var result = new Group<T, TReturn>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "AND", andOr);
             andOr.Add(result);
@@ -59,7 +59,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="andOr">Instance of IAndOr</param>
         /// <returns>Instance of IWhere</returns>
         public static IWhere<T, TReturn> OrBeginGroup<T, TReturn>(this IAndOr<T, TReturn> andOr) 
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class, new() where TReturn : IQuery
         {
             var result = new Group<T, TReturn>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "OR", andOr);
             andOr.Add(result);

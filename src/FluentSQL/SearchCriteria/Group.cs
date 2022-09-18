@@ -6,7 +6,7 @@ namespace FluentSQL.SearchCriteria
     /// Represents the search criteria group ()
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class Group<T, TReturn> : Criteria, ISearchCriteria, IWhere<T, TReturn>, IAndOr<T, TReturn> where T : class, new() where TReturn : IQuery<T>
+    internal class Group<T, TReturn> : Criteria, ISearchCriteria, IWhere<T, TReturn>, IAndOr<T, TReturn> where T : class, new() where TReturn : IQuery
     {
         private List<ISearchCriteria> _searchCriterias = new();
         private readonly IAndOr<T, TReturn> _andOr;

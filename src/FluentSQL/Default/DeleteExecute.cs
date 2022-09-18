@@ -15,12 +15,12 @@ namespace FluentSQL.Default
 
         public int Exec()
         {
-            return _databaseManagment.ExecuteNonQuery(_query, _query.GetParameters(_databaseManagment));
+            return _databaseManagment.ExecuteNonQuery(_query, _query.GetParameters<T, TDbConnection>(_databaseManagment));
         }
 
         public int Exec(TDbConnection dbConnection)
         {
-            return _databaseManagment.ExecuteNonQuery(dbConnection, _query, _query.GetParameters(_databaseManagment));
+            return _databaseManagment.ExecuteNonQuery(dbConnection, _query, _query.GetParameters<T, TDbConnection>(_databaseManagment));
         }
     }
 }

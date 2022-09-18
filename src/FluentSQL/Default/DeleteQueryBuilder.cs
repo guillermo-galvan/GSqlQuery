@@ -38,7 +38,7 @@ namespace FluentSQL.Default
         /// <summary>
         /// Build delete query
         /// </summary>
-        public virtual DeleteQuery<T> Build()
+        public override DeleteQuery<T> Build()
         {
             return new DeleteQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
@@ -47,7 +47,7 @@ namespace FluentSQL.Default
         /// Add where query
         /// </summary>
         /// <returns>Implementation of the IWhere interface</returns>
-        public IWhere<T, DeleteQuery<T>> Where()
+        public override IWhere<T, DeleteQuery<T>> Where()
         {
             ChangeQueryType();            
             _andOr = new DeleteWhere<T>(this);

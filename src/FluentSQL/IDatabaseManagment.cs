@@ -14,7 +14,7 @@ namespace FluentSQL
 
         TDbConnection GetConnection();
 
-        IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
 
         /// <summary>
         /// 
@@ -24,7 +24,7 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        IEnumerable<T> ExecuteReader<T>(TDbConnection connection,IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        IEnumerable<T> ExecuteReader<T>(TDbConnection connection,IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
 
         int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters);
 

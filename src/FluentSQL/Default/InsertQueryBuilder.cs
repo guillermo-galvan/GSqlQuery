@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Extensions;
+using FluentSQL.Helpers;
 using FluentSQL.Models;
 
 namespace FluentSQL.Default
@@ -7,11 +8,11 @@ namespace FluentSQL.Default
     /// insert query builder
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class InsertQueryBuilder<T> : QueryBuilderWithCriteria<T, InsertQuery<T>>, IQueryBuilder<T, InsertQuery<T>> where T : class, new()
+    internal class InsertQueryBuilder<T> : QueryBuilderBase, IQueryBuilder<T, InsertQuery<T>> where T : class, new()
     {
         private readonly object _entity;
         private bool _includeAutoIncrementing;
-
+        protected IEnumerable<CriteriaDetail>? _criteria = null;
 
         /// <summary>
         ///Initializes a new instance of the InsertQueryBuilder class.
@@ -21,7 +22,8 @@ namespace FluentSQL.Default
         /// <param name="entity">Entity</param>
         /// <exception cref="ArgumentNullException"></exception>
         public InsertQueryBuilder(IStatements statements, object entity)
-            : base(statements, QueryType.Insert)
+            : base(ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(statements), ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions,
+                statements, QueryType.Insert)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
@@ -65,7 +67,7 @@ namespace FluentSQL.Default
         /// <summary>
         /// Build Insert Query
         /// </summary>
-        public InsertQuery<T> Build()
+        public virtual InsertQuery<T> Build()
         {
             return new InsertQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements, _entity);
         }

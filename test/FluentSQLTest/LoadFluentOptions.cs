@@ -20,8 +20,8 @@ namespace FluentSQLTest
             Mock<IDatabaseManagement<DbConnection>> mock = new();
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
-            mock.Setup(x => x.ExecuteReader(It.IsAny<SelectQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<SelectQuery<Test1>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q,p,pa) => {
+            mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IQuery>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q,p,pa) => {
 
                     if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];")
                     {
@@ -31,8 +31,8 @@ namespace FluentSQLTest
                     return Enumerable.Empty<Test1>();
                 });
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<DbConnection>(),It.IsAny<SelectQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<DbConnection,SelectQuery<Test1>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((c,q, p, pa) => {
+            mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<DbConnection>(),It.IsAny<IQuery>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<DbConnection, IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((c,q, p, pa) => {
 
                     if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];")
                     {

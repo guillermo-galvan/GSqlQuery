@@ -30,4 +30,25 @@ namespace FluentSQL.Default
             Statements = statements ?? throw new ArgumentNullException(nameof(statements));
         }
     }
+
+    public abstract class Query<T, TDbConnection, TResult> : QueryBase, IQuery<T, TDbConnection, TResult> where T : class, new()
+    {
+        public ConnectionOptions<TDbConnection> ConnectionOptions { get; }
+
+        internal ClassOptions GetClassOptions()
+        {
+            return ClassOptionsFactory.GetClassOptions(typeof(T));
+        }
+
+        protected Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria,
+            ConnectionOptions<TDbConnection> connectionOptions) : 
+            base(text, columns, criteria)
+        {
+            ConnectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+        }
+
+        public abstract TResult Exec();
+
+        public abstract TResult Exec(TDbConnection dbConnection);
+    }
 }

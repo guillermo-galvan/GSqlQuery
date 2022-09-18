@@ -69,7 +69,7 @@ namespace FluentSQL.Default
         ///  Build update query
         /// </summary>
         /// <returns>UpdateQuery</returns>
-        public UpdateQuery<T> Build()
+        public override UpdateQuery<T> Build()
         {
             return new UpdateQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
@@ -78,7 +78,7 @@ namespace FluentSQL.Default
         /// Add where query
         /// </summary>
         /// <returns>IWhere</returns>
-        public IWhere<T, UpdateQuery<T>> Where()
+        public override IWhere<T, UpdateQuery<T>> Where()
         {
             ChangeQueryType();
             UpdateWhere<T> selectWhere = new(this);

@@ -16,7 +16,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value for equality</param>
         /// <returns></returns>
         public static IAndOr<T, TReturn> LessThanOrEqual<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, 
-            TProperties value) where T : class, new() where TReturn : IQuery<T>
+            TProperties value) where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             andor.Add(new LessThanOrEqual<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value));
@@ -33,7 +33,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value for equality</param>
         /// <returns>IAndOr</returns>
         public static IAndOr<T, TReturn> AndLessThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, 
-            TProperties value) where T : class, new() where TReturn : IQuery<T>
+            TProperties value) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new LessThanOrEqual<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "AND"));
@@ -50,7 +50,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value for equality</param>
         /// <returns>IAndOr</returns>
         public static IAndOr<T, TReturn> OrLessThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, 
-            TProperties value) where T : class, new() where TReturn : IQuery<T>
+            TProperties value) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new LessThanOrEqual<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "OR"));

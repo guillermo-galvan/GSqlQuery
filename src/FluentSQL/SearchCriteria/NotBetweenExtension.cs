@@ -17,7 +17,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> NotBetween<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             andor.Add(new NotBetween2<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, final));
@@ -35,7 +35,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new NotBetween2<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, final, "AND"));
@@ -53,7 +53,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn  : IQuery<T>
+            TProperties initial, TProperties final) where T : class, new() where TReturn  : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new NotBetween2<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, final, "OR"));
@@ -70,7 +70,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="initial">Initial value</param>        
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> NotBetween<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            TProperties initial) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial) where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             andor.Add(new NotBetween<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial));
@@ -87,7 +87,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="initial">Initial value</param>        
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new NotBetween<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, "AND"));
@@ -104,7 +104,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="initial">Initial value</param>        
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new NotBetween<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, "OR"));

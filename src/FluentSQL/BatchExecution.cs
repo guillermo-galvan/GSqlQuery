@@ -1,5 +1,4 @@
-﻿using FluentSQL.Default;
-using FluentSQL.Extensions;
+﻿using FluentSQL.Extensions;
 using System.Data;
 using System.Text;
 
@@ -29,7 +28,7 @@ namespace FluentSQL
         public BatchExecute<TDbConnection> Add<T>(Func<IStatements, IQuery<T>> expression) where T : class, new()
         {
             IQuery<T> query = expression.Invoke(_statements);
-            _parameters.AddRange(query.GetParameters(_databaseManagment));
+            _parameters.AddRange(query.GetParameters<T, TDbConnection>(_databaseManagment));
             _queryBuilder.Append(query.Text);
             _columns.AddRange(query.Columns);
             _queries.Enqueue(query);

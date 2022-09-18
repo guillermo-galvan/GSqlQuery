@@ -22,12 +22,12 @@ namespace FluentSQL.Default
             object idResult;
             if (connection == null)
             {
-                idResult = _databaseManagment.ExecuteScalar(_query, _query.GetParameters(_databaseManagment),
+                idResult = _databaseManagment.ExecuteScalar(_query, _query.GetParameters<T, TDbConnection>(_databaseManagment),
                     propertyOptions.PropertyInfo.PropertyType);
             }
             else
             {
-                idResult = _databaseManagment.ExecuteScalar(connection, _query, _query.GetParameters(_databaseManagment),
+                idResult = _databaseManagment.ExecuteScalar(connection, _query, _query.GetParameters<T, TDbConnection>(_databaseManagment),
                     propertyOptions.PropertyInfo.PropertyType);
             }
 
@@ -42,7 +42,7 @@ namespace FluentSQL.Default
             }
             else
             {
-                _databaseManagment.ExecuteNonQuery(_query, _query.GetParameters(_databaseManagment));
+                _databaseManagment.ExecuteNonQuery(_query, _query.GetParameters<T, TDbConnection>(_databaseManagment));
             }
 
             return (T)_query.Entity;
@@ -56,7 +56,7 @@ namespace FluentSQL.Default
             }
             else
             {
-                _databaseManagment.ExecuteNonQuery(dbConnection, _query, _query.GetParameters(_databaseManagment));
+                _databaseManagment.ExecuteNonQuery(dbConnection, _query, _query.GetParameters<T, TDbConnection>(_databaseManagment));
             }
 
             return (T)_query.Entity;

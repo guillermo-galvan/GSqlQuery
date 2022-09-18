@@ -16,7 +16,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> NotLike<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, string value) 
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             andor.Add(new NotLike(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value));
@@ -33,7 +33,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndNotLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, 
-            string value) where T : class, new() where TReturn : IQuery<T>
+            string value) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new NotLike(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "AND"));
@@ -50,7 +50,7 @@ namespace FluentSQL.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrNotLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, 
-            string value) where T : class, new() where TReturn : IQuery<T>
+            string value) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
             andOr.Add(new NotLike(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "OR"));

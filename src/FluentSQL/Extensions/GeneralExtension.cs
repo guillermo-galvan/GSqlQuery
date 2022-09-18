@@ -68,7 +68,7 @@ namespace FluentSQL.Extensions
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
         }
 
-        public static IEnumerable<IDataParameter> GetParameters<T, TDbConnection>(this IQuery<T> query, 
+        public static IEnumerable<IDataParameter> GetParameters<T, TDbConnection>(this IQuery query, 
             IDatabaseManagement<TDbConnection> databaseManagment) where T : class, new()
         {
             List<ParameterDetail> parameters = new();

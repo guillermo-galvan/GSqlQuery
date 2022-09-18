@@ -51,7 +51,7 @@ namespace FluentSQL.Default
         /// Build select query
         /// </summary>
         /// <returns>SelectQuery</returns>
-        public virtual SelectQuery<T> Build()
+        public override SelectQuery<T> Build()
         {
             return new SelectQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
@@ -60,12 +60,58 @@ namespace FluentSQL.Default
         /// Add where query
         /// </summary>
         /// <returns>IWhere</returns>
-        public virtual IWhere<T, SelectQuery<T>> Where()
+        public override IWhere<T, SelectQuery<T>> Where()
         {
             ChangeQueryType();
             SelectWhere<T> selectWhere = new(this);
             _andOr = selectWhere;
             return (IWhere<T, SelectQuery<T>>)_andOr;
+        }
+    }
+
+    internal class SelectQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>,
+        IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>,
+        IQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>, IBuilder<SelectQuery<T, TDbConnection>>
+        where T : class, new()
+    {
+        public SelectQueryBuilder(IEnumerable<string> selectMember, ConnectionOptions<TDbConnection> connectionOptions) : 
+            base(connectionOptions, QueryType.Select)
+        {
+            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
+            Columns = ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember);
+        }
+
+        protected override string GenerateQuery()
+        {
+            string result = string.Empty;
+
+            if (_queryType == QueryType.Select)
+            {
+                result = string.Format(ConnectionOptions.Statements.Select,
+                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, ConnectionOptions.Statements))),
+                    _tableName);
+            }
+            else if (_queryType == QueryType.SelectWhere)
+            {
+                result = string.Format(ConnectionOptions.Statements.SelectWhere,
+                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, ConnectionOptions.Statements))),
+                    _tableName, GetCriteria());
+            }
+
+            return result;
+        }
+
+        public override SelectQuery<T, TDbConnection> Build()
+        {
+            return new SelectQuery<T, TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
+        }
+
+        public override IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> Where()
+        {
+            ChangeQueryType();
+            SelectWhere<T, TDbConnection> selectWhere = new SelectWhere<T, TDbConnection>(this);
+            _andOr = selectWhere;
+            return (IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>)_andOr;
         }
     }
 }
