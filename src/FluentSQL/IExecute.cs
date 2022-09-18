@@ -1,10 +1,5 @@
 ﻿namespace FluentSQL
 {
-    public interface ISetDatabaseManagement<TResult>
-    {
-        IExecute<TResult, TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment);
-    }
-
     /// <summary>
     /// 
     /// </summary>

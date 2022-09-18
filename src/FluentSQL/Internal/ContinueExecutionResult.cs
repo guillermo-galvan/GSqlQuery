@@ -38,9 +38,9 @@ namespace FluentSQL.Internal
 
     internal class ContinueExecutionResult<TDbConnection, TResult> : ContinueExecutionResult<TDbConnection>
     {
-        private readonly Func<IStatements, ISetDatabaseManagement<TResult>>? _func;        
+        private readonly Func<IStatements>? _func;        
 
-        public ContinueExecutionResult(IStatements statements, Func<IStatements, ISetDatabaseManagement<TResult>> query,
+        public ContinueExecutionResult(IStatements statements, Func<IStatements> query,
             IDatabaseManagement<TDbConnection> databaseManagement) :
             base(statements, databaseManagement)
         {
@@ -50,20 +50,21 @@ namespace FluentSQL.Internal
 
         protected override object? Execute(TDbConnection connection,object? param)
         {
-            if (_func != null)
-            {
-                return _func.Invoke(_statements).SetDatabaseManagement(_databaseManagement).Exec(connection);
-            }
+            //if (_func != null)
+            //{
+            //    return _func.Invoke(_statements).SetDatabaseManagement(_databaseManagement).Exec(connection);
+            //}
 
-            return default(TResult);
+            //return default(TResult);
+            throw new NotImplementedException();
         }
     }
 
     internal class ContinueExecutionResult<TDbConnection, TResult, TNewResult> : ContinueExecutionResult<TDbConnection>
     {
-        private readonly Func<IStatements, TResult, ISetDatabaseManagement<TNewResult>>? _func;
+        private readonly Func<IStatements, TResult>? _func;
 
-        public ContinueExecutionResult(IStatements statements, Func<IStatements, TResult, ISetDatabaseManagement<TNewResult>> query,
+        public ContinueExecutionResult(IStatements statements, Func<IStatements, TResult> query,
             IDatabaseManagement<TDbConnection> databaseManagement) :
             base(statements, databaseManagement)
         {
@@ -72,17 +73,19 @@ namespace FluentSQL.Internal
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            if(_func != null)
-            {
-                return _func.Invoke(_statements, (TResult)param).SetDatabaseManagement(_databaseManagement).Exec(connection);
-            }
+            //if(_func != null)
+            //{
+            //    return _func.Invoke(_statements, (TResult)param).SetDatabaseManagement(_databaseManagement).Exec(connection);
+            //}
 
-            return default(TResult);
+            //return default(TResult);
+            throw new NotImplementedException();
+
         }
     }
 
     internal class ContinueExecutionResult2 <TDbConnection, TResult, TReturn, TTypeResult> : ContinueExecutionResult<TDbConnection>
-        where TReturn : ISetDatabaseManagement<TTypeResult> where TTypeResult : struct
+        where TTypeResult : struct
     {
         private readonly Func<IStatements, TResult, IBuilder<TReturn>>? _func;
 
@@ -95,12 +98,14 @@ namespace FluentSQL.Internal
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            return _func?.Invoke(_statements, (TResult)param).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            //return _func?.Invoke(_statements, (TResult)param).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            throw new NotImplementedException();
+
         }
     }
 
     internal class ContinueExecutionResult2<TDbConnection, TReturn, TTypeResult> : ContinueExecutionResult<TDbConnection>
-        where TReturn : ISetDatabaseManagement<TTypeResult> where TTypeResult : struct
+        where TTypeResult : struct
     {
         private readonly Func<IStatements, IBuilder<TReturn>>? _func;
 
@@ -114,7 +119,8 @@ namespace FluentSQL.Internal
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            return _func?.Invoke(_statements).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            //return _func?.Invoke(_statements).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            throw new NotImplementedException();
         }
     }
 
@@ -132,7 +138,9 @@ namespace FluentSQL.Internal
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            return _func?.Invoke(_statements, (TResult)param).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            //return _func?.Invoke(_statements, (TResult)param).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            throw new NotImplementedException();
+
         }
     }
 
@@ -151,7 +159,9 @@ namespace FluentSQL.Internal
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            return _func?.Invoke(_statements).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            //return _func?.Invoke(_statements).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
+            throw new NotImplementedException();
+
         }
     }
 }

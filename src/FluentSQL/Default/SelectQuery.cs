@@ -6,7 +6,7 @@ namespace FluentSQL.Default
     /// Select query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class SelectQuery<T> : Query<T>, ISetDatabaseManagement<IEnumerable<T>> where T : class, new()
+    public class SelectQuery<T> : Query<T> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the SelectQuery class.
@@ -19,11 +19,5 @@ namespace FluentSQL.Default
         public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         { }
-
-        public IExecute<IEnumerable<T>,TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment)
-        {
-            databaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(databaseManagment));
-            return new SelectExecute<TDbConnection,T>(databaseManagment, GetClassOptions().PropertyOptions, this);
-        }
     }
 }

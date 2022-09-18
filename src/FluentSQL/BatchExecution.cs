@@ -38,14 +38,16 @@ namespace FluentSQL
 
         public int Exec()
         {
-            return new BatchQuery(_queryBuilder.ToString(), _columns, null, _statements, _parameters).SetDatabaseManagement(_databaseManagment).Exec();
+            //return new BatchQuery(_queryBuilder.ToString(), _columns, null, _statements, _parameters).SetDatabaseManagement(_databaseManagment).Exec();
+            throw new NotImplementedException();
+
         }
 
         public int Exec(TDbConnection connection)
         {
-            return new BatchQuery(_queryBuilder.ToString(), _columns, null, _statements, _parameters).SetDatabaseManagement(_databaseManagment)
-                .Exec(connection);
-            
+            //return new BatchQuery(_queryBuilder.ToString(), _columns, null, _statements, _parameters).SetDatabaseManagement(_databaseManagment)
+            //    .Exec(connection);
+            throw new NotImplementedException();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace FluentSQL.Default
     /// Insert Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class InsertQuery<T> : Query<T> , ISetDatabaseManagement<T> where T : class, new()
+    public class InsertQuery<T> : Query<T> where T : class, new()
     {
         public object Entity { get; }
 
@@ -22,12 +22,6 @@ namespace FluentSQL.Default
             : base(text, columns, criteria, statements)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
-        }
-
-        public IExecute<T, TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment)
-        {
-            databaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(databaseManagment));
-            return new InsertExecute<TDbConnection, T>(databaseManagment, this);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Data;
 
 namespace FluentSQL.Default
 {
-    internal class BatchQuery : QueryBase, ISetDatabaseManagement<int>
+    internal class BatchQuery : QueryBase
     {
         private IEnumerable<IDataParameter> _parameters;
 
@@ -14,12 +14,6 @@ namespace FluentSQL.Default
             : base(text, columns, criteria, statements)
         {
             _parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
-        }
-
-        public IExecute<int, TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment)
-        {
-            databaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(databaseManagment));
-            return new BatchQueryExecute<TDbConnection>(databaseManagment, this);
         }
     }
 }

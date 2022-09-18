@@ -6,7 +6,7 @@ namespace FluentSQL.Default
     /// Update query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class UpdateQuery<T> : Query<T>, ISetDatabaseManagement<int> where T : class, new()
+    public class UpdateQuery<T> : Query<T> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the UpdateQuery class.
@@ -19,11 +19,5 @@ namespace FluentSQL.Default
         public UpdateQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         { }
-
-        public IExecute<int, TDbConnection> SetDatabaseManagement<TDbConnection>(IDatabaseManagement<TDbConnection> databaseManagment)
-        {
-            databaseManagment.NullValidate(ErrorMessages.ParameterNotNull, nameof(databaseManagment));
-            return new UpdateExecute<TDbConnection, T>(databaseManagment, this);
-        }
     }
 }

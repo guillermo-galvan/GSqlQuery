@@ -20,17 +20,19 @@ namespace FluentSQL
             _databaseManagement = databaseManagement;
         }
 
-        public ContinueExecution<TNewResult, TDbConnection> ContinueWith<TNewResult>(Func<IStatements, TResult, ISetDatabaseManagement<TNewResult>> exec)
+        public ContinueExecution<TNewResult, TDbConnection> ContinueWith<TNewResult>(Func<IStatements, TResult> exec)
         {
-            _continueExecutionResult.Add(new ContinueExecutionResult<TDbConnection, TResult, TNewResult>(_statements, exec, _databaseManagement));
-            return new ContinueExecution<TNewResult, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
+            //_continueExecutionResult.Add(new ContinueExecutionResult<TDbConnection, TResult, TNewResult>(_statements, exec, _databaseManagement));
+            //return new ContinueExecution<TNewResult, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
+            throw new NotImplementedException();
         }
 
         public ContinueExecution<TTypeResult, TDbConnection> ContinueWith<TReturn, TTypeResult>(Func<IStatements, TResult, IBuilder<TReturn>> exec)
-            where TReturn : ISetDatabaseManagement<TTypeResult> where TTypeResult : struct
+            where TTypeResult : struct
         {
-            _continueExecutionResult.Add(new ContinueExecutionResult2<TDbConnection, TResult, TReturn, TTypeResult>(_statements, exec, _databaseManagement));
-            return new ContinueExecution<TTypeResult, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
+            //_continueExecutionResult.Add(new ContinueExecutionResult2<TDbConnection, TResult, TReturn, TTypeResult>(_statements, exec, _databaseManagement));
+            //return new ContinueExecution<TTypeResult, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
+            throw new NotImplementedException();
         }
 
         public ContinueExecution<IEnumerable<T>, TDbConnection> ContinueWith<T>(Func<IStatements, TResult, IBuilder<SelectQuery<T>>> exec)

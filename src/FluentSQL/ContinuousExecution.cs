@@ -16,10 +16,12 @@ namespace FluentSQL
         }
 
         public ContinueExecution<TResult, TDbConnection> New<TResult>(
-            Func<IStatements, ISetDatabaseManagement<TResult>> query)
+            Func<IStatements> query)
         {
-            return new ContinueExecution<TResult, TDbConnection>(_statements,
-                new ContinueExecutionResult<TDbConnection, TResult>(_statements, query, _databaseManagement), _databaseManagement);
+            //return new ContinueExecution<TResult, TDbConnection>(_statements,
+            //    new ContinueExecutionResult<TDbConnection, TResult>(_statements, query, _databaseManagement), _databaseManagement);
+
+            throw new NotImplementedException();
         }
 
         public ContinueExecution<IEnumerable<T>, TDbConnection> New<T>(Func<IStatements, IBuilder<SelectQuery<T>>> exec)
@@ -30,10 +32,12 @@ namespace FluentSQL
         }
 
         public ContinueExecution<TTypeResult, TDbConnection> New<TReturn,TTypeResult>(Func<IStatements, IBuilder<TReturn>> exec)
-            where TReturn : ISetDatabaseManagement<TTypeResult> where TTypeResult : struct
+            where TTypeResult : struct
         {
-            return new ContinueExecution<TTypeResult, TDbConnection>(_statements, 
-                new ContinueExecutionResult2<TDbConnection, TReturn, TTypeResult>(_statements, exec, _databaseManagement), _databaseManagement);
+            //return new ContinueExecution<TTypeResult, TDbConnection>(_statements, 
+            //    new ContinueExecutionResult2<TDbConnection, TReturn, TTypeResult>(_statements, exec, _databaseManagement), _databaseManagement);
+
+            throw new NotImplementedException();
         }
     }
 }
