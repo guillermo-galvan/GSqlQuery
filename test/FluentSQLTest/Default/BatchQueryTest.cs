@@ -43,10 +43,9 @@ namespace FluentSQLTest.Default
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _statements, new Test3(0, null, DateTime.Now, true));
             
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null, _statements, insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock())));
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, null, null, _statements, insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock())));
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, new ColumnAttribute[] { _columnAttribute }, null, null, insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock())));
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, new ColumnAttribute[] { _columnAttribute }, null, _statements, null));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null,  insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock())));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, null, null, insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock())));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, new ColumnAttribute[] { _columnAttribute }, null,  null));
         }
 
         [Fact]

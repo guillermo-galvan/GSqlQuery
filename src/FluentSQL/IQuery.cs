@@ -18,11 +18,6 @@ namespace FluentSQL
         /// Query criteria
         /// </summary>
         IEnumerable<CriteriaDetail>? Criteria { get; }
-
-        /// <summary>
-        /// Options to use in the query
-        /// </summary>
-        IStatements Statements { get; }
     }
 
     /// <summary>
@@ -31,5 +26,9 @@ namespace FluentSQL
     /// <typeparam name="T">The type to query</typeparam>
     public interface IQuery<T> : IQuery where T : class, new()
     {
+        /// <summary>
+        /// Options to use in the query
+        /// </summary>
+        IStatements Statements { get; }
     }
 }

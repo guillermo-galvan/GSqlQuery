@@ -9,9 +9,8 @@ namespace FluentSQL.Default
 
         internal IEnumerable<IDataParameter> Parameters => _parameters;
 
-        public BatchQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements,
-            IEnumerable<IDataParameter> parameters) 
-            : base(text, columns, criteria, statements)
+        public BatchQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IEnumerable<IDataParameter> parameters) 
+            : base(text, columns, criteria)
         {
             _parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
         }

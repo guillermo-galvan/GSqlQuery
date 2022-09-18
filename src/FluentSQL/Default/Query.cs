@@ -9,6 +9,8 @@ namespace FluentSQL.Default
     /// <typeparam name="T">The type to query</typeparam>
     public abstract class Query<T> : QueryBase, IQuery<T> where T : class, new()
     {
+        public IStatements Statements { get; }
+
         internal ClassOptions GetClassOptions()
         {
             return ClassOptionsFactory.GetClassOptions(typeof(T));
@@ -23,7 +25,9 @@ namespace FluentSQL.Default
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
         public Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
-            base(text,columns, criteria, statements)
-        {}
+            base(text,columns, criteria)
+        {
+            Statements = statements ?? throw new ArgumentNullException(nameof(statements));
+        }
     }
 }

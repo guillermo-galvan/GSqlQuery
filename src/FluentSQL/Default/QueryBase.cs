@@ -6,7 +6,6 @@ namespace FluentSQL.Default
     {
         private readonly IEnumerable<ColumnAttribute> _columns;
         private readonly IEnumerable<CriteriaDetail>? _criteria;
-        private readonly IStatements _statements;
         private string _text;
         
 
@@ -16,12 +15,9 @@ namespace FluentSQL.Default
 
         public IEnumerable<CriteriaDetail>? Criteria => _criteria;
 
-        public IStatements Statements => _statements;
-
-        public QueryBase(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements)
+        public QueryBase(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria)
         {
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));
-            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
             text.NullValidate("", nameof(text));
             _text = text;
             _criteria = criteria;
