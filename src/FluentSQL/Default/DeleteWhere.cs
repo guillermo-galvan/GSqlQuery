@@ -40,4 +40,23 @@ namespace FluentSQL.Default
             return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
         }
     }
+
+    internal class DeleteWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
+        IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, DeleteQuery<T, TDbConnection>>,
+        IAndOr<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<DeleteQuery<T, TDbConnection>> where T : class, new()
+    {
+        private readonly DeleteQueryBuilder<T, TDbConnection> _queryBuilder;
+
+        public DeleteWhere(DeleteQueryBuilder<T, TDbConnection> queryBuilder)
+        {
+            _queryBuilder = queryBuilder;
+        }
+
+        public DeleteQuery<T, TDbConnection> Build()
+        {
+            return _queryBuilder.Build();
+        }
+    }
 }

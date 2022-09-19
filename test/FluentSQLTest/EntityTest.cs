@@ -406,6 +406,42 @@ namespace FluentSQLTest
         }
 
         [Theory]
+        [ClassData(typeof(Delete_Test3_TestData_Connection))]
+        public void Should_generate_the_delete_query2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
+        {
+            var query = Test3.Delete(connectionOptions).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+            Assert.Equal(queryText, query.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Delete_Test3_TestData2_Connection))]
+        public void Should_generate_the_delete_where_query2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
+        {
+            var query = Test3.Delete(connectionOptions).Where().Equal(x => x.IsTests, true).AndIsNotNull(x => x.Creates).Build();
+
+            Assert.NotNull(query);
+            Assert.NotNull(query.Text);
+            Assert.NotEmpty(query.Text);
+            Assert.NotNull(query.Columns);
+            Assert.NotEmpty(query.Columns);
+            Assert.NotNull(query.ConnectionOptions);
+            Assert.NotNull(query.ConnectionOptions.Statements);
+            Assert.NotNull(query.ConnectionOptions.DatabaseManagment);
+            Assert.NotNull(query.Criteria);
+            Assert.NotEmpty(query.Criteria);
+
+            string result = query.Text;
+            foreach (var item in query.Criteria)
+            {
+                result = item.ParameterDetails.ParameterReplace(result);
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
         [ClassData(typeof(Count_Test3_TestData))]
         public void Should_generate_the_count_query(IStatements statements, string query)
         {

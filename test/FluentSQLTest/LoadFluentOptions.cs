@@ -152,8 +152,8 @@ namespace FluentSQLTest
                     return 0;
                 });
 
-            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<DeleteQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<DeleteQuery<Test3>, IEnumerable<IDataParameter>>((q, pa) => {
+            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<DeleteQuery<Test3,DbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<DeleteQuery<Test3, DbConnection>, IEnumerable<IDataParameter>>((q, pa) => {
 
                     if (q.Text.Contains("DELETE FROM [TableName];"))
                     {
@@ -163,8 +163,8 @@ namespace FluentSQLTest
                     return 0;
                 });
 
-            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<DbConnection>(),It.IsAny<DeleteQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>()))
-               .Returns<DbConnection,DeleteQuery<Test3>, IEnumerable<IDataParameter>>((c,q, pa) => {
+            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<DbConnection>(),It.IsAny<DeleteQuery<Test3, DbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+               .Returns<DbConnection,DeleteQuery<Test3, DbConnection>, IEnumerable<IDataParameter>>((c,q, pa) => {
 
                    if (q.Text.Contains("DELETE FROM [TableName];"))
                    {

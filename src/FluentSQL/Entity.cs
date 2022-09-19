@@ -116,5 +116,11 @@ namespace FluentSQL
         {
             return IDelete<T>.Delete(statements);
         }
+
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection, int> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
+        {
+            return IDelete<T>.Delete(connectionOptions);
+
+        }
     }
 }
