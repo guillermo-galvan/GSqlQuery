@@ -77,4 +77,67 @@ namespace FluentSQL.Default
             return GetInsertQuery();
         }
     }
+
+    internal class InsertQueryBuilder<T, TDbConnection> : QueryBuilderBase<TDbConnection>,
+        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection, T>,
+        IBuilder<InsertQuery<T, TDbConnection>>
+        where T : class, new()
+    {
+        private readonly object _entity;
+        private bool _includeAutoIncrementing;
+        protected IEnumerable<CriteriaDetail>? _criteria = null;
+
+        public InsertQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object entity) 
+            : base(connectionOptions != null ? ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(connectionOptions.Statements) : string.Empty,
+                  ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions, connectionOptions!, QueryType.Insert)
+        {
+            _entity = entity ?? throw new ArgumentNullException(nameof(entity));
+        }
+
+        private string GetInsertQuery()
+        {
+            List<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
+            CriteriaDetail criteriaDetail = new(string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
+            _criteria = new CriteriaDetail[] { criteriaDetail };
+            string text = _includeAutoIncrementing ?
+                $"{string.Format(ConnectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart)} {ConnectionOptions.Statements.ValueAutoIncrementingQuery}"
+                : string.Format(ConnectionOptions.Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
+
+            return text;
+        }
+
+        private (string columnName, ParameterDetail parameterDetail) GetParameterValue(ColumnAttribute column)
+        {
+            PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == column.Name);
+            return (column.GetColumnName(_tableName, ConnectionOptions.Statements), new ParameterDetail($"@PI{DateTime.Now.Ticks}", options.GetValue(_entity), options));
+        }
+
+        private List<(string columnName, ParameterDetail parameterDetail)> GetValues()
+        {
+            List<(string columnName, ParameterDetail parameterDetail)> values = new();
+            _includeAutoIncrementing = false;
+            foreach (PropertyOptions item in Columns)
+            {
+                if (!item.ColumnAttribute.IsAutoIncrementing)
+                {
+                    values.Add(GetParameterValue(item.ColumnAttribute));
+                }
+                else
+                {
+                    _includeAutoIncrementing = true;
+                }
+            }
+            return values;
+        }
+
+        public InsertQuery<T, TDbConnection> Build()
+        {
+            return new InsertQuery<T, TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions, _entity);
+        }
+        
+        protected override string GenerateQuery()
+        {
+            return GetInsertQuery();
+        }
+    }
 }

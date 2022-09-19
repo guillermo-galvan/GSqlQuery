@@ -188,4 +188,40 @@ namespace FluentSQLTest.Data
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+
+    internal class Select_Test3_TestData2_ConnectionOptions : IEnumerable<object[]>
+    {
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            yield return new object[]
+            {
+               new ConnectionOptions<DbConnection>(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
+            };
+
+            yield return new object[]
+            {
+                new ConnectionOptions<DbConnection>(new Models.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName];"
+            };
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    internal class Select_Test3_TestData3_ConnectionOptions : IEnumerable<object[]>
+    {
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            yield return new object[]
+            {
+                new ConnectionOptions<DbConnection>(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
+            };
+
+            yield return new object[]
+            {
+                new ConnectionOptions<DbConnection>(new Models.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;"
+            };
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
 }

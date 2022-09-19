@@ -14,6 +14,9 @@ namespace FluentSQL
         /// </summary>
         /// <param name="key">The name of the statement collection</param>        
         /// <returns>Instance of IQuery</returns>
-        InsertQuery<T> Insert(IStatements statements);
+        IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements);
+
+
+        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection, T> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions);
     }
 }

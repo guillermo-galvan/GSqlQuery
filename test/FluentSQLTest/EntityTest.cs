@@ -7,6 +7,7 @@ using FluentSQL.SearchCriteria;
 using FluentSQLTest.Data;
 using FluentSQLTest.Extensions;
 using FluentSQLTest.Models;
+using System.Data.Common;
 
 namespace FluentSQLTest
 {
@@ -78,11 +79,51 @@ namespace FluentSQLTest
         }
 
         [Theory]
+        [ClassData(typeof(Select_Test3_TestData_ConnectionOptions))]
+        public void Should_generate_the_static_select_query(ConnectionOptions<DbConnection> connection, string query)
+        {
+            var queryBuilder = Test3.Select(connection);
+            Assert.NotNull(queryBuilder);
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Select_Test3_TestData2_ConnectionOptions))]
+        public void Should_generate_the_static_select_query2(ConnectionOptions<DbConnection> connection, string query)
+        {
+            var queryBuilder = Test3.Select(connection, x => new { x.Ids, x.Names, x.Creates });
+            Assert.NotNull(queryBuilder);
+            Assert.NotEmpty(queryBuilder.Build().Text);
+            Assert.Equal(query, queryBuilder.Build().Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Select_Test3_TestData3_ConnectionOptions))]
+        public void Should_generate_the_static_select_query3(ConnectionOptions<DbConnection> connection, string queryText)
+        {
+            var query = Test3.Select(connection, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
         [ClassData(typeof(Insert_Test3_TestData))]
         public void Should_generate_the_insert_query_with_auto_incrementing(IStatements statements, string queryText)
         {
             Test3 test = new (1, null, DateTime.Now, true);
-            var query = test.Insert(statements);
+            var query = test.Insert(statements).Build();
 
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
@@ -103,7 +144,49 @@ namespace FluentSQLTest
         public void Should_generate_the_insert_query(IStatements statements, string queryText)
         {
             Test6 test = new(1, null, DateTime.Now, true);
-            var query = test.Insert(statements);
+            var query = test.Insert(statements).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Insert_Test3_TestData_ConnectionOptions))]
+        public void Should_generate_the_insert_query_with_auto_incrementing2(ConnectionOptions<DbConnection> connection, string queryText)
+        {
+            Test3 test = new(1, null, DateTime.Now, true);
+            var query = test.Insert(connection).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Insert_Test6_TestData_ConnectionOptions))]
+        public void Should_generate_the_insert_query2(ConnectionOptions<DbConnection> connection, string queryText)
+        {
+            Test6 test = new(1, null, DateTime.Now, true);
+            var query = test.Insert(connection).Build();
 
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);

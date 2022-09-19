@@ -35,15 +35,34 @@ namespace FluentSQL
             return IRead<T>.Select(statements);
         }
 
+        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> 
+            Select<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
+            Expression<Func<T, TProperties>> expression)
+        {
+            return IRead<T>.Select(connectionOptions, expression);
+        }
+
+        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> 
+            Select<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
+        {
+            return IRead<T>.Select(connectionOptions);
+        }
+
         /// <summary>
         /// Generate the insert query
         /// </summary>
         /// <param name="key">The name of the statement collection</param>        
         /// <returns>Instance of IQuery</returns>
-        public InsertQuery<T> Insert(IStatements statements)
+        public IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));            
-            return new InsertQueryBuilder<T>(statements, this).Build();
+            return new InsertQueryBuilder<T>(statements, this);
+        }
+
+        public IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection, T> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
+        {
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            return new InsertQueryBuilder<T, TDbConnection>(connectionOptions, this);
         }
 
         /// <summary>
