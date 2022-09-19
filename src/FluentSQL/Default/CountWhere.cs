@@ -16,4 +16,23 @@ namespace FluentSQL.Default
             return _queryBuilder.Build();
         }
     }
+
+    internal class CountWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
+        IWhere<T, CountQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, CountQuery<T, TDbConnection>>,
+        IAndOr<T, CountQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<CountQuery<T, TDbConnection>> where T : class, new()
+    {
+        private readonly CountQueryBuilder<T, TDbConnection> _queryBuilder;
+
+        public CountWhere(CountQueryBuilder<T, TDbConnection> queryBuilder)
+        {
+            _queryBuilder = queryBuilder;
+        }
+
+        public CountQuery<T, TDbConnection> Build()
+        {
+            return _queryBuilder.Build();
+        }
+    }
 }
