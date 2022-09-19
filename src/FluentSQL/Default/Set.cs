@@ -5,72 +5,37 @@ using System.Linq.Expressions;
 
 namespace FluentSQL.Default
 {
-    /// <summary>
-    /// Base class to generate the set query
-    /// </summary>
-    /// <typeparam name="T">The type of object from which the query is generated</typeparam>
-    internal class Set<T> : ISet<T, UpdateQuery<T>> where T : class, new()
+    internal abstract class Set<T, TReturn> : ISet<T, TReturn> where T : class, new() where TReturn : IQuery
     {
-        private readonly Dictionary<ColumnAttribute, object?> _columnValues;        
-        private readonly IStatements _statements;
-        private readonly object? _entity;
+        protected readonly Dictionary<ColumnAttribute, object?> _columnValues;
+        protected readonly object? _entity;
 
-        /// <summary>
-        /// Get column values
-        /// </summary>
         public IDictionary<ColumnAttribute, object?> ColumnValues => _columnValues;
 
-        public Set(IEnumerable<string> selectMember, IStatements statements, object? value)
+        public Set(IEnumerable<string> selectMember, object? value)
         {
             selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
-            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            _columnValues = new Dictionary<ColumnAttribute, object?>();            
+            _columnValues = new Dictionary<ColumnAttribute, object?>();
             foreach (ColumnAttribute item in ClassOptionsFactory.GetClassOptions(typeof(T)).GetColumnsQuery(selectMember))
             {
                 _columnValues.Add(item, value);
             };
         }
 
-        public Set(object? entity, IEnumerable<string> selectMember, IStatements statements)
+        public Set(object? entity, IEnumerable<string> selectMember)
         {
             selectMember = selectMember ?? throw new ArgumentNullException(nameof(selectMember));
-            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            _columnValues = new Dictionary<ColumnAttribute, object?>();
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
+            _columnValues = new Dictionary<ColumnAttribute, object?>();
             foreach (var item in from prop in ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions
                                  join sel in selectMember on prop.PropertyInfo.Name equals sel
-                                 select new { prop.ColumnAttribute , prop.PropertyInfo})
+                                 select new { prop.ColumnAttribute, prop.PropertyInfo })
             {
                 _columnValues.Add(item.ColumnAttribute, item.PropertyInfo.GetValue(entity));
             };
         }
 
-        /// <summary>
-        /// Build Query
-        /// </summary>
-        /// <returns>Implementation of the IQuery interface</returns>
-        public UpdateQuery<T> Build()
-        {
-            return new UpdateQueryBuilder<T>(_statements,  _columnValues).Build();
-        }
-
-        /// <summary>
-        /// Add where statement in query
-        /// </summary>
-        /// <returns>Implementation of the IWhere interface</returns>
-        public IWhere<T, UpdateQuery<T>> Where()
-        {
-            return new UpdateQueryBuilder<T>( _statements, _columnValues).Where();
-        }
-
-        /// <summary>
-        /// add to query update another column with value
-        /// </summary>
-        /// <typeparam name="TProperties">The property or properties for the query</typeparam>
-        /// <param name="expression">The expression representing the property</param>
-        /// <param name="value"></param>
-        /// <returns>Instance of ISet</returns>
-        public ISet<T, UpdateQuery<T>> Add<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
+        public ISet<T, TReturn> Add<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
             var (options, memberInfos) = expression.GetOptionsAndMember();
             var column = memberInfos.ValidateMemberInfo(options).ColumnAttribute;
@@ -78,13 +43,7 @@ namespace FluentSQL.Default
             return this;
         }
 
-        /// <summary>
-        /// add to query update another column
-        /// </summary>
-        /// <typeparam name="TProperties">The property or properties for the query</typeparam>
-        /// <param name="expression">The expression representing the property or properties</param>
-        /// <returns>Instance of ISet</returns>
-        public ISet<T, UpdateQuery<T>> Add<TProperties>(Expression<Func<T, TProperties>> expression)
+        public ISet<T, TReturn> Add<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             if (_entity == null)
             {
@@ -101,6 +60,65 @@ namespace FluentSQL.Default
             }
 
             return this;
+        }
+
+        public abstract TReturn Build();
+
+        public abstract IWhere<T, TReturn> Where();
+    }
+
+    /// <summary>
+    /// Base class to generate the set query
+    /// </summary>
+    /// <typeparam name="T">The type of object from which the query is generated</typeparam>
+    internal class Set<T> : Set<T, UpdateQuery<T>> where T : class, new()
+    {
+        private readonly IStatements _statements;
+
+        public Set(IEnumerable<string> selectMember, IStatements statements, object? value) : base(selectMember, value)
+        {
+            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
+        }
+
+        public Set(object? entity, IEnumerable<string> selectMember, IStatements statements) : base(entity, selectMember)
+        {
+            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
+        }
+
+        public override UpdateQuery<T> Build()
+        {
+            return new UpdateQueryBuilder<T>(_statements, ColumnValues).Build();
+        }
+
+        public override IWhere<T, UpdateQuery<T>> Where()
+        {
+            return new UpdateQueryBuilder<T>(_statements, ColumnValues).Where();
+        }
+
+    }
+
+    internal class SetExecute<T, TDbConnection> : Set<T, UpdateQuery<T, TDbConnection>> where T : class, new()
+    {
+        private readonly ConnectionOptions<TDbConnection> _connectionOptions;
+
+        public SetExecute(IEnumerable<string> selectMember, ConnectionOptions<TDbConnection> connectionOptions, object? value) : base(selectMember, value)
+        {
+            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+        }
+
+        public SetExecute(object? entity, IEnumerable<string> selectMember, ConnectionOptions<TDbConnection> connectionOptions) : base(entity, selectMember)
+        {
+            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+        }
+
+        public override UpdateQuery<T, TDbConnection> Build()
+        {
+            return new UpdateQueryBuilder<T,TDbConnection>(_connectionOptions, ColumnValues).Build();
+        }
+
+        public override IWhere<T, UpdateQuery<T, TDbConnection>> Where()
+        {
+            return new UpdateQueryBuilder<T,TDbConnection>(_connectionOptions, ColumnValues).Where();
         }
     }
 }

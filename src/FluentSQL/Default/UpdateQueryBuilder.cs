@@ -86,4 +86,72 @@ namespace FluentSQL.Default
             return (IWhere<T, UpdateQuery<T>>)_andOr;
         }
     }
+
+    internal class UpdateQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>,
+        IQueryBuilderWithWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>,
+        IQueryBuilder<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>, IBuilder<UpdateQuery<T, TDbConnection>>
+        where T : class, new()
+    {
+        private readonly IDictionary<ColumnAttribute, object?> _columnValues;
+
+        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, IDictionary<ColumnAttribute, object?> columnValues) :
+            base(connectionOptions, QueryType.Update)
+        {
+            _columnValues = columnValues ?? throw new ArgumentNullException(nameof(columnValues));
+        }
+
+        private List<CriteriaDetail> GetUpdateCliterias()
+        {
+            List<CriteriaDetail> criteriaDetails = new();
+
+            foreach (var item in _columnValues)
+            {
+                PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
+                string paramName = $"@PU{DateTime.Now.Ticks}";
+                criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, ConnectionOptions.Statements)}={paramName}",
+                    new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
+            }
+            return criteriaDetails;
+        }
+
+        protected override string GenerateQuery()
+        {
+            if (_columnValues == null)
+            {
+                throw new InvalidOperationException("Column values not found");
+            }
+            List<CriteriaDetail> criteria = GetUpdateCliterias();
+            string query = string.Empty;
+            _criteria = null;
+
+            if (_queryType == QueryType.Update)
+            {
+                query = string.Format(ConnectionOptions.Statements.Update, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)));
+            }
+            else
+            {
+                string where = GetCriteria();
+                query = string.Format(ConnectionOptions.Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
+#pragma warning disable CS8604 // Possible null reference argument.
+                criteria.AddRange(_criteria);
+#pragma warning restore CS8604 // Possible null reference argument.
+            }
+
+            _criteria = criteria;
+            return query;
+        }
+
+        public override UpdateQuery<T, TDbConnection> Build()
+        {
+            return new UpdateQuery<T, TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
+        }
+
+        public override IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection> Where()
+        {
+            ChangeQueryType();
+            UpdateWhere<T, TDbConnection> selectWhere = new(this);
+            _andOr = selectWhere;
+            return (IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection>)_andOr;
+        }
+    }
 }

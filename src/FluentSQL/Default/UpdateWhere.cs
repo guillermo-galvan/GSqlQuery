@@ -29,14 +29,24 @@ namespace FluentSQL.Default
         {
             return _queryBuilder.Build();
         }
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
+    internal class UpdateWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
+        IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, UpdateQuery<T, TDbConnection>>,
+        IAndOr<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<UpdateQuery<T, TDbConnection>> where T : class, new()
+    {
+        private readonly UpdateQueryBuilder<T, TDbConnection> _queryBuilder;
+
+        public UpdateWhere(UpdateQueryBuilder<T, TDbConnection> queryBuilder) : base()
         {
-            return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
+            _queryBuilder = queryBuilder;
+        }
+
+        public UpdateQuery<T, TDbConnection> Build()
+        {
+            return _queryBuilder.Build();
         }
     }
 }

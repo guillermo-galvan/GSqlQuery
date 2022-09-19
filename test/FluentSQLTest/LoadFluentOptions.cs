@@ -42,8 +42,8 @@ namespace FluentSQLTest
                     return Enumerable.Empty<Test1>();
                 });
 
-            mock.Setup(x => x.ExecuteScalar(It.IsAny<InsertQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
-                .Returns<InsertQuery<Test3>, IEnumerable<IDataParameter>, Type>((q,pa,t) => {
+            mock.Setup(x => x.ExecuteScalar(It.IsAny<InsertQuery<Test3,DbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
+                .Returns<InsertQuery<Test3, DbConnection>, IEnumerable<IDataParameter>, Type>((q,pa,t) => {
 
                     if (q.Text.Contains("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])"))
                     {
@@ -53,8 +53,8 @@ namespace FluentSQLTest
                     return 0;
                 });
 
-            mock.Setup(x => x.ExecuteScalar(It.IsAny<DbConnection>(), It.IsAny<InsertQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
-               .Returns<DbConnection, InsertQuery<Test3>, IEnumerable<IDataParameter>, Type>((c,q, pa, t) => {
+            mock.Setup(x => x.ExecuteScalar(It.IsAny<DbConnection>(), It.IsAny<InsertQuery<Test3, DbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<Type>()))
+               .Returns<DbConnection, InsertQuery<Test3, DbConnection>, IEnumerable<IDataParameter>, Type>((c,q, pa, t) => {
 
                    if (q.Text.Contains("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])"))
                    {
@@ -130,8 +130,8 @@ namespace FluentSQLTest
                     return 0;
                 });
 
-            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<UpdateQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<UpdateQuery<Test3>, IEnumerable<IDataParameter>>((q, pa) => {
+            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<UpdateQuery<Test3,DbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<UpdateQuery<Test3, DbConnection>, IEnumerable<IDataParameter>>((q, pa) => {
 
                     if (q.Text.Contains("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;"))
                     {
@@ -141,8 +141,8 @@ namespace FluentSQLTest
                     return 0;
                 });
 
-            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<DbConnection>(), It.IsAny<UpdateQuery<Test3>>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<DbConnection,UpdateQuery<Test3>, IEnumerable<IDataParameter>>((c,q, pa) => {
+            mock.Setup(x => x.ExecuteNonQuery(It.IsAny<DbConnection>(), It.IsAny<UpdateQuery<Test3, DbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+                .Returns<DbConnection,UpdateQuery<Test3, DbConnection>, IEnumerable<IDataParameter>>((c,q, pa) => {
 
                     if (q.Text.Contains("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;"))
                     {

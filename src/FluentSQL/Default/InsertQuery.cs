@@ -75,6 +75,8 @@ namespace FluentSQL.Default
 
         public override T Exec(TDbConnection dbConnection)
         {
+            dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
                 InsertAutoIncrementing(dbConnection);

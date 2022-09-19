@@ -287,6 +287,91 @@ namespace FluentSQLTest
         }
 
         [Theory]
+        [ClassData(typeof(Update_Test3_TestData_Connection))]
+        public void Should_generate_the_update_query2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
+        {
+            Test3 test = new(1, null, DateTime.Now, true);
+            var query = test.Update(connectionOptions, x => new { x.Ids, x.Names, x.Creates }).Add(x => x.IsTests).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Update_Test3_TestData2_Connection))]
+        public void Should_generate_the_update_query_with_where2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
+        {
+            Test3 test = new(1, null, DateTime.Now, true);
+            var query = test.Update(connectionOptions, x => new { x.Ids, x.Names, x.Creates }).Add(x => x.IsTests)
+                            .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Update_Test3_TestData_Connection))]
+        public void Should_generate_the_static_update_query2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
+        {
+            var query = Test3.Update(connectionOptions, x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Update_Test3_TestData2_Connection))]
+        public void Should_generate_the_static_update_query_with_where2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
+        {
+            var query = Test3.Update(connectionOptions, x => x.Ids, 1).Add(x => x.Names, "Test").Add(x => x.Creates, DateTime.Now).Add(x => x.IsTests, false)
+                            .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+
+        [Theory]
         [ClassData(typeof(Delete_Test3_TestData))]
         public void Should_generate_the_delete_query(IStatements statements, string queryText)
         {

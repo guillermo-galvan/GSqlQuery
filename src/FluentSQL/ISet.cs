@@ -6,7 +6,7 @@ namespace FluentSQL
     /// Base class to generate the set query
     /// </summary>
     /// <typeparam name="T">The type of object from which the query is generated</typeparam>
-    public interface ISet<T, TReturn> : IBuilder<TReturn> where T : class, new() where TReturn : IQuery<T>
+    public interface ISet<T, TReturn> : IBuilder<TReturn> where T : class, new() where TReturn : IQuery
     {
         /// <summary>
         /// Get column values

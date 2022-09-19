@@ -38,7 +38,7 @@ namespace FluentSQL.Default
     {
         private readonly SelectQueryBuilder<T, TDbConnection> _selectQueryBuilder;
 
-        public SelectWhere(SelectQueryBuilder<T, TDbConnection> selectQueryBuilder)
+        public SelectWhere(SelectQueryBuilder<T, TDbConnection> selectQueryBuilder) : base()
         {
             _selectQueryBuilder = selectQueryBuilder;
         }
