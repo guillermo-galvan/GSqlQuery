@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FluentSQL
 {
-    public class BatchExecute<TDbConnection>
+    public class BatchExecute<TDbConnection>: IExecute<int,TDbConnection>
     {
         private readonly ConnectionOptions<TDbConnection> _connectionOptions;
         private readonly Queue<IQuery> _queries;

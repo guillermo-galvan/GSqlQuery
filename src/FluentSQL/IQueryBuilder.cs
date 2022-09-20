@@ -16,7 +16,9 @@ namespace FluentSQL
         IStatements Statements { get; }
     }
 
-    public interface IQueryBuilder<T, TReturn, TDbConnection, TResult> : IBuilder<TReturn> where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
+    public interface IQueryBuilder<T, TReturn, TDbConnection, TResult> : IBuilder<TReturn>
+        where T : class, new() where 
+        TReturn : IQuery<T, TDbConnection, TResult>
     {
         IEnumerable<PropertyOptions> Columns { get; }
 

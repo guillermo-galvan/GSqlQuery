@@ -1,4 +1,6 @@
-﻿namespace FluentSQL
+﻿using FluentSQL.Models;
+
+namespace FluentSQL
 {
     /// <summary>
     /// 
@@ -6,6 +8,8 @@
     /// <typeparam name="TResult"></typeparam>
     public interface IExecute<TResult, TDbConnection>
     {
+        ConnectionOptions<TDbConnection> ConnectionOptions { get; }
+
         TResult Exec();
 
         TResult Exec(TDbConnection dbConnection);
