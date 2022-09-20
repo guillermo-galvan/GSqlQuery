@@ -90,21 +90,22 @@ namespace FluentSQL
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Update(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Update(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new Set<T>(this,memberInfos.Select(x => x.Name), statements);
+            return new UpdateQueryBuilder<T>(statements, this,memberInfos.Select(x => x.Name));
         }
 
-        public static ISet<T, UpdateQuery<T, TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
+        public static ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>
+            Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
             Expression<Func<T, TProperties>> expression, TProperties value)
         {
             return IUpdate<T>.Update(connectionOptions, expression, value);
         }
        
-        public ISet<T, UpdateQuery<T,TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Update(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Update(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new SetExecute<T,TDbConnection>(this, memberInfos.Select(x => x.Name), connectionOptions);
+            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions,this, memberInfos.Select(x => x.Name));
         }
 
         /// <summary>

@@ -21,17 +21,11 @@ namespace FluentSQLTest.Default
         public UpdateWhereTest()
         {
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
-            Dictionary<ColumnAttribute, object?> _columnsValue = new()
-            {
-                { new ColumnAttribute("Create"), DateTime.Now.Ticks },
-                { new ColumnAttribute("Id"), "test" },
-                { new ColumnAttribute(nameof(Test3.IsTests)), true }
-            };
+            var columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
 
-            _queryBuilder = new(new FluentSQL.Default.Statements(), _columnsValue);
+            _queryBuilder = new(new FluentSQL.Default.Statements(), columnsValue,string.Empty);
             _updateQueryBuilder = 
-                new UpdateQueryBuilder<Test1, DbConnection>(new ConnectionOptions<DbConnection>(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()), 
-                _columnsValue);
+                new (new ConnectionOptions<DbConnection>(new FluentSQL.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()), columnsValue, string.Empty);
         }
 
         [Fact]

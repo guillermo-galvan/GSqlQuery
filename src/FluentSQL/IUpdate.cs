@@ -35,19 +35,19 @@ namespace FluentSQL
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             var (options, memberInfos) = expression.GetOptionsAndMember();
             memberInfos.ValidateMemberInfo(options);
-            return new Set<T>(new string[] { memberInfos.Name }, statements, value);
+            return new UpdateQueryBuilder<T>(statements,new string[] { memberInfos.Name }, value);
         }
 
-        ISet<T, UpdateQuery<T, TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions,
+        ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions,
             Expression<Func<T, TProperties>> expression);
 
-        public static ISet<T, UpdateQuery<T, TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
+        public static ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
             Expression<Func<T, TProperties>> expression, TProperties value)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
             var (options, memberInfos) = expression.GetOptionsAndMember();
             memberInfos.ValidateMemberInfo(options);
-            return new SetExecute<T,TDbConnection>(new string[] { memberInfos.Name }, connectionOptions, value);
+            return new UpdateQueryBuilder<T,TDbConnection>(connectionOptions, new string[] { memberInfos.Name }, value);
         }
 
     }

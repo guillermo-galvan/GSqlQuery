@@ -13,6 +13,6 @@
         : IQueryBuilder<T, TReturn, TDbConnection, TResult>, IBuilder<TReturn>
         where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
     {
-        IWhere<T, TReturn, TDbConnection> Where();
+        IWhere<T, TReturn, TDbConnection, TResult> Where();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FluentSQL
 {
-    public interface IAndOr<TReturn> : ISearchCriteriaBuilder, IBuilder<TReturn>
+    public interface IAndOr<TReturn> : ISearchCriteriaBuilder, IBuilder<TReturn> where TReturn : IQuery
     { 
 
     }
@@ -15,7 +15,7 @@ namespace FluentSQL
     {
     }
 
-    public interface IAndOr<T, TReturn, TDbConnection> : IAndOr<T, TReturn>, IBuilder<TReturn> 
+    public interface IAndOr<T, TReturn, TDbConnection,TResult> : IAndOr<T, TReturn>, IBuilder<TReturn> 
         where T : class, new() where TReturn : IQuery
     {
     }

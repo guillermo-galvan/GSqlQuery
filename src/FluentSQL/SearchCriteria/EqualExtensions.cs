@@ -56,5 +56,31 @@ namespace FluentSQL.SearchCriteria
             andOr.Add(new Equal<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "OR"));
             return andOr;
         }
+
+        public static IAndOr<T, TReturn, TDbConnection, TResult> Equal<T, TReturn, TDbConnection, TResult, TProperties>(this IWhere<T, TReturn, TDbConnection, TResult> where,
+            Expression<Func<T, TProperties>> expression, TProperties value) where T : class, new() where TReturn : IQuery
+        {
+            IAndOr<T, TReturn, TDbConnection, TResult> andor = where.GetAndOr(expression);
+            andor.Add(new Equal<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value));
+            return andor;
+        }
+
+        public static IAndOr<T, TReturn, TDbConnection, TResult> AndEqual<T, TReturn, TDbConnection, TResult, TProperties>
+            (this IAndOr<T, TReturn, TDbConnection, TResult> andOr, Expression<Func<T, TProperties>> expression, TProperties value)
+            where T : class, new() where TReturn : IQuery
+        {
+            andOr.Validate(expression);
+            andOr.Add(new Equal<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "AND"));
+            return andOr;
+        }
+
+        public static IAndOr<T, TReturn, TDbConnection, TResult> OrEqual<T, TReturn, TDbConnection, TResult, TProperties>(this IAndOr<T, TReturn, TDbConnection, TResult> andOr, 
+            Expression<Func<T, TProperties>> expression, TProperties value)
+            where T : class, new() where TReturn : IQuery
+        {
+            andOr.Validate(expression);
+            andOr.Add(new Equal<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "OR"));
+            return andOr;
+        }
     }
 }

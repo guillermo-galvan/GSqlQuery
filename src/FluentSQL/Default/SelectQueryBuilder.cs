@@ -106,12 +106,12 @@ namespace FluentSQL.Default
             return new SelectQuery<T, TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
         }
 
-        public override IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> Where()
+        public override IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> Where()
         {
             ChangeQueryType();
             SelectWhere<T, TDbConnection> selectWhere = new SelectWhere<T, TDbConnection>(this);
             _andOr = selectWhere;
-            return (IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>)_andOr;
+            return (IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>)_andOr;
         }
     }
 }

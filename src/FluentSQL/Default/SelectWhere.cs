@@ -31,9 +31,9 @@ namespace FluentSQL.Default
     }
 
     internal class SelectWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>,
         IWhere<T, SelectQuery<T, TDbConnection>>,
-        IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection,IEnumerable<T>>,
         IAndOr<SelectQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly SelectQueryBuilder<T, TDbConnection> _selectQueryBuilder;

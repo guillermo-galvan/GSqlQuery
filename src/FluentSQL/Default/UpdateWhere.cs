@@ -32,9 +32,9 @@ namespace FluentSQL.Default
     }
 
     internal class UpdateWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection,int>,
         IWhere<T, UpdateQuery<T, TDbConnection>>,
-        IAndOr<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<T, UpdateQuery<T, TDbConnection>, TDbConnection,int>,
         IAndOr<UpdateQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly UpdateQueryBuilder<T, TDbConnection> _queryBuilder;

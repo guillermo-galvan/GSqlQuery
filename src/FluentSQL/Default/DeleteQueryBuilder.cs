@@ -69,11 +69,11 @@ namespace FluentSQL.Default
             return new DeleteQuery<T,TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
         }
 
-        public override IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection> Where()
+        public override IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection,int> Where()
         {
             ChangeQueryType();
             _andOr = new DeleteWhere<T,TDbConnection>(this);
-            return (IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection>)_andOr;
+            return (IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection,int>)_andOr;
         }
 
         protected override string GenerateQuery()

@@ -12,8 +12,7 @@
     {   
     }
 
-
-    public interface IWhere<T, TReturn, TDbConnection> : IWhere<T, TReturn>
+    public interface IWhere<T, TReturn, TDbConnection, TResult> : IWhere<T, TReturn>
         where T : class, new() where TReturn : IQuery
     {
     }

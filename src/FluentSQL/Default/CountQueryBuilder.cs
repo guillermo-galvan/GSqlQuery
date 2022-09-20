@@ -72,11 +72,11 @@ namespace FluentSQL.Default
             return new CountQuery<T,TDbConnection>(GenerateQuery(), _selectQuery.Columns, _criteria, _queryBuilder.ConnectionOptions);
         }
 
-        public override IWhere<T, CountQuery<T, TDbConnection>, TDbConnection> Where()
+        public override IWhere<T, CountQuery<T, TDbConnection>, TDbConnection,int> Where()
         {
             CountWhere<T,TDbConnection> selectWhere = new(this);
             _andOr = selectWhere;
-            return (IWhere<T, CountQuery<T, TDbConnection>, TDbConnection>)_andOr;
+            return (IWhere<T, CountQuery<T, TDbConnection>, TDbConnection,int>)_andOr;
         }
 
         protected override string GenerateQuery()

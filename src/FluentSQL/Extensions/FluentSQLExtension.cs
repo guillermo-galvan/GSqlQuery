@@ -4,6 +4,21 @@ namespace FluentSQL.Extensions
 {
     public static class FluentSQLExtension
     {
+        public static IAndOr<T, TReturn, TDbConnection, TResult> GetAndOr<T, TReturn, TDbConnection, TResult, TProperties>
+           (this IWhere<T, TReturn, TDbConnection, TResult> where, Expression<Func<T, TProperties>> expression)
+           where T : class, new() where TReturn : IQuery
+        {
+            IAndOr<T, TReturn, TDbConnection, TResult>? result = null;
+
+            if (where is IAndOr<T, TReturn, TDbConnection, TResult> andor)
+            {
+                result = andor;
+            }
+
+            result!.Validate(expression);
+            return result!;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -23,10 +38,8 @@ namespace FluentSQL.Extensions
                 result = andor;
             }
 
-#pragma warning disable CS8604 // Possible null reference argument.
-            result.Validate(expression);
-#pragma warning restore CS8604 // Possible null reference argument.
-            return result;
+            result!.Validate(expression);
+            return result!;
         }
 
         /// <summary>
@@ -46,10 +59,22 @@ namespace FluentSQL.Extensions
                 result = andor;
             }
 
-#pragma warning disable CS8604 // Possible null reference argument.
-            result.NullValidate(ErrorMessages.ParameterNotNull, nameof(where));
-#pragma warning restore CS8604 // Possible null reference argument.
-            return result;
+            result!.NullValidate(ErrorMessages.ParameterNotNull, nameof(where));
+            return result!;
+        }
+
+        public static IAndOr<T, TReturn, TDbConnection, TResult> GetAndOr<T, TReturn, TDbConnection, TResult>(this IWhere<T, TReturn, TDbConnection, TResult> where)
+            where T : class, new() where TReturn : IQuery
+        {
+            IAndOr<T, TReturn, TDbConnection, TResult>? result = null;
+
+            if (where is IAndOr<T, TReturn, TDbConnection, TResult> andor)
+            {
+                result = andor;
+            }
+
+            result!.NullValidate(ErrorMessages.ParameterNotNull, nameof(where));
+            return result!;
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿using FluentSQL.Extensions;
+﻿using FluentSQL.Default;
+using FluentSQL.Extensions;
+using FluentSQL.Models;
 using System.Data;
 using System.Text;
 
@@ -6,29 +8,28 @@ namespace FluentSQL
 {
     public class BatchExecute<TDbConnection>
     {
-        private readonly IStatements _statements;
+        private readonly ConnectionOptions<TDbConnection> _connectionOptions;
         private readonly Queue<IQuery> _queries;
         private readonly List<IDataParameter> _parameters;
         private readonly StringBuilder _queryBuilder;
         private readonly List<ColumnAttribute> _columns;
-        private readonly IDatabaseManagement<TDbConnection> _databaseManagment;
 
-        public IDatabaseManagement<TDbConnection> DatabaseManagement => _databaseManagment;
+        public ConnectionOptions<TDbConnection> ConnectionOptions => _connectionOptions;
 
-        public BatchExecute(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagment)
+        public BatchExecute(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            _databaseManagment = databaseManagment ?? throw new ArgumentNullException(nameof(databaseManagment));
+            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
             _queries = new Queue<IQuery>();
             _parameters = new List<IDataParameter>();
             _queryBuilder = new();
             _columns = new();
         }
 
-        public BatchExecute<TDbConnection> Add<T>(Func<IStatements, IQuery<T>> expression) where T : class, new()
+        public BatchExecute<TDbConnection> Add<T, TResult>(Func<ConnectionOptions<TDbConnection>, IQuery<T, TDbConnection, TResult>> expression) 
+            where T : class, new()
         {
-            IQuery<T> query = expression.Invoke(_statements);
-            _parameters.AddRange(query.GetParameters<T, TDbConnection>(_databaseManagment));
+            IQuery query = expression.Invoke(_connectionOptions);
+            _parameters.AddRange(query.GetParameters<T, TDbConnection>(_connectionOptions.DatabaseManagment));
             _queryBuilder.Append(query.Text);
             _columns.AddRange(query.Columns);
             _queries.Enqueue(query);
@@ -37,16 +38,14 @@ namespace FluentSQL
 
         public int Exec()
         {
-            //return new BatchQuery(_queryBuilder.ToString(), _columns, null, _statements, _parameters).SetDatabaseManagement(_databaseManagment).Exec();
-            throw new NotImplementedException();
-
+            var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            return _connectionOptions.DatabaseManagment.ExecuteNonQuery(query, _parameters);
         }
 
         public int Exec(TDbConnection connection)
         {
-            //return new BatchQuery(_queryBuilder.ToString(), _columns, null, _statements, _parameters).SetDatabaseManagement(_databaseManagment)
-            //    .Exec(connection);
-            throw new NotImplementedException();
+            var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            return _connectionOptions.DatabaseManagment.ExecuteNonQuery(connection, query, _parameters);
         }
     }
 }

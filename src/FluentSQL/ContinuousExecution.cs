@@ -1,43 +1,33 @@
 ﻿using FluentSQL.Default;
 using FluentSQL.Internal;
+using FluentSQL.Models;
 using System.Security.Principal;
 
 namespace FluentSQL
 {
     public sealed class ContinuousExecution<TDbConnection>
     {
-        private readonly IStatements _statements;
-        private readonly IDatabaseManagement<TDbConnection> _databaseManagement;
+        private readonly ConnectionOptions<TDbConnection> _connectionOptions;
 
-        public ContinuousExecution(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagement)
+        public ContinuousExecution(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            _databaseManagement = databaseManagement ?? throw new ArgumentNullException(nameof(databaseManagement));
+            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
         }
 
-        public ContinueExecution<TResult, TDbConnection> New<TResult>(
-            Func<IStatements> query)
+        public ContinueExecution<TResult, TDbConnection> New<T, TReturn, TResult>
+            (Func<ConnectionOptions<TDbConnection>, IQueryBuilder<T, TReturn, TDbConnection, TResult>> query)
+            where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
         {
-            //return new ContinueExecution<TResult, TDbConnection>(_statements,
-            //    new ContinueExecutionResult<TDbConnection, TResult>(_statements, query, _databaseManagement), _databaseManagement);
-
-            throw new NotImplementedException();
+            return new ContinueExecution<TResult, TDbConnection>(_connectionOptions,
+                new ContinueExecutionQueryBuilderResult<T, TReturn, TDbConnection, TResult>(_connectionOptions, query));
         }
 
-        public ContinueExecution<IEnumerable<T>, TDbConnection> New<T>(Func<IStatements, IBuilder<SelectQuery<T>>> exec)
-            where T : class, new()
+        public ContinueExecution<TResult, TDbConnection> New<T, TReturn, TResult>
+            (Func<ConnectionOptions<TDbConnection>, IAndOr<T, TReturn, TDbConnection, TResult>> query)
+            where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
         {
-            return new ContinueExecution<IEnumerable<T>, TDbConnection>(_statements, 
-                new ContinueExecutionResult3<TDbConnection, T>(_statements, exec, _databaseManagement), _databaseManagement);
-        }
-
-        public ContinueExecution<TTypeResult, TDbConnection> New<TReturn,TTypeResult>(Func<IStatements, IBuilder<TReturn>> exec)
-            where TTypeResult : struct
-        {
-            //return new ContinueExecution<TTypeResult, TDbConnection>(_statements, 
-            //    new ContinueExecutionResult2<TDbConnection, TReturn, TTypeResult>(_statements, exec, _databaseManagement), _databaseManagement);
-
-            throw new NotImplementedException();
+            return new ContinueExecution<TResult, TDbConnection>(_connectionOptions,
+                new ContinueExecutionIAndOrResult<T, TReturn, TDbConnection, TResult>(_connectionOptions, query));
         }
     }
 }

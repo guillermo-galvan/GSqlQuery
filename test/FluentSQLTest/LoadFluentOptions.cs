@@ -102,10 +102,10 @@ namespace FluentSQLTest
 
                    if (q.Text.Contains("SELECT COUNT([TableName].[Id]) FROM [TableName];"))
                    {
-                       return Convert.ToInt64(1);
+                       return 1;
                    }
 
-                   return Convert.ToInt64(0);//SELECT COUNT(TableName.Id) FROM TableName;
+                   return 0;
                });
 
             mock.Setup(x => x.ExecuteNonQuery(It.IsAny<InsertQuery<Test6>>(),  It.IsAny<IEnumerable<IDataParameter>>()))

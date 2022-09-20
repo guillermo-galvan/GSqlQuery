@@ -1,19 +1,18 @@
 ﻿using FluentSQL.Default;
+using FluentSQL.Models;
 
 namespace FluentSQL.Internal
 {
     public abstract class ContinueExecutionResult<TDbConnection>
     {
-        protected readonly IStatements _statements;
+        protected readonly ConnectionOptions<TDbConnection> _connectionOptions;
         protected Queue<ContinueExecutionResult<TDbConnection>> _fifo = new();
-        protected readonly IDatabaseManagement<TDbConnection> _databaseManagement;
 
         protected abstract object? Execute(TDbConnection connection,object? param);
 
-        public ContinueExecutionResult(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagement)
+        public ContinueExecutionResult(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            _databaseManagement = databaseManagement ?? throw new ArgumentNullException(nameof(databaseManagement));
+            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
         }
 
         public void Add(ContinueExecutionResult<TDbConnection> continueExecutionResult)
@@ -36,132 +35,97 @@ namespace FluentSQL.Internal
         }
     }
 
-    internal class ContinueExecutionResult<TDbConnection, TResult> : ContinueExecutionResult<TDbConnection>
+    internal class ContinueExecutionQueryBuilderResult<T, TReturn,TDbConnection, TResult, TNewResult> : ContinueExecutionResult<TDbConnection>
+        where T : class, new() where TReturn : IQuery<T, TDbConnection, TNewResult>
     {
-        private readonly Func<IStatements>? _func;        
+        private readonly Func<ConnectionOptions<TDbConnection>, TResult, IQueryBuilder<T, TReturn, TDbConnection, TNewResult>>? _func;
 
-        public ContinueExecutionResult(IStatements statements, Func<IStatements> query,
-            IDatabaseManagement<TDbConnection> databaseManagement) :
-            base(statements, databaseManagement)
+        public ContinueExecutionQueryBuilderResult(ConnectionOptions<TDbConnection> connectionOptions,
+            Func<ConnectionOptions<TDbConnection>, TResult, IQueryBuilder<T, TReturn, TDbConnection, TNewResult>> func) :
+            base(connectionOptions)
         {
-            _func = query;
-            _fifo.Enqueue(this);
-        }
-
-        protected override object? Execute(TDbConnection connection,object? param)
-        {
-            //if (_func != null)
-            //{
-            //    return _func.Invoke(_statements).SetDatabaseManagement(_databaseManagement).Exec(connection);
-            //}
-
-            //return default(TResult);
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class ContinueExecutionResult<TDbConnection, TResult, TNewResult> : ContinueExecutionResult<TDbConnection>
-    {
-        private readonly Func<IStatements, TResult>? _func;
-
-        public ContinueExecutionResult(IStatements statements, Func<IStatements, TResult> query,
-            IDatabaseManagement<TDbConnection> databaseManagement) :
-            base(statements, databaseManagement)
-        {
-            _func = query;
+            _func = func;
         }
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            //if(_func != null)
-            //{
-            //    return _func.Invoke(_statements, (TResult)param).SetDatabaseManagement(_databaseManagement).Exec(connection);
-            //}
+            if (_func != null)
+            {
+                return _func.Invoke(_connectionOptions, (TResult)param!).Build().Exec(connection);
+            }
 
-            //return default(TResult);
-            throw new NotImplementedException();
-
+            return default(TResult);
         }
     }
 
-    internal class ContinueExecutionResult2 <TDbConnection, TResult, TReturn, TTypeResult> : ContinueExecutionResult<TDbConnection>
-        where TTypeResult : struct
+    internal class ContinueExecutionQueryBuilderResult<T, TReturn, TDbConnection, TNewResult> : ContinueExecutionResult<TDbConnection>
+        where T : class, new() where TReturn : IQuery<T, TDbConnection, TNewResult>
     {
-        private readonly Func<IStatements, TResult, IBuilder<TReturn>>? _func;
+        private readonly Func<ConnectionOptions<TDbConnection>, IQueryBuilder<T, TReturn, TDbConnection, TNewResult>>? _func;
 
-        public ContinueExecutionResult2(IStatements statements, Func<IStatements, TResult, IBuilder<TReturn>> query,
-            IDatabaseManagement<TDbConnection> databaseManagement) :
-            base(statements, databaseManagement)
+        public ContinueExecutionQueryBuilderResult(ConnectionOptions<TDbConnection> connectionOptions,
+            Func<ConnectionOptions<TDbConnection>, IQueryBuilder<T, TReturn, TDbConnection, TNewResult>> func) :
+            base(connectionOptions)
         {
-            _func = query;
+            _func = func;
+            Add(this);
         }
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            //return _func?.Invoke(_statements, (TResult)param).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
-            throw new NotImplementedException();
+            if (_func != null)
+            {
+                return _func.Invoke(_connectionOptions).Build().Exec(connection);
+            }
 
+            return default(TNewResult);
         }
     }
 
-    internal class ContinueExecutionResult2<TDbConnection, TReturn, TTypeResult> : ContinueExecutionResult<TDbConnection>
-        where TTypeResult : struct
+    internal class ContinueExecutionIAndOrResult<T, TReturn, TDbConnection, TNewResult> : ContinueExecutionResult<TDbConnection>
+        where T : class, new() where TReturn : IQuery<T, TDbConnection, TNewResult>
     {
-        private readonly Func<IStatements, IBuilder<TReturn>>? _func;
+        private readonly Func<ConnectionOptions<TDbConnection>, IAndOr<T, TReturn, TDbConnection, TNewResult>>? _func;
 
-        public ContinueExecutionResult2(IStatements statements, Func<IStatements, IBuilder<TReturn>> query,
-            IDatabaseManagement<TDbConnection> databaseManagement) :
-            base(statements, databaseManagement)
+        public ContinueExecutionIAndOrResult(ConnectionOptions<TDbConnection> connectionOptions,
+            Func<ConnectionOptions<TDbConnection>, IAndOr<T, TReturn, TDbConnection, TNewResult>> func) :
+            base(connectionOptions)
         {
-            _func = query;
-            _fifo.Enqueue(this);
+            _func = func;
+            Add(this);
         }
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            //return _func?.Invoke(_statements).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
-            throw new NotImplementedException();
+            if (_func != null)
+            {
+                return _func.Invoke(_connectionOptions).Build().Exec(connection);
+            }
+
+            return default(TNewResult);
         }
     }
 
-    internal class ContinueExecutionResult3<TDbConnection, TResult, T> : ContinueExecutionResult<TDbConnection>
-        where T : class, new()
+    internal class ContinueExecutionIAndOrResult<T, TReturn, TDbConnection, TResult, TNewResult> : ContinueExecutionResult<TDbConnection>
+        where T : class, new() where TReturn : IQuery<T, TDbConnection, TNewResult>
     {
-        private readonly Func<IStatements, TResult, IBuilder<SelectQuery<T>>>? _func;
+        private readonly Func<ConnectionOptions<TDbConnection>, TResult, IAndOr<T, TReturn, TDbConnection, TNewResult>>? _func;
 
-        public ContinueExecutionResult3(IStatements statements, Func<IStatements, TResult, IBuilder<SelectQuery<T>>> query,
-            IDatabaseManagement<TDbConnection> databaseManagement) :
-            base(statements, databaseManagement)
+        public ContinueExecutionIAndOrResult(ConnectionOptions<TDbConnection> connectionOptions,
+            Func<ConnectionOptions<TDbConnection>, TResult, IAndOr<T, TReturn, TDbConnection, TNewResult>> func) :
+            base(connectionOptions)
         {
-            _func = query;
+            _func = func;
         }
 
         protected override object? Execute(TDbConnection connection, object? param)
         {
-            //return _func?.Invoke(_statements, (TResult)param).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
-            throw new NotImplementedException();
+            if (_func != null)
+            {
+                return _func.Invoke(_connectionOptions, (TResult)param!).Build().Exec(connection);
+            }
 
-        }
-    }
-
-    internal class ContinueExecutionResult3<TDbConnection, T> : ContinueExecutionResult<TDbConnection>
-        where T : class, new()
-    {
-        private readonly Func<IStatements,  IBuilder<SelectQuery<T>>>? _func;
-
-        public ContinueExecutionResult3(IStatements statements, Func<IStatements, IBuilder<SelectQuery<T>>> query,
-            IDatabaseManagement<TDbConnection> databaseManagement) :
-            base(statements, databaseManagement)
-        {
-            _func = query;
-            _fifo.Enqueue(this);
-        }
-
-        protected override object? Execute(TDbConnection connection, object? param)
-        {
-            //return _func?.Invoke(_statements).Build().SetDatabaseManagement(_databaseManagement).Exec(connection);
-            throw new NotImplementedException();
-
+            return default(TResult);
         }
     }
 }

@@ -44,41 +44,8 @@ namespace FluentSQLTest.Default
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _statements, new Test3(0, null, DateTime.Now, true));
             
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null,  insert.GetParameters<Test3, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock())));
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, null, null, insert.GetParameters<Test3, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock())));
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, new ColumnAttribute[] { _columnAttribute }, null,  null));
-        }
-
-        [Fact]
-        public void Should_execute_the_batches()
-        {
-            //var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
-
-            //InsertQuery<Test3> insert = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
-            //    classOption.PropertyOptions.Select(x => x.ColumnAttribute),
-            //    new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-            //    _statements, new Test3(0, null, DateTime.Now, true));
-
-            //var result = new BatchQuery(insert.Text, new ColumnAttribute[] { _columnAttribute }, null, _statements, insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock()))
-            //                .SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec();
-
-            //Assert.Equal(0, result);
-        }
-
-        [Fact]
-        public void Should_execute_the_batches2()
-        {
-            //var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
-
-            //InsertQuery<Test3> insert = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
-            //    classOption.PropertyOptions.Select(x => x.ColumnAttribute),
-            //    new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-            //    _statements, new Test3(0, null, DateTime.Now, true));
-
-            //var result = new BatchQuery(insert.Text, new ColumnAttribute[] { _columnAttribute }, null, _statements, insert.GetParameters(LoadFluentOptions.GetDatabaseManagmentMock()))
-            //    .SetDatabaseManagement(LoadFluentOptions.GetDatabaseManagmentMock()).Exec(LoadFluentOptions.GetDbConnection());
-
-            //Assert.Equal(0, result);
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, null, null));
         }
     }
 }

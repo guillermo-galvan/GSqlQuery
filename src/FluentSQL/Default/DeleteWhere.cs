@@ -42,9 +42,9 @@ namespace FluentSQL.Default
     }
 
     internal class DeleteWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection,int>,
         IWhere<T, DeleteQuery<T, TDbConnection>>,
-        IAndOr<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<T, DeleteQuery<T, TDbConnection>, TDbConnection,int>,
         IAndOr<DeleteQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly DeleteQueryBuilder<T, TDbConnection> _queryBuilder;

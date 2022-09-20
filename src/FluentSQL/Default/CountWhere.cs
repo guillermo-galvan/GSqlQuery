@@ -18,9 +18,9 @@ namespace FluentSQL.Default
     }
 
     internal class CountWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, CountQuery<T, TDbConnection>, TDbConnection>,
+        IWhere<T, CountQuery<T, TDbConnection>, TDbConnection,int>,
         IWhere<T, CountQuery<T, TDbConnection>>,
-        IAndOr<T, CountQuery<T, TDbConnection>, TDbConnection>,
+        IAndOr<T, CountQuery<T, TDbConnection>, TDbConnection,int>,
         IAndOr<CountQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly CountQueryBuilder<T, TDbConnection> _queryBuilder;

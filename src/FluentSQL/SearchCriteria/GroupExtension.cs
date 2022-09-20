@@ -65,5 +65,70 @@ namespace FluentSQL.SearchCriteria
             andOr.Add(result);
             return result;
         }
+
+        /// <summary>
+        /// Start the group
+        /// </summary>
+        /// <typeparam name="T">The type to query</typeparam>
+        /// <param name="where">Instance of IWhere</param>
+        /// <returns>Instance of IWhere</returns>
+        public static IWhere<T, TReturn, TDbConnection, TResult> BeginGroup<T, TReturn, TDbConnection, TResult>
+            (this IWhere<T, TReturn, TDbConnection, TResult> where)
+            where T : class, new() where TReturn : IQuery
+        {
+            IAndOr<T, TReturn, TDbConnection, TResult> andor = where.GetAndOr();
+            var result = new Group<T, TReturn, TDbConnection, TResult>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, null, andor);
+            andor.Add(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Close the group
+        /// </summary>
+        /// <typeparam name="T">The type to query</typeparam>
+        /// <param name="andOr">Instance of IAndOr</param>
+        /// <returns>Instance of IAndOr</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static IAndOr<T, TReturn, TDbConnection, TResult> CloseGroup<T, TReturn, TDbConnection, TResult>
+            (this IAndOr<T, TReturn, TDbConnection, TResult> andOr)
+            where T : class, new() where TReturn : IQuery
+        {
+            if (andOr is Group<T, TReturn, TDbConnection, TResult> group)
+            {
+                return group.AndOr;
+            }
+
+            throw new InvalidOperationException("Need to start the group to be able to close it");
+        }
+
+        /// <summary>
+        /// Start the group with the logical operator AND
+        /// </summary>
+        /// <typeparam name="T">The type to query</typeparam>
+        /// <param name="andOr">Instance of IAndOr</param>
+        /// <returns>Instance of IWhere</returns>
+        public static IWhere<T, TReturn, TDbConnection, TResult> AndBeginGroup<T, TReturn, TDbConnection, TResult>
+            (this IAndOr<T, TReturn, TDbConnection, TResult> andOr)
+            where T : class, new() where TReturn : IQuery
+        {
+            var result = new Group<T, TReturn, TDbConnection, TResult>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "AND", andOr);
+            andOr.Add(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Start the group with the logical operator OR
+        /// </summary>
+        /// <typeparam name="T">The type to query</typeparam>
+        /// <param name="andOr">Instance of IAndOr</param>
+        /// <returns>Instance of IWhere</returns>
+        public static IWhere<T, TReturn, TDbConnection, TResult> OrBeginGroup<T, TReturn, TDbConnection, TResult>
+            (this IAndOr<T, TReturn, TDbConnection, TResult> andOr)
+            where T : class, new() where TReturn : IQuery
+        {
+            var result = new Group<T, TReturn, TDbConnection, TResult>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, "OR", andOr);
+            andOr.Add(result);
+            return result;
+        }
     }
 }

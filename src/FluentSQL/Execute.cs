@@ -1,18 +1,20 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.Extensions;
+using FluentSQL.Models;
 
 namespace FluentSQL
 {
     public class Execute
     {
-        public static ContinuousExecution<TDbConnection> ContinuousExecutionFactory<TDbConnection>(IStatements statements, 
-            IDatabaseManagement<TDbConnection> databaseManagement)
+        public static ContinuousExecution<TDbConnection> ContinuousExecutionFactory<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            return new ContinuousExecution<TDbConnection>(statements, databaseManagement);
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNull, nameof(connectionOptions));
+            return new ContinuousExecution<TDbConnection>(connectionOptions);
         }
 
-        public static BatchExecute<TDbConnection> BatchExecuteFactory<TDbConnection>(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagement)
+        public static BatchExecute<TDbConnection> BatchExecuteFactory<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            return new BatchExecute<TDbConnection>(statements, databaseManagement);
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNull, nameof(connectionOptions));
+            return new BatchExecute<TDbConnection>(connectionOptions);
         }
     }
 }

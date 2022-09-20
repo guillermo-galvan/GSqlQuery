@@ -1,45 +1,38 @@
 ﻿using FluentSQL.Default;
 using FluentSQL.Extensions;
 using FluentSQL.Internal;
+using FluentSQL.Models;
 
 namespace FluentSQL
 {
     public sealed class ContinueExecution<TResult, TDbConnection>
     {
-        private readonly IStatements _statements;
-        internal readonly ContinueExecutionResult<TDbConnection> _continueExecutionResult;
-        private readonly IDatabaseManagement<TDbConnection> _databaseManagement;
+        private readonly ConnectionOptions<TDbConnection> _connectionOptions;
+        internal readonly ContinueExecutionResult<TDbConnection> _continueExecutionResult;        
 
-        public IDatabaseManagement<TDbConnection> DatabaseManagement => _databaseManagement;
+        public ConnectionOptions<TDbConnection> ConnectionOptions => _connectionOptions;
 
-        internal ContinueExecution(IStatements statements, ContinueExecutionResult<TDbConnection> continueExecution, 
-            IDatabaseManagement<TDbConnection> databaseManagement)
+        internal ContinueExecution(ConnectionOptions<TDbConnection> connectionOptions,ContinueExecutionResult<TDbConnection> continueExecution)
         {
-            _statements = statements;
+            _connectionOptions = connectionOptions;
             _continueExecutionResult = continueExecution;
-            _databaseManagement = databaseManagement;
         }
 
-        public ContinueExecution<TNewResult, TDbConnection> ContinueWith<TNewResult>(Func<IStatements, TResult> exec)
+        public ContinueExecution<TNewResult, TDbConnection> ContinueWith<T, TReturn, TNewResult>
+            (Func<ConnectionOptions<TDbConnection>, TResult, IQueryBuilder<T, TReturn, TDbConnection, TNewResult>> exec)
+            where T : class, new() where TReturn : IQuery<T, TDbConnection, TNewResult>
         {
-            //_continueExecutionResult.Add(new ContinueExecutionResult<TDbConnection, TResult, TNewResult>(_statements, exec, _databaseManagement));
-            //return new ContinueExecution<TNewResult, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
-            throw new NotImplementedException();
+            _continueExecutionResult.Add(new ContinueExecutionQueryBuilderResult<T,TReturn,TDbConnection, TResult, TNewResult>(_connectionOptions, exec));
+            return new ContinueExecution<TNewResult, TDbConnection>(_connectionOptions, _continueExecutionResult);
         }
 
-        public ContinueExecution<TTypeResult, TDbConnection> ContinueWith<TReturn, TTypeResult>(Func<IStatements, TResult, IBuilder<TReturn>> exec)
-            where TTypeResult : struct
-        {
-            //_continueExecutionResult.Add(new ContinueExecutionResult2<TDbConnection, TResult, TReturn, TTypeResult>(_statements, exec, _databaseManagement));
-            //return new ContinueExecution<TTypeResult, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
-            throw new NotImplementedException();
-        }
-
-        public ContinueExecution<IEnumerable<T>, TDbConnection> ContinueWith<T>(Func<IStatements, TResult, IBuilder<SelectQuery<T>>> exec)
+        public ContinueExecution<TNewResult, TDbConnection> ContinueWith<T,TReturn, TNewResult>(Func<ConnectionOptions<TDbConnection>, TResult, 
+            IAndOr<T, TReturn, TDbConnection, TNewResult>> exec)
             where T : class, new()
+            where TReturn : IQuery<T, TDbConnection, TNewResult>
         {
-            _continueExecutionResult.Add(new ContinueExecutionResult3<TDbConnection, TResult, T>(_statements, exec, _databaseManagement));
-            return new ContinueExecution<IEnumerable<T>, TDbConnection>(_statements, _continueExecutionResult, _databaseManagement);
+            _continueExecutionResult.Add(new ContinueExecutionIAndOrResult<T, TReturn, TDbConnection, TResult, TNewResult>(_connectionOptions, exec));
+            return new ContinueExecution<TNewResult, TDbConnection>(_connectionOptions, _continueExecutionResult);
         }
 
         public TResult? Start()
@@ -47,7 +40,7 @@ namespace FluentSQL
             TDbConnection connection = default;
             try
             {
-                connection = _databaseManagement.GetConnection();
+                connection = _connectionOptions.DatabaseManagment.GetConnection();
                 TResult? result = Start(connection);
                 return result;
             }
