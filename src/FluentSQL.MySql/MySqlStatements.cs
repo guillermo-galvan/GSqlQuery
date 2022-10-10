@@ -1,6 +1,8 @@
-﻿namespace FluentSQL.MySql
+﻿using FluentSQL.Default;
+
+namespace FluentSQL.MySql
 {
-    public class MySqlStatements : Default.Statements
+    public class MySqlStatements : Statements
     {
         public override string Format => "`{0}`";
 

@@ -11,7 +11,7 @@ namespace FluentSQL.Default
     {
         public IStatements Statements { get; }
 
-        internal ClassOptions GetClassOptions()
+        protected ClassOptions GetClassOptions()
         {
             return ClassOptionsFactory.GetClassOptions(typeof(T));
         }
@@ -35,7 +35,7 @@ namespace FluentSQL.Default
     {
         public ConnectionOptions<TDbConnection> ConnectionOptions { get; }
 
-        internal ClassOptions GetClassOptions()
+        protected ClassOptions GetClassOptions()
         {
             return ClassOptionsFactory.GetClassOptions(typeof(T));
         }

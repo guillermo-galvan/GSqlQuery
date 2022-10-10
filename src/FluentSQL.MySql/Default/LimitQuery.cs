@@ -1,20 +1,26 @@
-﻿using FluentSQL.Extensions;
+﻿using FluentSQL.Default;
+using FluentSQL.Extensions;
 using FluentSQL.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FluentSQL.Default
+namespace FluentSQL.MySql.Default
 {
-    public class OrderByQuery<T> : Query<T> where T : class, new()
+    public class LimitQuery<T> : Query<T> where T : class, new()
     {
-        public OrderByQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
+        public LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         {
         }
     }
 
-    public class OrderByQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
+    public class LimitQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
         IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
     {
-        public OrderByQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)
+        public LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions)
         {
         }
@@ -27,7 +33,10 @@ namespace FluentSQL.Default
 
         public override IEnumerable<T> Exec(TDbConnection dbConnection)
         {
-            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            if (dbConnection == null)
+            {
+                throw new ArgumentNullException(nameof(dbConnection));
+            }
             return ConnectionOptions.DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
         }
