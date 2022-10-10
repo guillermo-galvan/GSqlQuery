@@ -1,6 +1,4 @@
-﻿using Castle.Components.DictionaryAdapter;
-using FluentSQL;
-using FluentSQL.Default;
+﻿using FluentSQL.Default;
 using FluentSQL.Extensions;
 using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
@@ -469,6 +467,50 @@ namespace FluentSQLTest
         {
             var queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
             var query = queryBuilder.Count().Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.Equal(queryText, result);
+        }
+
+
+        [Theory]
+        [ClassData(typeof(OrderBy_Test3_TestData))]
+        public void Should_generate_the_orderby_query(IStatements statements, string query)
+        {
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements, x => x.Ids);
+            IQueryBuilder<Test3, OrderByQuery<Test3>> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            Assert.NotNull(countQuery);
+            Assert.NotEmpty(countQuery.Build().Text);
+            Assert.Equal(query, countQuery.Build().Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(OrderBy_Test3_TestData2))]
+        public void Should_generate_some_properties_from_the_orderby_query(IStatements statements, string query)
+        {
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilder<Test3, OrderByQuery<Test3>> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            Assert.NotNull(countQuery);
+            Assert.NotEmpty(countQuery.Build().Text);
+            Assert.Equal(query, countQuery.Build().Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(OrderBy_Test3_TestData3))]
+        public void Should_return_the_orderby_query_with_where(IStatements statements, string queryText)
+        {
+            var queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12);
+            var query = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC).Build();
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
 

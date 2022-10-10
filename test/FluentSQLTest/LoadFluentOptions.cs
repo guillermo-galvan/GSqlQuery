@@ -23,7 +23,8 @@ namespace FluentSQLTest
             mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IQuery>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q,p,pa) => {
 
-                    if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];")
+                    if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];" ||
+                        q.Text == "SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;")
                     {
                         return new Test1[] { new Test1(1, "Name", DateTime.Now, true) }.AsEnumerable();
                     }
@@ -34,7 +35,8 @@ namespace FluentSQLTest
             mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<DbConnection>(),It.IsAny<IQuery>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<DbConnection, IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((c,q, p, pa) => {
 
-                    if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];")
+                    if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];" ||
+                        q.Text == "SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;")
                     {
                         return new Test1[] { new Test1(1, "Name", DateTime.Now, true) }.AsEnumerable();
                     }

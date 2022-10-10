@@ -49,5 +49,15 @@
         /// 
         /// </summary>
         string ValueAutoIncrementingQuery { get; }
+
+        /// <summary>
+        /// Instructions to format the select, example "SELECT {0} FROM {1} WHERE {2} ORDER BY {3};"
+        /// </summary>
+        string SelectWhereOrderBy { get; }
+
+        /// <summary>
+        /// Instructions to format the select, example "SELECT {0} FROM {1} ORDER BY {2};"
+        /// </summary>
+        string SelectOrderBy { get; }
     }
 }

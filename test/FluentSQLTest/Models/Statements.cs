@@ -19,5 +19,9 @@
         public string DeleteWhere => "DELETE FROM {0} WHERE {1};";
 
         public string ValueAutoIncrementingQuery => "SELECT SCOPE_IDENTITY();";
+
+        public string SelectWhereOrderBy => "SELECT {0} FROM {1} WHERE {2} ORDER BY {3};";
+
+        public string SelectOrderBy => "SELECT {0} FROM {1} ORDER BY {2};";
     }
 }
