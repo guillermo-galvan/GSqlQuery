@@ -62,7 +62,7 @@ namespace FluentSQL.MySql
         public override IEnumerable<T> ExecuteReader<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
         {
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
-            List<T> result = new();
+            Queue<T> result = new();
             object? valor = null;
 
             using var command = connection.CreateCommand();
@@ -93,7 +93,7 @@ namespace FluentSQL.MySql
                     transformToEntity.SetValue(x.Property.PositionConstructor, x.Property.PropertyInfo.Name, valor);
                 });
 
-                result.Add(transformToEntity.Generate());
+                result.Enqueue(transformToEntity.Generate());
             }
 
             return result;

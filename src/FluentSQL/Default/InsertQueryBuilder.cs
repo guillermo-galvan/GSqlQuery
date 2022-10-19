@@ -30,7 +30,7 @@ namespace FluentSQL.Default
 
         private string GetInsertQuery()
         {
-            List<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
+            Queue<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
             CriteriaDetail criteriaDetail = new(string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
             _criteria = new CriteriaDetail[] { criteriaDetail };
             string text = _includeAutoIncrementing ? 
@@ -46,15 +46,15 @@ namespace FluentSQL.Default
             return (column.GetColumnName(_tableName, Statements), new ParameterDetail($"@PI{DateTime.Now.Ticks}", options.GetValue(_entity), options));
         }
 
-        private List<(string columnName, ParameterDetail parameterDetail)> GetValues()
+        private Queue<(string columnName, ParameterDetail parameterDetail)> GetValues()
         {
-            List<(string columnName, ParameterDetail parameterDetail)> values = new();
+            Queue<(string columnName, ParameterDetail parameterDetail)> values = new();
             _includeAutoIncrementing = false;
             foreach (PropertyOptions item in Columns)
             {
                 if (!item.ColumnAttribute.IsAutoIncrementing)
                 {
-                    values.Add(GetParameterValue(item.ColumnAttribute));
+                    values.Enqueue(GetParameterValue(item.ColumnAttribute));
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace FluentSQL.Default
 
         private string GetInsertQuery()
         {
-            List<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
+            Queue<(string columnName, ParameterDetail parameterDetail)> values = GetValues();
             CriteriaDetail criteriaDetail = new(string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
             _criteria = new CriteriaDetail[] { criteriaDetail };
             string text = _includeAutoIncrementing ?
@@ -112,15 +112,15 @@ namespace FluentSQL.Default
             return (column.GetColumnName(_tableName, ConnectionOptions.Statements), new ParameterDetail($"@PI{DateTime.Now.Ticks}", options.GetValue(_entity), options));
         }
 
-        private List<(string columnName, ParameterDetail parameterDetail)> GetValues()
+        private Queue<(string columnName, ParameterDetail parameterDetail)> GetValues()
         {
-            List<(string columnName, ParameterDetail parameterDetail)> values = new();
+            Queue<(string columnName, ParameterDetail parameterDetail)> values = new();
             _includeAutoIncrementing = false;
             foreach (PropertyOptions item in Columns)
             {
                 if (!item.ColumnAttribute.IsAutoIncrementing)
                 {
-                    values.Add(GetParameterValue(item.ColumnAttribute));
+                    values.Enqueue(GetParameterValue(item.ColumnAttribute));
                 }
                 else
                 {

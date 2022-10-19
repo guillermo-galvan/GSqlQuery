@@ -25,9 +25,9 @@ namespace FluentSQL.Models
             Table = GetTableAttribute();
         }
 
-        private List<PropertyOptions> GetProperties()
+        private Queue<PropertyOptions> GetProperties()
         {
-            List<PropertyOptions> properties = new();
+            Queue<PropertyOptions> properties = new();
 
             foreach (PropertyInfo property in Type.GetProperties())
             {
@@ -43,7 +43,7 @@ namespace FluentSQL.Models
                     tmp = new ColumnAttribute(property.Name);
                 }
 
-                properties.Add(new PropertyOptions(0,property, tmp));
+                properties.Enqueue(new PropertyOptions(0,property, tmp));
             }
 
             return properties;

@@ -48,15 +48,15 @@ namespace FluentSQL.Default
             };
         }
 
-        private List<CriteriaDetail> GetUpdateCliterias()
+        private Queue<CriteriaDetail> GetUpdateCliterias()
         {
-            List<CriteriaDetail> criteriaDetails = new();
+            Queue<CriteriaDetail> criteriaDetails = new();
 
             foreach (var item in _columnValues)
             {
                 PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{DateTime.Now.Ticks}";
-                criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, Statements)}={paramName}",
+                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, Statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
             return criteriaDetails;
@@ -68,7 +68,7 @@ namespace FluentSQL.Default
             {
                 throw new InvalidOperationException("Column values not found");
             }
-            List<CriteriaDetail> criteria = GetUpdateCliterias();
+            Queue<CriteriaDetail> criteria = GetUpdateCliterias();
             string query = string.Empty;
             _criteria = null;
 
@@ -80,9 +80,10 @@ namespace FluentSQL.Default
             {
                 string where = GetCriteria();
                 query = string.Format(Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
-#pragma warning disable CS8604 // Possible null reference argument.
-                criteria.AddRange(_criteria);
-#pragma warning restore CS8604 // Possible null reference argument.
+                foreach (var item in _criteria!)
+                {
+                    criteria.Enqueue(item);
+                }
             }
 
             _criteria = criteria;
@@ -174,15 +175,15 @@ namespace FluentSQL.Default
             };
         }
 
-        private List<CriteriaDetail> GetUpdateCliterias()
+        private Queue<CriteriaDetail> GetUpdateCliterias()
         {
-            List<CriteriaDetail> criteriaDetails = new();
+            Queue<CriteriaDetail> criteriaDetails = new();
 
             foreach (var item in _columnValues)
             {
                 PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{DateTime.Now.Ticks}";
-                criteriaDetails.Add(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, ConnectionOptions.Statements)}={paramName}",
+                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, ConnectionOptions.Statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
             return criteriaDetails;
@@ -194,7 +195,7 @@ namespace FluentSQL.Default
             {
                 throw new InvalidOperationException("Column values not found");
             }
-            List<CriteriaDetail> criteria = GetUpdateCliterias();
+            Queue<CriteriaDetail> criteria = GetUpdateCliterias();
             string query = string.Empty;
             _criteria = null;
 
@@ -206,9 +207,10 @@ namespace FluentSQL.Default
             {
                 string where = GetCriteria();
                 query = string.Format(ConnectionOptions.Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
-#pragma warning disable CS8604 // Possible null reference argument.
-                criteria.AddRange(_criteria);
-#pragma warning restore CS8604 // Possible null reference argument.
+                foreach (var item in _criteria!)
+                {
+                    criteria.Enqueue(item);
+                }
             }
 
             _criteria = criteria;

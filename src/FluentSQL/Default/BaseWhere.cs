@@ -10,7 +10,7 @@ namespace FluentSQL.Default
     /// </summary>
     public abstract class BaseWhere : ISearchCriteriaBuilder 
     {
-        protected readonly List<ISearchCriteria> _searchCriterias = new();
+        protected readonly Queue<ISearchCriteria> _searchCriterias = new();
 
         public IEnumerable<PropertyOptions> Columns { get; protected set; }
 
@@ -26,7 +26,7 @@ namespace FluentSQL.Default
         public void Add(ISearchCriteria criteria)
         {
             criteria.NullValidate(ErrorMessages.ParameterNotNull, nameof(criteria));
-            _searchCriterias.Add(criteria);
+            _searchCriterias.Enqueue(criteria);
         }
 
         /// <summary>

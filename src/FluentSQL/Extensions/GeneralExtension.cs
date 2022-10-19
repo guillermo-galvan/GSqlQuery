@@ -71,12 +71,15 @@ namespace FluentSQL.Extensions
         public static IEnumerable<IDataParameter> GetParameters<T, TDbConnection>(this IQuery query, 
             IDatabaseManagement<TDbConnection> databaseManagment) where T : class, new()
         {
-            List<ParameterDetail> parameters = new();
+            Queue<ParameterDetail> parameters = new();
             if (query.Criteria != null)
             {
                 foreach (var item in query.Criteria.Where(x => x.ParameterDetails is not null))
                 {
-                    parameters.AddRange(item.ParameterDetails);
+                    foreach (var item2 in item.ParameterDetails)
+                    {
+                        parameters.Enqueue(item2);
+                    }
                 }
             }
 

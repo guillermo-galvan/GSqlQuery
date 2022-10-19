@@ -18,7 +18,7 @@ namespace FluentSQL.MySql.Default
             _selectQuery = queryBuilder.Build();
             _start = start;
             _length = length;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public LimitQueryBuilder(IAndOr<T, SelectQuery<T>> queryBuilder, IStatements statements, int start, int? length)
@@ -28,7 +28,7 @@ namespace FluentSQL.MySql.Default
             _selectQuery = queryBuilder.Build();
             _start = start;
             _length = length;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public LimitQueryBuilder(IQueryBuilder<T, OrderByQuery<T>> queryBuilder, IStatements statements, int start, int? length)
@@ -38,7 +38,7 @@ namespace FluentSQL.MySql.Default
             _selectQuery = queryBuilder.Build();
             _start = start;
             _length = length;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public LimitQuery<T> Build()
@@ -73,7 +73,7 @@ namespace FluentSQL.MySql.Default
             _selectQuery = queryBuilder.Build();
             _start = start;
             _length = length;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public LimitQueryBuilder(IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder,
@@ -84,7 +84,7 @@ namespace FluentSQL.MySql.Default
             _selectQuery = queryBuilder.Build();
             _start = start;
             _length = length;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public LimitQueryBuilder(IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder,
@@ -95,7 +95,7 @@ namespace FluentSQL.MySql.Default
             _selectQuery = queryBuilder.Build();
             _start = start;
             _length = length;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public LimitQuery<T,TDbConnection> Build()

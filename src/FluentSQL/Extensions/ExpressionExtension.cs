@@ -18,15 +18,18 @@ namespace FluentSQL.Extensions
 		{
             Expression withoutUnary = RemoveUnary(expression.Body);
 
-            List<MemberInfo> result = new();
+            Queue<MemberInfo> result = new();
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
-                result.Add(memberExpression.Member);
+                result.Enqueue(memberExpression.Member);
             }
             else if (withoutUnary.NodeType == ExpressionType.New && withoutUnary is NewExpression newExpression && newExpression.Members != null)
             {
-                result.AddRange(newExpression.Members);
+                foreach (var item in newExpression.Members)
+                {
+                    result.Enqueue(item);
+                }
             }
 
 			return result;

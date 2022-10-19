@@ -32,7 +32,7 @@ namespace FluentSQL.Default
             _columnsByOrderBy = new();
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
             _andorBuilder = andOr;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public OrderByQuery<T> Build()
@@ -104,7 +104,7 @@ namespace FluentSQL.Default
             _columnsByOrderBy = new();
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
             _andorBuilder = andOr;
-            Columns = new List<PropertyOptions>();
+            Columns = Enumerable.Empty<PropertyOptions>();
         }
 
         public OrderByQuery<T, TDbConnection> Build()

@@ -10,9 +10,9 @@ namespace FluentSQL
     {
         private readonly ConnectionOptions<TDbConnection> _connectionOptions;
         private readonly Queue<IQuery> _queries;
-        private readonly List<IDataParameter> _parameters;
+        private readonly Queue<IDataParameter> _parameters;
         private readonly StringBuilder _queryBuilder;
-        private readonly List<ColumnAttribute> _columns;
+        private readonly Queue<ColumnAttribute> _columns;
 
         public ConnectionOptions<TDbConnection> ConnectionOptions => _connectionOptions;
 
@@ -20,7 +20,7 @@ namespace FluentSQL
         {
             _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
             _queries = new Queue<IQuery>();
-            _parameters = new List<IDataParameter>();
+            _parameters = new Queue<IDataParameter>();
             _queryBuilder = new();
             _columns = new();
         }
@@ -29,9 +29,18 @@ namespace FluentSQL
             where T : class, new()
         {
             IQuery query = expression.Invoke(_connectionOptions);
-            _parameters.AddRange(query.GetParameters<T, TDbConnection>(_connectionOptions.DatabaseManagment));
+            foreach (var item in query.GetParameters<T, TDbConnection>(_connectionOptions.DatabaseManagment))
+            {
+                _parameters.Enqueue(item);
+            }
+            
             _queryBuilder.Append(query.Text);
-            _columns.AddRange(query.Columns);
+
+            foreach (var item in query.Columns)
+            {
+                _columns.Enqueue(item);
+            }
+            
             _queries.Enqueue(query);
             return this;
         }
