@@ -31,20 +31,16 @@ namespace FluentSQL.Default
         }
     }
 
-    public abstract class Query<T, TDbConnection, TResult> : QueryBase, IQuery<T, TDbConnection, TResult> where T : class, new()
+    public abstract class Query<T, TDbConnection, TResult> : Query<T>, IQuery<T, TDbConnection, TResult> where T : class, new()
     {
-        public ConnectionOptions<TDbConnection> ConnectionOptions { get; }
-
-        protected ClassOptions GetClassOptions()
-        {
-            return ClassOptionsFactory.GetClassOptions(typeof(T));
-        }
+        public IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
 
         protected Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria,
             ConnectionOptions<TDbConnection> connectionOptions) : 
-            base(text, columns, criteria)
+            base(text, columns, criteria, connectionOptions?.Statements!)
         {
-            ConnectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+            connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+            DatabaseManagment = connectionOptions.DatabaseManagment;
         }
 
         public abstract TResult Exec();

@@ -100,7 +100,8 @@ namespace FluentSQL.MySql.Default
 
         public LimitQuery<T,TDbConnection> Build()
         {
-            return new LimitQuery<T,TDbConnection>(GenerateQuery(), _selectQuery.Columns, _selectQuery.Criteria, _selectQuery.ConnectionOptions);
+            return new LimitQuery<T,TDbConnection>(GenerateQuery(), _selectQuery.Columns, _selectQuery.Criteria, 
+                new ConnectionOptions<TDbConnection>(_selectQuery.Statements, _selectQuery.DatabaseManagment));
         }
 
         protected override string GenerateQuery()

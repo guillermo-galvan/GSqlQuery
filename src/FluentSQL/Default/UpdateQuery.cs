@@ -32,13 +32,13 @@ namespace FluentSQL.Default
 
         public override int Exec()
         {
-            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+            return DatabaseManagment.ExecuteNonQuery(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
         public override int Exec(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return ConnectionOptions.DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+            return DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
     }
 }

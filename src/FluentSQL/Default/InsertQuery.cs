@@ -47,12 +47,12 @@ namespace FluentSQL.Default
             object idResult;
             if (connection == null)
             {
-                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment),
+                idResult = DatabaseManagment.ExecuteScalar(this, this.GetParameters<T, TDbConnection>(DatabaseManagment),
                     propertyOptions.PropertyInfo.PropertyType);
             }
             else
             {
-                idResult = ConnectionOptions.DatabaseManagment.ExecuteScalar(connection, this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment),
+                idResult = DatabaseManagment.ExecuteScalar(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment),
                     propertyOptions.PropertyInfo.PropertyType);
             }
 
@@ -67,7 +67,7 @@ namespace FluentSQL.Default
             }
             else
             {
-                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+                DatabaseManagment.ExecuteNonQuery(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
 
             return (T)Entity;
@@ -75,7 +75,7 @@ namespace FluentSQL.Default
 
         public override T Exec(TDbConnection dbConnection)
         {
-            dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
 
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
@@ -83,7 +83,7 @@ namespace FluentSQL.Default
             }
             else
             {
-                ConnectionOptions.DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+                DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
 
             return (T)Entity;

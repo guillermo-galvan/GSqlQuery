@@ -14,7 +14,9 @@ namespace FluentSQL
         private readonly StringBuilder _queryBuilder;
         private readonly Queue<ColumnAttribute> _columns;
 
-        public ConnectionOptions<TDbConnection> ConnectionOptions => _connectionOptions;
+        public ConnectionOptions<TDbConnection> DatabaseManagment => _connectionOptions;
+
+        IDatabaseManagement<TDbConnection> IExecute<int, TDbConnection>.DatabaseManagment => _connectionOptions.DatabaseManagment;
 
         public BatchExecute(ConnectionOptions<TDbConnection> connectionOptions)
         {

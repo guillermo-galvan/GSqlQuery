@@ -1,4 +1,5 @@
 ﻿using FluentSQL.Default;
+using FluentSQL.Models;
 using FluentSQL.MySql.Default;
 using System;
 using System.Collections.Generic;
@@ -57,8 +58,9 @@ namespace FluentSQL.MySql.Extensions
             {
                 throw new ArgumentNullException(nameof(queryBuilder));
             }
-
-            return new LimitQueryBuilder<T, TDbConnection>(queryBuilder, queryBuilder.Build().ConnectionOptions, start, length);
+            var query = queryBuilder.Build();
+            return new LimitQueryBuilder<T, TDbConnection>(queryBuilder, 
+                new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagment), start, length);
         }
 
         public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> Limit<T, TDbConnection>(

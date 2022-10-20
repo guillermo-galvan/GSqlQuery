@@ -67,9 +67,8 @@ namespace FluentSQLTest.Default
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
-            Assert.NotNull(query.ConnectionOptions);
-            Assert.NotNull(query.ConnectionOptions.Statements);
-            Assert.NotNull(query.ConnectionOptions.DatabaseManagment);
+            Assert.NotNull(query.DatabaseManagment);
+            Assert.NotNull(query.Statements);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
         }

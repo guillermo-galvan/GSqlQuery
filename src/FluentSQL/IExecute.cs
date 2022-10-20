@@ -8,7 +8,7 @@ namespace FluentSQL
     /// <typeparam name="TResult"></typeparam>
     public interface IExecute<TResult, TDbConnection>
     {
-        ConnectionOptions<TDbConnection> ConnectionOptions { get; }
+        public IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
 
         TResult Exec();
 

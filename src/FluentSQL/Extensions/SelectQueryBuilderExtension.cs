@@ -1,5 +1,7 @@
 ﻿using FluentSQL.Default;
+using FluentSQL.Models;
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 
 namespace FluentSQL.Extensions
@@ -76,7 +78,9 @@ namespace FluentSQL.Extensions
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
             memberInfos.ValidateMemberInfos($"Could not infer property name for expression.");
-            return new OrderByQueryBuilder<T, TDbConnection>(memberInfos.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Build().ConnectionOptions);
+            var query = queryBuilder.Build();
+            return new OrderByQueryBuilder<T, TDbConnection>(memberInfos.Select(x => x.Name), orderBy, queryBuilder, 
+                new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagment));
         }
 
         public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>

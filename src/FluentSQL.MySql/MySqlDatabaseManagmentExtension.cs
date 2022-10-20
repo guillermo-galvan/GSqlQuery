@@ -14,7 +14,7 @@ namespace FluentSQL.MySql
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, MySqlConnection> query)
         {
-            using MySqlConnection connection = query.ConnectionOptions.DatabaseManagment.GetConnection();
+            using MySqlConnection connection = query.DatabaseManagment.GetConnection();
             using MySqlTransaction transaction = connection.BeginTransaction();
             TResult result = query.Exec(transaction.Connection);
             transaction.Commit();

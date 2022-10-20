@@ -27,8 +27,8 @@ namespace FluentSQL.MySql.Default
 
         public override IEnumerable<T> Exec()
         {
-            return ConnectionOptions.DatabaseManagment.ExecuteReader<T>(this, GetClassOptions().PropertyOptions,
-                this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+            return DatabaseManagment.ExecuteReader<T>(this, GetClassOptions().PropertyOptions,
+                this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
         public override IEnumerable<T> Exec(TDbConnection dbConnection)
@@ -37,8 +37,8 @@ namespace FluentSQL.MySql.Default
             {
                 throw new ArgumentNullException(nameof(dbConnection));
             }
-            return ConnectionOptions.DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
-                this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+            return DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
+                this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
     }
 }

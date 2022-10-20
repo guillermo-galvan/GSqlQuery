@@ -21,13 +21,13 @@ namespace FluentSQL.Default
 
         public override int Exec()
         {
-            return (int)ConnectionOptions.DatabaseManagment.ExecuteScalar(this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment), typeof(int));
+            return (int)DatabaseManagment.ExecuteScalar(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), typeof(int));
         }
 
         public override int Exec(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return (int)ConnectionOptions.DatabaseManagment.ExecuteScalar(dbConnection, this, this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment), typeof(int));
+            return (int)DatabaseManagment.ExecuteScalar(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), typeof(int));
         }
     }
 }

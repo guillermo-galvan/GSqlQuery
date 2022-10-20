@@ -21,15 +21,15 @@ namespace FluentSQL.Default
 
         public override IEnumerable<T> Exec()
         {
-            return ConnectionOptions.DatabaseManagment.ExecuteReader<T>(this, GetClassOptions().PropertyOptions,
-                this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+            return DatabaseManagment.ExecuteReader<T>(this, GetClassOptions().PropertyOptions,
+                this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
         public override IEnumerable<T> Exec(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return ConnectionOptions.DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
-                this.GetParameters<T, TDbConnection>(ConnectionOptions.DatabaseManagment));
+            return DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
+                this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
     }
 }

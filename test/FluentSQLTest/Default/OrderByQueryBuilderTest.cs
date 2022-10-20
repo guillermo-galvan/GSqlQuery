@@ -81,9 +81,8 @@ namespace FluentSQLTest.Default
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.ConnectionOptions);
-            Assert.NotNull(query.ConnectionOptions.Statements);
-            Assert.NotNull(query.ConnectionOptions.DatabaseManagment);
+            Assert.NotNull(query.DatabaseManagment);
+            Assert.NotNull(query.Statements);
             Assert.Null(query.Criteria);
         }
 
@@ -98,9 +97,8 @@ namespace FluentSQLTest.Default
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.ConnectionOptions);
-            Assert.NotNull(query.ConnectionOptions.Statements);
-            Assert.NotNull(query.ConnectionOptions.DatabaseManagment);
+            Assert.NotNull(query.DatabaseManagment);
+            Assert.NotNull(query.Statements);
             Assert.NotNull(query.Criteria);
         }
 
@@ -125,7 +123,7 @@ namespace FluentSQLTest.Default
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters2()
         {
             SelectQueryBuilder<Test1, DbConnection> queryBuilder = null;
-            Assert.Throws<ArgumentNullException>(() => queryBuilder.OrderBy(x => x.Id, OrderBy.ASC));
+            Assert.Throws<ArgumentNullException>(() => queryBuilder!.OrderBy(x => x.Id, OrderBy.ASC));
         }
     }
 }

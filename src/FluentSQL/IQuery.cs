@@ -32,7 +32,8 @@ namespace FluentSQL
         IStatements Statements { get; }
     }
 
-    public interface IQuery<T, TDbConnection, TResult> : IQuery, IExecute<TResult,TDbConnection> where T : class, new()
+    public interface IQuery<T, TDbConnection, TResult> : IQuery<T>, IQuery, IExecute<TResult,TDbConnection> where T : class, new()
     {
+        public new IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
     }
 }
