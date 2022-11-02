@@ -11,11 +11,11 @@ namespace FluentSQL
     /// AndOr
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public interface IAndOr<T, TReturn> : IAndOr<TReturn>, IBuilder<TReturn> where T : class, new() where TReturn : IQuery
+    public interface IAndOr<T, TReturn> : IAndOr<TReturn>, IBuilder<TReturn>, ISearchCriteriaBuilder where T : class, new() where TReturn : IQuery
     {
     }
 
-    public interface IAndOr<T, TReturn, TDbConnection,TResult> : IAndOr<T, TReturn>, IBuilder<TReturn> 
+    public interface IAndOr<T, TReturn, TDbConnection,TResult> : IAndOr<T, TReturn>, IBuilder<TReturn> , ISearchCriteriaBuilder
         where T : class, new() where TReturn : IQuery
     {
     }
