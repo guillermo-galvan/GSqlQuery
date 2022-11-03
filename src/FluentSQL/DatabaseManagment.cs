@@ -3,6 +3,7 @@ using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 
@@ -73,29 +74,22 @@ namespace FluentSQL
         /// <returns></returns>
         protected virtual object? SwitchTypeValue(Type type, object? value)
         {
-            return (type, value) switch
+            try
             {
-                (Type, object o) when o == DBNull.Value => null,
-                (Type, object o) when o == null => null,
-                (Type t, object) when t == typeof(byte) || t == typeof(byte?) => Convert.ToByte(value),
-                (Type t, object) when t == typeof(short) || t == typeof(short?) => Convert.ToInt16(value),
-                (Type t, object) when t == typeof(int) || t == typeof(int?) => Convert.ToInt32(value),
-                (Type t, object) when t == typeof(long) || t == typeof(long?) => Convert.ToInt64(value),
-                (Type t, object) when t == typeof(float) || t == typeof(float?) => Convert.ToSingle(value),
-                (Type t, object) when t == typeof(decimal) || t == typeof(decimal?) => Convert.ToDecimal(value),
-                (Type t, object) when t == typeof(double) || t == typeof(double?) => Convert.ToDouble(value),
-                (Type t, object) when t == typeof(bool) || t == typeof(bool?) => Convert.ToBoolean(value),
-                (Type t, object) when t == typeof(DateTime) || t == typeof(DateTime?) => Convert.ToDateTime(value),
-                (Type t, object) when t == typeof(string) => value.ToString(),
-                (Type t, object) when t == typeof(char) || t == typeof(char?) => Convert.ToChar(value),
-                (Type t, object) when t == typeof(Guid) || t == typeof(Guid?) => Guid.Parse(value.ToString()),
-                (Type t, object) when t == typeof(uint) || t == typeof(uint?) => Convert.ToUInt32(value),
-                (Type t, object) when t == typeof(ushort) || t == typeof(ushort?) => Convert.ToUInt16(value),
-                (Type t, object) when t == typeof(ulong) || t == typeof(ulong?) => Convert.ToUInt64(value),
-                (Type t, object) when t == typeof(sbyte) || t == typeof(sbyte?) => Convert.ToSByte(value),
-                (Type t, object) when t == typeof(TimeSpan) || t == typeof(TimeSpan?) => TimeSpan.Parse(value.ToString()),
-                _ => value,
-            };
+                if (value == DBNull.Value || value == null)
+                {
+                    return null;
+                }
+                else 
+                {
+                    var newType = Nullable.GetUnderlyingType(type);
+                    return newType == null ? Convert.ChangeType(value, type) : Convert.ChangeType(value, newType);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public abstract TDbConnection GetConnection();

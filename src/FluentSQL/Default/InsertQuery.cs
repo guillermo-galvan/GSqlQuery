@@ -54,6 +54,9 @@ namespace FluentSQL.Default
                 idResult = DatabaseManagment.ExecuteScalar<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
 
+            var newType = Nullable.GetUnderlyingType(propertyOptions.PropertyInfo.PropertyType);
+            idResult = newType == null ? Convert.ChangeType(idResult, propertyOptions.PropertyInfo.PropertyType) : Convert.ChangeType(idResult, newType);
+
             propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
         }
 
@@ -72,6 +75,9 @@ namespace FluentSQL.Default
             {
                 idResult = await DatabaseManagment.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
+
+            var newType = Nullable.GetUnderlyingType(propertyOptions.PropertyInfo.PropertyType);
+            idResult = newType == null ? Convert.ChangeType(idResult, propertyOptions.PropertyInfo.PropertyType) : Convert.ChangeType(idResult, newType);
 
             propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
         }
