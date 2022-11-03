@@ -91,7 +91,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test3(0, null, DateTime.Now, true));
-            var result = query.Exec();
+            var result = query.Execute();
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -105,7 +105,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test6(1, null, DateTime.Now, true));
-            var result = query.Exec();
+            var result = query.Execute();
             Assert.NotNull(result);
         }
 
@@ -116,7 +116,7 @@ namespace FluentSQLTest.Default
                 new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                _connectionOptions, new Test6(1, null, DateTime.Now, true));
-            Assert.Throws<ArgumentNullException>(() => query.Exec(null));
+            Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test3(0, null, DateTime.Now, true));
-            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+            var result = query.Execute(LoadFluentOptions.GetDbConnection());
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -142,7 +142,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test6(1, null, DateTime.Now, true));
-            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+            var result = query.Execute(LoadFluentOptions.GetDbConnection());
             Assert.NotNull(result);
         }
     }

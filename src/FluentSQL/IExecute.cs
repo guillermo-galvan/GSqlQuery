@@ -10,8 +10,8 @@ namespace FluentSQL
     {
         public IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
 
-        TResult Exec();
+        TResult Execute();
 
-        TResult Exec(TDbConnection dbConnection);
+        TResult Execute(TDbConnection dbConnection);
     }
 }

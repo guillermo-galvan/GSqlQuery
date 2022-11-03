@@ -19,12 +19,12 @@ namespace FluentSQL.Default
         {
         }
 
-        public override int Exec()
+        public override int Execute()
         {
             return (int)DatabaseManagment.ExecuteScalar(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), typeof(int));
         }
 
-        public override int Exec(TDbConnection dbConnection)
+        public override int Execute(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return (int)DatabaseManagment.ExecuteScalar(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), typeof(int));

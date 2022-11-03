@@ -30,12 +30,12 @@ namespace FluentSQL.Default
         {
         }
 
-        public override int Exec()
+        public override int Execute()
         {
             return DatabaseManagment.ExecuteNonQuery(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
-        public override int Exec(TDbConnection dbConnection)
+        public override int Execute(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));

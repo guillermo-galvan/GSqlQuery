@@ -19,13 +19,13 @@ namespace FluentSQL.Default
         {
         }
 
-        public override IEnumerable<T> Exec()
+        public override IEnumerable<T> Execute()
         {
             return DatabaseManagment.ExecuteReader<T>(this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
-        public override IEnumerable<T> Exec(TDbConnection dbConnection)
+        public override IEnumerable<T> Execute(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,

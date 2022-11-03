@@ -59,7 +59,7 @@ namespace FluentSQL.Default
             propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
         }
 
-        public override T Exec()
+        public override T Execute()
         {
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
@@ -73,7 +73,7 @@ namespace FluentSQL.Default
             return (T)Entity;
         }
 
-        public override T Exec(TDbConnection dbConnection)
+        public override T Execute(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
 

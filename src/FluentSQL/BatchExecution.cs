@@ -47,13 +47,13 @@ namespace FluentSQL
             return this;
         }
 
-        public int Exec()
+        public int Execute()
         {
             var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
             return _connectionOptions.DatabaseManagment.ExecuteNonQuery(query, _parameters);
         }
 
-        public int Exec(TDbConnection connection)
+        public int Execute(TDbConnection connection)
         {
             var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
             return _connectionOptions.DatabaseManagment.ExecuteNonQuery(connection, query, _parameters);

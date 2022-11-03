@@ -25,13 +25,13 @@ namespace FluentSQL.MySql.Default
         {
         }
 
-        public override IEnumerable<T> Exec()
+        public override IEnumerable<T> Execute()
         {
             return DatabaseManagment.ExecuteReader<T>(this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
-        public override IEnumerable<T> Exec(TDbConnection dbConnection)
+        public override IEnumerable<T> Execute(TDbConnection dbConnection)
         {
             if (dbConnection == null)
             {

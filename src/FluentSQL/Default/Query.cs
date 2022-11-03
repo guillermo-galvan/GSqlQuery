@@ -43,8 +43,8 @@ namespace FluentSQL.Default
             DatabaseManagment = connectionOptions.DatabaseManagment;
         }
 
-        public abstract TResult Exec();
+        public abstract TResult Execute();
 
-        public abstract TResult Exec(TDbConnection dbConnection);
+        public abstract TResult Execute(TDbConnection dbConnection);
     }
 }

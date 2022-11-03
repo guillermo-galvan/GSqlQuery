@@ -83,7 +83,7 @@ namespace FluentSQLTest.Default
         public void Should_execute_the_query()
         {
             CountQuery<Test1,DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            var result = query.Exec();
+            var result = query.Execute();
             Assert.Equal(1, result);
         }
 
@@ -92,14 +92,14 @@ namespace FluentSQLTest.Default
         public void Throw_exception_if_DatabaseManagment_not_found()
         {
             CountQuery<Test1,DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            Assert.Throws<ArgumentNullException>(() => query.Exec(null));
+            Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
 
         [Fact]
         public void Should_execute_the_query1()
         {
             CountQuery<Test1,DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+            var result = query.Execute(LoadFluentOptions.GetDbConnection());
             Assert.Equal(1, result);
         }
     }

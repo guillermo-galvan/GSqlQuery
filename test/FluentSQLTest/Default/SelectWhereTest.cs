@@ -61,7 +61,7 @@ namespace FluentSQLTest.Default
         public void Should_get_the_IAndOr_interface_with_expression()
         {
             SelectWhere<Test1> where = new (_queryBuilder);
-            IAndOr<Test1, SelectQuery<Test1>> andOr = where.GetAndOr(x => x.Id);
+            IAndOr<Test1,SelectQuery<Test1>> andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
 

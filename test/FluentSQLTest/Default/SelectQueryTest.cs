@@ -87,7 +87,7 @@ namespace FluentSQLTest.Default
                 new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, 
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
 
-            var result = query.Exec();
+            var result = query.Execute();
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -99,7 +99,7 @@ namespace FluentSQLTest.Default
         {
             SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", 
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            Assert.Throws<ArgumentNullException>(() => query.Exec(null));
+            Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
 
         [Fact]
@@ -107,7 +107,7 @@ namespace FluentSQLTest.Default
         {
             SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", 
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
-            var result = query.Exec(LoadFluentOptions.GetDbConnection());
+            var result = query.Execute(LoadFluentOptions.GetDbConnection());
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
