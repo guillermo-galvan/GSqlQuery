@@ -38,6 +38,10 @@ namespace FluentSQL.SearchCriteria
         public In(TableAttribute table, ColumnAttribute columnAttribute, IEnumerable<T> values, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));
+            if (!values.Any())
+            { 
+                throw new IndexOutOfRangeException(nameof(values));
+            }
         }
 
         /// <summary>
