@@ -8,15 +8,15 @@ namespace FluentSQL.Default
     /// <summary>
     /// Where
     /// </summary>
-    public abstract class BaseWhere : ISearchCriteriaBuilder 
+    public abstract class BaseWhere<T, TReturn> : ISearchCriteriaBuilder<T, TReturn> where TReturn : IQuery 
     {
         protected readonly Queue<ISearchCriteria> _searchCriterias = new();
 
         public IEnumerable<PropertyOptions> Columns { get; protected set; }
 
-        public BaseWhere(IEnumerable<PropertyOptions> columns)
+        public BaseWhere()
         {
-            Columns = columns;
+            Columns = ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions;
         }
 
         /// <summary>
@@ -37,12 +37,7 @@ namespace FluentSQL.Default
         {
             return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
         }
-    }
 
-    public abstract class BaseWhere<T> : BaseWhere where T : class, new()
-    {
-        protected BaseWhere() : base(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions)
-        {
-        }
+        public abstract TReturn Build();
     }
 }

@@ -6,7 +6,8 @@ namespace FluentSQL.Default
     /// Select where 
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class SelectWhere<T> : BaseWhere<T>, ISearchCriteriaBuilder, IWhere<T, SelectQuery<T>>, IAndOr<T, SelectQuery<T>> where T : class, new()
+    internal class SelectWhere<T> : BaseWhere<T, SelectQuery<T>>, ISearchCriteriaBuilder<T, SelectQuery<T>>, IWhere<T, SelectQuery<T>>, 
+        IAndOr<T, SelectQuery<T>> where T : class, new()
     {
         private readonly SelectQueryBuilder<T> _queryBuilder;
 
@@ -24,17 +25,15 @@ namespace FluentSQL.Default
         /// Build Query
         /// </summary>
         /// <returns>DeleteQuery</returns>
-        public SelectQuery<T> Build()
+        public override SelectQuery<T> Build()
         {
             return _queryBuilder.Build();
         }
     }
 
-    internal class SelectWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>,
+    internal class SelectWhere<T, TDbConnection> : BaseWhere<T, SelectQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, SelectQuery<T, TDbConnection>>,
         IWhere<T, SelectQuery<T, TDbConnection>>,
-        IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection,IEnumerable<T>>,
-        IAndOr<SelectQuery<T, TDbConnection>> where T : class, new()
+        IAndOr<T,SelectQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly SelectQueryBuilder<T, TDbConnection> _selectQueryBuilder;
 
@@ -43,7 +42,7 @@ namespace FluentSQL.Default
             _selectQueryBuilder = selectQueryBuilder;
         }
 
-        public SelectQuery<T, TDbConnection> Build()
+        public override SelectQuery<T, TDbConnection> Build()
         {
             return _selectQueryBuilder.Build();
         }

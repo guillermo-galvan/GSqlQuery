@@ -71,7 +71,7 @@ namespace FluentSQL.Extensions
 
         public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>
             OrderBy<T, TDbConnection, TProperties>
-            (this IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder,
+            (this IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder,
             Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class, new()
         {

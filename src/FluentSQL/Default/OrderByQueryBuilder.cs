@@ -78,7 +78,7 @@ namespace FluentSQL.Default
     {
         private readonly IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>? _queryBuilder;
         private SelectQuery<T, TDbConnection>? _selectQuery;
-        private readonly IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>? _andorBuilder;
+        private readonly IAndOr<T, SelectQuery<T, TDbConnection>>? _andorBuilder;
         private readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
@@ -95,7 +95,7 @@ namespace FluentSQL.Default
         }
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-            IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> andOr,
+            IAndOr<T, SelectQuery<T, TDbConnection>> andOr,
             ConnectionOptions<TDbConnection> connectionOptions)
             : base(connectionOptions != null ? ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(connectionOptions.Statements) : string.Empty,
                   ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions, connectionOptions!, QueryType.Custom)

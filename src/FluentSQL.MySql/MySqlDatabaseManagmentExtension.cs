@@ -40,26 +40,26 @@ namespace FluentSQL.MySql
             return query.Build().ExecuteWithTransaction(transaction);
         }
 
-        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IAndOr<T, TReturn, MySqlConnection, TResult> query)
+        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IAndOr<T, TReturn> query)
            where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().ExecuteWithTransaction();
         }
 
-        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IAndOr<T, TReturn, MySqlConnection, TResult> query,
+        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IAndOr<T, TReturn> query,
             MySqlTransaction transaction)
             where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().ExecuteWithTransaction(transaction);
         }
 
-        public static TResult Execute<T, TReturn, TResult>(this IAndOr<T, TReturn, MySqlConnection, TResult> query)
+        public static TResult Execute<T, TReturn, TResult>(this IAndOr<T, TReturn> query)
           where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().Exec();
         }
 
-        public static TResult Execute<T, TReturn, TResult>(this IAndOr<T, TReturn, MySqlConnection, TResult> query, MySqlConnection connection)
+        public static TResult Execute<T, TReturn, TResult>(this IAndOr<T, TReturn> query, MySqlConnection connection)
           where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().Exec(connection);
@@ -75,22 +75,6 @@ namespace FluentSQL.MySql
           where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().Exec(connection);
-        }
-
-        public static TResult? StartWithTransaction<TResult>(this ContinueExecution<TResult, MySqlConnection> continueExecution)
-        {
-            using MySqlConnection connection = continueExecution.ConnectionOptions.DatabaseManagment.GetConnection();
-            using MySqlTransaction transaction = connection.BeginTransaction();
-            TResult? result = continueExecution.Start(transaction.Connection);
-            transaction.Commit();
-            connection.Close();
-            return result;
-        }
-
-        public static TResult? StartWithTransaction<TResult>(this ContinueExecution<TResult, MySqlConnection> continueExecution, MySqlTransaction transaction)
-        {
-            TResult? result = continueExecution.Start(transaction.Connection);
-            return result;
         }
     }
 }

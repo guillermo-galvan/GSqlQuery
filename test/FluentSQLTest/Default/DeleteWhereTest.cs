@@ -50,7 +50,7 @@ namespace FluentSQLTest.Default
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = ((ISearchCriteriaBuilder)query).BuildCriteria(_queryBuilder.Statements);
+            var criteria = ((ISearchCriteriaBuilder<Test1, DeleteQuery<Test1>>)query).BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }
@@ -131,7 +131,7 @@ namespace FluentSQLTest.Default
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = ((ISearchCriteriaBuilder)query).BuildCriteria(_queryBuilder.Statements);
+            var criteria = query.BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }

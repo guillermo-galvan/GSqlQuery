@@ -222,12 +222,12 @@ namespace FluentSQL.Default
             return new UpdateQuery<T, TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
         }
 
-        public override IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection,int> Where()
+        public override IWhere<T, UpdateQuery<T, TDbConnection>> Where()
         {
             ChangeQueryType();
             UpdateWhere<T, TDbConnection> selectWhere = new(this);
             _andOr = selectWhere;
-            return (IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection,int>)_andOr;
+            return (IWhere<T, UpdateQuery<T, TDbConnection>>)_andOr;
         }
 
         public ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Add<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)

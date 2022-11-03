@@ -59,20 +59,6 @@ namespace FluentSQL.SearchCriteria
         }
 
         /// <summary>
-        /// Add a search criteria
-        /// </summary>
-        /// <param name="criteria"></param>
-        void ISearchCriteriaBuilder.Add(ISearchCriteria criteria)
-        {
-            _searchCriterias.Enqueue(criteria);
-        }
-
-        IEnumerable<CriteriaDetail> ISearchCriteriaBuilder.BuildCriteria(IStatements statements)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Build Query
         /// </summary>
         /// <returns>Instance of IQuery</returns>
@@ -80,17 +66,27 @@ namespace FluentSQL.SearchCriteria
         {
             return _andOr.Build();
         }
+
+        public void Add(ISearchCriteria criteria)
+        {
+            _searchCriterias.Enqueue(criteria);
+        }
+
+        public IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    internal class Group<T, TReturn, TDbConnection, TResult> : Criteria, ISearchCriteria, IAndOr<T, TReturn, TDbConnection, TResult>,
-        IWhere<T, TReturn, TDbConnection, TResult> where T : class, new() where TReturn : IQuery
+    internal class Group<T, TReturn, TDbConnection, TResult> : Criteria, ISearchCriteria, IAndOr<T, TReturn>,
+        IWhere<T, TReturn> where T : class, new() where TReturn : IQuery
     {
         private readonly Queue<ISearchCriteria> _searchCriterias = new();
-        private readonly IAndOr<T, TReturn, TDbConnection, TResult> _andOr;
+        private readonly IAndOr<T, TReturn> _andOr;
 
-        public IAndOr<T, TReturn, TDbConnection, TResult> AndOr => _andOr;
+        public IAndOr<T, TReturn> AndOr => _andOr;
 
-        public Group(TableAttribute table, string? logicalOperator, IAndOr<T, TReturn, TDbConnection, TResult> andOr) : 
+        public Group(TableAttribute table, string? logicalOperator, IAndOr<T, TReturn> andOr) : 
             base(table, new ColumnAttribute("Group"), logicalOperator)
         {
             _andOr = andOr ?? throw new ArgumentNullException(nameof(andOr));
@@ -121,19 +117,19 @@ namespace FluentSQL.SearchCriteria
             return new CriteriaDetail(this, criterion, parameters);
         }
 
-        void ISearchCriteriaBuilder.Add(ISearchCriteria criteria)
+        public TReturn Build()
+        {
+            return _andOr.Build();
+        }
+
+        public void Add(ISearchCriteria criteria)
         {
             _searchCriterias.Enqueue(criteria);
         }
 
-        IEnumerable<CriteriaDetail> ISearchCriteriaBuilder.BuildCriteria(IStatements statements)
+        public IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
         {
             throw new NotImplementedException();
-        }
-
-        public TReturn Build()
-        {
-            return _andOr.Build();
         }
     }
 }

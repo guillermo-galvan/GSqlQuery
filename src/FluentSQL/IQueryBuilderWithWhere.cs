@@ -12,6 +12,6 @@
     public interface IQueryBuilderWithWhere<T, TReturn, TDbConnection, TResult> : IQueryBuilder<T, TReturn, TDbConnection, TResult>, IBuilder<TReturn>
         where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
     {
-        IWhere<T, TReturn, TDbConnection, TResult> Where();
+        IWhere<T, TReturn> Where();
     }
 }

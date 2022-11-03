@@ -2,7 +2,7 @@
 
 namespace FluentSQL.Default
 {
-    internal class CountWhere<T> : BaseWhere<T>, ISearchCriteriaBuilder, IWhere<T, CountQuery<T>>, IAndOr<T, CountQuery<T>> where T : class, new()
+    internal class CountWhere<T> : BaseWhere<T, CountQuery<T>>, ISearchCriteriaBuilder<T, CountQuery<T>>, IWhere<T, CountQuery<T>>, IAndOr<T, CountQuery<T>> where T : class, new()
     {
         private readonly CountQueryBuilder<T> _queryBuilder;
 
@@ -11,17 +11,15 @@ namespace FluentSQL.Default
             _queryBuilder = queryBuilder;
         }
 
-        public CountQuery<T> Build()
+        public override CountQuery<T> Build()
         {
             return _queryBuilder.Build();
         }
     }
 
-    internal class CountWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, CountQuery<T, TDbConnection>, TDbConnection,int>,
+    internal class CountWhere<T, TDbConnection> : BaseWhere<T, CountQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, CountQuery<T, TDbConnection>>,
         IWhere<T, CountQuery<T, TDbConnection>>,
-        IAndOr<T, CountQuery<T, TDbConnection>, TDbConnection,int>,
-        IAndOr<CountQuery<T, TDbConnection>> where T : class, new()
+        IAndOr<T,CountQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly CountQueryBuilder<T, TDbConnection> _queryBuilder;
 
@@ -30,7 +28,7 @@ namespace FluentSQL.Default
             _queryBuilder = queryBuilder;
         }
 
-        public CountQuery<T, TDbConnection> Build()
+        public override CountQuery<T, TDbConnection> Build()
         {
             return _queryBuilder.Build();
         }

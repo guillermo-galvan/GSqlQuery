@@ -31,7 +31,7 @@ namespace FluentSQL.Default
         where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
     {
         protected IEnumerable<CriteriaDetail>? _criteria = null;
-        protected IAndOr<T, TReturn, TDbConnection, TResult>? _andOr;
+        protected IAndOr<T, TReturn>? _andOr;
 
         protected QueryBuilderWithCriteria(ConnectionOptions<TDbConnection> connectionOptions, QueryType queryType) 
             : base(connectionOptions != null ? ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(connectionOptions.Statements): string.Empty, 
@@ -42,7 +42,7 @@ namespace FluentSQL.Default
 
         public abstract TReturn Build();
 
-        public abstract IWhere<T, TReturn, TDbConnection, TResult> Where();
+        public abstract IWhere<T, TReturn> Where();
 
         protected string GetCriteria()
         {

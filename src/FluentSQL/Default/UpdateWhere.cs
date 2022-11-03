@@ -7,7 +7,7 @@ namespace FluentSQL.Default
     /// Update where 
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class UpdateWhere<T> : BaseWhere<T>, ISearchCriteriaBuilder, IWhere<T, UpdateQuery<T>>, IAndOr<T, UpdateQuery<T>> where T : class, new()
+    internal class UpdateWhere<T> : BaseWhere<T, UpdateQuery<T>>, ISearchCriteriaBuilder<T, UpdateQuery<T>>, IWhere<T, UpdateQuery<T>>, IAndOr<T, UpdateQuery<T>> where T : class, new()
     {
         private readonly UpdateQueryBuilder<T> _queryBuilder;
 
@@ -25,17 +25,15 @@ namespace FluentSQL.Default
         /// 
         /// </summary>
         /// <returns></returns>
-        public UpdateQuery<T> Build()
+        public override UpdateQuery<T> Build()
         {
             return _queryBuilder.Build();
         }
     }
 
-    internal class UpdateWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection,int>,
+    internal class UpdateWhere<T, TDbConnection> : BaseWhere<T, UpdateQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, UpdateQuery<T, TDbConnection>>,
         IWhere<T, UpdateQuery<T, TDbConnection>>,
-        IAndOr<T, UpdateQuery<T, TDbConnection>, TDbConnection,int>,
-        IAndOr<UpdateQuery<T, TDbConnection>> where T : class, new()
+        IAndOr<T,UpdateQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly UpdateQueryBuilder<T, TDbConnection> _queryBuilder;
 
@@ -44,7 +42,7 @@ namespace FluentSQL.Default
             _queryBuilder = queryBuilder;
         }
 
-        public UpdateQuery<T, TDbConnection> Build()
+        public override UpdateQuery<T, TDbConnection> Build()
         {
             return _queryBuilder.Build();
         }

@@ -4,32 +4,8 @@ namespace FluentSQL.Extensions
 {
     public static class FluentSQLExtension
     {
-        public static IAndOr<T, TReturn, TDbConnection, TResult> GetAndOr<T, TReturn, TDbConnection, TResult, TProperties>
-           (this IWhere<T, TReturn, TDbConnection, TResult> where, Expression<Func<T, TProperties>> expression)
+        public static IAndOr<T, TReturn> GetAndOr<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression)
            where T : class, new() where TReturn : IQuery
-        {
-            IAndOr<T, TReturn, TDbConnection, TResult>? result = null;
-
-            if (where is IAndOr<T, TReturn, TDbConnection, TResult> andor)
-            {
-                result = andor;
-            }
-
-            result!.Validate(expression);
-            return result!;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T">Type of class</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
-        /// <param name="where">IWhere</param>
-        /// <param name="expression">Expression to evaluate</param>
-        /// <returns>IAndOr</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static IAndOr<T, TReturn> GetAndOr<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression) 
-            where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn>? result = null;
 
@@ -55,20 +31,6 @@ namespace FluentSQL.Extensions
             IAndOr<T, TReturn>? result = null;
 
             if (where is IAndOr<T, TReturn> andor)
-            {
-                result = andor;
-            }
-
-            result!.NullValidate(ErrorMessages.ParameterNotNull, nameof(where));
-            return result!;
-        }
-
-        public static IAndOr<T, TReturn, TDbConnection, TResult> GetAndOr<T, TReturn, TDbConnection, TResult>(this IWhere<T, TReturn, TDbConnection, TResult> where)
-            where T : class, new() where TReturn : IQuery
-        {
-            IAndOr<T, TReturn, TDbConnection, TResult>? result = null;
-
-            if (where is IAndOr<T, TReturn, TDbConnection, TResult> andor)
             {
                 result = andor;
             }

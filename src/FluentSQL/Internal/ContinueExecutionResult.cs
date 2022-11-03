@@ -85,10 +85,10 @@ namespace FluentSQL.Internal
     internal class ContinueExecutionIAndOrResult<T, TReturn, TDbConnection, TNewResult> : ContinueExecutionResult<TDbConnection>
         where T : class, new() where TReturn : IQuery<T, TDbConnection, TNewResult>
     {
-        private readonly Func<ConnectionOptions<TDbConnection>, IAndOr<T, TReturn, TDbConnection, TNewResult>>? _func;
+        private readonly Func<ConnectionOptions<TDbConnection>, IAndOr<T, TReturn>>? _func;
 
         public ContinueExecutionIAndOrResult(ConnectionOptions<TDbConnection> connectionOptions,
-            Func<ConnectionOptions<TDbConnection>, IAndOr<T, TReturn, TDbConnection, TNewResult>> func) :
+            Func<ConnectionOptions<TDbConnection>, IAndOr<T, TReturn>> func) :
             base(connectionOptions)
         {
             _func = func;
@@ -109,10 +109,10 @@ namespace FluentSQL.Internal
     internal class ContinueExecutionIAndOrResult<T, TReturn, TDbConnection, TResult, TNewResult> : ContinueExecutionResult<TDbConnection>
         where T : class, new() where TReturn : IQuery<T, TDbConnection, TNewResult>
     {
-        private readonly Func<ConnectionOptions<TDbConnection>, TResult, IAndOr<T, TReturn, TDbConnection, TNewResult>>? _func;
+        private readonly Func<ConnectionOptions<TDbConnection>, TResult, IAndOr<T, TReturn>>? _func;
 
         public ContinueExecutionIAndOrResult(ConnectionOptions<TDbConnection> connectionOptions,
-            Func<ConnectionOptions<TDbConnection>, TResult, IAndOr<T, TReturn, TDbConnection, TNewResult>> func) :
+            Func<ConnectionOptions<TDbConnection>, TResult, IAndOr<T, TReturn>> func) :
             base(connectionOptions)
         {
             _func = func;

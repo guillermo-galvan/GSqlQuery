@@ -3,7 +3,7 @@
     /// <summary>
     /// Search Criteria Builder 
     /// </summary>
-    public interface ISearchCriteriaBuilder
+    public interface ISearchCriteriaBuilder<T,TReturn> : IBuilder<TReturn> where TReturn : IQuery
     {
         /// <summary>
         /// Add a search criteria

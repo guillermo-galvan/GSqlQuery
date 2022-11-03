@@ -7,7 +7,7 @@ namespace FluentSQL.Default
     /// Delete where
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class DeleteWhere<T> : BaseWhere<T>, ISearchCriteriaBuilder, IWhere<T, DeleteQuery<T>>, IAndOr<T, DeleteQuery<T>> where T : class, new()
+    internal class DeleteWhere<T> : BaseWhere<T, DeleteQuery<T>>, ISearchCriteriaBuilder<T, DeleteQuery<T>>, IWhere<T, DeleteQuery<T>>, IAndOr<T, DeleteQuery<T>> where T : class, new()
     {
         private readonly DeleteQueryBuilder<T> _queryBuilder;
 
@@ -26,7 +26,7 @@ namespace FluentSQL.Default
         /// Build Query
         /// </summary>
         /// <returns>DeleteQuery</returns>
-        public DeleteQuery<T> Build()
+        public override DeleteQuery<T> Build()
         {
             return _queryBuilder.Build();
         }
@@ -41,11 +41,9 @@ namespace FluentSQL.Default
         }
     }
 
-    internal class DeleteWhere<T, TDbConnection> : BaseWhere<T>, ISearchCriteriaBuilder,
-        IWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection,int>,
+    internal class DeleteWhere<T, TDbConnection> : BaseWhere<T, DeleteQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, DeleteQuery<T, TDbConnection>>,       
         IWhere<T, DeleteQuery<T, TDbConnection>>,
-        IAndOr<T, DeleteQuery<T, TDbConnection>, TDbConnection,int>,
-        IAndOr<DeleteQuery<T, TDbConnection>> where T : class, new()
+        IAndOr<T,DeleteQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly DeleteQueryBuilder<T, TDbConnection> _queryBuilder;
 
@@ -54,7 +52,7 @@ namespace FluentSQL.Default
             _queryBuilder = queryBuilder;
         }
 
-        public DeleteQuery<T, TDbConnection> Build()
+        public override DeleteQuery<T, TDbConnection> Build()
         {
             return _queryBuilder.Build();
         }

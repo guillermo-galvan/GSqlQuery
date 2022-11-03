@@ -76,7 +76,7 @@ namespace FluentSQL.MySql.Default
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        public LimitQueryBuilder(IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder,
+        public LimitQueryBuilder(IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
             : base(connectionOptions != null ? ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(connectionOptions.Statements) : string.Empty,
                   ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions, connectionOptions!, QueryType.Custom)

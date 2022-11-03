@@ -52,7 +52,7 @@ namespace FluentSQLTest.Default
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = ((ISearchCriteriaBuilder)query).BuildCriteria(_queryBuilder.Statements);
+            var criteria = ((ISearchCriteriaBuilder<Test1, SelectQuery<Test1>>)query).BuildCriteria(_queryBuilder.Statements);
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }
@@ -61,7 +61,7 @@ namespace FluentSQLTest.Default
         public void Should_get_the_IAndOr_interface_with_expression()
         {
             SelectWhere<Test1> where = new (_queryBuilder);
-            IAndOr<SelectQuery<Test1>> andOr = where.GetAndOr(x => x.Id);
+            IAndOr<Test1, SelectQuery<Test1>> andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
 
@@ -98,7 +98,7 @@ namespace FluentSQLTest.Default
         public void Should_get_the_IAndOr_interface()
         {
             SelectWhere<Test1> where = new (_queryBuilder);
-            IAndOr<SelectQuery<Test1>> andOr = where.GetAndOr();
+            IAndOr<Test1,SelectQuery<Test1>> andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }
 
@@ -134,7 +134,7 @@ namespace FluentSQLTest.Default
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = ((ISearchCriteriaBuilder)query).BuildCriteria(_selectQueryBuilder.ConnectionOptions.Statements);
+            var criteria = query.BuildCriteria(_selectQueryBuilder.ConnectionOptions.Statements);
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }

@@ -52,7 +52,7 @@ namespace FluentSQL.MySql.Extensions
         }
 
         public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> Limit<T, TDbConnection>(
-            this IAndOr<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder, int start, int? length) where T : class, new()
+            this IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder, int start, int? length) where T : class, new()
         {
             if (queryBuilder == null)
             {
