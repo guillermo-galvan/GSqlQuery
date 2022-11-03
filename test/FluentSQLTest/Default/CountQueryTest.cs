@@ -21,6 +21,7 @@ namespace FluentSQLTest.Default
         private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
         private readonly ConnectionOptions<DbConnection> _connectionOptions;
+        private readonly ConnectionOptions<DbConnection> _connectionOptionsAsync;
 
         public CountQueryTest()
         {
@@ -30,6 +31,7 @@ namespace FluentSQLTest.Default
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _statements = new FluentSQL.Default.Statements();
             _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
+            _connectionOptionsAsync = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync());
         }
 
         [Fact]
@@ -100,6 +102,30 @@ namespace FluentSQLTest.Default
         {
             CountQuery<Test1,DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public async Task Should_executeAsync_the_query()
+        {
+            CountQuery<Test1, DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            var result = await query.ExecuteAsync();
+            Assert.Equal(1, result);
+        }
+
+
+        [Fact]
+        public async Task Throw_exceptionAsync_if_DatabaseManagment_not_found()
+        {
+            CountQuery<Test1, DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+        }
+
+        [Fact]
+        public async Task Should_executeAsync_the_query1()
+        {
+            CountQuery<Test1, DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
             Assert.Equal(1, result);
         }
     }

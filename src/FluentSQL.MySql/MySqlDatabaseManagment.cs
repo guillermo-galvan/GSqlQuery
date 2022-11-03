@@ -1,13 +1,8 @@
 ﻿using FluentSQL.Models;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL.MySql
 {
@@ -48,6 +43,26 @@ namespace FluentSQL.MySql
                 command.Parameters.AddRange(parameters.ToArray());
 
             return command.ExecuteNonQuery();
+        }
+
+        public override async Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters)
+        {
+            using MySqlConnection connection = new(_connectionString);
+            connection.Open();
+            int result = await ExecuteNonQueryAsync(connection, query, parameters);
+            connection.Close();
+            return result;
+        }
+
+        public override Task<int> ExecuteNonQueryAsync(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = query.Text;
+
+            if (parameters != null)
+                command.Parameters.AddRange(parameters.ToArray());
+
+            return command.ExecuteNonQueryAsync();
         }
 
         public override IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
@@ -99,16 +114,66 @@ namespace FluentSQL.MySql
             return result;
         }
 
-        public override object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type resultType)
+        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
         {
             using MySqlConnection connection = new(_connectionString);
             connection.Open();
-            object result = ExecuteScalar(connection, query, parameters, resultType);
+            IEnumerable<T> result = await ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters);
             connection.Close();
             return result;
         }
 
-        public override object ExecuteScalar(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, Type resultType)
+        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+        {
+
+            ITransformTo<T> transformToEntity = GetTransformTo<T>();
+            Queue<T> result = new();
+            object? valor = null;
+
+            using var command = connection.CreateCommand();
+            command.CommandText = query.Text;
+
+            if (parameters != null)
+                command.Parameters.AddRange(parameters.ToArray());
+
+            var columns = (from pro in propertyOptions
+                           join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
+                           from left in leftJoin.DefaultIfEmpty()
+                           select new { Property = pro, Column = left, IsColumnInQuery = left is not null }).ToList();
+
+            using DbDataReader reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                columns.ForEach(x => {
+                    if (x.IsColumnInQuery)
+                    {
+                        valor = reader.GetValue(x.Column.Name);
+                        valor = SwitchTypeValue(x.Property.PropertyInfo.PropertyType, valor);
+                    }
+                    else
+                    {
+                        valor = x.Property.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(x.Property.PropertyInfo.PropertyType) : null;
+                    }
+                    transformToEntity.SetValue(x.Property.PositionConstructor, x.Property.PropertyInfo.Name, valor);
+                });
+
+                result.Enqueue(transformToEntity.Generate());
+            }
+
+            return result;
+        }
+
+        public override T ExecuteScalar<T>(IQuery query, IEnumerable<IDataParameter> parameters)
+        {
+            using MySqlConnection connection = new(_connectionString);
+            connection.Open();
+            T result = ExecuteScalar<T>(connection, query, parameters);
+            connection.Close();
+            return result;
+        }
+
+        public override T ExecuteScalar<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
             using var command = connection.CreateCommand();
             command.CommandText = query.Text;
@@ -116,8 +181,30 @@ namespace FluentSQL.MySql
             if (parameters != null)
                 command.Parameters.AddRange(parameters.ToArray());
 
-            object result = command.ExecuteScalar();
-            result = SwitchTypeValue(resultType, result);
+            object resultCommand = command.ExecuteScalar();
+            T result = (T)SwitchTypeValue(typeof(T), resultCommand)!;
+            return result;
+        }
+
+        public override async Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters)
+        {
+            using MySqlConnection connection = new(_connectionString);
+            connection.Open();
+            T? result = await ExecuteScalarAsync<T>(connection, query, parameters);
+            connection.Close();
+            return result;
+        }
+
+        public override async Task<T> ExecuteScalarAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = query.Text;
+
+            if (parameters != null)
+                command.Parameters.AddRange(parameters.ToArray());
+
+            object? resultCommand = await command.ExecuteScalarAsync();
+            T result = (T)SwitchTypeValue(typeof(T), resultCommand)!;
             return result;
         }
 

@@ -20,6 +20,7 @@ namespace FluentSQLTest.Default
         private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
         private readonly ConnectionOptions<DbConnection> _connectionOptions;
+        private readonly ConnectionOptions<DbConnection> _connectionOptionsAsync;
 
         public DeleteQueryTest()
         {
@@ -29,6 +30,7 @@ namespace FluentSQLTest.Default
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
+            _connectionOptionsAsync = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync());
         }
 
         [Fact]
@@ -108,6 +110,39 @@ namespace FluentSQLTest.Default
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions);
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public async Task Should_executeAsync_the_query()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            DeleteQuery<Test3, DbConnection> query = new("DELETE FROM [TableName];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _connectionOptionsAsync);
+            var result = await query.ExecuteAsync();
+            Assert.Equal(1, result);
+        }
+
+        [Fact]
+        public async Task Throw_exception_if_DatabaseManagment_not_found_Async()
+        {
+            DeleteQuery<Test1, DbConnection> query = new("DELETE FROM [TableName];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
+                _connectionOptionsAsync);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+        }
+
+        [Fact]
+        public async Task Should_executeAsync_the_query2()
+        {
+            var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
+
+            DeleteQuery<Test3, DbConnection> query = new("DELETE FROM [TableName];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _connectionOptionsAsync);
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
             Assert.Equal(1, result);
         }
     }

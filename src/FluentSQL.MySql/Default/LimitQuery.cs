@@ -40,5 +40,21 @@ namespace FluentSQL.MySql.Default
             return DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
+
+        public override Task<IEnumerable<T>> ExecuteAsync()
+        {
+            return DatabaseManagment.ExecuteReaderAsync<T>(this, GetClassOptions().PropertyOptions,
+                this.GetParameters<T, TDbConnection>(DatabaseManagment));
+        }
+
+        public override Task<IEnumerable<T>> ExecuteAsync(TDbConnection dbConnection)
+        {
+            if (dbConnection == null)
+            {
+                throw new ArgumentNullException(nameof(dbConnection));
+            }
+            return DatabaseManagment.ExecuteReaderAsync<T>(dbConnection, this, GetClassOptions().PropertyOptions,
+                this.GetParameters<T, TDbConnection>(DatabaseManagment));
+        }
     }
 }

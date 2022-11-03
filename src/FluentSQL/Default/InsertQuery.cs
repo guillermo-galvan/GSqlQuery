@@ -47,13 +47,30 @@ namespace FluentSQL.Default
             object idResult;
             if (connection == null)
             {
-                idResult = DatabaseManagment.ExecuteScalar(this, this.GetParameters<T, TDbConnection>(DatabaseManagment),
-                    propertyOptions.PropertyInfo.PropertyType);
+                idResult = DatabaseManagment.ExecuteScalar<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
             else
             {
-                idResult = DatabaseManagment.ExecuteScalar(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment),
-                    propertyOptions.PropertyInfo.PropertyType);
+                idResult = DatabaseManagment.ExecuteScalar<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            }
+
+            propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
+        }
+
+        private async Task InsertAutoIncrementingAsync(TDbConnection? connection = default)
+        {
+            var classOptions = GetClassOptions();
+            var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
+            var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);
+
+            object idResult;
+            if (connection == null)
+            {
+                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            }
+            else
+            {
+                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
 
             propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
@@ -84,6 +101,36 @@ namespace FluentSQL.Default
             else
             {
                 DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            }
+
+            return (T)Entity;
+        }
+
+        public override async Task<T> ExecuteAsync()
+        {
+            if (Columns.Any(x => x.IsAutoIncrementing))
+            {
+                await InsertAutoIncrementingAsync();
+            }
+            else
+            {
+                await DatabaseManagment.ExecuteNonQueryAsync(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            }
+
+            return (T)Entity;
+        }
+
+        public override async Task<T> ExecuteAsync(TDbConnection dbConnection)
+        {
+            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+
+            if (Columns.Any(x => x.IsAutoIncrementing))
+            {
+                await InsertAutoIncrementingAsync(dbConnection);
+            }
+            else
+            {
+                await DatabaseManagment.ExecuteNonQueryAsync(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
 
             return (T)Entity;

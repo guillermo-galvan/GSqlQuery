@@ -46,5 +46,9 @@ namespace FluentSQL.Default
         public abstract TResult Execute();
 
         public abstract TResult Execute(TDbConnection dbConnection);
+
+        public abstract Task<TResult> ExecuteAsync();
+
+        public abstract Task<TResult> ExecuteAsync(TDbConnection dbConnection);
     }
 }

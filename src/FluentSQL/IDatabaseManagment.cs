@@ -38,7 +38,7 @@ namespace FluentSQL
         /// <returns></returns>
         int ExecuteNonQuery(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
-        object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type resultType);
+        T ExecuteScalar<T>(IQuery query, IEnumerable<IDataParameter> parameters);
 
         /// <summary>
         /// 
@@ -48,6 +48,42 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        object ExecuteScalar(TDbConnection connection,IQuery query, IEnumerable<IDataParameter> parameters, Type resultType);
+        T ExecuteScalar<T>(TDbConnection connection,IQuery query, IEnumerable<IDataParameter> parameters);
+
+        Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> ExecuteReaderAsync<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+
+        Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<int> ExecuteNonQueryAsync(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
+
+        Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<T> ExecuteScalarAsync<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
     }
 }

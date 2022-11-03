@@ -39,5 +39,16 @@ namespace FluentSQL.Default
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
+
+        public override Task<int> ExecuteAsync()
+        {
+            return DatabaseManagment.ExecuteNonQueryAsync(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+        }
+
+        public override Task<int> ExecuteAsync(TDbConnection dbConnection)
+        {
+            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            return DatabaseManagment.ExecuteNonQueryAsync(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+        }
     }
 }

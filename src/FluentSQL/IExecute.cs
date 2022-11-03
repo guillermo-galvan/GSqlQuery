@@ -13,5 +13,9 @@ namespace FluentSQL
         TResult Execute();
 
         TResult Execute(TDbConnection dbConnection);
+
+        Task<TResult> ExecuteAsync();
+
+        Task<TResult> ExecuteAsync(TDbConnection dbConnection);
     }
 }

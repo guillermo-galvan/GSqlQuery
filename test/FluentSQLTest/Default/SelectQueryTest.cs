@@ -21,6 +21,7 @@ namespace FluentSQLTest.Default
         private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
         private readonly ConnectionOptions<DbConnection> _connectionOptions;
+        private readonly ConnectionOptions<DbConnection> _connectionOptionsAsync;
 
         public SelectQueryTest()
         {
@@ -30,6 +31,7 @@ namespace FluentSQLTest.Default
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _statements = new FluentSQL.Default.Statements();
             _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
+            _connectionOptionsAsync = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync());
         }
 
         [Fact]
@@ -108,6 +110,40 @@ namespace FluentSQLTest.Default
             SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", 
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public async Task Should_executeAsync_the_query()
+        {
+            SelectQuery<Test1, DbConnection> query =
+                new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute },
+                new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+
+            var result = await query.ExecuteAsync();
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public async Task Throw_exception_if_connection_is_null_Async()
+        {
+            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+        }
+
+        [Fact]
+        public async Task Should_executeAsync_the_query1()
+        {
+            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
+                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

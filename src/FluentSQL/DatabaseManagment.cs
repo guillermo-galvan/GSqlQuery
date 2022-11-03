@@ -71,7 +71,7 @@ namespace FluentSQL
         /// <param name="type"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        protected virtual object? SwitchTypeValue(Type type, object value)
+        protected virtual object? SwitchTypeValue(Type type, object? value)
         {
             return (type, value) switch
             {
@@ -94,7 +94,7 @@ namespace FluentSQL
                 (Type t, object) when t == typeof(ulong) || t == typeof(ulong?) => Convert.ToUInt64(value),
                 (Type t, object) when t == typeof(sbyte) || t == typeof(sbyte?) => Convert.ToSByte(value),
                 (Type t, object) when t == typeof(TimeSpan) || t == typeof(TimeSpan?) => TimeSpan.Parse(value.ToString()),
-                _ => null,
+                _ => value,
             };
         }
 
@@ -111,6 +111,9 @@ namespace FluentSQL
         public abstract IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
             IEnumerable<IDataParameter> parameters) where T : class, new();
 
+        public abstract IEnumerable<T> ExecuteReader<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions,
+           IEnumerable<IDataParameter> parameters) where T : class, new();
+
         /// <summary>
         /// 
         /// </summary>
@@ -121,6 +124,8 @@ namespace FluentSQL
         /// <returns></returns>
         public abstract int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters);
 
+        public abstract int ExecuteNonQuery(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
+
         /// <summary>
         /// 
         /// </summary>
@@ -129,13 +134,20 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public abstract object ExecuteScalar(IQuery query, IEnumerable<IDataParameter> parameters, Type result);
+        public abstract T ExecuteScalar<T>(IQuery query, IEnumerable<IDataParameter> parameters);
 
-        public abstract IEnumerable<T> ExecuteReader<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
-            IEnumerable<IDataParameter> parameters) where T : class, new();
+        public abstract T ExecuteScalar<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
-        public abstract int ExecuteNonQuery(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
+        public abstract Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
 
-        public abstract object ExecuteScalar(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, Type result);
+        public abstract Task<IEnumerable<T>> ExecuteReaderAsync<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+
+        public abstract Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters);
+
+        public abstract Task<int> ExecuteNonQueryAsync(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
+
+        public abstract Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters);
+
+        public abstract Task<T> ExecuteScalarAsync<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
     }
 }

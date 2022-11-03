@@ -68,5 +68,25 @@ namespace FluentSQLTest
             Assert.Throws<ArgumentNullException>(() => Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(null, LoadFluentOptions.GetDatabaseManagmentMock())));
             Assert.Throws<ArgumentNullException>(() => Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, databaseManagement)));
         }
+
+        [Fact]
+        public async Task Should_executionAsync()
+        {
+            var result = await Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync()))
+                                .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
+                                .Add((c) => Test3.Select(c).Build())
+                                .ExecuteAsync();
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public async Task Should_executionAsync_with_Connection()
+        {
+            var result = await Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync()))
+                                .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
+                                .Add((c) => Test3.Select(c).Build())
+                                .ExecuteAsync(LoadFluentOptions.GetDbConnection());
+            Assert.Equal(0, result);
+        }
     }
 }

@@ -58,5 +58,17 @@ namespace FluentSQL
             var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
             return _connectionOptions.DatabaseManagment.ExecuteNonQuery(connection, query, _parameters);
         }
+
+        public Task<int> ExecuteAsync()
+        {
+            var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            return _connectionOptions.DatabaseManagment.ExecuteNonQueryAsync(query, _parameters);
+        }
+
+        public Task<int> ExecuteAsync(TDbConnection connection)
+        {
+            var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            return _connectionOptions.DatabaseManagment.ExecuteNonQueryAsync(connection, query, _parameters);
+        }
     }
 }

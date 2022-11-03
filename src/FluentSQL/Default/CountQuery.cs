@@ -21,13 +21,24 @@ namespace FluentSQL.Default
 
         public override int Execute()
         {
-            return (int)DatabaseManagment.ExecuteScalar(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), typeof(int));
+            return DatabaseManagment.ExecuteScalar<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
         public override int Execute(TDbConnection dbConnection)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return (int)DatabaseManagment.ExecuteScalar(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), typeof(int));
+            return DatabaseManagment.ExecuteScalar<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+        }
+
+        public override Task<int> ExecuteAsync()
+        {
+            return DatabaseManagment.ExecuteScalarAsync<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+        }
+
+        public override Task<int> ExecuteAsync(TDbConnection dbConnection)
+        {
+            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            return DatabaseManagment.ExecuteScalarAsync<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
     }
 }
