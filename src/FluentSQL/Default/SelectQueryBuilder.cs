@@ -69,9 +69,9 @@ namespace FluentSQL.Default
         }
     }
 
-    internal class SelectQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>,
-        IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>,
-        IQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>, IBuilder<SelectQuery<T, TDbConnection>>
+    internal class SelectQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, SelectQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection>, IBuilder<SelectQuery<T, TDbConnection>>
         where T : class, new()
     {
         public SelectQueryBuilder(IEnumerable<string> selectMember, ConnectionOptions<TDbConnection> connectionOptions) : 

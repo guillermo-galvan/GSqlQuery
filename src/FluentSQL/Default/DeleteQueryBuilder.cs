@@ -55,9 +55,9 @@ namespace FluentSQL.Default
         }
     }
 
-    internal class DeleteQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, DeleteQuery<T, TDbConnection>, TDbConnection, int>,
-        IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection, int>,
-        IQueryBuilder<T, DeleteQuery<T, TDbConnection>, TDbConnection, int>, IBuilder<DeleteQuery<T, TDbConnection>>
+    internal class DeleteQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilder<T, DeleteQuery<T, TDbConnection>, TDbConnection>, IBuilder<DeleteQuery<T, TDbConnection>>
         where T : class, new()
     {
         public DeleteQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions, QueryType.Delete)

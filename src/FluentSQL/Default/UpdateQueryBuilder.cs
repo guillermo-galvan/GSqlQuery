@@ -111,7 +111,7 @@ namespace FluentSQL.Default
             return (IWhere<T, UpdateQuery<T>>)_andOr;
         }
 
-        public ISet<T, UpdateQuery<T>> Add<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
+        public ISet<T, UpdateQuery<T>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
         {
             var (options, memberInfos) = expression.GetOptionsAndMember();
             var column = memberInfos.ValidateMemberInfo(options).ColumnAttribute;
@@ -119,7 +119,7 @@ namespace FluentSQL.Default
             return this;
         }
 
-        public ISet<T, UpdateQuery<T>> Add<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
         {
             if (_entity == null)
             {
@@ -139,10 +139,10 @@ namespace FluentSQL.Default
         }
     }
 
-    internal class UpdateQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>,
-        IQueryBuilderWithWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>,
-        IQueryBuilder<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>, IBuilder<UpdateQuery<T, TDbConnection>>,
-        ISet<T, UpdateQuery<T, TDbConnection>,TDbConnection,int>
+    internal class UpdateQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderWithWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilder<T, UpdateQuery<T, TDbConnection>, TDbConnection>, IBuilder<UpdateQuery<T, TDbConnection>>,
+        ISet<T, UpdateQuery<T, TDbConnection>>
         where T : class, new()
     {
         private readonly IDictionary<ColumnAttribute, object?> _columnValues;
@@ -230,7 +230,7 @@ namespace FluentSQL.Default
             return (IWhere<T, UpdateQuery<T, TDbConnection>>)_andOr;
         }
 
-        public ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Add<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
+        public ISet<T, UpdateQuery<T, TDbConnection>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
         {
             var (options, memberInfos) = expression.GetOptionsAndMember();
             var column = memberInfos.ValidateMemberInfo(options).ColumnAttribute;
@@ -238,7 +238,7 @@ namespace FluentSQL.Default
             return this;
         }
 
-        public ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Add<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T, TDbConnection>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
         {
             if (_entity == null)
             {

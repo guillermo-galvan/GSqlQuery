@@ -5,7 +5,7 @@ namespace FluentSQL.Default
 {
     internal class CountQueryBuilder<T> : QueryBuilderWithCriteria<T, CountQuery<T>>, IQueryBuilderWithWhere<T, CountQuery<T>> where T : class, new()
     {
-        private readonly IQueryBuilderWithWhere<T, SelectQuery<T>> _queryBuilder;
+        private readonly IQueryBuilder<T, SelectQuery<T>> _queryBuilder;
         private SelectQuery<T>? _selectQuery;
 
         public CountQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T>> queryBuilder, IStatements statements) 
@@ -50,15 +50,14 @@ namespace FluentSQL.Default
         }
     }
 
-    internal class CountQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, CountQuery<T, TDbConnection>, TDbConnection, int>,
-        IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection, int>,
-        IQueryBuilder<T, CountQuery<T, TDbConnection>, TDbConnection, int>, IBuilder<CountQuery<T, TDbConnection>>
-        where T : class, new()
+    internal class CountQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, CountQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilder<T, CountQuery<T, TDbConnection>, TDbConnection>, IBuilder<CountQuery<T, TDbConnection>> where T : class, new()
     {
-        private readonly IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> _queryBuilder;
-        private SelectQuery<T, TDbConnection>? _selectQuery;
+        private readonly IQueryBuilder<T, SelectQuery<T, TDbConnection>> _queryBuilder;
+        private IQuery? _selectQuery;
 
-        public CountQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>  queryBuilder ,
+        public CountQueryBuilder(IQueryBuilder<T, SelectQuery<T, TDbConnection>>  queryBuilder ,
             ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions, QueryType.Custom)
         {
             _queryBuilder = queryBuilder;
@@ -69,7 +68,7 @@ namespace FluentSQL.Default
         public override CountQuery<T, TDbConnection> Build()
         {
             _selectQuery = _queryBuilder.Build();
-            return new CountQuery<T,TDbConnection>(GenerateQuery(), _selectQuery.Columns, _criteria, _queryBuilder.ConnectionOptions);
+            return new CountQuery<T,TDbConnection>(GenerateQuery(), _selectQuery.Columns, _criteria, ConnectionOptions);
         }
 
         public override IWhere<T, CountQuery<T, TDbConnection>> Where()
@@ -85,14 +84,14 @@ namespace FluentSQL.Default
 
             if (_andOr == null)
             {
-                result = string.Format(_queryBuilder.ConnectionOptions.Statements.Select,
-                    $"COUNT({string.Join(",", _selectQuery!.Columns.Select(x => x.GetColumnName(_tableName, _queryBuilder.ConnectionOptions.Statements)))})",
+                result = string.Format(ConnectionOptions.Statements.Select,
+                    $"COUNT({string.Join(",", _selectQuery!.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
                     _tableName);
             }
             else
             {
-                result = string.Format(_queryBuilder.ConnectionOptions.Statements.SelectWhere,
-                    $"COUNT({string.Join(",", _selectQuery!.Columns.Select(x => x.GetColumnName(_tableName, _queryBuilder.ConnectionOptions.Statements)))})",
+                result = string.Format(ConnectionOptions.Statements.SelectWhere,
+                    $"COUNT({string.Join(",", _selectQuery!.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
                     _tableName, GetCriteria());
             }
 

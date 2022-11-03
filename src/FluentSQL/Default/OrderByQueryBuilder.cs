@@ -4,7 +4,7 @@ using FluentSQL.Models;
 
 namespace FluentSQL.Default
 {
-    internal class OrderByQueryBuilder<T> : QueryBuilderBase, IQueryBuilder<T, OrderByQuery<T>> where T : class, new()
+    internal class OrderByQueryBuilder<T> : QueryBuilderBase<T, OrderByQuery<T>>, IQueryBuilder<T, OrderByQuery<T>> where T : class, new()
     {
         private readonly IQueryBuilderWithWhere<T, SelectQuery<T>>? _queryBuilder;
         private readonly IAndOr<T, SelectQuery<T>>? _andorBuilder;
@@ -13,8 +13,7 @@ namespace FluentSQL.Default
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
             IQueryBuilderWithWhere<T, SelectQuery<T>> queryBuilder, IStatements statements)
-            : base(ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(statements), ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions,
-                statements, QueryType.Custom)
+            : base(statements, QueryType.Custom)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new ();
@@ -25,8 +24,7 @@ namespace FluentSQL.Default
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
            IAndOr<T, SelectQuery<T>> andOr, IStatements statements)
-           : base(ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(statements), ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions,
-               statements, QueryType.Custom)
+           : base(statements, QueryType.Custom)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new();
@@ -35,7 +33,7 @@ namespace FluentSQL.Default
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        public OrderByQuery<T> Build()
+        public override OrderByQuery<T> Build()
         {
             _selectQuery = _queryBuilder == null ? _andorBuilder!.Build() : _queryBuilder.Build();
             return new OrderByQuery<T>(GenerateQuery(), _selectQuery.Columns, _selectQuery.Criteria, _selectQuery.Statements);
@@ -71,21 +69,20 @@ namespace FluentSQL.Default
         }
     }
 
-    internal class OrderByQueryBuilder<T, TDbConnection> : QueryBuilderBase<TDbConnection>,
-        IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>,
+    internal class OrderByQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, OrderByQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>,
         IBuilder<OrderByQuery<T, TDbConnection>>
         where T : class, new()
     {
-        private readonly IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>? _queryBuilder;
+        private readonly IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>? _queryBuilder;
         private SelectQuery<T, TDbConnection>? _selectQuery;
         private readonly IAndOr<T, SelectQuery<T, TDbConnection>>? _andorBuilder;
         private readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder,
+            IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions)
-            : base(connectionOptions != null ? ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(connectionOptions.Statements) : string.Empty,
-                  ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions, connectionOptions!, QueryType.Custom)
+            : base(connectionOptions, QueryType.Custom)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new();
@@ -97,8 +94,7 @@ namespace FluentSQL.Default
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
             IAndOr<T, SelectQuery<T, TDbConnection>> andOr,
             ConnectionOptions<TDbConnection> connectionOptions)
-            : base(connectionOptions != null ? ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(connectionOptions.Statements) : string.Empty,
-                  ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions, connectionOptions!, QueryType.Custom)
+            : base(connectionOptions, QueryType.Custom)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new();
@@ -107,7 +103,7 @@ namespace FluentSQL.Default
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        public OrderByQuery<T, TDbConnection> Build()
+        public override OrderByQuery<T, TDbConnection> Build()
         {
             _selectQuery = _queryBuilder == null ? _andorBuilder!.Build() : _queryBuilder.Build();
             return new OrderByQuery<T,TDbConnection>(GenerateQuery(), _selectQuery.Columns, _selectQuery.Criteria, ConnectionOptions);

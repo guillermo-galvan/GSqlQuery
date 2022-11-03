@@ -38,10 +38,10 @@ namespace FluentSQL
             return new UpdateQueryBuilder<T>(statements,new string[] { memberInfos.Name }, value);
         }
 
-        ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions,
+        ISet<T, UpdateQuery<T, TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions,
             Expression<Func<T, TProperties>> expression);
 
-        public static ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
+        public static ISet<T, UpdateQuery<T, TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
             Expression<Func<T, TProperties>> expression, TProperties value)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));

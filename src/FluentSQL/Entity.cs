@@ -35,13 +35,13 @@ namespace FluentSQL
             return IRead<T>.Select(statements);
         }
 
-        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> 
+        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> 
             Select<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
         {
             return IRead<T>.Select(connectionOptions, expression);
         }
 
-        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> 
+        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> 
             Select<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
             return IRead<T>.Select(connectionOptions);
@@ -58,7 +58,7 @@ namespace FluentSQL
             return new InsertQueryBuilder<T>(statements, this);
         }
 
-        public IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection, T> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
+        public IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
             return new InsertQueryBuilder<T, TDbConnection>(connectionOptions, this);
@@ -93,14 +93,14 @@ namespace FluentSQL
             return new UpdateQueryBuilder<T>(statements, this,memberInfos.Select(x => x.Name));
         }
 
-        public static ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int>
+        public static ISet<T, UpdateQuery<T, TDbConnection>>
             Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, 
             Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            return IUpdate<T>.Update(connectionOptions, expression, value);
+            return IUpdate<T>.Update(connectionOptions, expression, value)!;
         }
        
-        public ISet<T, UpdateQuery<T, TDbConnection>, TDbConnection, int> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T, TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
             var (options, memberInfos) = expression.GetOptionsAndMembers();
@@ -118,9 +118,9 @@ namespace FluentSQL
             return IDelete<T>.Delete(statements);
         }
 
-        public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection, int> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            return IDelete<T>.Delete(connectionOptions);
+            return IDelete<T>.Delete(connectionOptions)!;
 
         }
     }

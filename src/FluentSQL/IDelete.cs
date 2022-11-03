@@ -22,7 +22,7 @@ namespace FluentSQL
             return new DeleteQueryBuilder<T>(statements);
         }
 
-        public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection, int> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
             return new DeleteQueryBuilder<T,TDbConnection>(connectionOptions);

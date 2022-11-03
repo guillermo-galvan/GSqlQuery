@@ -17,6 +17,6 @@ namespace FluentSQL
         IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements);
 
 
-        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection, T> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions);
+        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions);
     }
 }

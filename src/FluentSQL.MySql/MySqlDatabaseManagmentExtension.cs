@@ -27,13 +27,13 @@ namespace FluentSQL.MySql
             return query.Exec(transaction.Connection);
         }
 
-        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection, TResult> query)
+        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection> query)
             where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().ExecuteWithTransaction();
         }
 
-        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection, TResult> query,
+        public static TResult ExecuteWithTransaction<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection> query,
             MySqlTransaction transaction)
             where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
@@ -65,13 +65,13 @@ namespace FluentSQL.MySql
             return query.Build().Exec(connection);
         }
 
-        public static TResult Execute<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection, TResult> query)
+        public static TResult Execute<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection> query)
           where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().Exec();
         }
 
-        public static TResult Execute<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection, TResult> query, MySqlConnection connection)
+        public static TResult Execute<T, TReturn, TResult>(this IQueryBuilder<T, TReturn, MySqlConnection> query, MySqlConnection connection)
           where T : class, new() where TReturn : IQuery<T, MySqlConnection, TResult>
         {
             return query.Build().Exec(connection);

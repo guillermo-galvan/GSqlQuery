@@ -128,7 +128,7 @@ namespace FluentSQLTest.Default
         {
             UpdateQueryBuilder<Test1> queryBuilder = new(_statements, new List<string> { nameof(Test1.Name) }, string.Empty);
 
-            queryBuilder.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now);
+            queryBuilder.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now);
 
             Assert.NotNull(queryBuilder.ColumnValues);
             Assert.NotEmpty(queryBuilder.ColumnValues);
@@ -141,7 +141,7 @@ namespace FluentSQLTest.Default
             Test1 model = new(1, null, DateTime.Now, true);
             UpdateQueryBuilder<Test1> test = new(_statements, model, new List<string> { nameof(Test1.Name) });
 
-            test.Add(x => x.Id).Add(x => x.Create);
+            test.Set(x => x.Id).Set(x => x.Create);
 
             Assert.NotNull(test.ColumnValues);
             Assert.NotEmpty(test.ColumnValues);
@@ -153,7 +153,7 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             UpdateQueryBuilder<Test1> test = new(_statements, model, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) });
-            var query = test.Add(x => x.Id).Add(x => x.Create).Build();
+            var query = test.Set(x => x.Id).Set(x => x.Create).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
@@ -169,7 +169,7 @@ namespace FluentSQLTest.Default
         public void Should_generate_the_query2()
         {
             UpdateQueryBuilder<Test1> test = new(_statements, new List<string> { nameof(Test1.Name) }, string.Empty);
-            var query = test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now).Build();
+            var query = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
@@ -185,7 +185,7 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             UpdateQueryBuilder<Test1> test = new(_statements, model, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) });
-            var where = test.Add(x => x.Id).Add(x => x.Create).Where();
+            var where = test.Set(x => x.Id).Set(x => x.Create).Where();
             Assert.NotNull(where);
         }
 
@@ -193,7 +193,7 @@ namespace FluentSQLTest.Default
         public void Should_get_the_where_query2()
         {
             UpdateQueryBuilder<Test1> test = new(_statements,new List<string> { nameof(Test1.Name) }, string.Empty);
-            var where = test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now).Where();
+            var where = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Where();
             Assert.NotNull(where);
         }
 
@@ -204,7 +204,7 @@ namespace FluentSQLTest.Default
         {
             UpdateQueryBuilder<Test1,DbConnection> queryBuilder = new(_connectionOptions, new List<string> { nameof(Test1.Name) }, string.Empty);
 
-            queryBuilder.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now);
+            queryBuilder.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now);
 
             Assert.NotNull(queryBuilder.ColumnValues);
             Assert.NotEmpty(queryBuilder.ColumnValues);
@@ -217,7 +217,7 @@ namespace FluentSQLTest.Default
             Test1 model = new(1, null, DateTime.Now, true);
             UpdateQueryBuilder<Test1,DbConnection> test = new(_connectionOptions, model, new List<string> { nameof(Test1.Name) });
 
-            test.Add(x => x.Id).Add(x => x.Create);
+            test.Set(x => x.Id).Set(x => x.Create);
 
             Assert.NotNull(test.ColumnValues);
             Assert.NotEmpty(test.ColumnValues);
@@ -229,7 +229,7 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             UpdateQueryBuilder<Test1,DbConnection> test = new(_connectionOptions, model, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) });
-            var query = test.Add(x => x.Id).Add(x => x.Create).Build();
+            var query = test.Set(x => x.Id).Set(x => x.Create).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
@@ -246,7 +246,7 @@ namespace FluentSQLTest.Default
         public void Should_generate_the_query4()
         {
             UpdateQueryBuilder<Test1,DbConnection> test = new(_connectionOptions, new List<string> { nameof(Test1.Name) }, string.Empty);
-            var query = test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now).Build();
+            var query = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
@@ -263,7 +263,7 @@ namespace FluentSQLTest.Default
         {
             Test1 model = new(1, null, DateTime.Now, true);
             UpdateQueryBuilder<Test1,DbConnection> test = new(_connectionOptions, model, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) });
-            var where = test.Add(x => x.Id).Add(x => x.Create).Where();
+            var where = test.Set(x => x.Id).Set(x => x.Create).Where();
             Assert.NotNull(where);
         }
 
@@ -271,7 +271,7 @@ namespace FluentSQLTest.Default
         public void Should_get_the_where_query4()
         {
             UpdateQueryBuilder<Test1,DbConnection> test = new(_connectionOptions, new List<string> { nameof(Test1.Name) }, string.Empty);
-            var where = test.Add(x => x.Id, 1).Add(x => x.Create, DateTime.Now).Where();
+            var where = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Where();
             Assert.NotNull(where);
         }
 

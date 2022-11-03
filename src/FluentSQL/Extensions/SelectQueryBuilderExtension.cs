@@ -14,8 +14,8 @@ namespace FluentSQL.Extensions
             return new CountQueryBuilder<T>(queryBuilder, queryBuilder.Statements);
         }
 
-        public static IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection, int> 
-            Count<T, TDbConnection>(this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder) where T : class, new()
+        public static IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection> 
+            Count<T, TDbConnection>(this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder) where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             return new CountQueryBuilder<T, TDbConnection>(queryBuilder, queryBuilder.ConnectionOptions);
@@ -57,9 +57,9 @@ namespace FluentSQL.Extensions
             return queryBuilder;
         }
 
-        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> 
+        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> 
             OrderBy<T, TDbConnection,TProperties>
-            (this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder, 
+            (this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder, 
             Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class, new()
         {
@@ -69,7 +69,7 @@ namespace FluentSQL.Extensions
             return new OrderByQueryBuilder<T, TDbConnection>(memberInfos.Select(x => x.Name),orderBy,queryBuilder,  queryBuilder.ConnectionOptions);
         }
 
-        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>
+        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>
             OrderBy<T, TDbConnection, TProperties>
             (this IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder,
             Expression<Func<T, TProperties>> expression, OrderBy orderBy)
@@ -83,9 +83,9 @@ namespace FluentSQL.Extensions
                 new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagment));
         }
 
-        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>>
+        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>
             OrderBy<T, TDbConnection, TProperties>
-            (this IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection, IEnumerable<T>> queryBuilder,
+            (this IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class, new()
         {

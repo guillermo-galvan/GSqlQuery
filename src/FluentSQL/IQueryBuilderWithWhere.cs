@@ -1,6 +1,6 @@
 ﻿namespace FluentSQL
 {
-    public interface IQueryBuilderWithWhere<T, TReturn> : IQueryBuilder<T, TReturn>, IBuilder<TReturn> where T : class, new() where TReturn : IQuery<T>
+    public interface IQueryBuilderWithWhere<T, TReturn> : IQueryBuilder<T, TReturn>, IBuilder<TReturn> where T : class, new() where TReturn : IQuery
     {
         /// <summary>
         /// Add where statement in query
@@ -9,9 +9,8 @@
         IWhere<T, TReturn> Where();
     }
 
-    public interface IQueryBuilderWithWhere<T, TReturn, TDbConnection, TResult> : IQueryBuilder<T, TReturn, TDbConnection, TResult>, IBuilder<TReturn>
-        where T : class, new() where TReturn : IQuery<T, TDbConnection, TResult>
-    {
-        IWhere<T, TReturn> Where();
+    public interface IQueryBuilderWithWhere<T, TReturn, TDbConnection> : IQueryBuilderWithWhere<T, TReturn> , IQueryBuilder<T, TReturn, TDbConnection>, IBuilder<TReturn>
+        where T : class, new() where TReturn : IQuery
+    {   
     }
 }
