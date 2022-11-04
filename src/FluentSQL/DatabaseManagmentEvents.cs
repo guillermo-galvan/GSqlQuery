@@ -7,6 +7,8 @@ namespace FluentSQL
     /// </summary>
     public abstract class DatabaseManagmentEvents
     {
+        public bool IsTraceActive { get; set; } = false;
+
         /// <summary>
         /// 
         /// </summary>

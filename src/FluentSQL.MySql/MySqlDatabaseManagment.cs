@@ -36,6 +36,11 @@ namespace FluentSQL.MySql
 
         public override int ExecuteNonQuery(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
+            if (Events.IsTraceActive)
+            {
+                _logger?.LogDebug("ExecuteNonQuery Query: {@Text} Parameters: {@parameters} ", query.Text, parameters);
+            }
+            
             using var command = connection.CreateCommand();
             command.CommandText = query.Text;
 
@@ -57,6 +62,10 @@ namespace FluentSQL.MySql
         public override Task<int> ExecuteNonQueryAsync(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (Events.IsTraceActive)
+            {
+                _logger?.LogDebug("ExecuteNonQueryAsync Query: {@Text} Parameters: {@parameters} ", query.Text, parameters);
+            }
             using var command = connection.CreateCommand();
             command.CommandText = query.Text;
 
@@ -77,6 +86,10 @@ namespace FluentSQL.MySql
 
         public override IEnumerable<T> ExecuteReader<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
         {
+            if (Events.IsTraceActive)
+            {
+                _logger?.LogDebug("ExecuteReader Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
+            }
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
             Queue<T> result = new();
             object? valor = null;
@@ -129,6 +142,10 @@ namespace FluentSQL.MySql
             IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (Events.IsTraceActive)
+            {
+                _logger?.LogDebug("ExecuteReaderAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
+            }
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
             Queue<T> result = new();
             object? valor = null;
@@ -178,6 +195,10 @@ namespace FluentSQL.MySql
 
         public override T ExecuteScalar<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
+            if (Events.IsTraceActive)
+            {
+                _logger?.LogDebug("ExecuteScalar Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
+            }
             using var command = connection.CreateCommand();
             command.CommandText = query.Text;
 
@@ -201,6 +222,10 @@ namespace FluentSQL.MySql
         public override async Task<T> ExecuteScalarAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (Events.IsTraceActive)
+            {
+                _logger?.LogDebug("ExecuteScalarAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
+            }
             using var command = connection.CreateCommand();
             command.CommandText = query.Text;
 
