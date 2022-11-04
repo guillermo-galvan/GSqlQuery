@@ -50,6 +50,8 @@ namespace FluentSQL
         /// <returns></returns>
         T ExecuteScalar<T>(TDbConnection connection,IQuery query, IEnumerable<IDataParameter> parameters);
 
+        Task<TDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default);
+
         Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, 
             CancellationToken cancellationToken =  default) where T : class, new();
 

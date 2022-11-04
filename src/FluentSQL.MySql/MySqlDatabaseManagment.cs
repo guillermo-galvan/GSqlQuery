@@ -53,9 +53,9 @@ namespace FluentSQL.MySql
         public override async Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             using MySqlConnection connection = new(_connectionString);
-            connection.Open();
+            await connection.OpenAsync(cancellationToken);
             int result = await ExecuteNonQueryAsync(connection, query, parameters, cancellationToken);
-            connection.Close();
+            await connection.CloseAsync(cancellationToken);
             return result;
         }
 
@@ -132,9 +132,9 @@ namespace FluentSQL.MySql
             IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             using MySqlConnection connection = new(_connectionString);
-            connection.Open();
+            await connection.OpenAsync(cancellationToken);
             IEnumerable<T> result = await ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters, cancellationToken);
-            connection.Close();
+            await connection.CloseAsync(cancellationToken);
             return result;
         }
 
@@ -213,9 +213,9 @@ namespace FluentSQL.MySql
         public override async Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             using MySqlConnection connection = new(_connectionString);
-            connection.Open();
+            await connection.OpenAsync(cancellationToken);
             T? result = await ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
-            connection.Close();
+            await connection.CloseAsync(cancellationToken);
             return result;
         }
 
@@ -239,10 +239,23 @@ namespace FluentSQL.MySql
 
         public override MySqlConnection GetConnection()
         {
-            MySqlConnection result = new MySqlConnection(_connectionString);
+            MySqlConnection result = new(_connectionString);
             if (result.State != ConnectionState.Open)
             {
                 result.Open();
+            }
+            return result;
+        }
+
+        public override async Task<MySqlConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            MySqlConnection result = new(_connectionString);
+
+            if (result.State != ConnectionState.Open)
+            {
+                await result.OpenAsync(cancellationToken);
             }
             return result;
         }

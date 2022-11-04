@@ -132,6 +132,8 @@ namespace FluentSQL
 
         public abstract T ExecuteScalar<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
+        public abstract Task<TDbConnection> GetConnectionAsync(CancellationToken cancellationToken = default);
+
         public abstract Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters,
             CancellationToken cancellationToken = default) where T : class, new();
 
