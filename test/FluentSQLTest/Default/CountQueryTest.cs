@@ -109,7 +109,7 @@ namespace FluentSQLTest.Default
         public async Task Should_executeAsync_the_query()
         {
             CountQuery<Test1, DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            var result = await query.ExecuteAsync();
+            var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.Equal(1, result);
         }
 
@@ -118,14 +118,14 @@ namespace FluentSQLTest.Default
         public async Task Throw_exceptionAsync_if_DatabaseManagment_not_found()
         {
             CountQuery<Test1, DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null,CancellationToken.None));
         }
 
         [Fact]
         public async Task Should_executeAsync_the_query1()
         {
             CountQuery<Test1, DbConnection> query = new("SELECT COUNT([Test1].[Id]) FROM [Test1];", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.Equal(1, result);
         }
     }

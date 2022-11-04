@@ -75,7 +75,7 @@ namespace FluentSQLTest
             var result = await Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync()))
                                 .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
                                 .Add((c) => Test3.Select(c).Build())
-                                .ExecuteAsync();
+                                .ExecuteAsync(CancellationToken.None);
             Assert.Equal(0, result);
         }
 
@@ -85,7 +85,7 @@ namespace FluentSQLTest
             var result = await Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync()))
                                 .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
                                 .Add((c) => Test3.Select(c).Build())
-                                .ExecuteAsync(LoadFluentOptions.GetDbConnection());
+                                .ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.Equal(0, result);
         }
     }

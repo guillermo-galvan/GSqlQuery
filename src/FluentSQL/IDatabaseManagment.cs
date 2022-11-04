@@ -50,7 +50,8 @@ namespace FluentSQL
         /// <returns></returns>
         T ExecuteScalar<T>(TDbConnection connection,IQuery query, IEnumerable<IDataParameter> parameters);
 
-        Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, 
+            CancellationToken cancellationToken =  default) where T : class, new();
 
         /// <summary>
         /// 
@@ -60,21 +61,10 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> ExecuteReaderAsync<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        Task<IEnumerable<T>> ExecuteReaderAsync<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
+            IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class, new();
 
-        Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="query"></param>
-        /// <param name="propertyOptions"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        Task<int> ExecuteNonQueryAsync(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
-
-        Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters);
+        Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 
@@ -84,6 +74,18 @@ namespace FluentSQL
         /// <param name="propertyOptions"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        Task<T> ExecuteScalarAsync<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
+        Task<int> ExecuteNonQueryAsync(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
+
+        Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="propertyOptions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<T> ExecuteScalarAsync<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
     }
 }

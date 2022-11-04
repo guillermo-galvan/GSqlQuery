@@ -45,24 +45,25 @@ namespace FluentSQL.MySql
             return command.ExecuteNonQuery();
         }
 
-        public override async Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters)
+        public override async Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             using MySqlConnection connection = new(_connectionString);
             connection.Open();
-            int result = await ExecuteNonQueryAsync(connection, query, parameters);
+            int result = await ExecuteNonQueryAsync(connection, query, parameters, cancellationToken);
             connection.Close();
             return result;
         }
 
-        public override Task<int> ExecuteNonQueryAsync(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
+        public override Task<int> ExecuteNonQueryAsync(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             using var command = connection.CreateCommand();
             command.CommandText = query.Text;
 
             if (parameters != null)
                 command.Parameters.AddRange(parameters.ToArray());
 
-            return command.ExecuteNonQueryAsync();
+            return command.ExecuteNonQueryAsync(cancellationToken);
         }
 
         public override IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
@@ -114,18 +115,20 @@ namespace FluentSQL.MySql
             return result;
         }
 
-        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
+            IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             using MySqlConnection connection = new(_connectionString);
             connection.Open();
-            IEnumerable<T> result = await ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters);
+            IEnumerable<T> result = await ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters, cancellationToken);
             connection.Close();
             return result;
         }
 
-        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
+            IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
-
+            cancellationToken.ThrowIfCancellationRequested();
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
             Queue<T> result = new();
             object? valor = null;
@@ -141,7 +144,7 @@ namespace FluentSQL.MySql
                            from left in leftJoin.DefaultIfEmpty()
                            select new { Property = pro, Column = left, IsColumnInQuery = left is not null }).ToList();
 
-            using DbDataReader reader = await command.ExecuteReaderAsync();
+            using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 
             while (await reader.ReadAsync())
             {
@@ -186,24 +189,25 @@ namespace FluentSQL.MySql
             return result;
         }
 
-        public override async Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters)
+        public override async Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             using MySqlConnection connection = new(_connectionString);
             connection.Open();
-            T? result = await ExecuteScalarAsync<T>(connection, query, parameters);
+            T? result = await ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
             connection.Close();
             return result;
         }
 
-        public override async Task<T> ExecuteScalarAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
+        public override async Task<T> ExecuteScalarAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             using var command = connection.CreateCommand();
             command.CommandText = query.Text;
 
             if (parameters != null)
                 command.Parameters.AddRange(parameters.ToArray());
 
-            object? resultCommand = await command.ExecuteScalarAsync();
+            object? resultCommand = await command.ExecuteScalarAsync(cancellationToken);
             T result = (T)SwitchTypeValue(typeof(T), resultCommand)!;
             return result;
         }

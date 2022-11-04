@@ -59,16 +59,16 @@ namespace FluentSQL
             return _connectionOptions.DatabaseManagment.ExecuteNonQuery(connection, query, _parameters);
         }
 
-        public Task<int> ExecuteAsync()
+        public Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
-            return _connectionOptions.DatabaseManagment.ExecuteNonQueryAsync(query, _parameters);
+            return _connectionOptions.DatabaseManagment.ExecuteNonQueryAsync(query, _parameters, cancellationToken);
         }
 
-        public Task<int> ExecuteAsync(TDbConnection connection)
+        public Task<int> ExecuteAsync(TDbConnection connection, CancellationToken cancellationToken = default)
         {
             var query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
-            return _connectionOptions.DatabaseManagment.ExecuteNonQueryAsync(connection, query, _parameters);
+            return _connectionOptions.DatabaseManagment.ExecuteNonQueryAsync(connection, query, _parameters, cancellationToken);
         }
     }
 }

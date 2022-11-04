@@ -105,7 +105,7 @@ namespace FluentSQLTest.Default
         public async Task Should_executeAsync_the_query()
         {
             OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            var result = await query.ExecuteAsync();
+            var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
         }
@@ -115,14 +115,14 @@ namespace FluentSQLTest.Default
         public async Task Throw_exception_if_DatabaseManagment_not_found_Async()
         {
             OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
 
         [Fact]
         public async Task Should_executeAsync_the_query1()
         {
             OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
         }

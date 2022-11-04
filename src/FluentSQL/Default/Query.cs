@@ -47,8 +47,8 @@ namespace FluentSQL.Default
 
         public abstract TResult Execute(TDbConnection dbConnection);
 
-        public abstract Task<TResult> ExecuteAsync();
+        public abstract Task<TResult> ExecuteAsync(CancellationToken cancellationToken = default);
 
-        public abstract Task<TResult> ExecuteAsync(TDbConnection dbConnection);
+        public abstract Task<TResult> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default);
     }
 }

@@ -132,16 +132,18 @@ namespace FluentSQL
 
         public abstract T ExecuteScalar<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
 
-        public abstract Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        public abstract Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters,
+            CancellationToken cancellationToken = default) where T : class, new();
 
-        public abstract Task<IEnumerable<T>> ExecuteReaderAsync<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new();
+        public abstract Task<IEnumerable<T>> ExecuteReaderAsync<T>(TDbConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
+            IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class, new();
 
-        public abstract Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters);
+        public abstract Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
 
-        public abstract Task<int> ExecuteNonQueryAsync(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
+        public abstract Task<int> ExecuteNonQueryAsync(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
 
-        public abstract Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters);
+        public abstract Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
 
-        public abstract Task<T> ExecuteScalarAsync<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters);
+        public abstract Task<T> ExecuteScalarAsync<T>(TDbConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
     }
 }

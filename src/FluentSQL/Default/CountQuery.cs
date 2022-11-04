@@ -30,15 +30,15 @@ namespace FluentSQL.Default
             return DatabaseManagment.ExecuteScalar<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
-        public override Task<int> ExecuteAsync()
+        public override Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            return DatabaseManagment.ExecuteScalarAsync<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            return DatabaseManagment.ExecuteScalarAsync<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
         }
 
-        public override Task<int> ExecuteAsync(TDbConnection dbConnection)
+        public override Task<int> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return DatabaseManagment.ExecuteScalarAsync<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            return DatabaseManagment.ExecuteScalarAsync<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
         }
     }
 }

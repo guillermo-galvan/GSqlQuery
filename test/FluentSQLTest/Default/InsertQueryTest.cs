@@ -157,7 +157,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true));
-            var result = await query.ExecuteAsync();
+            var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -171,7 +171,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true));
-            var result = await query.ExecuteAsync();
+            var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.NotNull(result);
         }
 
@@ -182,7 +182,7 @@ namespace FluentSQLTest.Default
                 new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true));
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
 
         [Fact]
@@ -194,7 +194,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true));
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -208,7 +208,7 @@ namespace FluentSQLTest.Default
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test6(1, null, DateTime.Now, true));
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
         }
     }

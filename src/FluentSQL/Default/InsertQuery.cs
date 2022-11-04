@@ -60,7 +60,7 @@ namespace FluentSQL.Default
             propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
         }
 
-        private async Task InsertAutoIncrementingAsync(TDbConnection? connection = default)
+        private async Task InsertAutoIncrementingAsync(CancellationToken cancellationToken,TDbConnection? connection = default)
         {
             var classOptions = GetClassOptions();
             var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
@@ -69,11 +69,11 @@ namespace FluentSQL.Default
             object idResult;
             if (connection == null)
             {
-                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment),cancellationToken);
             }
             else
             {
-                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment),cancellationToken);
             }
 
             var newType = Nullable.GetUnderlyingType(propertyOptions.PropertyInfo.PropertyType);
@@ -112,31 +112,31 @@ namespace FluentSQL.Default
             return (T)Entity;
         }
 
-        public override async Task<T> ExecuteAsync()
+        public override async Task<T> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
-                await InsertAutoIncrementingAsync();
+                await InsertAutoIncrementingAsync(cancellationToken);
             }
             else
             {
-                await DatabaseManagment.ExecuteNonQueryAsync(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                await DatabaseManagment.ExecuteNonQueryAsync(this, this.GetParameters<T, TDbConnection>(DatabaseManagment),cancellationToken);
             }
 
             return (T)Entity;
         }
 
-        public override async Task<T> ExecuteAsync(TDbConnection dbConnection)
+        public override async Task<T> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
 
             if (Columns.Any(x => x.IsAutoIncrementing))
             {
-                await InsertAutoIncrementingAsync(dbConnection);
+                await InsertAutoIncrementingAsync(cancellationToken,dbConnection);
             }
             else
             {
-                await DatabaseManagment.ExecuteNonQueryAsync(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                await DatabaseManagment.ExecuteNonQueryAsync(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment),cancellationToken);
             }
 
             return (T)Entity;

@@ -123,7 +123,7 @@ namespace FluentSQLTest.Default
                 new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
 
-            var result = await query.ExecuteAsync();
+            var result = await query.ExecuteAsync(CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -135,7 +135,7 @@ namespace FluentSQLTest.Default
         {
             SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
 
         [Fact]
@@ -143,7 +143,7 @@ namespace FluentSQLTest.Default
         {
             SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

@@ -32,17 +32,17 @@ namespace FluentSQL.Default
                 this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
-        public override Task<IEnumerable<T>> ExecuteAsync()
+        public override Task<IEnumerable<T>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             return DatabaseManagment.ExecuteReaderAsync<T>(this, GetClassOptions().PropertyOptions,
-                this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                this.GetParameters<T, TDbConnection>(DatabaseManagment),cancellationToken);
         }
 
-        public override Task<IEnumerable<T>> ExecuteAsync(TDbConnection dbConnection)
+        public override Task<IEnumerable<T>> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteReaderAsync<T>(dbConnection, this, GetClassOptions().PropertyOptions,
-                this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                this.GetParameters<T, TDbConnection>(DatabaseManagment),cancellationToken);
         }
     }
 }

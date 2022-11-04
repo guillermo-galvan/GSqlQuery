@@ -1,6 +1,4 @@
-﻿using FluentSQL.Models;
-
-namespace FluentSQL
+﻿namespace FluentSQL
 {
     /// <summary>
     /// 
@@ -14,8 +12,8 @@ namespace FluentSQL
 
         TResult Execute(TDbConnection dbConnection);
 
-        Task<TResult> ExecuteAsync();
+        Task<TResult> ExecuteAsync(CancellationToken cancellationToken = default);
 
-        Task<TResult> ExecuteAsync(TDbConnection dbConnection);
+        Task<TResult> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default);
     }
 }

@@ -121,7 +121,7 @@ namespace FluentSQLTest.Default
             DeleteQuery<Test3, DbConnection> query = new("DELETE FROM [TableName];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync);
-            var result = await query.ExecuteAsync();
+            var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.Equal(1, result);
         }
 
@@ -131,7 +131,7 @@ namespace FluentSQLTest.Default
             DeleteQuery<Test1, DbConnection> query = new("DELETE FROM [TableName];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                 _connectionOptionsAsync);
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace FluentSQLTest.Default
             DeleteQuery<Test3, DbConnection> query = new("DELETE FROM [TableName];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync);
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection());
+            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.Equal(1, result);
         }
     }
