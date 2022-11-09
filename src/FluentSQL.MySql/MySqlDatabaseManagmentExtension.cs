@@ -1,12 +1,4 @@
-﻿using FluentSQL.Default;
-using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI.Common;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MySql.Data.MySqlClient;
 
 namespace FluentSQL.MySql
 {
@@ -25,6 +17,21 @@ namespace FluentSQL.MySql
         public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, MySqlConnection> query, MySqlTransaction transaction)
         {
             return query.Execute(transaction.Connection);
+        }
+
+        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, MySqlConnection> query)
+        {
+            using MySqlConnection connection = await query.DatabaseManagment.GetConnectionAsync();
+            using MySqlTransaction transaction = await connection.BeginTransactionAsync();
+            TResult result = await query.ExecuteAsync(transaction.Connection);
+            await transaction.CommitAsync();
+            await connection.CloseAsync();
+            return result;
+        }
+
+        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, MySqlConnection> query, MySqlTransaction transaction)
+        {
+            return query.ExecuteAsync(transaction.Connection);
         }
     }
 }
