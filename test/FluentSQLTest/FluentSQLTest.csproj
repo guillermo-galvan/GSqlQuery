@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,6 +7,12 @@
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TestResults\**" />
+    <EmbeddedResource Remove="TestResults\**" />
+    <None Remove="TestResults\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
@@ -27,10 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FluentSQL\FluentSQL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="TestResults\" />
   </ItemGroup>
 
 </Project>
