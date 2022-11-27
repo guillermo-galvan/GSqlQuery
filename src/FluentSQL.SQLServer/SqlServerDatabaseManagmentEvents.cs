@@ -3,7 +3,7 @@ using System.Data;
 
 namespace FluentSQL.SQLServer
 {
-    public  class SqlServerDatabaseManagmentEvents : DatabaseManagmentEvents
+    public class SqlServerDatabaseManagmentEvents : DatabaseManagmentEvents
     {
         public override Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>>? OnGetParameter { get; set; } = (type, parametersDetail) =>
         {

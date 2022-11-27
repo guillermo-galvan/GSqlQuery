@@ -1,263 +1,79 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.DataBase;
+using FluentSQL.Models;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
 using System.Data;
-using System.Data.Common;
 
 namespace FluentSQL.MySql
 {
-    public class MySqlDatabaseManagment : DatabaseManagment<MySqlConnection>, IDatabaseManagement<MySqlConnection>
+    public sealed class MySqlDatabaseManagment : DatabaseManagment, IDatabaseManagement<MySqlDatabaseConnection>
     {
-        public MySqlDatabaseManagment(string connectionString) : base(connectionString, new MySqlDatabaseManagmentEvents())
-        {
+        public MySqlDatabaseManagment(string connectionString) :
+            base(connectionString, new MySqlDatabaseManagmentEvents())
+        {}
 
+        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events) : base(connectionString, events)
+        {}
+
+        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger? logger) : base(connectionString, events, logger)
+        {}
+
+        public int ExecuteNonQuery(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
+        {
+            return base.ExecuteNonQuery(connection, query, parameters);
         }
 
-        public MySqlDatabaseManagment(string connectionString, ILogger<MySqlDatabaseManagment>? logger) :
-         base(connectionString, new MySqlDatabaseManagmentEvents(), logger)
+        public Task<int> ExecuteNonQueryAsync(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
-
+            return base.ExecuteNonQueryAsync(connection, query, parameters, cancellationToken);
         }
 
-        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger<MySqlDatabaseManagment>? logger) :
-         base(connectionString, events, logger)
+        public IEnumerable<T> ExecuteReader<T>(MySqlDatabaseConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new()
         {
-
+            return base.ExecuteReader<T>(connection, query, propertyOptions, parameters);
         }
 
-        public override int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters)
+        public Task<IEnumerable<T>> ExecuteReaderAsync<T>(MySqlDatabaseConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class, new()
         {
-            using MySqlConnection connection = new(_connectionString);
-            connection.Open();
-            int result = ExecuteNonQuery(connection, query, parameters);
-            connection.Close();
-            return result;
+            return base.ExecuteReaderAsync<T>(connection,query, propertyOptions, parameters, cancellationToken);
         }
 
-        public override int ExecuteNonQuery(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
+        public T ExecuteScalar<T>(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
-            if (Events.IsTraceActive)
+            return base.ExecuteScalar<T>(connection, query, parameters);
+        }
+
+        public Task<T> ExecuteScalarAsync<T>(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
+        {
+            return base.ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
+        }
+
+        public override MySqlDatabaseConnection GetConnection()
+        {
+            MySqlDatabaseConnection mySqlDatabase = new(_connectionString);
+
+            if (mySqlDatabase.State != ConnectionState.Open)
             {
-                _logger?.LogDebug("ExecuteNonQuery Query: {@Text} Parameters: {@parameters} ", query.Text, parameters);
-            }
-            
-            using var command = connection.CreateCommand();
-            command.CommandText = query.Text;
-
-            if (parameters != null)
-                command.Parameters.AddRange(parameters.ToArray());
-
-            return command.ExecuteNonQuery();
-        }
-
-        public override async Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
-        {
-            using MySqlConnection connection = new(_connectionString);
-            await connection.OpenAsync(cancellationToken);
-            int result = await ExecuteNonQueryAsync(connection, query, parameters, cancellationToken);
-            await connection.CloseAsync(cancellationToken);
-            return result;
-        }
-
-        public override Task<int> ExecuteNonQueryAsync(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (Events.IsTraceActive)
-            {
-                _logger?.LogDebug("ExecuteNonQueryAsync Query: {@Text} Parameters: {@parameters} ", query.Text, parameters);
-            }
-            using var command = connection.CreateCommand();
-            command.CommandText = query.Text;
-
-            if (parameters != null)
-                command.Parameters.AddRange(parameters.ToArray());
-
-            return command.ExecuteNonQueryAsync(cancellationToken);
-        }
-
-        public override IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
-        {
-            using MySqlConnection connection = new(_connectionString);
-            connection.Open();
-            IEnumerable<T> result = ExecuteReader<T>(connection, query, propertyOptions, parameters);
-            connection.Close();
-            return result;
-        }
-
-        public override IEnumerable<T> ExecuteReader<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
-        {
-            if (Events.IsTraceActive)
-            {
-                _logger?.LogDebug("ExecuteReader Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
-            }
-            ITransformTo<T> transformToEntity = GetTransformTo<T>();
-            Queue<T> result = new();
-            object? valor = null;
-
-            using var command = connection.CreateCommand();
-            command.CommandText = query.Text;
-
-            if (parameters != null)
-                command.Parameters.AddRange(parameters.ToArray());
-
-            var columns = (from pro in propertyOptions
-                           join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
-                           from left in leftJoin.DefaultIfEmpty()
-                           select new { Property = pro, Column = left, IsColumnInQuery = left is not null }).ToList();
-
-            using MySqlDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                columns.ForEach(x => {
-                    if (x.IsColumnInQuery)
-                    {
-                        valor = reader.GetValue(x.Column.Name);
-                        valor = SwitchTypeValue(x.Property.PropertyInfo.PropertyType, valor);
-                    }
-                    else
-                    {
-                        valor = x.Property.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(x.Property.PropertyInfo.PropertyType) : null;
-                    }
-                    transformToEntity.SetValue(x.Property.PositionConstructor, x.Property.PropertyInfo.Name, valor);
-                });
-
-                result.Enqueue(transformToEntity.Generate());
+                mySqlDatabase.Open();
             }
 
-            return result;
+            return mySqlDatabase; 
         }
 
-        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
-            IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
+        public async override Task<IConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
         {
-            using MySqlConnection connection = new(_connectionString);
-            await connection.OpenAsync(cancellationToken);
-            IEnumerable<T> result = await ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters, cancellationToken);
-            await connection.CloseAsync(cancellationToken);
-            return result;
-        }
+            MySqlDatabaseConnection databaseConnection = new(_connectionString);
 
-        public override async Task<IEnumerable<T>> ExecuteReaderAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, 
-            IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (Events.IsTraceActive)
+            if (databaseConnection.State != ConnectionState.Open)
             {
-                _logger?.LogDebug("ExecuteReaderAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
-            }
-            ITransformTo<T> transformToEntity = GetTransformTo<T>();
-            Queue<T> result = new();
-            object? valor = null;
-
-            using var command = connection.CreateCommand();
-            command.CommandText = query.Text;
-
-            if (parameters != null)
-                command.Parameters.AddRange(parameters.ToArray());
-
-            var columns = (from pro in propertyOptions
-                           join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
-                           from left in leftJoin.DefaultIfEmpty()
-                           select new { Property = pro, Column = left, IsColumnInQuery = left is not null }).ToList();
-
-            using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
-
-            while (await reader.ReadAsync())
-            {
-                columns.ForEach(x => {
-                    if (x.IsColumnInQuery)
-                    {
-                        valor = reader.GetValue(x.Column.Name);
-                        valor = SwitchTypeValue(x.Property.PropertyInfo.PropertyType, valor);
-                    }
-                    else
-                    {
-                        valor = x.Property.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(x.Property.PropertyInfo.PropertyType) : null;
-                    }
-                    transformToEntity.SetValue(x.Property.PositionConstructor, x.Property.PropertyInfo.Name, valor);
-                });
-
-                result.Enqueue(transformToEntity.Generate());
+                await databaseConnection.OpenAsync(cancellationToken);
             }
 
-            return result;
+            return databaseConnection;
         }
 
-        public override T ExecuteScalar<T>(IQuery query, IEnumerable<IDataParameter> parameters)
+        async Task<MySqlDatabaseConnection> IDatabaseManagement<MySqlDatabaseConnection>.GetConnectionAsync(CancellationToken cancellationToken)
         {
-            using MySqlConnection connection = new(_connectionString);
-            connection.Open();
-            T result = ExecuteScalar<T>(connection, query, parameters);
-            connection.Close();
-            return result;
-        }
-
-        public override T ExecuteScalar<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
-        {
-            if (Events.IsTraceActive)
-            {
-                _logger?.LogDebug("ExecuteScalar Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
-            }
-            using var command = connection.CreateCommand();
-            command.CommandText = query.Text;
-
-            if (parameters != null)
-                command.Parameters.AddRange(parameters.ToArray());
-
-            object resultCommand = command.ExecuteScalar();
-            T result = (T)SwitchTypeValue(typeof(T), resultCommand)!;
-            return result;
-        }
-
-        public override async Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
-        {
-            using MySqlConnection connection = new(_connectionString);
-            await connection.OpenAsync(cancellationToken);
-            T? result = await ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
-            await connection.CloseAsync(cancellationToken);
-            return result;
-        }
-
-        public override async Task<T> ExecuteScalarAsync<T>(MySqlConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (Events.IsTraceActive)
-            {
-                _logger?.LogDebug("ExecuteScalarAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters} ", typeof(T).FullName, query.Text, parameters);
-            }
-            using var command = connection.CreateCommand();
-            command.CommandText = query.Text;
-
-            if (parameters != null)
-                command.Parameters.AddRange(parameters.ToArray());
-
-            object? resultCommand = await command.ExecuteScalarAsync(cancellationToken);
-            T result = (T)SwitchTypeValue(typeof(T), resultCommand)!;
-            return result;
-        }
-
-        public override MySqlConnection GetConnection()
-        {
-            MySqlConnection result = new(_connectionString);
-            if (result.State != ConnectionState.Open)
-            {
-                result.Open();
-            }
-            return result;
-        }
-
-        public override async Task<MySqlConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            MySqlConnection result = new(_connectionString);
-
-            if (result.State != ConnectionState.Open)
-            {
-                await result.OpenAsync(cancellationToken);
-            }
-            return result;
+            return (MySqlDatabaseConnection)await GetConnectionAsync(cancellationToken);
         }
     }
 }

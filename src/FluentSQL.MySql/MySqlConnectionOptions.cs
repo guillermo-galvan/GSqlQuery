@@ -1,12 +1,11 @@
-﻿using FluentSQL.Models;
-using MySql.Data.MySqlClient;
+﻿using FluentSQL.DataBase;
+using FluentSQL.Models;
 
 namespace FluentSQL.MySql
 {
-    public class MySqlConnectionOptions : ConnectionOptions<MySqlConnection>
+    public class MySqlConnectionOptions : ConnectionOptions<MySqlDatabaseConnection>
     {
-        public MySqlConnectionOptions(MySqlStatements statements,
-            MySqlDatabaseManagment databaseManagment) : base(statements, databaseManagment)
+        public MySqlConnectionOptions(string connectionString) : base(new MySqlStatements(),new MySqlDatabaseManagment(connectionString))
         {
         }
     }
