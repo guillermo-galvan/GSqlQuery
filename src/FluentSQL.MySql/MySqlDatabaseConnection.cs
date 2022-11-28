@@ -19,13 +19,14 @@ namespace FluentSQL.MySql
             return (MySqlDatabaseTransaction)SetTransaction(new MySqlDatabaseTransaction(this, ((MySqlConnection)_connection).BeginTransaction(isolationLevel)));
         }
 
-        public async Task<MySqlDatabaseTransaction> BeginTransactionAsync()
+        public async Task<MySqlDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            return (MySqlDatabaseTransaction)SetTransaction(new MySqlDatabaseTransaction(this, await ((MySqlConnection)_connection).BeginTransactionAsync()));
+            return (MySqlDatabaseTransaction)SetTransaction(new MySqlDatabaseTransaction(this, await ((MySqlConnection)_connection).BeginTransactionAsync(cancellationToken)));
         }
 
         public async Task<MySqlDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return 
                 (MySqlDatabaseTransaction)SetTransaction(new MySqlDatabaseTransaction(this, 
                 await ((MySqlConnection)_connection).BeginTransactionAsync(isolationLevel, cancellationToken)));
@@ -40,7 +41,7 @@ namespace FluentSQL.MySql
 
         ITransaction IConnection.BeginTransaction(IsolationLevel isolationLevel) => BeginTransaction(isolationLevel);
 
-        async Task<ITransaction> IConnection.BeginTransactionAsync() => await BeginTransactionAsync();
+        async Task<ITransaction> IConnection.BeginTransactionAsync(CancellationToken cancellationToken = default) => await BeginTransactionAsync(cancellationToken);
 
         async Task<ITransaction> IConnection.BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default) => 
             await BeginTransactionAsync(isolationLevel, cancellationToken);

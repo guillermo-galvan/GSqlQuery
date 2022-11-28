@@ -17,7 +17,7 @@ namespace FluentSQL.DataBase
 
         ITransaction BeginTransaction(IsolationLevel isolationLevel);
 
-        Task<ITransaction> BeginTransactionAsync();
+        Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
         Task<ITransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
 

@@ -1,5 +1,4 @@
-﻿using FluentSQL.Default;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Data;
 
 namespace FluentSQL
@@ -7,14 +6,14 @@ namespace FluentSQL
     /// <summary>
     /// 
     /// </summary>
-    public abstract class DatabaseManagmentEvents
+    public class DatabaseManagmentEvents
     {
         public bool IsTraceActive { get; set; } = false;
 
         /// <summary>
         /// 
         /// </summary>
-        public abstract Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>>? OnGetParameter { get; set; }
+        public virtual Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>>? OnGetParameter { get; set; }
 
         public virtual Action<bool,ILogger?,string, object[]> OnWriteTrace { get; set; } = (isTraceActive, logger,message,param) => 
         {
