@@ -12,8 +12,8 @@ namespace FluentSQL.SQLServer
             base(new SqlServerStatements(), new SqlServerDatabaseManagment(connectionString, events))
         {}
 
-        public SqlServerConnectionOptions(SqlServerStatements sqlServerStatements, SqlServerDatabaseManagment sqlServerDatabaseManagment) :
-            base(sqlServerStatements, sqlServerDatabaseManagment)
+        public SqlServerConnectionOptions(IStatements statements, SqlServerDatabaseManagment sqlServerDatabaseManagment) :
+            base(statements, sqlServerDatabaseManagment)
         {
 
         }

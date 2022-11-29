@@ -12,8 +12,8 @@ namespace FluentSQL.MySql
             base(new MySqlStatements(), new MySqlDatabaseManagment(connectionString, events))
         {}
 
-        public MySqlConnectionOptions(MySqlStatements mySqlStatements, MySqlDatabaseManagment mySqlDatabaseManagment) :
-            base(mySqlStatements, mySqlDatabaseManagment)
+        public MySqlConnectionOptions(IStatements statements, MySqlDatabaseManagment mySqlDatabaseManagment) :
+            base(statements, mySqlDatabaseManagment)
         {}
     }
 }

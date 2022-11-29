@@ -9,63 +9,30 @@
         /// <summary>
         /// Column name
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Column size
         /// </summary>
-        public int Size { get; private set; }
+        public int Size { get; set; }
 
         /// <summary>
         /// Defines if the column is a primary key
         /// </summary>
-        public bool IsPrimaryKey { get; private set; }
+        public bool IsPrimaryKey { get; set; }
 
         /// <summary>
         /// Defines if the column is auto-incrementing
         /// </summary>
-        public bool IsAutoIncrementing { get; private set; }
+        public bool IsAutoIncrementing { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="name">Column name</param>
-        public ColumnAttribute(string name) :
-            this(name, 0, false, false)
-        { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name">Column name</param>
-        /// <param name="size">Column size</param>
-        public ColumnAttribute(string name, int size) :
-            this(name, size, false, false)
-        { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name">Column name</param>
-        /// <param name="size">Column size</param>
-        /// <param name="isPrimaryKey">Defines if the column is a primary key</param>
-        public ColumnAttribute(string name, int size, bool isPrimaryKey) :
-            this(name, size, isPrimaryKey, false)
-        { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name">Column name</param>
-        /// <param name="size">Column size</param>
-        /// <param name="isPrimaryKey">Defines if the column is a primary key</param>
-        /// <param name="isIdentity">Defines if the column is auto-incrementing</param>
-        public ColumnAttribute(string name, int size, bool isPrimaryKey, bool isAutoIncrementing)
+        public ColumnAttribute(string name)
         {
-            Name = name;
-            Size = size;
-            IsPrimaryKey = isPrimaryKey;
-            IsAutoIncrementing = isAutoIncrementing;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
         }
     }
 }
