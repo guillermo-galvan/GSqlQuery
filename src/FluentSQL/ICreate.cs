@@ -1,5 +1,4 @@
 ﻿using FluentSQL.Default;
-using FluentSQL.Models;
 
 namespace FluentSQL
 {
@@ -15,8 +14,5 @@ namespace FluentSQL
         /// <param name="key">The name of the statement collection</param>        
         /// <returns>Instance of IQuery</returns>
         IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements);
-
-
-        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions);
     }
 }

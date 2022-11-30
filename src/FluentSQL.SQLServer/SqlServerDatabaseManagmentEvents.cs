@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using FluentSQL.DatabaseManagement;
+using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace FluentSQL.SQLServer

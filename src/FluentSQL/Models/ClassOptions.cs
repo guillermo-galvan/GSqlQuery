@@ -3,7 +3,7 @@ using FluentSQL.Extensions;
 
 namespace FluentSQL.Models
 {
-    public class ClassOptions
+    public sealed class ClassOptions
     {   
         public Type Type { get; private set; }
 

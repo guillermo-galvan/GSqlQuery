@@ -1,4 +1,6 @@
-﻿namespace FluentSQL.SQLServer
+﻿using FluentSQL.DatabaseManagement;
+
+namespace FluentSQL.SQLServer
 {
     public static  class SqlServerDatabaseManagmentExtension
     {

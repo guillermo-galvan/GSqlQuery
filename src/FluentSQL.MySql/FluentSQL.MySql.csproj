@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FluentSQL\FluentSQL.csproj" />
+    <ProjectReference Include="..\FluentSQL.DatabaseManagment\FluentSQL.DatabaseManagement.csproj" />
   </ItemGroup>
 
 </Project>

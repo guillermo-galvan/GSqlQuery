@@ -5,7 +5,7 @@ namespace FluentSQL
     /// <summary>
     /// Contains the details of the criteria
     /// </summary>
-    public class CriteriaDetail
+    public sealed class CriteriaDetail
     {
         /// <summary>
         /// Get Query part 

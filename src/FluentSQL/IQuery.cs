@@ -1,6 +1,4 @@
-﻿using FluentSQL.Models;
-
-namespace FluentSQL
+﻿namespace FluentSQL
 {
     public interface IQuery
     {
@@ -30,10 +28,5 @@ namespace FluentSQL
         /// Options to use in the query
         /// </summary>
         IStatements Statements { get; }
-    }
-
-    public interface IQuery<T, TDbConnection, TResult> : IQuery<T>, IQuery, IExecute<TResult,TDbConnection> where T : class, new()
-    {
-        public new IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
     }
 }

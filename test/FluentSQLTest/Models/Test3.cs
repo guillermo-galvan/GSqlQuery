@@ -3,10 +3,10 @@
     [TableAttribute("TableName")]
     internal class Test3 : Entity<Test3>
     {
-        [ColumnAttribute("Id", 20, true, true)]
+        [ColumnAttribute("Id", Size = 20, IsAutoIncrementing = true, IsPrimaryKey = true)]
         public int Ids { get; set; }
 
-        [ColumnAttribute("Name", 20)]
+        [ColumnAttribute("Name", Size = 20)]
         public string Names { get; set; }
 
         [ColumnAttribute("Create")]

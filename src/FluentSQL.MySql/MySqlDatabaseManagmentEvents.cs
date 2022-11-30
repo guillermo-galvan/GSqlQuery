@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using FluentSQL.DatabaseManagement;
+using MySql.Data.MySqlClient;
 using System.Data;
 
 namespace FluentSQL.MySql

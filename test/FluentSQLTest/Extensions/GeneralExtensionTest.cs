@@ -1,10 +1,5 @@
 ﻿using FluentSQL.Helpers;
 using FluentSQLTest.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentSQL.Extensions;
 using System.Linq.Expressions;
 using FluentSQL.Default;
@@ -96,50 +91,6 @@ namespace FluentSQLTest.Extensions
             var result = propertyOptions.GetValue(model);
             Assert.NotNull(result);
             Assert.NotEmpty(result.ToString());
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_delete_query()
-        {
-            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_select_query()
-        {
-            SelectQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_update_query()
-        {
-            UpdateQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_insert_query()
-        {
-            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements, new Test1());
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
         }
 
         [Fact]

@@ -1,5 +1,4 @@
 ﻿using FluentSQL.Extensions;
-using FluentSQL.Helpers;
 using FluentSQL.Models;
 
 namespace FluentSQL.Default
@@ -74,25 +73,6 @@ namespace FluentSQL.Default
         protected override string GenerateQuery()
         {
             return GetInsertQuery();
-        }
-    }
-
-    internal class InsertQueryBuilder<T, TDbConnection> : InsertQueryBuilder<T>,
-        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection>,
-        IBuilder<InsertQuery<T, TDbConnection>>
-        where T : class, new()
-    {
-        public ConnectionOptions<TDbConnection> ConnectionOptions { get; }
-
-        public InsertQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object entity) 
-            : base(connectionOptions?.Statements!, entity)
-        {
-            ConnectionOptions = connectionOptions!;
-        }
-
-        public new InsertQuery<T, TDbConnection> Build()
-        {
-            return new InsertQuery<T, TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions, _entity);
         }
     }
 }

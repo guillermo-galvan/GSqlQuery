@@ -1,11 +1,7 @@
-﻿using FluentSQL.Default;
-using FluentSQL.Models;
+﻿using FluentSQL.DatabaseManagement;
+using FluentSQL.DatabaseManagement.Models;
+using FluentSQL.Default;
 using FluentSQL.MySql.Default;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL.MySql.Extensions
 {
@@ -41,7 +37,7 @@ namespace FluentSQL.MySql.Extensions
         }
 
         public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
-            this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
+            this IQueryBuilderWithWhere<T, DatabaseManagement.Default.SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
         {
             if (queryBuilder == null)
             {
@@ -52,7 +48,7 @@ namespace FluentSQL.MySql.Extensions
         }
 
         public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
-            this IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder, int start, int? length) where T : class, new()
+            this IAndOr<T, DatabaseManagement.Default.SelectQuery<T, TDbConnection>> queryBuilder, int start, int? length) where T : class, new()
         {
             if (queryBuilder == null)
             {
@@ -64,7 +60,7 @@ namespace FluentSQL.MySql.Extensions
         }
 
         public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
-            this IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
+            this IQueryBuilder<T, DatabaseManagement.Default.OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
         {
             if (queryBuilder == null)
             {

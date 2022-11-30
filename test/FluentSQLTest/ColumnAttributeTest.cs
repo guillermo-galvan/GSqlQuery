@@ -1,5 +1,4 @@
-﻿using FluentSQL.Default;
-using FluentSQL.Extensions;
+﻿using FluentSQL.Extensions;
 using FluentSQL.Helpers;
 using FluentSQL.Models;
 using FluentSQLTest.Models;
@@ -28,7 +27,7 @@ namespace FluentSQLTest
         [InlineData("My",69)]
         public void Default_values_with_column_name_and_size_in_the_Constructor(string name,int size)
         {
-            ColumnAttribute column = new(name, size);
+            ColumnAttribute column = new(name) { Size = size};
 
             Assert.NotNull(column);
             Assert.NotNull(column.Name);
@@ -43,7 +42,7 @@ namespace FluentSQLTest
         [InlineData("My", 69,false)]
         public void Default_values_with_column_name_size_and_isprimarykey_in_the_Constructor(string name, int size,bool isPrimaryKey)
         {
-            ColumnAttribute column = new(name, size,isPrimaryKey);
+            ColumnAttribute column = new(name) { Size = size, IsPrimaryKey = isPrimaryKey};
 
             Assert.NotNull(column);
             Assert.NotNull(column.Name);            
@@ -58,7 +57,7 @@ namespace FluentSQLTest
         [InlineData("My", 69, false,true)]
         public void Default_values_with_column_name_size_isprimarykey_and_isautoincrementing_in_the_Constructor(string name, int size, bool isPrimaryKey, bool isAutoIncrementing)
         {
-            ColumnAttribute column = new(name, size, isPrimaryKey, isAutoIncrementing);
+            ColumnAttribute column = new(name) { Size = size, IsPrimaryKey = isPrimaryKey, IsAutoIncrementing = isAutoIncrementing };
 
             Assert.NotNull(column);
             Assert.NotNull(column.Name);

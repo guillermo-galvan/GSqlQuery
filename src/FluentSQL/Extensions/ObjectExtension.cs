@@ -1,8 +1,8 @@
 ﻿namespace FluentSQL.Extensions
 {
-    internal static class ObjectExtension
+    public static class ObjectExtension
     {
-        internal static void NullValidate(this object obj, string message, string paramName)
+        public static void NullValidate(this object obj, string message, string paramName)
         {
             if (obj == null)
             {

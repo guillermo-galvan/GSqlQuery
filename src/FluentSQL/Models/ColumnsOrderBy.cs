@@ -1,13 +1,8 @@
 ﻿using FluentSQL.Default;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL.Models
 {
-    internal class ColumnsOrderBy
+    public sealed class ColumnsOrderBy
     {
         public IEnumerable<PropertyOptions> Columns { get; }
 

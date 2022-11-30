@@ -1,4 +1,6 @@
-﻿namespace FluentSQL.MySql
+﻿using FluentSQL.DatabaseManagement;
+
+namespace FluentSQL.MySql
 {
     public static class MySqlDatabaseManagmentExtension
     {

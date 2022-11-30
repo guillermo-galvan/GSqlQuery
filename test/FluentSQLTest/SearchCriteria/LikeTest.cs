@@ -4,12 +4,7 @@ using FluentSQL.Models;
 using FluentSQL.SearchCriteria;
 using FluentSQLTest.Extensions;
 using FluentSQLTest.Models;
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQLTest.SearchCriteria
 {
@@ -20,7 +15,6 @@ namespace FluentSQLTest.SearchCriteria
         private readonly IStatements _statements;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
-        private readonly SelectQueryBuilder<Test1, DbConnection> _selectQueryBuilder;
 
         public LikeTest()
         {
@@ -30,8 +24,6 @@ namespace FluentSQLTest.SearchCriteria
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
-            _selectQueryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()));
         }
 
         [Fact]
@@ -116,42 +108,6 @@ namespace FluentSQLTest.SearchCriteria
         public void Should_add_the_equality_query_with_or()
         {
             SelectWhere<Test1> where = new(_queryBuilder);
-            var andOr = where.Like(x => x.Id, "1256").OrLike(x => x.IsTest, "45981");
-            Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Equal(2, result.Count());
-        }
-
-        [Fact]
-        public void Should_add_the_equality_query2()
-        {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
-            var andOr = where.Like(x => x.Id, "ds");
-            Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Should_add_the_equality_query_with_and2()
-        {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
-            var andOr = where.Like(x => x.Id, "1256").AndLike(x => x.IsTest, "1");
-            Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Equal(2, result.Count());
-        }
-
-        [Fact]
-        public void Should_add_the_equality_query_with_or2()
-        {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
             var andOr = where.Like(x => x.Id, "1256").OrLike(x => x.IsTest, "45981");
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
