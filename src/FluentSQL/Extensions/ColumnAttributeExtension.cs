@@ -1,9 +1,4 @@
 ﻿using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FluentSQL.Extensions
 {
@@ -23,7 +18,7 @@ namespace FluentSQL.Extensions
             tableName.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableName));
             statements.NullValidate(ErrorMessages.ParameterNotNull, nameof(statements));
 
-            return $"{tableName}.{string.Format(statements.Format, column.Name)}";
+            return statements.IncrudeTableNameInQuery ? $"{tableName}.{string.Format(statements.Format, column.Name)}" : $"{string.Format(statements.Format, column.Name)}";
         }
 
         public static PropertyOptions GetPropertyOptions(this ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)

@@ -7,7 +7,7 @@ namespace FluentSQL.DataBase
         protected bool _disposed;
         protected readonly DbTransaction _transaction;
         protected readonly IConnection _connection;
-        protected TransacctionDispose _transacctionDispose;
+        protected TransacctionDispose? _transacctionDispose;
 
         IConnection ITransaction.Connection => _connection;
 
@@ -48,7 +48,7 @@ namespace FluentSQL.DataBase
             {
                 if (disposing)
                 {
-                    _transacctionDispose.Invoke(this);
+                    _transacctionDispose?.Invoke(this);
                     _transacctionDispose -= _connection!.RemoveTransaction!;
                     _transacctionDispose = null!;
                     _transaction.Dispose();
