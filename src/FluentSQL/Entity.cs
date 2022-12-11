@@ -40,8 +40,13 @@ namespace FluentSQL
         /// <returns>Instance of IQuery</returns>
         public IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements)
         {
-            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));            
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             return new InsertQueryBuilder<T>(statements, this);
+        }
+
+        public static IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements, T entity)
+        { 
+            return ICreate<T>.Insert(statements, entity);
         }
 
         /// <summary>

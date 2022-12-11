@@ -26,6 +26,11 @@ namespace FluentSQL.DatabaseManagement
             return new InsertQueryBuilder<T, TDbConnection>(connectionOptions, this);
         }
 
+        public static IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, T entity)
+        { 
+            return ICreate<T>.Insert(connectionOptions, entity);
+        }
+
         public static ISet<T, UpdateQuery<T, TDbConnection>>
             Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions,
             Expression<Func<T, TProperties>> expression, TProperties value)

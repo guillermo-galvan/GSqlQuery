@@ -117,6 +117,48 @@ namespace FluentSQLTest
         }
 
         [Theory]
+        [ClassData(typeof(Insert_Test3_TestData))]
+        public void Should_generate_the_insert_static_query_with_auto_incrementing(IStatements statements, string queryText)
+        {
+            Test3 test = new(1, null, DateTime.Now, true);
+            var query = Test3.Insert(statements, test).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Insert_Test6_TestData))]
+        public void Should_generate_the_insert_static_query(IStatements statements, string queryText)
+        {
+            Test6 test = new(1, null, DateTime.Now, true);
+            var query = Test6.Insert(statements, test).Build();
+
+            Assert.NotNull(query);
+            Assert.NotEmpty(query.Text);
+
+            string result = query.Text;
+            if (query.Criteria != null)
+            {
+                foreach (var item in query.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+            Assert.Equal(queryText, result);
+        }
+
+        [Theory]
         [ClassData(typeof(Update_Test3_TestData))]
         public void Should_generate_the_update_query(IStatements statements, string queryText)
         {
