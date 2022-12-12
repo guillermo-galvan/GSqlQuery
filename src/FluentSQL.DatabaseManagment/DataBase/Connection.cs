@@ -23,6 +23,7 @@ namespace FluentSQL.DataBase
 
         public virtual Task CloseAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return _connection.CloseAsync();
         }
 
@@ -40,6 +41,7 @@ namespace FluentSQL.DataBase
 
         public virtual Task OpenAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return _connection.OpenAsync(cancellationToken);
         }
 

@@ -1,9 +1,12 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 namespace FluentSQL.DataBase
 {
     public interface ITransaction : IDisposable 
     {
+        IsolationLevel IsolationLevel { get; }
+
         IConnection Connection { get; }
 
         DbTransaction Transaction { get; }

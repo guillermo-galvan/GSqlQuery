@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 namespace FluentSQL.DataBase
 {
@@ -12,6 +13,9 @@ namespace FluentSQL.DataBase
         IConnection ITransaction.Connection => _connection;
 
         DbTransaction ITransaction.Transaction => _transaction;
+
+        public IsolationLevel IsolationLevel => _transaction.IsolationLevel;
+
 
         public delegate void TransacctionDispose(ITransaction transaction);
 
@@ -29,6 +33,7 @@ namespace FluentSQL.DataBase
 
         public Task CommitAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return _transaction.CommitAsync(cancellationToken);
         }
 
@@ -39,6 +44,7 @@ namespace FluentSQL.DataBase
 
         public Task RollbackAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return _transaction.RollbackAsync(cancellationToken);
         }
 
@@ -50,7 +56,7 @@ namespace FluentSQL.DataBase
                 {
                     _transacctionDispose?.Invoke(this);
                     _transacctionDispose -= _connection!.RemoveTransaction!;
-                    _transacctionDispose = null!;
+                    _transacctionDispose = null;
                     _transaction.Dispose();
                     
                 }

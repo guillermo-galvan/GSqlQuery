@@ -18,19 +18,19 @@ namespace FluentSQL.SQLServer
             return query.Execute(transaction.Connection);
         }
 
-        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query)
+        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query, CancellationToken cancellationToken = default)
         {
-            using var connection = await query.DatabaseManagment.GetConnectionAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            TResult result = await query.ExecuteAsync(transaction.Connection);
-            await transaction.CommitAsync();
-            await connection.CloseAsync();
+            using var connection = await query.DatabaseManagment.GetConnectionAsync(cancellationToken);
+            using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+            TResult result = await query.ExecuteAsync(transaction.Connection, cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+            await connection.CloseAsync(cancellationToken);
             return result;
         }
 
-        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query, SqlServerDatabaseTransaction transaction)
+        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query, SqlServerDatabaseTransaction transaction, CancellationToken cancellationToken = default)
         {
-            return query.ExecuteAsync(transaction.Connection);
+            return query.ExecuteAsync(transaction.Connection, cancellationToken);
         }
     }
 }

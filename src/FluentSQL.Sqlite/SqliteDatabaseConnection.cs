@@ -1,7 +1,6 @@
 ﻿using FluentSQL.DataBase;
 using Microsoft.Data.Sqlite;
 using System.Data;
-using System.Data.Common;
 
 namespace FluentSQL.Sqlite
 {

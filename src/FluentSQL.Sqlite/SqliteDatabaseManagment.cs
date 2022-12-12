@@ -8,8 +8,7 @@ namespace FluentSQL.Sqlite
 {
     public class SqliteDatabaseManagment : DatabaseManagment, IDatabaseManagement<SqliteDatabaseConnection>
     {
-        public SqliteDatabaseManagment(string connectionString) :
-           base(connectionString, new SqliteDatabaseManagmentEvents())
+        public SqliteDatabaseManagment(string connectionString) :  base(connectionString, new SqliteDatabaseManagmentEvents())
         { }
 
         public SqliteDatabaseManagment(string connectionString, DatabaseManagmentEvents events) : base(connectionString, events)
@@ -62,6 +61,7 @@ namespace FluentSQL.Sqlite
 
         public async override Task<IConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             SqliteDatabaseConnection databaseConnection = new(_connectionString);
 
             if (databaseConnection.State != ConnectionState.Open)
@@ -74,6 +74,7 @@ namespace FluentSQL.Sqlite
 
         async Task<SqliteDatabaseConnection> IDatabaseManagement<SqliteDatabaseConnection>.GetConnectionAsync(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return (SqliteDatabaseConnection)await GetConnectionAsync(cancellationToken);
         }
     }

@@ -267,6 +267,7 @@ namespace FluentSQL.DataBase
 
         public async Task<T> ExecuteScalarAsync<T>(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteScalarAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
                 new object[] { typeof(T).FullName!, query.Text, parameters });
             using var command = CreateCommand(connection, query, parameters);

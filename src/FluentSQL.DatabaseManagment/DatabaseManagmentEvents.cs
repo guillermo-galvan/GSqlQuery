@@ -13,7 +13,7 @@ namespace FluentSQL.DatabaseManagement
         /// <summary>
         /// 
         /// </summary>
-        public virtual Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>>? OnGetParameter { get; set; }
+        public virtual Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>> OnGetParameter { get; set; } = (t, p) => Enumerable.Empty<IDataParameter>();
 
         public virtual Action<bool, ILogger?, string, object[]> OnWriteTrace { get; set; } = (isTraceActive, logger, message, param) =>
         {
