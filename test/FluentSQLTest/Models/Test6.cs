@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FluentSQLTest.Models
+﻿namespace FluentSQLTest.Models
 {
     [TableAttribute("TableName")]
     internal class Test6: Entity<Test6>
     {
-        [ColumnAttribute("Id", 20)]
+        [ColumnAttribute("Id", Size = 20)]
         public int Ids { get; set; }
 
-        [ColumnAttribute("Name", 20)]
+        [ColumnAttribute("Name", Size = 20)]
         public string Names { get; set; }
 
         [ColumnAttribute("Create")]

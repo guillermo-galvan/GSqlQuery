@@ -1,11 +1,8 @@
-﻿using FluentSQL.Default;
-using FluentSQL.Extensions;
-using FluentSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentSQL.DatabaseManagement;
+using FluentSQL.DatabaseManagement.Extensions;
+using FluentSQL.DatabaseManagement.Models;
+using FluentSQL.Default;
+using System.Data;
 
 namespace FluentSQL.MySql.Default
 {
@@ -17,7 +14,7 @@ namespace FluentSQL.MySql.Default
         }
     }
 
-    public class LimitQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
+    public class LimitQuery<T, TDbConnection> : DatabaseManagement.Default.Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
         IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
     {
         public LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)

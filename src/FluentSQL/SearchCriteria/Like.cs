@@ -46,7 +46,6 @@ namespace FluentSQL.SearchCriteria
         public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
-
             string parameterName = $"@{ParameterPrefix}{DateTime.Now.Ticks}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} CONCAT('%', {parameterName}, '%')" :

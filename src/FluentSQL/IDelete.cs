@@ -1,7 +1,5 @@
 ﻿using FluentSQL.Default;
 using FluentSQL.Extensions;
-using FluentSQL.Helpers;
-using FluentSQL.Models;
 
 namespace FluentSQL
 {
@@ -20,13 +18,6 @@ namespace FluentSQL
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             return new DeleteQueryBuilder<T>(statements);
-        }
-
-        public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
-        {
-            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
-            return new DeleteQueryBuilder<T,TDbConnection>(connectionOptions);
-
         }
     }
 }

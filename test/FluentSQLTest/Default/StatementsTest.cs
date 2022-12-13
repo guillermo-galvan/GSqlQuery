@@ -41,6 +41,8 @@ namespace FluentSQLTest.Default
 
             Assert.NotNull(statements.SelectWhereOrderBy);
             Assert.Equal("SELECT {0} FROM {1} WHERE {2} ORDER BY {3};", statements.SelectWhereOrderBy);
+
+            Assert.True(statements.IncrudeTableNameInQuery);
         }
     }
 }

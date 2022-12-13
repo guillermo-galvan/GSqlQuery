@@ -1,4 +1,5 @@
-﻿using FluentSQL.Models;
+﻿using FluentSQL.DatabaseManagement;
+using FluentSQL.DatabaseManagement.Models;
 
 namespace FluentSQL.SQLServer
 {

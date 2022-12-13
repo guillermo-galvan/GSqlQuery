@@ -1,5 +1,4 @@
-﻿using FluentSQL.Default;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace FluentSQL
 {
@@ -8,7 +7,7 @@ namespace FluentSQL
         /// <summary>
         /// Get column values
         /// </summary>
-        internal IDictionary<ColumnAttribute, object?> ColumnValues { get; }
+        public IDictionary<ColumnAttribute, object?> ColumnValues { get; }
     }
 
     /// <summary>

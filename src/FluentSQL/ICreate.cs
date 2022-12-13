@@ -1,5 +1,5 @@
 ﻿using FluentSQL.Default;
-using FluentSQL.Models;
+using FluentSQL.Extensions;
 
 namespace FluentSQL
 {
@@ -16,7 +16,11 @@ namespace FluentSQL
         /// <returns>Instance of IQuery</returns>
         IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements);
 
-
-        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions);
+        public static IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements, T entity)
+        {
+            statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
+            entity.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(entity));
+            return new InsertQueryBuilder<T>(statements, entity);
+        }
     }
 }

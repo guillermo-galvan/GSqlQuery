@@ -52,13 +52,17 @@ namespace FluentSQL.SearchCriteria
         public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
-            Queue<ParameterDetail> parameters = new();
+            ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
             int count = 0;
+            int index = 0;
+            long ticks = DateTime.Now.Ticks;
             var property = Column.GetPropertyOptions(propertyOptions);
+
             foreach (var item in Values)
             {
-                parameters.Enqueue(new ParameterDetail($"@{ParameterPrefix}{count++}{DateTime.Now.Ticks}", item, property));
+                parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks++}", item, property);
             }
+
             string criterion = $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
             criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
             return new CriteriaDetail(this, criterion, parameters);

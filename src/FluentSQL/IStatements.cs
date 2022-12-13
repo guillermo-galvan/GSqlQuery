@@ -59,5 +59,7 @@
         /// Instructions to format the select, example "SELECT {0} FROM {1} ORDER BY {2};"
         /// </summary>
         string SelectOrderBy { get; }
+
+        bool IncrudeTableNameInQuery { get; }
     }
 }

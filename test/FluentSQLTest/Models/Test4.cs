@@ -3,10 +3,10 @@
     [TableAttribute("Scheme", "TableName")]
     internal class Test4
     {
-        [ColumnAttribute("Id", 20, true, true)]
+        [ColumnAttribute("Id",Size = 20, IsAutoIncrementing = true, IsPrimaryKey = true)]
         public int Ids { get; set; }
 
-        [ColumnAttribute("Name", 20)]
+        [ColumnAttribute("Name", Size = 20)]
         public string Names { get; set; }
 
         [ColumnAttribute("Create")]

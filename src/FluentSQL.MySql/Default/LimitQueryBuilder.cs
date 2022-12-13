@@ -1,7 +1,7 @@
 ﻿using FluentSQL.Default;
-using FluentSQL.Helpers;
-using FluentSQL.Extensions;
 using FluentSQL.Models;
+using FluentSQL.DatabaseManagement.Models;
+using FluentSQL.DatabaseManagement;
 
 namespace FluentSQL.MySql.Default
 {
@@ -53,7 +53,7 @@ namespace FluentSQL.MySql.Default
         }
     }
 
-    internal class LimitQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, LimitQuery<T, TDbConnection>, TDbConnection>,
+    internal class LimitQueryBuilder<T, TDbConnection> : DatabaseManagement.Default.QueryBuilderBase<T, LimitQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection>,
         IBuilder<LimitQuery<T, TDbConnection>>
         where T : class, new()
@@ -62,7 +62,7 @@ namespace FluentSQL.MySql.Default
         private readonly int _start;
         private readonly int? _length;
 
-        public LimitQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
+        public LimitQueryBuilder(IQueryBuilderWithWhere<T, DatabaseManagement.Default.SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
             : base(connectionOptions, QueryType.Custom)
         {
@@ -72,7 +72,7 @@ namespace FluentSQL.MySql.Default
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        public LimitQueryBuilder(IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder,
+        public LimitQueryBuilder(IAndOr<T, DatabaseManagement.Default.SelectQuery<T, TDbConnection>> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
             : base(connectionOptions, QueryType.Custom)
         {
@@ -82,7 +82,7 @@ namespace FluentSQL.MySql.Default
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        public LimitQueryBuilder(IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
+        public LimitQueryBuilder(IQueryBuilder<T, DatabaseManagement.Default.OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
             : base(connectionOptions , QueryType.Custom)
         {
