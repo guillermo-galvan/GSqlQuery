@@ -6,7 +6,7 @@
     /// <typeparam name="T"></typeparam>
     internal class TransformToByConstructor<T> : TransformTo<T>
     {
-        private readonly object[] _fields;
+        private readonly object?[] _fields;
 
         /// <summary>
         /// 

@@ -18,11 +18,16 @@ namespace FluentSQL.DataBase
 
             public ColumnAttribute Column { get; set; }
 
-            public ColumnsPropertyOptions(PropertyOptions propertyOptions, bool isColumnInQuery, ColumnAttribute columnAttribute)
+            public Type Type { get; set; }
+
+            public object? ValueDefault { get; set; }
+
+            public ColumnsPropertyOptions(PropertyOptions propertyOptions, bool isColumnInQuery, ColumnAttribute columnAttribute, Type type)
             {
                 Property = propertyOptions;
                 IsColumnInQuery = isColumnInQuery;
                 Column = columnAttribute;
+                Type = type;
             }
         }
 
@@ -56,8 +61,7 @@ namespace FluentSQL.DataBase
                 }
                 else
                 {
-                    var newType = Nullable.GetUnderlyingType(type);
-                    return newType == null ? Convert.ChangeType(value, type) : Convert.ChangeType(value, newType);
+                    return Convert.ChangeType(value, type);
                 }
             }
             catch (Exception)
@@ -81,7 +85,7 @@ namespace FluentSQL.DataBase
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
 
-            if (classOptions.ConstructorInfo.GetParameters().Length == 0)
+            if (!classOptions.IsConstructorByParam)
             {
                 _logger?.LogWarning("{0} constructor with properties {1} not found", classOptions.Type.Name,
                     string.Join(", ", classOptions.PropertyOptions.Select(x => $"{x.PropertyInfo.Name}")));
@@ -93,29 +97,26 @@ namespace FluentSQL.DataBase
             }
         }
 
-        private List<ColumnsPropertyOptions> GetColumnsPropertyOptions(IEnumerable<PropertyOptions> propertyOptions, IQuery query)
+        private ColumnsPropertyOptions[] GetColumnsPropertyOptions(IEnumerable<PropertyOptions> propertyOptions, IQuery query)
         {
             return (from pro in propertyOptions
                     join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
-                    select new ColumnsPropertyOptions(pro, left is not null, left)).ToList();
+                    select 
+                        new ColumnsPropertyOptions(pro, left is not null, left, Nullable.GetUnderlyingType(pro.PropertyInfo.PropertyType) ?? pro.PropertyInfo.PropertyType)
+                        { 
+                            ValueDefault = pro.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(pro.PropertyInfo.PropertyType) : null
+                        }
+                   ).ToArray();
         }
 
-        private T CreateObject<T>(ITransformTo<T> transformToEntity, IEnumerable<ColumnsPropertyOptions> columns, DbDataReader reader)
+        private T CreateObject<T>(ITransformTo<T> transformToEntity, ColumnsPropertyOptions[] columns, DbDataReader reader)
         {
             object? valor;
 
             foreach (var item in columns)
             {
-                if (item.IsColumnInQuery)
-                {
-                    valor = reader.GetValue(item.Column.Name);
-                    valor = SwitchTypeValue(item.Property.PropertyInfo.PropertyType, valor);
-                }
-                else
-                {
-                    valor = item.Property.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(item.Property.PropertyInfo.PropertyType) : null;
-                }
+                valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(item.Column.Name)) : item.ValueDefault;
                 transformToEntity.SetValue(item.Property.PositionConstructor, item.Property.PropertyInfo.Name, valor);
             }
 

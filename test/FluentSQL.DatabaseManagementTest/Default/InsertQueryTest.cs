@@ -34,7 +34,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            InsertQuery<Test1, DbConnection> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1);
+            InsertQuery<Test1, DbConnection> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1,null);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Columns);
@@ -50,10 +50,10 @@ namespace FluentSQL.DatabaseManagementTest.Default
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters2()
         {
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, null));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1,null));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null, _test1,null));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1,null));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, null,null));
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test3, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test3(0, null, DateTime.Now, true));
+                _connectionOptions, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = query.Execute();
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
@@ -78,7 +78,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test6, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test6(1, null, DateTime.Now, true));
+                _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = query.Execute();
             Assert.NotNull(result);
         }
@@ -89,7 +89,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test1, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
-               _connectionOptions, new Test6(1, null, DateTime.Now, true));
+               _connectionOptions, new Test6(1, null, DateTime.Now, true), null);
             Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
 
@@ -101,7 +101,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test3, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test3(0, null, DateTime.Now, true));
+                _connectionOptions, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
@@ -115,7 +115,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test6, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test6(1, null, DateTime.Now, true));
+                _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
             Assert.NotNull(result);
         }
@@ -128,7 +128,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test3, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true));
+                _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
@@ -142,7 +142,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test6, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true));
+                _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.NotNull(result);
         }
@@ -153,7 +153,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test1, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
-               _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true));
+               _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true), null);
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
 
@@ -165,7 +165,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test3, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true));
+                _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
@@ -179,7 +179,7 @@ namespace FluentSQL.DatabaseManagementTest.Default
             InsertQuery<Test6, DbConnection> query = new("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _connectionOptions, new Test6(1, null, DateTime.Now, true));
+                _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
             var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
         }

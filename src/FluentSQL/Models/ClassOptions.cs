@@ -11,6 +11,8 @@ namespace FluentSQL.Models
 
         public ConstructorInfo ConstructorInfo { get; private set; }
 
+        public bool IsConstructorByParam { get; private set; }
+
         public TableAttribute Table { get; private set; }
 
         public ClassOptions(Type type)
@@ -32,14 +34,9 @@ namespace FluentSQL.Models
             foreach (PropertyInfo property in Type.GetProperties())
             {
                 Attribute[] arrayAttribute = Attribute.GetCustomAttributes(property);
-                ColumnAttribute tmp;
 
-                if (arrayAttribute.Where(x => x is ColumnAttribute).Any())
+                if (arrayAttribute.FirstOrDefault(x => x is ColumnAttribute) is not ColumnAttribute tmp)
                 {
-                    tmp = (ColumnAttribute)arrayAttribute.First(x => x is ColumnAttribute);
-                }
-                else
-                { 
                     tmp = new ColumnAttribute(property.Name);
                 }
 
@@ -88,6 +85,8 @@ namespace FluentSQL.Models
                     ConstructorInfoDefault = item;
                 }
             }
+
+            IsConstructorByParam = result != null;
 
             return result ?? ConstructorInfoDefault;
         }

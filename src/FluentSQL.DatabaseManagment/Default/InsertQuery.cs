@@ -1,6 +1,7 @@
 ﻿using FluentSQL.DatabaseManagement.Extensions;
 using FluentSQL.DatabaseManagement.Models;
 using FluentSQL.Extensions;
+using FluentSQL.Models;
 
 namespace FluentSQL.DatabaseManagement.Default
 {
@@ -8,63 +9,40 @@ namespace FluentSQL.DatabaseManagement.Default
         IExecute<T, TDbConnection> where T : class, new()
     {
         public object Entity { get; }
+        protected PropertyOptions? _propertyOptionsAutoIncrementing = null;
 
         public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions,
-            object entity) :
+            object entity, PropertyOptions? propertyOptionsAutoIncrementing) :
             base(text, columns, criteria, connectionOptions)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
+            _propertyOptionsAutoIncrementing = propertyOptionsAutoIncrementing;
         }
 
-        private void InsertAutoIncrementing(TDbConnection? connection = default)
+        private async Task InsertAutoIncrementingAsync(bool isAsync, TDbConnection? connection = default, CancellationToken cancellationToken = default)
         {
-            var classOptions = GetClassOptions();
-            var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
-            var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);
-
             object idResult;
             if (connection == null)
             {
-                idResult = DatabaseManagment.ExecuteScalar<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                idResult = isAsync ? await DatabaseManagment.ExecuteScalarAsync<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken)
+                                   : DatabaseManagment.ExecuteScalar<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
             else
             {
-                idResult = DatabaseManagment.ExecuteScalar<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                idResult = isAsync ? await DatabaseManagment.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken)
+                                   : DatabaseManagment.ExecuteScalar<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
             }
 
-            var newType = Nullable.GetUnderlyingType(propertyOptions.PropertyInfo.PropertyType);
-            idResult = newType == null ? Convert.ChangeType(idResult, propertyOptions.PropertyInfo.PropertyType) : Convert.ChangeType(idResult, newType);
-
-            propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
+            var newType = Nullable.GetUnderlyingType(_propertyOptionsAutoIncrementing!.PropertyInfo.PropertyType);
+            idResult = newType == null ? Convert.ChangeType(idResult, _propertyOptionsAutoIncrementing!.PropertyInfo.PropertyType) : Convert.ChangeType(idResult, newType);
+            _propertyOptionsAutoIncrementing.PropertyInfo.SetValue(this.Entity, idResult);
         }
-
-        private async Task InsertAutoIncrementingAsync(CancellationToken cancellationToken, TDbConnection? connection = default)
-        {
-            var classOptions = GetClassOptions();
-            var columnAutoIncrementing = Columns.First(x => x.IsAutoIncrementing);
-            var propertyOptions = classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == columnAutoIncrementing.Name);
-
-            object idResult;
-            if (connection == null)
-            {
-                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
-            }
-            else
-            {
-                idResult = await DatabaseManagment.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
-            }
-
-            var newType = Nullable.GetUnderlyingType(propertyOptions.PropertyInfo.PropertyType);
-            idResult = newType == null ? Convert.ChangeType(idResult, propertyOptions.PropertyInfo.PropertyType) : Convert.ChangeType(idResult, newType);
-
-            propertyOptions.PropertyInfo.SetValue(this.Entity, idResult);
-        }
-
+        
         public override T Execute()
         {
-            if (Columns.Any(x => x.IsAutoIncrementing))
+            if (_propertyOptionsAutoIncrementing != null)
             {
-                InsertAutoIncrementing();
+                InsertAutoIncrementingAsync(false).Wait();
             }
             else
             {
@@ -78,9 +56,9 @@ namespace FluentSQL.DatabaseManagement.Default
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
 
-            if (Columns.Any(x => x.IsAutoIncrementing))
+            if (_propertyOptionsAutoIncrementing != null)
             {
-                InsertAutoIncrementing(dbConnection);
+                InsertAutoIncrementingAsync(false,dbConnection).Wait();
             }
             else
             {
@@ -92,9 +70,9 @@ namespace FluentSQL.DatabaseManagement.Default
 
         public override async Task<T> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            if (Columns.Any(x => x.IsAutoIncrementing))
+            if (_propertyOptionsAutoIncrementing != null)
             {
-                await InsertAutoIncrementingAsync(cancellationToken);
+                await InsertAutoIncrementingAsync(true,cancellationToken:cancellationToken);
             }
             else
             {
@@ -108,9 +86,9 @@ namespace FluentSQL.DatabaseManagement.Default
         {
             dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
 
-            if (Columns.Any(x => x.IsAutoIncrementing))
+            if (_propertyOptionsAutoIncrementing != null)
             {
-                await InsertAutoIncrementingAsync(cancellationToken, dbConnection);
+                await InsertAutoIncrementingAsync(true,dbConnection, cancellationToken);
             }
             else
             {

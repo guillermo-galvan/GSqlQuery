@@ -3,7 +3,7 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Running;
 
-namespace MyBenchmarks
+namespace FluentSQL.Sqlite.Benchmark
 {
     public class Program
     {
@@ -15,9 +15,7 @@ namespace MyBenchmarks
                 .AddDiagnoser(MemoryDiagnoser.Default)
                 .AddColumn(StatisticColumn.OperationsPerSecond);
 
-            var summary = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, config);
-
-            Console.WriteLine(summary);
+            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, config);
         }
     }
 }

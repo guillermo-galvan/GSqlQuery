@@ -14,6 +14,7 @@ namespace FluentSQLTest.Models
             Assert.NotEmpty(classOptions.PropertyOptions);
             Assert.NotNull(classOptions.Type);
             Assert.NotNull(classOptions.ConstructorInfo);
+            Assert.True(classOptions.IsConstructorByParam);
         }
 
         [Fact]
