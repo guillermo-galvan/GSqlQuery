@@ -58,6 +58,10 @@ namespace GSqlQuery.Runner.DataBase
                 {
                     return null;
                 }
+                else if (typeof(char[]) == type && value is string tmp)
+                {
+                    return tmp.ToCharArray();
+                }
                 else
                 {
                     return Convert.ChangeType(value, type);
