@@ -1,8 +1,8 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
+using GSqlQuery.SearchCriteria;
 using System.Linq.Expressions;
 
-namespace GSqlQuery.SearchCriteria
+namespace GSqlQuery
 {
     public static class NotEqualExtension
     {

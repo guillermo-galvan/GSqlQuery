@@ -1,10 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
 
 [assembly: InternalsVisibleTo("GSqlQuery.Test")]
 
-namespace GSqlQuery.Default
+namespace GSqlQuery.Queries
 {
     /// <summary>
     /// Select Query Builder

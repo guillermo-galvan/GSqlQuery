@@ -1,13 +1,12 @@
 ﻿using GSqlQuery.Extensions;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery
 {
     public abstract class QueryBase : IQuery
     {
         private readonly IEnumerable<ColumnAttribute> _columns;
         private readonly IEnumerable<CriteriaDetail>? _criteria;
         private string _text;
-
 
         public string Text { get => _text; set => _text = value; }
 

@@ -1,8 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery
 {
     public abstract class QueryBuilderBase<T, TReturn> : IBuilder<TReturn> where T : class, new() where TReturn : IQuery
     {

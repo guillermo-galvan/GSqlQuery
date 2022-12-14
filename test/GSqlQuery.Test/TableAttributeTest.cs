@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
 
 namespace GSqlQuery.Test
 {

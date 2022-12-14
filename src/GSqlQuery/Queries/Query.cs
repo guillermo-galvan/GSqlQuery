@@ -1,7 +1,4 @@
-﻿using GSqlQuery.Helpers;
-using GSqlQuery.Models;
-
-namespace GSqlQuery.Default
+﻿namespace GSqlQuery
 {
     /// <summary>
     /// Query

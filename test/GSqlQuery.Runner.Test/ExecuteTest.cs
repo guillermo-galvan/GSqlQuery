@@ -10,7 +10,7 @@ namespace GSqlQuery.Runner.Test
 
         public ExecuteTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
 
         [Fact]

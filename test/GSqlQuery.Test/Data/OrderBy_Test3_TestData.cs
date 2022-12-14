@@ -8,7 +8,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id FROM TableName ORDER BY TableName.Name ASC,TableName.Create DESC;"
+                new Statements(),"SELECT TableName.Id FROM TableName ORDER BY TableName.Name ASC,TableName.Create DESC;"
             };
 
             yield return new object[]
@@ -26,7 +26,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName ORDER BY TableName.Name ASC,TableName.Create DESC;"
+               new Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName ORDER BY TableName.Name ASC,TableName.Create DESC;"
             };
 
             yield return new object[]
@@ -44,7 +44,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param ORDER BY TableName.Name ASC,TableName.Create DESC;"
+                new Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param ORDER BY TableName.Name ASC,TableName.Create DESC;"
             };
 
             yield return new object[]

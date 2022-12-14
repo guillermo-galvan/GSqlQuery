@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.Default
+﻿namespace GSqlQuery
 {
     /// <summary>
     /// Insert Query

@@ -8,7 +8,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;"
+                new Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;"
             };
 
             yield return new object[]
@@ -26,7 +26,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
+               new Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
             };
 
             yield return new object[]
@@ -44,7 +44,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
+                new Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
             };
 
             yield return new object[]
@@ -62,7 +62,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
+                new Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
             };
 
             yield return new object[]
@@ -80,7 +80,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new GSqlQuery.Default.Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
+               new Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
             };
 
             yield return new object[]
@@ -98,7 +98,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
+                new Statements(),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
             };
 
             yield return new object[]

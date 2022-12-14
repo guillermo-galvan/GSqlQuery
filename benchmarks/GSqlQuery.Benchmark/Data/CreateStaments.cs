@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.Benchmarks.Data
+﻿namespace GSqlQuery.Benchmarks.Data
 {
     public abstract class CreateStaments
     {

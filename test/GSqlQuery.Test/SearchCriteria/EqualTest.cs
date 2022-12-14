@@ -1,9 +1,7 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using GSqlQuery.Test.Extensions;
+using GSqlQuery.Queries;
 
 namespace GSqlQuery.Test.SearchCriteria
 {
@@ -17,9 +15,9 @@ namespace GSqlQuery.Test.SearchCriteria
 
         public EqualTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
             _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-               new GSqlQuery.Default.Statements());
+               new Statements());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;

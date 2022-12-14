@@ -1,6 +1,6 @@
 ﻿using GSqlQuery.Extensions;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery.Queries
 {
     internal class CountQueryBuilder<T> : QueryBuilderWithCriteria<T, CountQuery<T>>, IQueryBuilderWithWhere<T, CountQuery<T>> where T : class, new()
     {

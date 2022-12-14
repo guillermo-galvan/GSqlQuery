@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.Models
+﻿namespace GSqlQuery
 {
     public sealed class ColumnsOrderBy
     {

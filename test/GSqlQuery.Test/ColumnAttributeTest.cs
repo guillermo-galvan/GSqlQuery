@@ -1,6 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
 using GSqlQuery.Test.Models;
 
 namespace GSqlQuery.Test
@@ -71,7 +69,7 @@ namespace GSqlQuery.Test
         public void Should_get_the_column_name()
         {
             ColumnAttribute column = new("Test");
-            var result = column.GetColumnName("Test", new GSqlQuery.Default.Statements());
+            var result = column.GetColumnName("Test", new Statements());
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal("Test.Test", result);
@@ -82,10 +80,10 @@ namespace GSqlQuery.Test
         {
             ColumnAttribute column = new("Test");
 
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new GSqlQuery.Default.Statements()));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new Statements()));
             Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", null));
             column = null;
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new GSqlQuery.Default.Statements()));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new Statements()));
         }
 
         [Theory]

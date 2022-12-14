@@ -1,4 +1,4 @@
-﻿using GSqlQuery.Default;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 
 namespace GSqlQuery.Test.Default
@@ -11,7 +11,7 @@ namespace GSqlQuery.Test.Default
         public UpdateQueryBuilderTest()
         {
             _columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
 
         [Fact]

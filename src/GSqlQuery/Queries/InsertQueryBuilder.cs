@@ -1,7 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Models;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery.Queries
 {
     internal class InsertQueryBuilder<T> : QueryBuilderBase<T, InsertQuery<T>>, IQueryBuilder<T, InsertQuery<T>> where T : class, new()
     {

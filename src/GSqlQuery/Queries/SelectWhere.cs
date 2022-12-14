@@ -1,6 +1,6 @@
 ﻿using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery.Queries
 {
     /// <summary>
     /// Select where 

@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Models;
-
-namespace GSqlQuery.SearchCriteria
+﻿namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria group ()

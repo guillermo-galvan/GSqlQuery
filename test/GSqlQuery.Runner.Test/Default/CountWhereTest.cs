@@ -16,7 +16,7 @@ namespace GSqlQuery.Runner.Test.Default
         {
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
             _selectQueryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()));
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()));
             _connectionCountQueryBuilder = new CountQueryBuilder<Test1, DbConnection>(_selectQueryBuilder, _selectQueryBuilder.ConnectionOptions);
         }
 
@@ -43,7 +43,7 @@ namespace GSqlQuery.Runner.Test.Default
             CountWhere<Test1, DbConnection> query = new(_connectionCountQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
-            var criteria = query.BuildCriteria(new GSqlQuery.Default.Statements());
+            var criteria = query.BuildCriteria(new Statements());
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }

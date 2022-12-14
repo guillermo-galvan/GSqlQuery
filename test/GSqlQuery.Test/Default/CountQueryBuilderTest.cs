@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 
 namespace GSqlQuery.Test.Default
@@ -10,7 +10,7 @@ namespace GSqlQuery.Test.Default
 
         public CountQueryBuilderTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
         }
 
         [Fact]

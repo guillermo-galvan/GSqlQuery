@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Models;
-
-namespace GSqlQuery.Extensions
+﻿namespace GSqlQuery.Extensions
 {
     public static class ColumnAttributeExtension
     {

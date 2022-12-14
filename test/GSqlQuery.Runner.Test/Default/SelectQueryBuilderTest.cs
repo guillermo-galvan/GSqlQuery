@@ -12,7 +12,7 @@ namespace GSqlQuery.Runner.Test.Default
 
         public SelectQueryBuilderTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
             _connectionOptions = new ConnectionOptions<DbConnection>(_stantements, LoadFluentOptions.GetDatabaseManagmentMock());
         }
 

@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 
@@ -15,7 +15,7 @@ namespace GSqlQuery.Test.Default
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
             var columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
 
-            _queryBuilder = new(new GSqlQuery.Default.Statements(), columnsValue, string.Empty);
+            _queryBuilder = new(new Statements(), columnsValue, string.Empty);
         }
 
         [Fact]

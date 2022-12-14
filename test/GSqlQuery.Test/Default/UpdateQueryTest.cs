@@ -1,7 +1,4 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 
 namespace GSqlQuery.Test.Default
@@ -20,7 +17,7 @@ namespace GSqlQuery.Test.Default
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id))!.ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
 
         [Fact]

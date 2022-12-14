@@ -6,7 +6,7 @@
 
         public InsertQueryBuilderTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
     }
 }

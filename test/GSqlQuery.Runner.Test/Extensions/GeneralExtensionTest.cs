@@ -1,13 +1,8 @@
 ﻿using GSqlQuery.Extensions;
 using System.Linq.Expressions;
 using System.Data.Common;
-using GSqlQuery.Default;
-using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner.Test;
 using GSqlQuery.Runner.Test.Models;
 
 namespace GSqlQuery.Runner.Test.Extensions
@@ -22,7 +17,7 @@ namespace GSqlQuery.Runner.Test.Extensions
 
         public GeneralExtensionTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;

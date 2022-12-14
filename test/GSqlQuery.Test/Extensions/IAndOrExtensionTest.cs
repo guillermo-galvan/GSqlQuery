@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 
@@ -12,7 +12,7 @@ namespace GSqlQuery.Test.Extensions
         public IAndOrExtensionTest()
         {
             _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-               new GSqlQuery.Default.Statements());
+               new Statements());
         }
 
         [Fact]

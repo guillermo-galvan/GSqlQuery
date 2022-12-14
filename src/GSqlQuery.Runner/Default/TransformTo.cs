@@ -1,7 +1,4 @@
-﻿using GSqlQuery.Helpers;
-using GSqlQuery.Models;
-
-namespace GSqlQuery.Runner.Default
+﻿namespace GSqlQuery.Runner.Default
 {
     internal abstract class TransformTo<T> : ITransformTo<T>
     {

@@ -8,7 +8,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT COUNT(TableName.Id) FROM TableName;"
+                new Statements(),"SELECT COUNT(TableName.Id) FROM TableName;"
             };
 
             yield return new object[]
@@ -26,7 +26,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new GSqlQuery.Default.Statements(),"SELECT COUNT(TableName.Id,TableName.Name,TableName.Create) FROM TableName;"
+               new Statements(),"SELECT COUNT(TableName.Id,TableName.Name,TableName.Create) FROM TableName;"
             };
 
             yield return new object[]
@@ -44,7 +44,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT COUNT(TableName.Id,TableName.Name,TableName.Create) FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
+                new Statements(),"SELECT COUNT(TableName.Id,TableName.Name,TableName.Create) FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
             };
 
             yield return new object[]

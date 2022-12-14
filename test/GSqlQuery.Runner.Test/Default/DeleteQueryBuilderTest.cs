@@ -11,7 +11,7 @@ namespace GSqlQuery.Runner.Test.Default
         private readonly ConnectionOptions<DbConnection> _connectionOptions;
         public DeleteQueryBuilderTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
             _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
         }
 

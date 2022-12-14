@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.SQLServer
+﻿namespace GSqlQuery.SQLServer
 {
     public  class SqlServerStatements : Statements
     {

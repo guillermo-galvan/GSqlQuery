@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace GSqlQuery.Models
+namespace GSqlQuery
 {
     public sealed class PropertyOptions
     {

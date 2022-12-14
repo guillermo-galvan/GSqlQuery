@@ -1,9 +1,7 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
 using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery
 {
     /// <summary>
     /// Where

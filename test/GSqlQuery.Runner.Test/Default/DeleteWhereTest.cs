@@ -15,7 +15,7 @@ namespace GSqlQuery.Runner.Test.Default
         public DeleteWhereTest()
         {
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
-            _deleteQueryBuilder = new DeleteQueryBuilder<Test1, DbConnection>(new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()));
+            _deleteQueryBuilder = new DeleteQueryBuilder<Test1, DbConnection>(new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()));
 
         }
 
@@ -43,7 +43,7 @@ namespace GSqlQuery.Runner.Test.Default
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = query.BuildCriteria(new GSqlQuery.Default.Statements());
+            var criteria = query.BuildCriteria(new Statements());
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }

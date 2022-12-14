@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Helpers;
-using GSqlQuery.Models;
-using GSqlQuery.Runner.Default;
+﻿using GSqlQuery.Runner.Default;
 using GSqlQuery.Runner.Models;
 using GSqlQuery.Runner.SearchCriteria;
 using GSqlQuery.Runner.Test.Extensions;
@@ -19,7 +17,7 @@ namespace GSqlQuery.Runner.Test.SearchCriteria
 
         public GroupTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
             _selectQueryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));

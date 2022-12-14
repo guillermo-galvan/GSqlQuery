@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 
 namespace GSqlQuery
 {

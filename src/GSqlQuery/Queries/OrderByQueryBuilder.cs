@@ -1,8 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery.Queries
 {
     internal class OrderByQueryBuilder<T> : QueryBuilderBase<T, OrderByQuery<T>>, IQueryBuilder<T, OrderByQuery<T>> where T : class, new()
     {

@@ -13,7 +13,7 @@ namespace GSqlQuery.Runner.Test.SearchCriteria
 
         public InTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
             _selectQueryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()));
         }

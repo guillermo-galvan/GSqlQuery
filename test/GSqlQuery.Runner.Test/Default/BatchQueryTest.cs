@@ -1,7 +1,4 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Test.Models;
 using GSqlQuery.Runner.Default;
 
@@ -18,7 +15,7 @@ namespace GSqlQuery.Runner.Test.Default
 
         public BatchQueryTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;

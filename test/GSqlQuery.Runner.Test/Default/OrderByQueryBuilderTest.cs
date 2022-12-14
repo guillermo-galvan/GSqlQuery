@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Default;
 using GSqlQuery.SearchCriteria;
 using System.Data.Common;
 using GSqlQuery.Runner.Models;
@@ -16,7 +15,7 @@ namespace GSqlQuery.Runner.Test.Default
 
         public OrderByQueryBuilderTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
             _connectionOptions = new ConnectionOptions<DbConnection>(_stantements, LoadFluentOptions.GetDatabaseManagmentMock());
         }
 

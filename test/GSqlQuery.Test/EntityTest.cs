@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Data;
 using GSqlQuery.Test.Extensions;
@@ -13,7 +12,7 @@ namespace GSqlQuery.Test
 
         public EntityTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
         }
 
         [Fact]

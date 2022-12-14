@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.Default
+﻿namespace GSqlQuery.Queries
 {
     /// <summary>
     /// Delete query builder

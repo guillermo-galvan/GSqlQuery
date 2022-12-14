@@ -14,7 +14,7 @@ namespace GSqlQuery.Runner.Test.Extensions
         public IAndOrExtensionTest()
         {
             _selectQueryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()));
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()));
         }
 
         [Fact]
@@ -23,7 +23,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
             IEnumerable<CriteriaDetail>? criterias = null;
             var andOr = where.Equal(x => x.Id, 1);
-            string result = andOr.GetCliteria(new GSqlQuery.Default.Statements(), ref criterias);
+            string result = andOr.GetCliteria(new Statements(), ref criterias);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

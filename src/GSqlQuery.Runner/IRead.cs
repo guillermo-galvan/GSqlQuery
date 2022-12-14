@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
 using GSqlQuery.Runner.Models;
 using System.Linq.Expressions;
 

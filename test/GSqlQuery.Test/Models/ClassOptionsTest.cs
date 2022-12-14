@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Models;
-
-namespace GSqlQuery.Test.Models
+﻿namespace GSqlQuery.Test.Models
 {
     public class ClassOptionsTest
     {

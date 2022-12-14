@@ -14,7 +14,7 @@ namespace GSqlQuery.Runner.Test.Default
         public UpdateQueryBuilderTest()
         {
             _columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
             _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
         }
 

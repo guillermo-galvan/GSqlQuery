@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 
@@ -13,7 +13,7 @@ namespace GSqlQuery.Test.Default
         public DeleteWhereTest()
         {
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
-            _queryBuilder = new(new GSqlQuery.Default.Statements());
+            _queryBuilder = new(new Statements());
 
         }
 

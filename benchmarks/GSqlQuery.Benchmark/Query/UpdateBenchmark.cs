@@ -1,7 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.Benchmarks.Data;
-using GSqlQuery.Default;
-using GSqlQuery.SearchCriteria;
 
 namespace GSqlQuery.Benchmarks.Query
 {

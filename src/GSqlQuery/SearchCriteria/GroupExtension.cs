@@ -1,7 +1,7 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
+using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.SearchCriteria
+namespace GSqlQuery
 {
     public static class GroupExtension
     {

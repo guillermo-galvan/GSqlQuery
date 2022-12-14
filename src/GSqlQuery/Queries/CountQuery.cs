@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.Default
+﻿namespace GSqlQuery
 {
     public class CountQuery<T> : Query<T> where T : class, new()
     {

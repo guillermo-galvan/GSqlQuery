@@ -1,4 +1,4 @@
-﻿using GSqlQuery.Default;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 
 namespace GSqlQuery.Test.Default
@@ -9,7 +9,7 @@ namespace GSqlQuery.Test.Default
 
         public DeleteQueryBuilderTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
 
         [Fact]

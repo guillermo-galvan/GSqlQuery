@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.Runner.Test.Default
+﻿namespace GSqlQuery.Runner.Test.Default
 {
     public class StatementsTest
     {

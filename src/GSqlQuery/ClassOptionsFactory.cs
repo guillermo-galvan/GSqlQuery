@@ -1,7 +1,6 @@
-﻿using GSqlQuery.Models;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
-namespace GSqlQuery.Helpers
+namespace GSqlQuery
 {
     public class ClassOptionsFactory
     {

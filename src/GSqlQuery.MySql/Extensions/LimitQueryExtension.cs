@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.MySql.Default;
-using GSqlQuery.Default;
 using GSqlQuery.Runner;
 using GSqlQuery.Runner.Default;
 using GSqlQuery.Runner.Models;

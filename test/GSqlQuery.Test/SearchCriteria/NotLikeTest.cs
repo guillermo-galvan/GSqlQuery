@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
@@ -17,7 +15,7 @@ namespace GSqlQuery.Test.SearchCriteria
 
         public NotLikeTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
             _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _statements);
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));

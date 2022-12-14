@@ -11,7 +11,7 @@ namespace GSqlQuery.Runner.Test
 
         public IReadTest()
         {
-            _connectionOptions = new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+            _connectionOptions = new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]

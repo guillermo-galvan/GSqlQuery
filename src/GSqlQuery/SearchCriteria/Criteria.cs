@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Models;
-
-namespace GSqlQuery.SearchCriteria
+﻿namespace GSqlQuery.SearchCriteria
 {
     public abstract class Criteria : ISearchCriteria
     {

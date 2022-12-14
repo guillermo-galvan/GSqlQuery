@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.Runner.Default
+﻿namespace GSqlQuery.Runner.Default
 {
     internal class BatchQuery : QueryBase
     {

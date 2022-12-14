@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using GSqlQuery.Extensions;
 
-namespace GSqlQuery.Models
+namespace GSqlQuery
 {
     public sealed class ClassOptions
     {

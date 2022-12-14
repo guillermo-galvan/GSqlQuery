@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.Default
+﻿namespace GSqlQuery
 {
     public class Statements : IStatements
     {

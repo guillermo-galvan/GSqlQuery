@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Models;
-
-namespace GSqlQuery
+﻿namespace GSqlQuery
 {
     /// <summary>
     /// Query Builder

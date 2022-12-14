@@ -1,4 +1,3 @@
-using GSqlQuery.Default;
 using GSqlQuery.Test.Data;
 using GSqlQuery.Test.Models;
 
@@ -9,7 +8,7 @@ namespace GSqlQuery.Test
         private readonly IStatements _statements;
         public IReadTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
 
         [Fact]

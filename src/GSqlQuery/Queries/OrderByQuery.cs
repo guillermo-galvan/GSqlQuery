@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.Default
+﻿namespace GSqlQuery
 {
     public class OrderByQuery<T> : Query<T> where T : class, new()
     {

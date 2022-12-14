@@ -1,8 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
 
-namespace GSqlQuery.Default
+namespace GSqlQuery.Queries
 {
     /// <summary>
     /// Update query builder

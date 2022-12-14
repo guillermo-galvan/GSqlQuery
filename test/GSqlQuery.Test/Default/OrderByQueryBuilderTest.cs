@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 
@@ -11,7 +11,7 @@ namespace GSqlQuery.Test.Default
 
         public OrderByQueryBuilderTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
         }
 
         [Fact]
