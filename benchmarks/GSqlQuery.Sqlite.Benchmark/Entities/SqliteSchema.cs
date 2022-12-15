@@ -3,7 +3,7 @@
 namespace GSqlQuery.Sqlite.Benchmark.Entities
 {
     [Table("sqlite_schema")]
-    public class SqliteSchema : Runner.Entity<SqliteSchema>
+    public class SqliteSchema : Runner.EntityRunner<SqliteSchema>
     {
         [Column("type")]
         public string? Type { get; set; }

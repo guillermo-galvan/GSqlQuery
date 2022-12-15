@@ -1,4 +1,4 @@
-﻿using GSqlQuery.Runner.DataBase;
+﻿using GSqlQuery.Runner;
 using Microsoft.Data.SqlClient;
 using System.Data;
 

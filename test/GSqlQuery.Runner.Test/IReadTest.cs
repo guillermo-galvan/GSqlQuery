@@ -1,4 +1,3 @@
-using GSqlQuery.Runner.Models;
 using GSqlQuery.Runner.Test.Data;
 using GSqlQuery.Runner.Test.Models;
 using System.Data.Common;

@@ -3,7 +3,7 @@ using GSqlQuery.Extensions;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Default;
 using GSqlQuery.Runner.Test.Models;
-using GSqlQuery.Runner.Models;
+using GSqlQuery.Runner.Queries;
 
 namespace GSqlQuery.Runner.Test.Default
 {

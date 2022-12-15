@@ -1,8 +1,8 @@
 ﻿using GSqlQuery.Extensions;
+using GSqlQuery.Runner;
 using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner.Models;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery
 {
     public class UpdateQuery<T, TDbConnection> : Query<T, TDbConnection, int>, IQuery<T, TDbConnection, int>,
         IExecute<int, TDbConnection> where T : class, new()

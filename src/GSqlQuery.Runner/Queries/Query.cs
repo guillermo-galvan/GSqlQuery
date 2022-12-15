@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Runner.Models;
-
-namespace GSqlQuery.Runner.Default
+﻿namespace GSqlQuery.Runner
 {
     public abstract class Query<T, TDbConnection, TResult> : Query<T>, IQuery<T, TDbConnection, TResult> where T : class, new()
     {

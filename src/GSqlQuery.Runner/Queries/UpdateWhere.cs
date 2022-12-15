@@ -1,6 +1,6 @@
 ﻿using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class UpdateWhere<T, TDbConnection> : BaseWhere<T, UpdateQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, UpdateQuery<T, TDbConnection>>,
         IWhere<T, UpdateQuery<T, TDbConnection>>,

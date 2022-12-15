@@ -1,9 +1,9 @@
 ﻿using GSqlQuery.Extensions;
 using System.Linq.Expressions;
 using GSqlQuery.Runner.Default;
-using GSqlQuery.Runner.Models;
+using GSqlQuery.Runner.Queries;
 
-namespace GSqlQuery.Runner.Extensions
+namespace GSqlQuery.Runner
 {
     public static class SelectQueryBuilderExtension
     {

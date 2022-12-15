@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.Runner.Default
+﻿namespace GSqlQuery
 {
     internal class BatchQuery : QueryBase
     {

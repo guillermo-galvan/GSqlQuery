@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Runner.Models;
-
-namespace GSqlQuery.Runner.Default
+﻿namespace GSqlQuery.Runner
 {
     public abstract class QueryBuilderWithCriteria<T, TReturn, TDbConnection> : QueryBuilderWithCriteria<T, TReturn>,
         IQueryBuilderWithWhere<T, TReturn, TDbConnection>, IQueryBuilder<T, TReturn, TDbConnection>, IBuilder<TReturn>

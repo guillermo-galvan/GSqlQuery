@@ -1,7 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.SqliteTest.Data;
-using GSqlQuery.SearchCriteria;
-using GSqlQuery.Runner.Extensions;
+using GSqlQuery.Runner;
 
 namespace GSqlQuery.Sqlite.Benchmark.Query
 {

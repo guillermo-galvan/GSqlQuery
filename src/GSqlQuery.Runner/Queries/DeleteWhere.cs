@@ -1,4 +1,5 @@
-﻿using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.Runner.Queries;
+using GSqlQuery.SearchCriteria;
 
 namespace GSqlQuery.Runner.Default
 {

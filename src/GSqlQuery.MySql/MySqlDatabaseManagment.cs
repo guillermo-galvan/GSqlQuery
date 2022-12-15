@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Runner;
-using GSqlQuery.Runner.DataBase;
 using Microsoft.Extensions.Logging;
 using System.Data;
 

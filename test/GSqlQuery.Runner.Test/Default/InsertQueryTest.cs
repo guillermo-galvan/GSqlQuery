@@ -1,6 +1,5 @@
 ﻿using GSqlQuery.SearchCriteria;
 using System.Data.Common;
-using GSqlQuery.Runner.Models;
 using GSqlQuery.Runner.Default;
 using GSqlQuery.Runner.Test.Models;
 

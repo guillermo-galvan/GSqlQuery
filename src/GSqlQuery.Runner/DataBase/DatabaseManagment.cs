@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.Common;
 
-namespace GSqlQuery.Runner.DataBase
+namespace GSqlQuery.Runner
 {
     public abstract class DatabaseManagment : IDatabaseManagement<IConnection>
     {

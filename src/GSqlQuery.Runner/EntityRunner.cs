@@ -1,11 +1,10 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Default;
-using GSqlQuery.Runner.Models;
+using GSqlQuery.Runner.Queries;
 using System.Linq.Expressions;
 
 namespace GSqlQuery.Runner
 {
-    public abstract class Entity<T> : GSqlQuery.Entity<T>, ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T>
+    public abstract class EntityRunner<T> : Entity<T>, ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T>
         where T : class, new()
     {
         public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>

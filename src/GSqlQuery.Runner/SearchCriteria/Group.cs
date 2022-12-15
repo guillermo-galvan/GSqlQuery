@@ -1,6 +1,6 @@
 ﻿using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.Runner.SearchCriteria
+namespace GSqlQuery.Runner
 {
     internal class Group<T, TReturn, TDbConnection, TResult> : Criteria, ISearchCriteria, IAndOr<T, TReturn>,
         IWhere<T, TReturn> where T : class, new() where TReturn : IQuery

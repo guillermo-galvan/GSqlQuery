@@ -1,6 +1,6 @@
 ﻿using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class SelectWhere<T, TDbConnection> : BaseWhere<T, SelectQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, SelectQuery<T, TDbConnection>>,
         IWhere<T, SelectQuery<T, TDbConnection>>,

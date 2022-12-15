@@ -1,9 +1,8 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Models;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("GSqlQuery.Runner.Test")]
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class SelectQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, SelectQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>,

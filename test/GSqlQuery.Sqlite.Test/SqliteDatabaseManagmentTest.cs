@@ -1,6 +1,5 @@
-﻿using GSqlQuery.SearchCriteria;
-using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner.DataBase;
+﻿using GSqlQuery.Runner.Extensions;
+using GSqlQuery.Runner;
 using GSqlQuery.Sqlite.Test.Data;
 
 namespace GSqlQuery.Sqlite.Test

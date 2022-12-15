@@ -1,8 +1,6 @@
-﻿using GSqlQuery.Runner.Models;
-using GSqlQuery.Runner.Test.Data;
+﻿using GSqlQuery.Runner.Test.Data;
 using GSqlQuery.Runner.Test.Extensions;
 using GSqlQuery.Runner.Test.Models;
-using GSqlQuery.SearchCriteria;
 using System.Data.Common;
 
 namespace GSqlQuery.Runner.Test

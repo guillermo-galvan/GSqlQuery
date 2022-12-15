@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.Runner.DataBase
+﻿namespace GSqlQuery.Runner
 {
     public static class DatabaseManagmentExtension
     {

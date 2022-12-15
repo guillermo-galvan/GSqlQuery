@@ -1,14 +1,15 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Models;
+using GSqlQuery.Runner;
+using GSqlQuery.Runner.Default;
 using GSqlQuery.Runner.Extensions;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery
 {
-    public class SelectQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
+    public class OrderByQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
         IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
     {
-        public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions) :
-            base(text, columns, criteria, connectionOptions)
+        public OrderByQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)
+            : base(text, columns, criteria, connectionOptions)
         {
         }
 

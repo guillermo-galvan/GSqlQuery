@@ -1,4 +1,4 @@
-﻿using GSqlQuery.Runner.DataBase;
+﻿using GSqlQuery.Runner;
 using System.Data;
 
 namespace GSqlQuery.Sqlite.Test

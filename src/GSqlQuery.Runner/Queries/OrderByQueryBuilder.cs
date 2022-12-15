@@ -1,7 +1,7 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Models;
+using GSqlQuery.Runner.Default;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class OrderByQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, OrderByQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>,

@@ -1,6 +1,6 @@
 ﻿using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class CountWhere<T, TDbConnection> : BaseWhere<T, CountQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, CountQuery<T, TDbConnection>>,
         IWhere<T, CountQuery<T, TDbConnection>>,

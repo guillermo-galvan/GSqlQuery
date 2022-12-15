@@ -1,13 +1,15 @@
 ﻿using GSqlQuery.Extensions;
+using GSqlQuery.Runner;
+using GSqlQuery.Runner.Default;
 using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner.Models;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery
 {
     public class InsertQuery<T, TDbConnection> : Query<T, TDbConnection, T>, IQuery<T, TDbConnection, T>,
         IExecute<T, TDbConnection> where T : class, new()
     {
         public object Entity { get; }
+
         protected PropertyOptions? _propertyOptionsAutoIncrementing = null;
 
         public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions,

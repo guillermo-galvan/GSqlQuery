@@ -1,7 +1,7 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Models;
+using GSqlQuery.Runner.Default;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class CountQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, CountQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection>,

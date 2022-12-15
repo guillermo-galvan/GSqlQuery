@@ -1,7 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Models;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class UpdateQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilderWithWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection>,

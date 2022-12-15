@@ -1,4 +1,4 @@
-﻿using GSqlQuery.Runner.DataBase;
+﻿using GSqlQuery.Runner;
 using MySql.Data.MySqlClient;
 using System.Data;
 

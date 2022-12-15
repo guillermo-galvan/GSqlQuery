@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace GSqlQuery.Runner.DataBase
+namespace GSqlQuery.Runner
 {
     public interface ITransaction : IDisposable
     {
