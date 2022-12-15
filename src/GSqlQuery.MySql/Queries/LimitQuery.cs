@@ -1,13 +1,20 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner;
+﻿using GSqlQuery.Runner;
 using GSqlQuery.Runner.Extensions;
 
-namespace GSqlQuery
+namespace GSqlQuery.MySql.Queries
 {
-    public class OrderByQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
+    public class LimitQuery<T> : Query<T> where T : class, new()
+    {
+        public LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
+            base(text, columns, criteria, statements)
+        {
+        }
+    }
+
+    public class LimitQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
         IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
     {
-        public OrderByQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)
+        public LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions)
         {
         }
@@ -20,7 +27,10 @@ namespace GSqlQuery
 
         public override IEnumerable<T> Execute(TDbConnection dbConnection)
         {
-            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            if (dbConnection == null)
+            {
+                throw new ArgumentNullException(nameof(dbConnection));
+            }
             return DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
@@ -33,7 +43,10 @@ namespace GSqlQuery
 
         public override Task<IEnumerable<T>> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
-            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            if (dbConnection == null)
+            {
+                throw new ArgumentNullException(nameof(dbConnection));
+            }
             return DatabaseManagment.ExecuteReaderAsync<T>(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
         }

@@ -1,9 +1,7 @@
-﻿using GSqlQuery.SqliteTest.Data;
-
-namespace GSqlQuery.Sqlite.Benchmark.Entities
+﻿namespace GSqlQuery.Sqlite.Benchmark.Entities
 {
     [Table("sqlite_schema")]
-    public class SqliteSchema : Runner.EntityRunner<SqliteSchema>
+    public class SqliteSchema : EntityExecute<SqliteSchema>
     {
         [Column("type")]
         public string? Type { get; set; }

@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Runner.Default;
-
-namespace GSqlQuery.Runner.Queries
+﻿namespace GSqlQuery.Runner.Queries
 {
     internal class DeleteQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection>,

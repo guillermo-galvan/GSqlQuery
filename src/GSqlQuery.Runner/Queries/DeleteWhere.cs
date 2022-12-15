@@ -1,7 +1,6 @@
-﻿using GSqlQuery.Runner.Queries;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.SearchCriteria;
 
-namespace GSqlQuery.Runner.Default
+namespace GSqlQuery.Runner.Queries
 {
     internal class DeleteWhere<T, TDbConnection> : BaseWhere<T, DeleteQuery<T, TDbConnection>>, ISearchCriteriaBuilder<T, DeleteQuery<T, TDbConnection>>,
         IWhere<T, DeleteQuery<T, TDbConnection>>,

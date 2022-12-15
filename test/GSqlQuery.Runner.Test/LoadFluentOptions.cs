@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Runner.Default;
-using GSqlQuery.Runner.Test.Models;
+﻿using GSqlQuery.Runner.Test.Models;
 using Microsoft.Data.SqlClient;
 using Moq;
 using System.Data;

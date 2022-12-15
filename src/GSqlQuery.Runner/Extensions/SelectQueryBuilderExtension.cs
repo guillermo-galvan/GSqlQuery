@@ -1,6 +1,5 @@
 ﻿using GSqlQuery.Extensions;
 using System.Linq.Expressions;
-using GSqlQuery.Runner.Default;
 using GSqlQuery.Runner.Queries;
 
 namespace GSqlQuery.Runner

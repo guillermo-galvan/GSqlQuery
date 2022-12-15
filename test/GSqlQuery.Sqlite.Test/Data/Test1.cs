@@ -1,7 +1,7 @@
 ﻿namespace GSqlQuery.Sqlite.Test.Data
 {
     [Table("test1")]
-    internal class Test1 : Runner.EntityRunner<Test1>
+    internal class Test1 : EntityExecute<Test1>
     {
         [Column("idTest1")]
         public long Id { get; set; }

@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Default;
 namespace GSqlQuery.Runner.Queries
 {
     internal class InsertQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, InsertQuery<T, TDbConnection>, TDbConnection>,
