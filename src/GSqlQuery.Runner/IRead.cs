@@ -1,6 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Runner.Queries;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace GSqlQuery.Runner
 {
@@ -11,9 +12,9 @@ namespace GSqlQuery.Runner
             Expression<Func<T, TProperties>> expression)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Select(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Select(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new SelectQueryBuilder<T, TDbConnection>(memberInfos.Select(x => x.Name), connectionOptions);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Select(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Select(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
+            return new SelectQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), connectionOptions);
         }
 
         public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>

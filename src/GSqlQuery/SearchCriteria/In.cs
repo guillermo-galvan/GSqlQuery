@@ -1,4 +1,7 @@
 ﻿using GSqlQuery.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -34,7 +37,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="values">Equality value</param>
         /// <param name="logicalOperator">Logical operator </param>
         /// <exception cref="ArgumentNullException"></exception>
-        public In(TableAttribute table, ColumnAttribute columnAttribute, IEnumerable<T> values, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public In(TableAttribute table, ColumnAttribute columnAttribute, IEnumerable<T> values, string logicalOperator) : base(table, columnAttribute, logicalOperator)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));
             if (!values.Any())

@@ -1,4 +1,5 @@
 ﻿using GSqlQuery.Extensions;
+using System.Reflection;
 
 namespace GSqlQuery.Runner.Queries
 {
@@ -95,8 +96,8 @@ namespace GSqlQuery.Runner.Queries
 
         public ISet<T, UpdateQuery<T, TDbConnection>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            var (options, memberInfos) = expression.GetOptionsAndMember();
-            var column = memberInfos.ValidateMemberInfo(options).ColumnAttribute;
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            var column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
             _columnValues.TryAdd(column, value);
             return this;
         }
@@ -108,12 +109,12 @@ namespace GSqlQuery.Runner.Queries
                 throw new InvalidOperationException(ErrorMessages.EntityNotFound);
             }
 
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.Type.Name}.Update(x => x.{options.PropertyOptions.First().PropertyInfo.Name}) or {options.Type.Name}.Update(x => new {{ {string.Join(",", options.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
 
-            foreach (var item in memberInfos)
+            foreach (var item in options.MemberInfo)
             {
-                var propertyOptions = item.ValidateMemberInfo(options);
+                var propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
                 _columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
             }
 

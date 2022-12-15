@@ -1,4 +1,7 @@
-﻿namespace GSqlQuery.Extensions
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace GSqlQuery.Extensions
 {
     public static class ColumnAttributeExtension
     {

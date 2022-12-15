@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Queries
+﻿using System.Linq;
+
+namespace GSqlQuery.Queries
 {
     /// <summary>
     /// Delete query builder

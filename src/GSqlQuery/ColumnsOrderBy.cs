@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery
+﻿using System.Collections.Generic;
+
+namespace GSqlQuery
 {
     public sealed class ColumnsOrderBy
     {

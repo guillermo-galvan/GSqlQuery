@@ -1,9 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.Benchmarks.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.Benchmarks.Query
 {
-    [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public abstract class DeleteBenchmark : CreateStaments
     {
         public DeleteBenchmark() : base()

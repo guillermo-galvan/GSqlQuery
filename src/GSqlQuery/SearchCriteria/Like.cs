@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -14,7 +16,7 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get Value 
         /// </summary>
-        public string? Value { get; }
+        public string Value { get; }
 
         /// <summary>
         /// Initializes a new instance of the Like class.
@@ -32,7 +34,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="columnAttribute">ColumnAttribute</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public Like(TableAttribute table, ColumnAttribute columnAttribute, string value, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public Like(TableAttribute table, ColumnAttribute columnAttribute, string value, string logicalOperator) : base(table, columnAttribute, logicalOperator)
         {
             Value = value;
         }

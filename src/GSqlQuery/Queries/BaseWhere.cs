@@ -1,5 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.SearchCriteria;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery
 {
@@ -8,7 +10,7 @@ namespace GSqlQuery
     /// </summary>
     public abstract class BaseWhere<T, TReturn> : ISearchCriteriaBuilder<T, TReturn> where TReturn : IQuery
     {
-        protected readonly Queue<ISearchCriteria> _searchCriterias = new();
+        protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
 
         public IEnumerable<PropertyOptions> Columns { get; protected set; }
 

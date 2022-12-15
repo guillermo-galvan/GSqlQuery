@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -23,7 +25,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="table">Table Attribute</param>
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public IsNull(TableAttribute table, ColumnAttribute columnAttribute, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public IsNull(TableAttribute table, ColumnAttribute columnAttribute, string logicalOperator) : base(table, columnAttribute, logicalOperator)
         { }
 
         /// <summary>

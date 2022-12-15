@@ -1,4 +1,8 @@
-﻿namespace GSqlQuery.SearchCriteria
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria group ()
@@ -6,7 +10,7 @@
     /// <typeparam name="T">The type to query</typeparam>
     internal class Group<T, TReturn> : Criteria, ISearchCriteria, IWhere<T, TReturn>, IAndOr<T, TReturn> where T : class, new() where TReturn : IQuery
     {
-        private readonly Queue<ISearchCriteria> _searchCriterias = new();
+        private readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
         private readonly IAndOr<T, TReturn> _andOr;
 
         /// <summary>
@@ -21,7 +25,7 @@
         /// <param name="logicalOperator">Logical operator</param>
         /// <param name="andOr">IAndOr</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Group(TableAttribute table, string? logicalOperator, IAndOr<T, TReturn> andOr) : base(table, new ColumnAttribute("Group"), logicalOperator)
+        public Group(TableAttribute table, string logicalOperator, IAndOr<T, TReturn> andOr) : base(table, new ColumnAttribute("Group"), logicalOperator)
         {
             _andOr = andOr ?? throw new ArgumentNullException(nameof(andOr));
         }
@@ -34,8 +38,8 @@
         public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string criterion = string.Empty;
-            Queue<CriteriaDetail> criterias = new();
-            Queue<ParameterDetail> parameters = new();
+            Queue<CriteriaDetail> criterias = new Queue<CriteriaDetail>();
+            Queue<ParameterDetail> parameters = new Queue<ParameterDetail>();
 
             foreach (var item in _searchCriterias)
             {

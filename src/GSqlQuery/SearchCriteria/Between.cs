@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -40,7 +42,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="initialValue">Initial value</param>
         /// <param name="logicalOperator">Logical operator</param>
-        public Between(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue, string? logicalOperator) :
+        public Between(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue, string logicalOperator) :
             base(table, columnAttribute, logicalOperator)
         {
             Initial = initialValue;

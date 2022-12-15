@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.SearchCriteria
+﻿using System.Collections.Generic;
+
+namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// 

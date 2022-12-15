@@ -1,4 +1,7 @@
-﻿namespace GSqlQuery
+﻿using System;
+using System.Collections.Generic;
+
+namespace GSqlQuery
 {
     /// <summary>
     /// Insert Query
@@ -16,7 +19,7 @@
         /// <param name="criteria">Query criteria</param>
         /// <param name="statements">Statements to use in the query</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements, object entity)
+        public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements, object entity)
             : base(text, columns, criteria, statements)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));

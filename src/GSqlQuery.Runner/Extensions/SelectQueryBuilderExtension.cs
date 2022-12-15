@@ -1,6 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using System.Linq.Expressions;
 using GSqlQuery.Runner.Queries;
+using System.Reflection;
 
 namespace GSqlQuery.Runner
 {
@@ -20,9 +21,9 @@ namespace GSqlQuery.Runner
            where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression.");
-            return new OrderByQueryBuilder<T, TDbConnection>(memberInfos.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.ConnectionOptions);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
+            return new OrderByQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.ConnectionOptions);
         }
 
         public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>
@@ -32,10 +33,10 @@ namespace GSqlQuery.Runner
             where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression.");
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
             var query = queryBuilder.Build();
-            return new OrderByQueryBuilder<T, TDbConnection>(memberInfos.Select(x => x.Name), orderBy, queryBuilder,
+            return new OrderByQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder,
                 new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagment));
         }
 
@@ -46,12 +47,12 @@ namespace GSqlQuery.Runner
             where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression.");
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
 
             if (queryBuilder is OrderByQueryBuilder<T, TDbConnection> order)
             {
-                order.AddOrderBy(memberInfos.Select(x => x.Name), orderBy);
+                order.AddOrderBy(options.MemberInfo.Select(x => x.Name), orderBy);
             }
 
             return queryBuilder;

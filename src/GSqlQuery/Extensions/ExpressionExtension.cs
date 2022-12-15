@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace GSqlQuery.Extensions
@@ -16,7 +18,7 @@ namespace GSqlQuery.Extensions
         {
             Expression withoutUnary = RemoveUnary(expression.Body);
 
-            Queue<MemberInfo> result = new();
+            Queue<MemberInfo> result = new Queue<MemberInfo>();
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
@@ -44,7 +46,6 @@ namespace GSqlQuery.Extensions
         public static MemberInfo GetMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             Expression withoutUnary = RemoveUnary(expression.Body);
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
             MemberInfo result = null;
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)

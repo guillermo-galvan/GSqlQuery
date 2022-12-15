@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace GSqlQuery
 {
@@ -7,7 +9,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get column values
         /// </summary>
-        public IDictionary<ColumnAttribute, object?> ColumnValues { get; }
+        IDictionary<ColumnAttribute, object> ColumnValues { get; }
     }
 
     /// <summary>

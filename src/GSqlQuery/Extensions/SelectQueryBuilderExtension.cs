@@ -1,6 +1,10 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Queries;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace GSqlQuery
 {
@@ -17,9 +21,9 @@ namespace GSqlQuery
             where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression.");
-            return new OrderByQueryBuilder<T>(memberInfos.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Statements);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
+            return new OrderByQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Statements);
         }
 
         public static IQueryBuilder<T, OrderByQuery<T>> OrderBy<T, TProperties>
@@ -27,9 +31,9 @@ namespace GSqlQuery
             where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression.");
-            return new OrderByQueryBuilder<T>(memberInfos.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Build().Statements);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
+            return new OrderByQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Build().Statements);
         }
 
         public static IQueryBuilder<T, OrderByQuery<T>> OrderBy<T, TProperties>
@@ -37,12 +41,12 @@ namespace GSqlQuery
             where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            var (options, memberInfos) = expression.GetOptionsAndMembers();
-            memberInfos.ValidateMemberInfos($"Could not infer property name for expression.");
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
 
             if (queryBuilder is OrderByQueryBuilder<T> order)
             {
-                order.AddOrderBy(memberInfos.Select(x => x.Name), orderBy);
+                order.AddOrderBy(options.MemberInfo.Select(x => x.Name), orderBy);
             }
 
             return queryBuilder;

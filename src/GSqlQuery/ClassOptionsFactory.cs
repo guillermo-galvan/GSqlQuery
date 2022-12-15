@@ -1,10 +1,11 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 
 namespace GSqlQuery
 {
     public class ClassOptionsFactory
     {
-        private static readonly ConcurrentDictionary<Type, ClassOptions> _entities = new();
+        private static readonly ConcurrentDictionary<Type, ClassOptions> _entities = new ConcurrentDictionary<Type, ClassOptions>();
 
         public static ClassOptions GetClassOptions(Type type)
         {

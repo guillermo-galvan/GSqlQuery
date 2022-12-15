@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery
 {

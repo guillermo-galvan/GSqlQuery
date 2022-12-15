@@ -1,6 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Runner.Queries;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace GSqlQuery.Runner
 {
@@ -13,9 +14,9 @@ namespace GSqlQuery.Runner
             Expression<Func<T, TProperties>> expression, TProperties value)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
-            var (options, memberInfos) = expression.GetOptionsAndMember();
-            memberInfos.ValidateMemberInfo(options);
-            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions, new string[] { memberInfos.Name }, value);
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
+            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions, new string[] { options.MemberInfo.Name }, value);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Data.Common;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Extensions;
 using GSqlQuery.Runner.Test.Models;
+using System.Reflection;
 
 namespace GSqlQuery.Runner.Test.Extensions
 {
@@ -39,29 +40,29 @@ namespace GSqlQuery.Runner.Test.Extensions
         public void Should_return_the_classoption_and_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            var (Options, MemberInfos) = expression.GetOptionsAndMembers();
-            Assert.NotNull(Options);
-            Assert.NotNull(MemberInfos);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            Assert.NotNull(options.ClassOptions);
+            Assert.NotNull(options.MemberInfo);
         }
 
         [Fact]
         public void Should_return_the_classoption_and_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            var (Options, MemberInfos) = expression.GetOptionsAndMember();
-            Assert.NotNull(Options);
-            Assert.NotNull(MemberInfos);
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            Assert.NotNull(options.ClassOptions);
+            Assert.NotNull(options.MemberInfo);
         }
 
         [Fact]
         public void Should_vallidate_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            var (Options, MemberInfos) = expression.GetOptionsAndMembers();
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
 
             try
             {
-                MemberInfos.ValidateMemberInfos("test");
+                options.MemberInfo.ValidateMemberInfos("test");
                 Assert.True(true);
             }
             catch (Exception)
@@ -74,8 +75,8 @@ namespace GSqlQuery.Runner.Test.Extensions
         public void Should_vallidate_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            var (Options, MemberInfos) = expression.GetOptionsAndMember();
-            var result = MemberInfos.ValidateMemberInfo(Options);
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            var result = options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
             Assert.NotNull(result);
         }
 
@@ -84,8 +85,8 @@ namespace GSqlQuery.Runner.Test.Extensions
         {
             Test1 model = new(1, "Name", DateTime.Now, true);
             Expression<Func<Test1, object>> expression = x => x.Name;
-            var (Options, MemberInfos) = expression.GetOptionsAndMember();
-            var propertyOptions = MemberInfos.ValidateMemberInfo(Options);
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            var propertyOptions = options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
             var result = propertyOptions.GetValue(model);
             Assert.NotNull(result);
             Assert.NotEmpty(result.ToString());

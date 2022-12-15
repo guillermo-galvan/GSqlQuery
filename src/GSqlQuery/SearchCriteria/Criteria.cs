@@ -1,4 +1,7 @@
-﻿namespace GSqlQuery.SearchCriteria
+﻿using System;
+using System.Collections.Generic;
+
+namespace GSqlQuery.SearchCriteria
 {
     public abstract class Criteria : ISearchCriteria
     {
@@ -15,7 +18,7 @@
         /// <summary>
         /// Get logical operator
         /// </summary>
-        public string? LogicalOperator { get; }
+        public string LogicalOperator { get; }
 
         /// <summary>
         /// Initializes a new instance of the Criteria class.
@@ -24,7 +27,7 @@
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="logicalOperator">Logical Operator </param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Criteria(TableAttribute table, ColumnAttribute columnAttribute, string? logicalOperator)
+        public Criteria(TableAttribute table, ColumnAttribute columnAttribute, string logicalOperator)
         {
             Table = table ?? throw new ArgumentNullException(nameof(table));
             Column = columnAttribute ?? throw new ArgumentNullException(nameof(columnAttribute));

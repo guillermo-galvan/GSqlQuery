@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Extensions
+﻿using System;
+
+namespace GSqlQuery.Extensions
 {
     public static class ObjectExtension
     {

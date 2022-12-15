@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery
+﻿using System.Collections.Generic;
+
+namespace GSqlQuery
 {
     public interface IQuery
     {
@@ -15,7 +17,7 @@
         /// <summary>
         /// Query criteria
         /// </summary>
-        IEnumerable<CriteriaDetail>? Criteria { get; }
+        IEnumerable<CriteriaDetail> Criteria { get; }
     }
 
     /// <summary>

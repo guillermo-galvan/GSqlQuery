@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery
+﻿using System;
+
+namespace GSqlQuery
 {
     /// <summary>
     /// Parameter detail 
@@ -18,7 +20,7 @@
         /// <summary>
         /// Get Value
         /// </summary>
-        public object? Value { get; set; }
+        public object Value { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the ParameterDetail class.
@@ -26,7 +28,7 @@
         /// <param name="name">Name parameter</param>
         /// <param name="value">Value parameter</param>
         /// <exception cref="ArgumentNullException">Name must not be null or empty</exception>
-        public ParameterDetail(string name, object? value, PropertyOptions propertyOptions)
+        public ParameterDetail(string name, object value, PropertyOptions propertyOptions)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Value = value;

@@ -1,5 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace GSqlQuery
