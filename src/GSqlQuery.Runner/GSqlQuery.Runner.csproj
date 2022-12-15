@@ -7,6 +7,8 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<VersionPrefix>1.0.0-alpha</VersionPrefix>
 	<Description>Create queries from a class and add the execution </Description>
+	<SignAssembly>True</SignAssembly>
+	<AssemblyOriginatorKeyFile>$(MSBuildStartupDirectory)\src\GsqlQuery_key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
