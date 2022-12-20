@@ -1,4 +1,5 @@
 ﻿using GSqlQuery.Extensions;
+using System.Linq;
 
 namespace GSqlQuery.Runner.Queries
 {
@@ -7,7 +8,7 @@ namespace GSqlQuery.Runner.Queries
         IQueryBuilder<T, CountQuery<T, TDbConnection>, TDbConnection>, IBuilder<CountQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly IQueryBuilder<T, SelectQuery<T, TDbConnection>> _queryBuilder;
-        private IQuery? _selectQuery;
+        private IQuery _selectQuery;
 
         public CountQueryBuilder(IQueryBuilder<T, SelectQuery<T, TDbConnection>> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions, QueryType.Custom)
@@ -25,7 +26,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override IWhere<T, CountQuery<T, TDbConnection>> Where()
         {
-            CountWhere<T, TDbConnection> selectWhere = new(this);
+            CountWhere<T, TDbConnection> selectWhere = new CountWhere<T, TDbConnection>(this);
             _andOr = selectWhere;
             return (IWhere<T, CountQuery<T, TDbConnection>>)_andOr;
         }
@@ -37,13 +38,13 @@ namespace GSqlQuery.Runner.Queries
             if (_andOr == null)
             {
                 result = string.Format(ConnectionOptions.Statements.Select,
-                    $"COUNT({string.Join(",", _selectQuery!.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
+                    $"COUNT({string.Join(",", _selectQuery.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
                     _tableName);
             }
             else
             {
                 result = string.Format(ConnectionOptions.Statements.SelectWhere,
-                    $"COUNT({string.Join(",", _selectQuery!.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
+                    $"COUNT({string.Join(",", _selectQuery.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
                     _tableName, GetCriteria());
             }
 

@@ -1,5 +1,7 @@
 using GSqlQuery.Test.Data;
 using GSqlQuery.Test.Models;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Test
 {

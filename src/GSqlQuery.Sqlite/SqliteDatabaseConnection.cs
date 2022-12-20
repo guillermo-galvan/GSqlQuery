@@ -1,6 +1,8 @@
 ﻿using GSqlQuery.Runner;
 using Microsoft.Data.Sqlite;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
@@ -19,19 +21,39 @@ namespace GSqlQuery.Sqlite
             return (SqliteDatabaseTransaction)SetTransaction(new SqliteDatabaseTransaction(this, ((SqliteConnection)_connection).BeginTransaction(isolationLevel)));
         }
 
+#if NET6_0_OR_GREATER
         public async Task<SqliteDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             return (SqliteDatabaseTransaction)SetTransaction(new SqliteDatabaseTransaction(this, await ((SqliteConnection)_connection).BeginTransactionAsync(cancellationToken)));
         }
+#else
+        public Task<SqliteDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var result = (SqliteDatabaseTransaction)SetTransaction(new SqliteDatabaseTransaction(this, ((SqliteConnection)_connection).BeginTransaction()));
+            return Task.FromResult(result);
+        }
+#endif
+
+#if NET6_0_OR_GREATER
 
         public async Task<SqliteDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return
-                (SqliteDatabaseTransaction)SetTransaction(new SqliteDatabaseTransaction(this,
-                await ((SqliteConnection)_connection).BeginTransactionAsync(isolationLevel, cancellationToken)));
+
+            return (SqliteDatabaseTransaction)SetTransaction(new SqliteDatabaseTransaction(this, await ((SqliteConnection)_connection).BeginTransactionAsync(isolationLevel, cancellationToken)));
         }
+#else
+        public Task<SqliteDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            SqliteDatabaseTransaction result = (SqliteDatabaseTransaction)SetTransaction(new SqliteDatabaseTransaction(this, ((SqliteConnection)_connection).BeginTransaction(isolationLevel)));
+            return Task.FromResult(result);
+        }
+
+#endif
+
 
         ITransaction IConnection.BeginTransaction() => BeginTransaction();
 

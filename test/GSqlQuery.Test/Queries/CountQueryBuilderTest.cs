@@ -1,5 +1,9 @@
 ﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -15,7 +19,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _stantements);
 
             var result = queryBuilder.Count();
@@ -37,8 +41,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                _stantements);
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, _stantements);
             var result = queryBuilder.Count();
             IWhere<Test1, CountQuery<Test1>> where = result.Where();
             Assert.NotNull(where);
@@ -47,7 +50,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_count_query()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id) },
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id) },
                 _stantements);
             var result = queryBuilder.Count();
             IQuery<Test1> query = result.Build();

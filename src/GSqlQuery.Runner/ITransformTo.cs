@@ -12,7 +12,7 @@
         /// <param name="position"></param>
         /// <param name="propertyName"></param>
         /// <param name="value"></param>
-        void SetValue(int position, string propertyName, object? value);
+        void SetValue(int position, string propertyName, object value);
 
         /// <summary>
         /// 

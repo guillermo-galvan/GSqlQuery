@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.SqliteTest.Data
+﻿using System;
+
+namespace GSqlQuery.SqliteTest.Data
 {
     [Table("test2")]
     public class Test2 : EntityExecute<Test2>

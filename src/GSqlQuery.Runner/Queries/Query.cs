@@ -1,12 +1,17 @@
-﻿namespace GSqlQuery.Runner
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace GSqlQuery.Runner
 {
     public abstract class Query<T, TDbConnection, TResult> : Query<T>, IQuery<T, TDbConnection, TResult> where T : class, new()
     {
         public IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
 
-        protected Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria,
+        protected Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria,
             ConnectionOptions<TDbConnection> connectionOptions) :
-            base(text, columns, criteria, connectionOptions?.Statements!)
+            base(text, columns, criteria, connectionOptions?.Statements)
         {
             connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
             DatabaseManagment = connectionOptions.DatabaseManagment;

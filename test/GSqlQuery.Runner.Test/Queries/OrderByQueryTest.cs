@@ -1,6 +1,11 @@
 ﻿using GSqlQuery.SearchCriteria;
 using System.Data.Common;
 using GSqlQuery.Runner.Test.Models;
+using System.Threading.Tasks;
+using System;
+using System.Threading;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -28,7 +33,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            OrderByQuery<Test1, DbConnection> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            OrderByQuery<Test1, DbConnection> query = new OrderByQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -52,7 +57,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_execute_the_query()
         {
-            OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            OrderByQuery<Test1, DbConnection> query = new OrderByQuery<Test1, DbConnection>("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
             var result = query.Execute();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -62,14 +67,14 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_DatabaseManagment_not_found()
         {
-            OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            OrderByQuery<Test1, DbConnection> query = new OrderByQuery<Test1, DbConnection>("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
             Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
 
         [Fact]
         public void Should_execute_the_query1()
         {
-            OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
+            OrderByQuery<Test1, DbConnection> query = new OrderByQuery<Test1, DbConnection>("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -78,7 +83,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public async Task Should_executeAsync_the_query()
         {
-            OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            OrderByQuery<Test1, DbConnection> query = new OrderByQuery<Test1, DbConnection>("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
             var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -88,14 +93,14 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public async Task Throw_exception_if_DatabaseManagment_not_found_Async()
         {
-            OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            OrderByQuery<Test1, DbConnection> query = new OrderByQuery<Test1, DbConnection>("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
 
         [Fact]
         public async Task Should_executeAsync_the_query1()
         {
-            OrderByQuery<Test1, DbConnection> query = new("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            OrderByQuery<Test1, DbConnection> query = new OrderByQuery<Test1, DbConnection>("SELECT Test1.Id FROM Test1 ORDER BY Test1.Id ASC,Test1.Name,Test1.Create DESC;", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
             var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
             Assert.NotEmpty(result);

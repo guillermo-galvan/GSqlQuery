@@ -1,5 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
@@ -7,7 +10,7 @@ namespace GSqlQuery.Runner
     {
         protected readonly DbConnection _connection;
         protected bool _disposed = false;
-        protected ITransaction? _transaction;
+        protected ITransaction _transaction;
 
         public ConnectionState State => _connection == null ? ConnectionState.Broken : _connection.State;
 
@@ -18,13 +21,19 @@ namespace GSqlQuery.Runner
 
         public virtual void Close()
         {
-            _connection!.Close();
+            _connection.Close();
         }
 
         public virtual Task CloseAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return _connection.CloseAsync();
+
+#if NET6_0_OR_GREATER
+                return _connection.CloseAsync();
+#else
+            _connection.Close();
+            return Task.CompletedTask;
+#endif
         }
 
         public virtual DbCommand GetDbCommand()

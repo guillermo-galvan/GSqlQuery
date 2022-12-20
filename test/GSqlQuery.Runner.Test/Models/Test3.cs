@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Runner.Test.Models
+﻿using System;
+
+namespace GSqlQuery.Runner.Test.Models
 {
     [Table("TableName")]
     internal class Test3 : EntityExecute<Test3>

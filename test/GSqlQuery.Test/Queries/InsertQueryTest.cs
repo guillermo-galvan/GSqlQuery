@@ -1,5 +1,8 @@
 ﻿using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
+using System;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -25,7 +28,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1);
+            InsertQuery<Test1> query = new InsertQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Columns);

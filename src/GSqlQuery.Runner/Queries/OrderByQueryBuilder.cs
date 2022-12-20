@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.Runner.Queries
 {
@@ -7,9 +9,9 @@ namespace GSqlQuery.Runner.Queries
         IBuilder<OrderByQuery<T, TDbConnection>>
         where T : class, new()
     {
-        private readonly IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>? _queryBuilder;
-        private SelectQuery<T, TDbConnection>? _selectQuery;
-        private readonly IAndOr<T, SelectQuery<T, TDbConnection>>? _andorBuilder;
+        private readonly IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> _queryBuilder;
+        private SelectQuery<T, TDbConnection> _selectQuery;
+        private readonly IAndOr<T, SelectQuery<T, TDbConnection>> _andorBuilder;
         private readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
@@ -18,7 +20,7 @@ namespace GSqlQuery.Runner.Queries
             : base(connectionOptions, QueryType.Custom)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            _columnsByOrderBy = new();
+            _columnsByOrderBy = new Queue<ColumnsOrderBy>();
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
@@ -30,7 +32,7 @@ namespace GSqlQuery.Runner.Queries
             : base(connectionOptions, QueryType.Custom)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            _columnsByOrderBy = new();
+            _columnsByOrderBy = new Queue<ColumnsOrderBy>();
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
             _andorBuilder = andOr;
             Columns = Enumerable.Empty<PropertyOptions>();
@@ -38,7 +40,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override OrderByQuery<T, TDbConnection> Build()
         {
-            _selectQuery = _queryBuilder == null ? _andorBuilder!.Build() : _queryBuilder.Build();
+            _selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             return new OrderByQuery<T, TDbConnection>(GenerateQuery(), _selectQuery.Columns, _selectQuery.Criteria, ConnectionOptions);
         }
 
@@ -49,7 +51,7 @@ namespace GSqlQuery.Runner.Queries
                 $"{string.Join(",", x.Columns.Select(y => y.ColumnAttribute.GetColumnName(_tableName, ConnectionOptions.Statements)))} {x.OrderBy}"));
             string result = string.Empty;
 
-            if (_selectQuery!.Criteria == null || !_selectQuery.Criteria.Any())
+            if (_selectQuery.Criteria == null || !_selectQuery.Criteria.Any())
             {
                 result = string.Format(ConnectionOptions.Statements.SelectOrderBy,
                      string.Join(",", _selectQuery.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements))),

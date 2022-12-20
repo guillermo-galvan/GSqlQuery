@@ -1,7 +1,9 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -17,7 +19,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _stantements);
 
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC);
@@ -39,7 +41,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_orderBy_query()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new(new List<string> { nameof(Test1.Id) },
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id) },
                 _stantements);
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             IQuery<Test1> query = result.Build();

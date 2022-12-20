@@ -3,6 +3,10 @@ using System.Linq.Expressions;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System.Reflection;
+using System.Linq;
+using Xunit;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery.Test.Extensions
 {
@@ -81,7 +85,7 @@ namespace GSqlQuery.Test.Extensions
         [Fact]
         public void Should_get_value()
         {
-            Test1 model = new(1, "Name", DateTime.Now, true);
+            Test1 model = new Test1(1, "Name", DateTime.Now, true);
             Expression<Func<Test1, object>> expression = x => x.Name;
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             var propertyOptions = options.MemberInfo.ValidateMemberInfo(options.ClassOptions);

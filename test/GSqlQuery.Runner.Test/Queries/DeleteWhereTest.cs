@@ -3,6 +3,8 @@ using GSqlQuery.Extensions;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Test.Models;
 using GSqlQuery.Runner.Queries;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -21,7 +23,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_add_criteria2()
         {
-            DeleteWhere<Test1, DbConnection> query = new(_deleteQueryBuilder);
+            DeleteWhere<Test1, DbConnection> query = new DeleteWhere<Test1, DbConnection>(_deleteQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
@@ -30,7 +32,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_null_ISearchCriteria_is_added2()
         {
-            DeleteWhere<Test1, DbConnection> query = new(_deleteQueryBuilder);
+            DeleteWhere<Test1, DbConnection> query = new DeleteWhere<Test1, DbConnection>(_deleteQueryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
@@ -38,7 +40,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_build_the_criteria2()
         {
-            DeleteWhere<Test1, DbConnection> query = new(_deleteQueryBuilder);
+            DeleteWhere<Test1, DbConnection> query = new DeleteWhere<Test1, DbConnection>(_deleteQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 

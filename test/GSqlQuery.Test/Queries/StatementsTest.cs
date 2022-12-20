@@ -1,11 +1,13 @@
-﻿namespace GSqlQuery.Test.Queries
+﻿using Xunit;
+
+namespace GSqlQuery.Test.Queries
 {
     public class StatementsTest
     {
         [Fact]
         public void Declarations_cannot_be_null_or_different_than_default()
         {
-            Statements statements = new();
+            Statements statements = new Statements();
 
             Assert.NotNull(statements.Format);
             Assert.Equal("{0}", statements.Format);

@@ -1,5 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Test.Models;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Test
 {
@@ -10,7 +12,7 @@ namespace GSqlQuery.Test
         [InlineData("My")]
         public void Default_values_with_column_name_in_the_Constructor(string name)
         {
-            ColumnAttribute column = new(name);
+            ColumnAttribute column = new ColumnAttribute(name);
 
             Assert.NotNull(column);
             Assert.NotNull(column.Name);
@@ -25,7 +27,7 @@ namespace GSqlQuery.Test
         [InlineData("My", 69)]
         public void Default_values_with_column_name_and_size_in_the_Constructor(string name, int size)
         {
-            ColumnAttribute column = new(name) { Size = size };
+            ColumnAttribute column = new ColumnAttribute(name) { Size = size };
 
             Assert.NotNull(column);
             Assert.NotNull(column.Name);
@@ -40,7 +42,7 @@ namespace GSqlQuery.Test
         [InlineData("My", 69, false)]
         public void Default_values_with_column_name_size_and_isprimarykey_in_the_Constructor(string name, int size, bool isPrimaryKey)
         {
-            ColumnAttribute column = new(name) { Size = size, IsPrimaryKey = isPrimaryKey };
+            ColumnAttribute column = new ColumnAttribute(name) { Size = size, IsPrimaryKey = isPrimaryKey };
 
             Assert.NotNull(column);
             Assert.NotNull(column.Name);
@@ -55,7 +57,7 @@ namespace GSqlQuery.Test
         [InlineData("My", 69, false, true)]
         public void Default_values_with_column_name_size_isprimarykey_and_isautoincrementing_in_the_Constructor(string name, int size, bool isPrimaryKey, bool isAutoIncrementing)
         {
-            ColumnAttribute column = new(name) { Size = size, IsPrimaryKey = isPrimaryKey, IsAutoIncrementing = isAutoIncrementing };
+            ColumnAttribute column = new ColumnAttribute(name) { Size = size, IsPrimaryKey = isPrimaryKey, IsAutoIncrementing = isAutoIncrementing };
 
             Assert.NotNull(column);
             Assert.NotNull(column.Name);
@@ -68,7 +70,7 @@ namespace GSqlQuery.Test
         [Fact]
         public void Should_get_the_column_name()
         {
-            ColumnAttribute column = new("Test");
+            ColumnAttribute column = new ColumnAttribute("Test");
             var result = column.GetColumnName("Test", new Statements());
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -78,7 +80,7 @@ namespace GSqlQuery.Test
         [Fact]
         public void Throw_exception_if_any_null_parameters_are_passed()
         {
-            ColumnAttribute column = new("Test");
+            ColumnAttribute column = new ColumnAttribute("Test");
 
             Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new Statements()));
             Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", null));

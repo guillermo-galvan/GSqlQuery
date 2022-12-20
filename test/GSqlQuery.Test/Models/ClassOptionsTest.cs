@@ -1,11 +1,14 @@
-﻿namespace GSqlQuery.Test.Models
+﻿using System;
+using Xunit;
+
+namespace GSqlQuery.Test.Models
 {
     public class ClassOptionsTest
     {
         [Fact]
         public void Properties_cannot_be_null()
         {
-            ClassOptions classOptions = new(typeof(Test1));
+            ClassOptions classOptions = new ClassOptions(typeof(Test1));
             Assert.NotNull(classOptions);
             Assert.NotNull(classOptions.Table);
             Assert.NotNull(classOptions.PropertyOptions);

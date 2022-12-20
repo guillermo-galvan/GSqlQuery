@@ -1,6 +1,11 @@
 ﻿using GSqlQuery.SearchCriteria;
 using System.Data.Common;
 using GSqlQuery.Runner.Test.Models;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -28,7 +33,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            SelectQuery<Test1, DbConnection> query = new("query", new ColumnAttribute[] { _columnAttribute },
+            SelectQuery<Test1, DbConnection> query = new SelectQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
 
             Assert.NotNull(query);
@@ -54,7 +59,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_execute_the_query()
         {
             SelectQuery<Test1, DbConnection> query =
-                new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute },
+                new SelectQuery<Test1, DbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
 
             var result = query.Execute();
@@ -67,7 +72,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_connection_is_null()
         {
-            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
+            SelectQuery<Test1, DbConnection> query = new SelectQuery<Test1, DbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
             Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
@@ -75,7 +80,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_execute_the_query1()
         {
-            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
+            SelectQuery<Test1, DbConnection> query = new SelectQuery<Test1, DbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
 
@@ -88,7 +93,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public async Task Should_executeAsync_the_query()
         {
             SelectQuery<Test1, DbConnection> query =
-                new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute },
+                new SelectQuery<Test1, DbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
 
             var result = await query.ExecuteAsync(CancellationToken.None);
@@ -101,7 +106,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public async Task Throw_exception_if_connection_is_null_Async()
         {
-            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
+            SelectQuery<Test1, DbConnection> query = new SelectQuery<Test1, DbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
@@ -109,7 +114,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public async Task Should_executeAsync_the_query1()
         {
-            SelectQuery<Test1, DbConnection> query = new("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
+            SelectQuery<Test1, DbConnection> query = new SelectQuery<Test1, DbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
             var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
 

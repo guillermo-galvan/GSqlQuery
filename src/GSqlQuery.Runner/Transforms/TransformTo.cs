@@ -13,6 +13,6 @@
 
         public abstract T Generate();
 
-        public abstract void SetValue(int position, string propertyName, object? value);
+        public abstract void SetValue(int position, string propertyName, object value);
     }
 }

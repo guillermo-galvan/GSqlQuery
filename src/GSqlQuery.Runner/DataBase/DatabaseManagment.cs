@@ -1,7 +1,12 @@
 ﻿using GSqlQuery.Runner.Transforms;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
@@ -17,7 +22,7 @@ namespace GSqlQuery.Runner
 
             public Type Type { get; set; }
 
-            public object? ValueDefault { get; set; }
+            public object ValueDefault { get; set; }
 
             public ColumnsPropertyOptions(PropertyOptions propertyOptions, bool isColumnInQuery, ColumnAttribute columnAttribute, Type type)
             {
@@ -29,7 +34,7 @@ namespace GSqlQuery.Runner
         }
 
         protected readonly string _connectionString;
-        protected ILogger? _logger;
+        protected ILogger _logger;
 
         public DatabaseManagmentEvents Events { get; set; }
 
@@ -41,14 +46,14 @@ namespace GSqlQuery.Runner
 
         }
 
-        public DatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger? logger)
+        public DatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger logger)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             Events = events ?? throw new ArgumentNullException(nameof(events));
             _logger = logger;
         }
 
-        protected virtual object? SwitchTypeValue(Type type, object? value)
+        protected virtual object SwitchTypeValue(Type type, object value)
         {
             try
             {
@@ -96,6 +101,7 @@ namespace GSqlQuery.Runner
 
         private ColumnsPropertyOptions[] GetColumnsPropertyOptions(IEnumerable<PropertyOptions> propertyOptions, IQuery query)
         {
+#if NET6_0_OR_GREATER
             return (from pro in propertyOptions
                     join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
@@ -105,15 +111,31 @@ namespace GSqlQuery.Runner
                             ValueDefault = pro.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(pro.PropertyInfo.PropertyType) : null
                         }
                    ).ToArray();
+#else
+            return (from pro in propertyOptions
+                    join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
+                    from left in leftJoin.DefaultIfEmpty()
+                    select
+                        new ColumnsPropertyOptions(pro, left != null, left, Nullable.GetUnderlyingType(pro.PropertyInfo.PropertyType) ?? pro.PropertyInfo.PropertyType)
+                        {
+                            ValueDefault = pro.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(pro.PropertyInfo.PropertyType) : null
+                        }
+                   ).ToArray();
+
+#endif
         }
 
         private T CreateObject<T>(ITransformTo<T> transformToEntity, ColumnsPropertyOptions[] columns, DbDataReader reader)
         {
-            object? valor;
+            object valor;
 
             foreach (var item in columns)
             {
+#if NET6_0_OR_GREATER
                 valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(item.Column.Name)) : item.ValueDefault;
+#else
+                valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(reader.GetOrdinal(item.Column.Name))) : item.ValueDefault;
+#endif
                 transformToEntity.SetValue(item.Property.PositionConstructor, item.Property.PropertyInfo.Name, valor);
             }
 
@@ -122,35 +144,41 @@ namespace GSqlQuery.Runner
 
         public int ExecuteNonQuery(IQuery query, IEnumerable<IDataParameter> parameters)
         {
-            using IConnection connection = GetConnection();
-            try
+            using (IConnection connection = GetConnection())
             {
-                return ExecuteNonQuery(connection, query, parameters); ;
-            }
-            finally
-            {
-                connection.Close();
-            }
+                try
+                {
+                    return ExecuteNonQuery(connection, query, parameters); ;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }   
         }
 
         public int ExecuteNonQuery(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
             Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteNonQuery Query: {@Text} Parameters: {@parameters}",
              new object[] { query.Text, parameters });
-            using var command = CreateCommand(connection, query, parameters);
-            return command.ExecuteNonQuery();
+            using (var command = CreateCommand(connection, query, parameters))
+            {
+                return command.ExecuteNonQuery();
+            }
         }
 
         public async Task<int> ExecuteNonQueryAsync(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
-            using IConnection connection = await GetConnectionAsync(cancellationToken);
-            try
+            using (IConnection connection = await GetConnectionAsync(cancellationToken))
             {
-                return await ExecuteNonQueryAsync(connection, query, parameters, cancellationToken);
-            }
-            finally
-            {
-                await connection.CloseAsync(cancellationToken);
+                try
+                {
+                    return await ExecuteNonQueryAsync(connection, query, parameters, cancellationToken);
+                }
+                finally
+                {
+                    await connection.CloseAsync(cancellationToken);
+                }
             }
         }
 
@@ -159,52 +187,60 @@ namespace GSqlQuery.Runner
             cancellationToken.ThrowIfCancellationRequested();
             Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteNonQueryAsync Query: {@Text} Parameters: {@parameters}",
              new object[] { query.Text, parameters });
-            using var command = CreateCommand(connection, query, parameters);
-            return command.ExecuteNonQueryAsync(cancellationToken);
+            using (var command = CreateCommand(connection, query, parameters))
+            {
+                return command.ExecuteNonQueryAsync(cancellationToken);
+            }
         }
 
         public IEnumerable<T> ExecuteReader<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new()
         {
-            using IConnection connection = GetConnection();
-            try
+            using (IConnection connection = GetConnection())
             {
-                return ExecuteReader<T>(connection, query, propertyOptions, parameters);
-            }
-            finally
-            {
-                connection.Close();
+                try
+                {
+                    return ExecuteReader<T>(connection, query, propertyOptions, parameters);
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
 
         public IEnumerable<T> ExecuteReader<T>(IConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new()
         {
             Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteReader Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
-              new object[] { typeof(T).FullName!, query.Text, parameters });
+              new object[] { typeof(T).FullName, query.Text, parameters });
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
-            Queue<T> result = new();
+            Queue<T> result = new Queue<T>();
             var columns = GetColumnsPropertyOptions(propertyOptions, query);
 
-            using var command = CreateCommand(connection, query, parameters);
-            using DbDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
+            using (var command = CreateCommand(connection, query, parameters))
             {
-                result.Enqueue(CreateObject(transformToEntity, columns, reader));
+                using (DbDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Enqueue(CreateObject(transformToEntity, columns, reader));
+                    }
+                }
             }
-
             return result;
         }
 
         public async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class, new()
         {
-            using IConnection connection = await GetConnectionAsync(cancellationToken);
-            try
+            using (IConnection connection = await GetConnectionAsync(cancellationToken))
             {
-                return await ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters, cancellationToken);
-            }
-            finally
-            {
-                await connection.CloseAsync(cancellationToken);
+                try
+                {
+                    return await ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters, cancellationToken);
+                }
+                finally
+                {
+                    await connection.CloseAsync(cancellationToken);
+                }
             }
         }
 
@@ -212,17 +248,20 @@ namespace GSqlQuery.Runner
         {
             cancellationToken.ThrowIfCancellationRequested();
             Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteReaderAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
-               new object[] { typeof(T).FullName!, query.Text, parameters });
+               new object[] { typeof(T).FullName, query.Text, parameters });
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
-            Queue<T> result = new();
+            Queue<T> result = new Queue<T>();
             var columns = GetColumnsPropertyOptions(propertyOptions, query);
 
-            using var command = CreateCommand(connection, query, parameters);
-            using DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
-
-            while (await reader.ReadAsync(cancellationToken))
+            using (var command = CreateCommand(connection, query, parameters))
             {
-                result.Enqueue(CreateObject(transformToEntity, columns, reader));
+                using (DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken))
+                {
+                    while (await reader.ReadAsync(cancellationToken))
+                    {
+                        result.Enqueue(CreateObject(transformToEntity, columns, reader));
+                    }
+                }
             }
 
             return result;
@@ -230,36 +269,42 @@ namespace GSqlQuery.Runner
 
         public T ExecuteScalar<T>(IQuery query, IEnumerable<IDataParameter> parameters)
         {
-            using IConnection connection = GetConnection();
-            try
+            using (IConnection connection = GetConnection())
             {
-                return ExecuteScalar<T>(connection, query, parameters); ;
-            }
-            finally
-            {
-                connection.Close();
+                try
+                {
+                    return ExecuteScalar<T>(connection, query, parameters); ;
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
 
         public T ExecuteScalar<T>(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
             Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteScalar Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
-                new object[] { typeof(T).FullName!, query.Text, parameters });
-            using var command = CreateCommand(connection, query, parameters);
-            object? resultCommand = command.ExecuteScalar();
-            return (T)SwitchTypeValue(typeof(T), resultCommand)!;
+                new object[] { typeof(T).FullName, query.Text, parameters });
+            using (var command = CreateCommand(connection, query, parameters))
+            {
+                object resultCommand = command.ExecuteScalar();
+                return (T)SwitchTypeValue(typeof(T), resultCommand);
+            }
         }
 
         public async Task<T> ExecuteScalarAsync<T>(IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
-            using IConnection connection = await GetConnectionAsync(cancellationToken);
-            try
+            using (IConnection connection = await GetConnectionAsync(cancellationToken))
             {
-                return await ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
-            }
-            finally
-            {
-                await connection.CloseAsync(cancellationToken);
+                try
+                {
+                    return await ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
+                }
+                finally
+                {
+                    await connection.CloseAsync(cancellationToken);
+                }
             }
         }
 
@@ -267,10 +312,12 @@ namespace GSqlQuery.Runner
         {
             cancellationToken.ThrowIfCancellationRequested();
             Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteScalarAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
-                new object[] { typeof(T).FullName!, query.Text, parameters });
-            using var command = CreateCommand(connection, query, parameters);
-            object? resultCommand = await command.ExecuteScalarAsync(cancellationToken);
-            return (T)SwitchTypeValue(typeof(T), resultCommand)!;
+                new object[] { typeof(T).FullName, query.Text, parameters });
+            using (var command = CreateCommand(connection, query, parameters))
+            {
+                object resultCommand = await command.ExecuteScalarAsync(cancellationToken);
+                return (T)SwitchTypeValue(typeof(T), resultCommand);
+            }
         }
 
         public abstract IConnection GetConnection();

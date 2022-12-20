@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Runner.Transforms
+﻿using System.Linq;
+
+namespace GSqlQuery.Runner.Transforms
 {
     /// <summary>
     /// 
@@ -6,7 +8,20 @@
     /// <typeparam name="T"></typeparam>
     internal class TransformToByField<T> : TransformTo<T>
     {
-        private readonly (string propertyName, object? Value)[] _values;
+        internal struct ParamValue
+        {
+            public string PropertyName { get; set; }
+
+            public object Value { get; set; }
+
+            public ParamValue(string propertyName , object value)
+            {
+                PropertyName = propertyName;
+                Value = value;
+            }
+        }
+
+        private readonly ParamValue[] _values;
         int _position = 0;
 
         /// <summary>
@@ -15,7 +30,7 @@
         /// <param name="numColumns"></param>
         public TransformToByField(int numColumns) : base(numColumns)
         {
-            _values = new (string propertyName, object? Value)[numColumns];
+            _values = new ParamValue[numColumns];
         }
 
         /// <summary>
@@ -28,7 +43,7 @@
 
             foreach (var item in _classOptions.PropertyOptions)
             {
-                var value = _values.First(x => x.propertyName == item.PropertyInfo.Name).Value;
+                var value = _values.First(x => x.PropertyName == item.PropertyInfo.Name).Value;
                 if (value != null)
                 {
                     item.PropertyInfo.SetValue(result, value);
@@ -44,9 +59,9 @@
         /// <param name="position"></param>
         /// <param name="propertyName"></param>
         /// <param name="value"></param>
-        public override void SetValue(int position, string propertyName, object? value)
+        public override void SetValue(int position, string propertyName, object value)
         {
-            _values[_position++] = (propertyName, value);
+            _values[_position++] = new ParamValue(propertyName, value);
         }
     }
 }

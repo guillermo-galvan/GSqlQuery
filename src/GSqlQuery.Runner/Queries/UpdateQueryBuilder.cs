@@ -1,4 +1,7 @@
 ﻿using GSqlQuery.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace GSqlQuery.Runner.Queries
@@ -9,15 +12,15 @@ namespace GSqlQuery.Runner.Queries
         ISet<T, UpdateQuery<T, TDbConnection>>
         where T : class, new()
     {
-        private readonly IDictionary<ColumnAttribute, object?> _columnValues;
-        protected readonly object? _entity;
+        private readonly IDictionary<ColumnAttribute, object> _columnValues;
+        protected readonly object _entity;
 
-        public IDictionary<ColumnAttribute, object?> ColumnValues => _columnValues;
+        public IDictionary<ColumnAttribute, object> ColumnValues => _columnValues;
 
-        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, IEnumerable<string> selectMember, object? value) :
+        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, IEnumerable<string> selectMember, object value) :
             base(connectionOptions, QueryType.Update)
         {
-            _columnValues = new Dictionary<ColumnAttribute, object?>();
+            _columnValues = new Dictionary<ColumnAttribute, object>();
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             foreach (ColumnAttribute item in ClassOptionsFactory.GetClassOptions(typeof(T)).GetColumnsQuery(selectMember))
             {
@@ -25,12 +28,12 @@ namespace GSqlQuery.Runner.Queries
             };
         }
 
-        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object? entity, IEnumerable<string> selectMember) :
+        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object entity, IEnumerable<string> selectMember) :
             base(connectionOptions, QueryType.Update)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
-            _columnValues = new Dictionary<ColumnAttribute, object?>();
+            _columnValues = new Dictionary<ColumnAttribute, object>();
             foreach (var item in from prop in ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions
                                  join sel in selectMember on prop.PropertyInfo.Name equals sel
                                  select new { prop.ColumnAttribute, prop.PropertyInfo })
@@ -41,7 +44,7 @@ namespace GSqlQuery.Runner.Queries
 
         private Queue<CriteriaDetail> GetUpdateCliterias()
         {
-            Queue<CriteriaDetail> criteriaDetails = new();
+            Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
 
             foreach (var item in _columnValues)
             {
@@ -71,7 +74,7 @@ namespace GSqlQuery.Runner.Queries
             {
                 string where = GetCriteria();
                 query = string.Format(ConnectionOptions.Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
-                foreach (var item in _criteria!)
+                foreach (var item in _criteria)
                 {
                     criteria.Enqueue(item);
                 }
@@ -89,7 +92,7 @@ namespace GSqlQuery.Runner.Queries
         public override IWhere<T, UpdateQuery<T, TDbConnection>> Where()
         {
             ChangeQueryType();
-            UpdateWhere<T, TDbConnection> selectWhere = new(this);
+            UpdateWhere<T, TDbConnection> selectWhere = new UpdateWhere<T, TDbConnection>(this);
             _andOr = selectWhere;
             return (IWhere<T, UpdateQuery<T, TDbConnection>>)_andOr;
         }
@@ -98,7 +101,14 @@ namespace GSqlQuery.Runner.Queries
         {
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             var column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
+#if NET6_0_OR_GREATER
             _columnValues.TryAdd(column, value);
+#else
+            if (!_columnValues.ContainsKey(column))
+            { 
+                _columnValues.Add(column, value);
+            }
+#endif
             return this;
         }
 
@@ -115,7 +125,14 @@ namespace GSqlQuery.Runner.Queries
             foreach (var item in options.MemberInfo)
             {
                 var propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
-                _columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
+#if NET6_0_OR_GREATER
+            _columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
+#else
+                if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
+                {
+                    _columnValues.Add(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
+                }
+#endif
             }
 
             return this;

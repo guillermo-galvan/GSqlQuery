@@ -1,4 +1,9 @@
 ﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace GSqlQuery.Runner.Queries
 {
     internal class InsertQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, InsertQuery<T, TDbConnection>, TDbConnection>,
@@ -7,8 +12,8 @@ namespace GSqlQuery.Runner.Queries
         where T : class, new()
     {
         private readonly object _entity;
-        protected IEnumerable<CriteriaDetail>? _criteria = null;
-        protected PropertyOptions? _propertyOptionsAutoIncrementing;
+        protected IEnumerable<CriteriaDetail> _criteria = null;
+        protected PropertyOptions _propertyOptionsAutoIncrementing;
 
         public InsertQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object entity)
             : base(connectionOptions, QueryType.Insert)
@@ -18,22 +23,22 @@ namespace GSqlQuery.Runner.Queries
 
         protected string GetInsertQuery()
         {
-            (string columnName, ParameterDetail parameterDetail)[] values = GetValues();
-            CriteriaDetail criteriaDetail = new(string.Join(",", values.Select(x => x.parameterDetail.Name)), values.Select(x => x.parameterDetail));
+            ColumnParameterDetail[] values = GetValues();
+            CriteriaDetail criteriaDetail = new CriteriaDetail(string.Join(",", values.Select(x => x.ParameterDetail.Name)), values.Select(x => x.ParameterDetail));
             _criteria = new CriteriaDetail[] { criteriaDetail };
             string text = _propertyOptionsAutoIncrementing != null ?
-                $"{string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart)} {Statements.ValueAutoIncrementingQuery}"
-                : string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.columnName)), criteriaDetail.QueryPart);
+                $"{string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.ColumnName)), criteriaDetail.QueryPart)} {Statements.ValueAutoIncrementingQuery}"
+                : string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.ColumnName)), criteriaDetail.QueryPart);
 
             return text;
         }
 
-        protected (string columnName, ParameterDetail parameterDetail)[] GetValues()
+        protected ColumnParameterDetail[] GetValues()
         {
             long ticks = DateTime.Now.Ticks;
             _propertyOptionsAutoIncrementing = Columns.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing);
             return Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
-                          .Select(x => (x.ColumnAttribute.GetColumnName(_tableName, Statements), new ParameterDetail($"@PI{ticks++}", x.GetValue(_entity), x)))
+                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, Statements), new ParameterDetail($"@PI{ticks++}", x.GetValue(_entity), x)))
                           .ToArray();
         }
 

@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.Extensions;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Test
 {
@@ -9,7 +11,7 @@ namespace GSqlQuery.Test
         [InlineData("My", "table1")]
         public void Default_values_with_secheme_name_and_table_name_in_the_Constructor(string scheme, string name)
         {
-            TableAttribute table = new(scheme, name);
+            TableAttribute table = new TableAttribute(scheme, name);
 
             Assert.NotNull(table);
             Assert.NotNull(table.Name);
@@ -25,7 +27,7 @@ namespace GSqlQuery.Test
         [InlineData("My")]
         public void Default_values_with_table_name_in_the_Constructor(string name)
         {
-            TableAttribute table = new(name);
+            TableAttribute table = new TableAttribute(name);
 
             Assert.NotNull(table);
             Assert.NotNull(table.Name);
@@ -39,7 +41,7 @@ namespace GSqlQuery.Test
         [InlineData("My", "table1")]
         public void Should_get_the_table_name(string scheme, string name)
         {
-            TableAttribute table = new(scheme, name);
+            TableAttribute table = new TableAttribute(scheme, name);
             var result = table.GetTableName(new Statements());
             Assert.NotNull(result);
             Assert.NotEmpty(result);

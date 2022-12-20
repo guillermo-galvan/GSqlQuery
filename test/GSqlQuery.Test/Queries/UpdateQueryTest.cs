@@ -1,5 +1,8 @@
 ﻿using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
+using System;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -14,7 +17,7 @@ namespace GSqlQuery.Test.Queries
         public UpdateQueryTest()
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id))!.ColumnAttribute;
+            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id))?.ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _statements = new Statements();
@@ -23,7 +26,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            UpdateQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
+            UpdateQuery<Test1> query = new UpdateQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);

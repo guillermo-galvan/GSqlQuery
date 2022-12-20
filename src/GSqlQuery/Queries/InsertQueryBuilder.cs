@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GSqlQuery.Queries
 {
-    internal class ColumnParameterDetail
+    public class ColumnParameterDetail
     {
         public string ColumnName { get; set; }
 

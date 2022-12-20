@@ -2,6 +2,9 @@
 using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
+using System;
+using System.Collections.Generic;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -13,14 +16,14 @@ namespace GSqlQuery.Test.Queries
         public SelectWhereTest()
         {
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
-            _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                new Statements());
         }
 
         [Fact]
         public void Should_add_criteria()
         {
-            SelectWhere<Test1> query = new(_queryBuilder);
+            SelectWhere<Test1> query = new SelectWhere<Test1>(_queryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
@@ -29,7 +32,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Throw_exception_if_null_ISearchCriteria_is_added()
         {
-            SelectWhere<Test1> query = new(_queryBuilder);
+            SelectWhere<Test1> query = new SelectWhere<Test1>(_queryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
@@ -37,7 +40,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_build_the_criteria()
         {
-            SelectWhere<Test1> query = new(_queryBuilder);
+            SelectWhere<Test1> query = new SelectWhere<Test1>(_queryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 
@@ -49,7 +52,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_get_the_IAndOr_interface_with_expression()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             IAndOr<Test1, SelectQuery<Test1>> andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
@@ -86,7 +89,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_get_the_IAndOr_interface()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             IAndOr<Test1, SelectQuery<Test1>> andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }

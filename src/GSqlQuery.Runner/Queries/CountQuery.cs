@@ -1,13 +1,16 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Runner;
 using GSqlQuery.Runner.Extensions;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery
 {
     public class CountQuery<T, TDbConnection> : Query<T, TDbConnection, int>, IQuery<T, TDbConnection, int>,
         IExecute<int, TDbConnection> where T : class, new()
     {
-        public CountQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)
+        public CountQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions)
         {
         }
@@ -19,7 +22,7 @@ namespace GSqlQuery
 
         public override int Execute(TDbConnection dbConnection)
         {
-            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteScalar<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
 
@@ -30,7 +33,7 @@ namespace GSqlQuery
 
         public override Task<int> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
-            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteScalarAsync<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
         }
     }

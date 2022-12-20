@@ -2,7 +2,11 @@
 using GSqlQuery.Runner;
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
+using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -20,7 +24,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_count_query2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new(new List<string> { nameof(Test1.Id) },
+            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id) },
                 _connectionOptions);
             var result = queryBuilder.Count();
             var query = result.Build();
@@ -36,7 +40,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _connectionOptions);
 
             var result = queryBuilder.Count();
@@ -60,7 +64,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _connectionOptions);
             var result = queryBuilder.Count();
             var where = result.Where();

@@ -2,7 +2,10 @@
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
 using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -21,7 +24,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_add_criteria2()
         {
-            SelectWhere<Test1, DbConnection> query = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> query = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
@@ -30,7 +33,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_null_ISearchCriteria_is_added2()
         {
-            SelectWhere<Test1, DbConnection> query = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> query = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
@@ -38,7 +41,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_build_the_criteria2()
         {
-            SelectWhere<Test1, DbConnection> query = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> query = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 
@@ -50,7 +53,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_get_the_IAndOr_interface_with_expression2()
         {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             var andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
@@ -87,7 +90,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_get_the_IAndOr_interface2()
         {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             IAndOr<Test1, SelectQuery<Test1, DbConnection>> andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }

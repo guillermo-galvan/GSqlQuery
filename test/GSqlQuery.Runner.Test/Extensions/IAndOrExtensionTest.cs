@@ -1,7 +1,9 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
+using System.Collections.Generic;
 using System.Data.Common;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Extensions
 {
@@ -18,8 +20,8 @@ namespace GSqlQuery.Runner.Test.Extensions
         [Fact]
         public void Should_return_the_criteria2()
         {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
-            IEnumerable<CriteriaDetail>? criterias = null;
+            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
+            IEnumerable<CriteriaDetail> criterias = null;
             var andOr = where.Equal(x => x.Id, 1);
             string result = andOr.GetCliteria(new Statements(), ref criterias);
 

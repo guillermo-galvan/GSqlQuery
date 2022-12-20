@@ -2,6 +2,9 @@
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Test.SearchCriteria
 {
@@ -16,7 +19,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public BetweenTest()
         {
             _statements = new Statements();
-            _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                new Statements());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
@@ -26,7 +29,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_create_an_instance()
         {
-            Between<int> equal = new(_tableAttribute, _columnAttribute, 1, 2);
+            Between<int> equal = new Between<int>(_tableAttribute, _columnAttribute, 1, 2);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -41,7 +44,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5, 8)]
         public void Should_create_an_instance_1(string logicalOperator, int initValue, int finalValue)
         {
-            Between<int> equal = new(_tableAttribute, _columnAttribute, initValue, finalValue, logicalOperator);
+            Between<int> equal = new Between<int>(_tableAttribute, _columnAttribute, initValue, finalValue, logicalOperator);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -58,7 +61,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5, 7, "OR Test1.Id BETWEEN @Param AND @Param")]
         public void Should_get_criteria_detail(string logicalOperator, int inicialValue, int finalValue, string querypart)
         {
-            Between<int> equal = new(_tableAttribute, _columnAttribute, inicialValue, finalValue, logicalOperator);
+            Between<int> equal = new Between<int>(_tableAttribute, _columnAttribute, inicialValue, finalValue, logicalOperator);
             var result = equal.GetCriteria(_statements, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
@@ -81,7 +84,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_Between_query()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.Between(x => x.Id, 1, 2);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -93,7 +96,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.Between(x => x.Id, 1, 3).AndBetween(x => x.IsTest, true, false);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -105,7 +108,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.Between(x => x.Id, 1, 5).OrBetween(x => x.IsTest, true, false);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);

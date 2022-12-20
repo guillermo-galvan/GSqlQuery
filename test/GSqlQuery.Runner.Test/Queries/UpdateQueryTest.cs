@@ -1,6 +1,11 @@
 ﻿using GSqlQuery.SearchCriteria;
 using System.Data.Common;
 using GSqlQuery.Runner.Test.Models;
+using System.Linq;
+using System;
+using System.Threading.Tasks;
+using System.Threading;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -17,7 +22,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public UpdateQueryTest()
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id))!.ColumnAttribute;
+            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _statements = new Statements();
@@ -28,7 +33,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            UpdateQuery<Test1, DbConnection> query = new("query", new ColumnAttribute[] { _columnAttribute },
+            UpdateQuery<Test1, DbConnection> query = new UpdateQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
 
             Assert.NotNull(query);
@@ -55,7 +60,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            UpdateQuery<Test3, DbConnection> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+            UpdateQuery<Test3, DbConnection> query = new UpdateQuery<Test3, DbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions);
             var result = query.Execute();
@@ -65,7 +70,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_connection_not_found()
         {
-            UpdateQuery<Test1, DbConnection> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+            UpdateQuery<Test1, DbConnection> query = new UpdateQuery<Test1, DbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                 _connectionOptions);
             Assert.Throws<ArgumentNullException>(() => query.Execute(null));
@@ -76,7 +81,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            UpdateQuery<Test3, DbConnection> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+            UpdateQuery<Test3, DbConnection> query = new UpdateQuery<Test3, DbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions);
             var result = query.Execute(LoadFluentOptions.GetDbConnection());
@@ -88,7 +93,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            UpdateQuery<Test3, DbConnection> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+            UpdateQuery<Test3, DbConnection> query = new UpdateQuery<Test3, DbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync);
             var result = await query.ExecuteAsync(CancellationToken.None);
@@ -98,7 +103,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public async Task Throw_exception_if_connection_not_found_Async()
         {
-            UpdateQuery<Test1, DbConnection> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+            UpdateQuery<Test1, DbConnection> query = new UpdateQuery<Test1, DbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                 _connectionOptionsAsync);
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
@@ -109,7 +114,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            UpdateQuery<Test3, DbConnection> query = new("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
+            UpdateQuery<Test3, DbConnection> query = new UpdateQuery<Test3, DbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
                 new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync);
             var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);

@@ -1,5 +1,8 @@
 ﻿using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Test.Models;
+using System.Linq;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -27,7 +30,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            InsertQuery<Test3> insert = new("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test3> insert = new InsertQuery<Test3>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _statements, new Test3(0, null, DateTime.Now, true));

@@ -1,6 +1,9 @@
 ﻿using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
+using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -18,7 +21,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _connectionOptions);
 
             Assert.NotNull(queryBuilder);
@@ -40,7 +43,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _connectionOptions);
             var where = queryBuilder.Where();
             Assert.NotNull(where);
@@ -49,7 +52,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_delete_query2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _connectionOptions);
             IQuery<Test1, DbConnection, IEnumerable<Test1>> query = queryBuilder.Build();
             Assert.NotNull(query.Text);

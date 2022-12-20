@@ -1,5 +1,7 @@
 ﻿using GSqlQuery.Runner.Test.Models;
 using GSqlQuery.Runner.Transforms;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -15,7 +17,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_generate_object_by_constructor(int id, string name, int increaseDays, bool isTest)
         {
             DateTime create = DateTime.Now.AddDays(increaseDays);
-            TransformToByConstructor<Test1> transformToBy = new(4);
+            TransformToByConstructor<Test1> transformToBy = new TransformToByConstructor<Test1>(4);
 
             transformToBy.SetValue(0, nameof(Test1.Id), id);
             transformToBy.SetValue(1, nameof(Test1.Name), name);
@@ -41,7 +43,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_generate_object(int id, string name, int increaseDays, bool isTest)
         {
             DateTime create = DateTime.Now.AddDays(increaseDays);
-            TransformToByField<Test4> transformToBy = new(4);
+            TransformToByField<Test4> transformToBy = new TransformToByField<Test4>(4);
 
             transformToBy.SetValue(0, nameof(Test4.Ids), id);
             transformToBy.SetValue(1, nameof(Test4.Names), name);

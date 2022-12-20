@@ -1,13 +1,16 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Runner;
 using GSqlQuery.Runner.Extensions;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery
 { 
     public class SelectQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
         IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
     {
-        public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions) :
+        public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions) :
             base(text, columns, criteria, connectionOptions)
         {
         }
@@ -20,7 +23,7 @@ namespace GSqlQuery
 
         public override IEnumerable<T> Execute(TDbConnection dbConnection)
         {
-            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment));
         }
@@ -33,7 +36,7 @@ namespace GSqlQuery
 
         public override Task<IEnumerable<T>> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
-            dbConnection!.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
+            dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
             return DatabaseManagment.ExecuteReaderAsync<T>(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
         }

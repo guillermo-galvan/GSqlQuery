@@ -1,5 +1,8 @@
 ﻿using GSqlQuery.Sqlite;
 using GSqlQuery.Sqlite.Test.Data;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Sqlite.Test
 {
@@ -17,10 +20,10 @@ namespace GSqlQuery.Sqlite.Test
         {
             var query = Test1.Select(_connectionOptions).Build();
 
-            Queue<ParameterDetail> parameters = new();
+            Queue<ParameterDetail> parameters = new Queue<ParameterDetail>();
             if (query.Criteria != null)
             {
-                foreach (var item in query.Criteria.Where(x => x.ParameterDetails is not null))
+                foreach (var item in query.Criteria.Where(x => x.ParameterDetails != null))
                 {
                     foreach (var item2 in item.ParameterDetails)
                     {
@@ -39,10 +42,10 @@ namespace GSqlQuery.Sqlite.Test
         {
             var query = Test1.Select(_connectionOptions).Build();
 
-            Queue<ParameterDetail> parameters = new();
+            Queue<ParameterDetail> parameters = new Queue<ParameterDetail>();
             if (query.Criteria != null)
             {
-                foreach (var item in query.Criteria.Where(x => x.ParameterDetails is not null))
+                foreach (var item in query.Criteria.Where(x => x.ParameterDetails != null))
                 {
                     foreach (var item2 in item.ParameterDetails)
                     {

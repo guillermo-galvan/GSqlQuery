@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace GSqlQuery.Sqlite.Test
 {
     public class SqliteConnectionOptionsTest

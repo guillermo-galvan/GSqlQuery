@@ -2,6 +2,9 @@
 using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
+using System;
+using System.Collections.Generic;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -15,13 +18,13 @@ namespace GSqlQuery.Test.Queries
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
             var columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
 
-            _queryBuilder = new(new Statements(), columnsValue, string.Empty);
+            _queryBuilder = new UpdateQueryBuilder<Test1>(new Statements(), columnsValue, string.Empty);
         }
 
         [Fact]
         public void Should_add_criteria()
         {
-            UpdateWhere<Test1> query = new(_queryBuilder);
+            UpdateWhere<Test1> query = new UpdateWhere<Test1>(_queryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
@@ -30,7 +33,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Throw_exception_if_null_ISearchCriteria_is_added()
         {
-            UpdateWhere<Test1> query = new(_queryBuilder);
+            UpdateWhere<Test1> query = new UpdateWhere<Test1>(_queryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
@@ -38,7 +41,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_build_the_criteria()
         {
-            UpdateWhere<Test1> query = new(_queryBuilder);
+            UpdateWhere<Test1> query = new UpdateWhere<Test1>(_queryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 

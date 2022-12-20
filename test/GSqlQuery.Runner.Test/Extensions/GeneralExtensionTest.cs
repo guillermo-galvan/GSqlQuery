@@ -5,6 +5,10 @@ using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Extensions;
 using GSqlQuery.Runner.Test.Models;
 using System.Reflection;
+using System.Linq;
+using System;
+using System.Collections.Generic;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Extensions
 {
@@ -83,7 +87,7 @@ namespace GSqlQuery.Runner.Test.Extensions
         [Fact]
         public void Should_get_value()
         {
-            Test1 model = new(1, "Name", DateTime.Now, true);
+            Test1 model = new Test1(1, "Name", DateTime.Now, true);
             Expression<Func<Test1, object>> expression = x => x.Name;
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             var propertyOptions = options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
@@ -95,7 +99,7 @@ namespace GSqlQuery.Runner.Test.Extensions
         [Fact]
         public void Should_get_parameters_in_delete_query()
         {
-            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
+            DeleteQuery<Test1> query = new DeleteQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
             var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);
@@ -106,7 +110,7 @@ namespace GSqlQuery.Runner.Test.Extensions
         [Fact]
         public void Should_get_parameters_in_select_query()
         {
-            SelectQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
+            SelectQuery<Test1> query = new SelectQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
             var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);
@@ -117,7 +121,7 @@ namespace GSqlQuery.Runner.Test.Extensions
         [Fact]
         public void Should_get_parameters_in_update_query()
         {
-            UpdateQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
+            UpdateQuery<Test1> query = new UpdateQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
             var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);
@@ -128,7 +132,7 @@ namespace GSqlQuery.Runner.Test.Extensions
         [Fact]
         public void Should_get_parameters_in_insert_query()
         {
-            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements, new Test1());
+            InsertQuery<Test1> query = new InsertQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements, new Test1());
             var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
 
             Assert.NotNull(result);

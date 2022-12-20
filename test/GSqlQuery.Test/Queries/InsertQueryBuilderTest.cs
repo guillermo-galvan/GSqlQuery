@@ -1,5 +1,7 @@
 ﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -15,7 +17,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            InsertQueryBuilder<Test3> queryBuilder = new(_statements, new Test3(1, null, DateTime.Now, true));
+            InsertQueryBuilder<Test3> queryBuilder = new InsertQueryBuilder<Test3>(_statements, new Test3(1, null, DateTime.Now, true));
 
             Assert.NotNull(queryBuilder);
             Assert.NotNull(queryBuilder.Statements);
@@ -33,7 +35,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_insert_query()
         {
-            InsertQueryBuilder<Test1> queryBuilder = new(_statements, new Test1(1, null, DateTime.Now, true));
+            InsertQueryBuilder<Test1> queryBuilder = new InsertQueryBuilder<Test1>(_statements, new Test1(1, null, DateTime.Now, true));
             IQuery<Test1> query = queryBuilder.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);

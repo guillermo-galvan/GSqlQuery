@@ -1,6 +1,9 @@
 ﻿using GSqlQuery.Runner;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
@@ -12,7 +15,7 @@ namespace GSqlQuery.Sqlite
         public SqliteDatabaseManagment(string connectionString, DatabaseManagmentEvents events) : base(connectionString, events)
         { }
 
-        public SqliteDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger? logger) : base(connectionString, events, logger)
+        public SqliteDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger logger) : base(connectionString, events, logger)
         { }
 
         public int ExecuteNonQuery(SqliteDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
@@ -45,9 +48,9 @@ namespace GSqlQuery.Sqlite
             return base.ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
         }
 
-        public override SqliteDatabaseConnection GetConnection()
+        public override IConnection GetConnection()
         {
-            SqliteDatabaseConnection databaseConnection = new(_connectionString);
+            SqliteDatabaseConnection databaseConnection = new SqliteDatabaseConnection(_connectionString);
 
             if (databaseConnection.State != ConnectionState.Open)
             {
@@ -60,7 +63,7 @@ namespace GSqlQuery.Sqlite
         public async override Task<IConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            SqliteDatabaseConnection databaseConnection = new(_connectionString);
+            SqliteDatabaseConnection databaseConnection = new SqliteDatabaseConnection(_connectionString);
 
             if (databaseConnection.State != ConnectionState.Open)
             {
@@ -68,6 +71,11 @@ namespace GSqlQuery.Sqlite
             }
 
             return databaseConnection;
+        }
+
+        SqliteDatabaseConnection IDatabaseManagement<SqliteDatabaseConnection>.GetConnection()
+        {
+            return (SqliteDatabaseConnection)GetConnection();
         }
 
         async Task<SqliteDatabaseConnection> IDatabaseManagement<SqliteDatabaseConnection>.GetConnectionAsync(CancellationToken cancellationToken)

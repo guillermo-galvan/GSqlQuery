@@ -1,24 +1,31 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Runner;
 using GSqlQuery.Runner.Queries;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace GSqlQuery
 {
-    public abstract class EntityExecute<T> : Entity<T>, ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T>
+    public abstract class EntityExecute<T> : Entity<T>, Runner.ICreate<T>, Runner.IRead<T>, Runner.IUpdate<T>, Runner.IDelete<T>
         where T : class, new()
     {
         public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>
            Select<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
         {
-            return Runner.IRead<T>.Select(connectionOptions, expression);
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Select(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Select(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
+            return new SelectQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), connectionOptions);
         }
 
         public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>
             Select<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            return Runner.IRead<T>.Select(connectionOptions);
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            return new SelectQueryBuilder<T, TDbConnection>(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions.Select(x => x.PropertyInfo.Name), connectionOptions);
         }
 
         public IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
@@ -29,14 +36,19 @@ namespace GSqlQuery
 
         public static IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection> Insert<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, T entity)
         {
-            return Runner.ICreate<T>.Insert(connectionOptions, entity);
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            entity.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(entity));
+            return new InsertQueryBuilder<T, TDbConnection>(connectionOptions, entity);
         }
 
         public static ISet<T, UpdateQuery<T, TDbConnection>>
             Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions,
             Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            return Runner.IUpdate<T>.Update(connectionOptions, expression, value)!;
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
+            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions, new string[] { options.MemberInfo.Name }, value);
         }
 
         public ISet<T, UpdateQuery<T, TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
@@ -49,8 +61,8 @@ namespace GSqlQuery
 
         public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            return Runner.IDelete<T>.Delete(connectionOptions)!;
-
+            connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
+            return new DeleteQueryBuilder<T, TDbConnection>(connectionOptions);
         }
     }
 }

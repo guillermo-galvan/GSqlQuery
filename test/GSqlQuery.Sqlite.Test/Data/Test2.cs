@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Sqlite.Test.Data
+﻿using System;
+
+namespace GSqlQuery.Sqlite.Test.Data
 {
     [Table("test2")]
     internal class Test2 : EntityExecute<Test2>

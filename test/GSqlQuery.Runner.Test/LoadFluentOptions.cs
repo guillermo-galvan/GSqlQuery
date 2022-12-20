@@ -1,8 +1,13 @@
 ﻿using GSqlQuery.Runner.Test.Models;
 using Microsoft.Data.SqlClient;
 using Moq;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner.Test
 {
@@ -10,7 +15,7 @@ namespace GSqlQuery.Runner.Test
     {
         public static IDatabaseManagement<DbConnection> GetDatabaseManagmentMock()
         {
-            Mock<IDatabaseManagement<DbConnection>> mock = new();
+            Mock<IDatabaseManagement<DbConnection>> mock = new Mock<IDatabaseManagement<DbConnection>>();
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IQuery>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
@@ -190,7 +195,7 @@ namespace GSqlQuery.Runner.Test
 
         public static IDatabaseManagement<DbConnection> GetDatabaseManagmentMockAsync()
         {
-            Mock<IDatabaseManagement<DbConnection>> mock = new();
+            Mock<IDatabaseManagement<DbConnection>> mock = new Mock<IDatabaseManagement<DbConnection>>();
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.ExecuteReaderAsync<Test1>(It.IsAny<IQuery>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
@@ -370,7 +375,7 @@ namespace GSqlQuery.Runner.Test
 
         public static DbConnection GetDbConnection()
         {
-            Mock<DbConnection> mock = new();
+            Mock<DbConnection> mock = new Mock<DbConnection>();
 
             //mock.Setup(x => x.BeginTransaction()).Returns(GetDbTransaction());
 
@@ -379,7 +384,7 @@ namespace GSqlQuery.Runner.Test
 
         public static DbTransaction GetDbTransaction()
         {
-            Mock<DbTransaction> mock = new();
+            Mock<DbTransaction> mock = new Mock<DbTransaction>();
 
             return mock.Object;
         }

@@ -2,7 +2,10 @@
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
 using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -16,13 +19,13 @@ namespace GSqlQuery.Runner.Test.Queries
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
             var columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
             _updateQueryBuilder =
-                new(new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()), columnsValue, string.Empty);
+                new UpdateQueryBuilder<Test1, DbConnection>(new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()), columnsValue, string.Empty);
         }
 
         [Fact]
         public void Should_add_criteria2()
         {
-            UpdateWhere<Test1, DbConnection> query = new(_updateQueryBuilder);
+            UpdateWhere<Test1, DbConnection> query = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
@@ -31,7 +34,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_null_ISearchCriteria_is_added2()
         {
-            UpdateWhere<Test1, DbConnection> query = new(_updateQueryBuilder);
+            UpdateWhere<Test1, DbConnection> query = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
@@ -39,7 +42,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_build_the_criteria2()
         {
-            UpdateWhere<Test1, DbConnection> query = new(_updateQueryBuilder);
+            UpdateWhere<Test1, DbConnection> query = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 
@@ -51,7 +54,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_get_the_IAndOr_interface_with_expression2()
         {
-            UpdateWhere<Test1, DbConnection> where = new(_updateQueryBuilder);
+            UpdateWhere<Test1, DbConnection> where = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
             var andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
@@ -88,7 +91,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_get_the_IAndOr_interface2()
         {
-            UpdateWhere<Test1, DbConnection> where = new(_updateQueryBuilder);
+            UpdateWhere<Test1, DbConnection> where = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
             var andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }

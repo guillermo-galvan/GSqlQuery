@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System.Threading;
 
 namespace GSqlQuery.Sqlite.Test
 {
@@ -6,8 +7,8 @@ namespace GSqlQuery.Sqlite.Test
     {
         internal const string ConnectionString = "Data Source=test;Mode=Memory;Cache=Shared";
 
-        private static SqliteConnection? connection;
-        private readonly static Mutex mut = new();
+        private static SqliteConnection connection;
+        private readonly static Mutex mut = new Mutex();
 
         internal static void CreateDatatable()
         {
