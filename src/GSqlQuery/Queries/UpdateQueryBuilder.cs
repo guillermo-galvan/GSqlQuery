@@ -53,11 +53,11 @@ namespace GSqlQuery.Queries
         private Queue<CriteriaDetail> GetUpdateCliterias()
         {
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
-
+            long ticks = DateTime.Now.Ticks;
             foreach (var item in _columnValues)
             {
                 PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = $"@PU{DateTime.Now.Ticks}";
+                string paramName = $"@PU{ticks++}";
                 criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, Statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }

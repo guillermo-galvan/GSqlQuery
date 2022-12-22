@@ -5,6 +5,8 @@ namespace GSqlQuery.SearchCriteria
 {
     public abstract class Criteria : ISearchCriteria
     {
+        protected static ulong _idParam = 0;
+
         /// <summary>
         /// Get Column
         /// </summary>

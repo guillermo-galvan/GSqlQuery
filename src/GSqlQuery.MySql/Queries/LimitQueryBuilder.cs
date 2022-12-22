@@ -1,6 +1,8 @@
 ﻿using GSqlQuery.Runner;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace GSqlQuery.MySql.Queries
+namespace GSqlQuery.MySql
 {
     internal class LimitQueryBuilder<T> : QueryBuilderBase<T, LimitQuery<T>>, IQueryBuilder<T, LimitQuery<T>> where T : class, new()
     {

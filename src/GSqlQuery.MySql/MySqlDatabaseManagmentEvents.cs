@@ -1,12 +1,14 @@
-﻿using GSqlQuery.Runner;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace GSqlQuery.MySql
 {
     public class MySqlDatabaseManagmentEvents : DatabaseManagmentEvents
     {
-        public override Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>>? OnGetParameter { get; set; } = (type, parametersDetail) =>
+        public override Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>> OnGetParameter { get; set; } = (type, parametersDetail) =>
         {
             return parametersDetail.Select(x => new MySqlParameter(x.Name, x.Value));
         };

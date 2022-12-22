@@ -57,12 +57,12 @@ namespace GSqlQuery.SearchCriteria
             ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
             int count = 0;
             int index = 0;
-            long ticks = DateTime.Now.Ticks;
+            ulong ticks = _idParam++;
             var property = Column.GetPropertyOptions(propertyOptions);
 
             foreach (var item in Values)
             {
-                parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks++}", item, property);
+                parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks}", item, property);
             }
 
             string criterion = $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";

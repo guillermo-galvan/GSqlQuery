@@ -3,6 +3,7 @@ using GSqlQuery.Runner.Test.Models;
 using System.Linq;
 using System;
 using Xunit;
+using System.Data.Common;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -14,6 +15,7 @@ namespace GSqlQuery.Runner.Test.Queries
         private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
         private readonly Test1 _test1;
+        private readonly ConnectionOptions<DbConnection> _connectionOptions;
 
         public BatchQueryTest()
         {
@@ -23,6 +25,7 @@ namespace GSqlQuery.Runner.Test.Queries
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _test1 = new Test1();
+            _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]
@@ -30,13 +33,13 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            InsertQuery<Test3> insert = new InsertQuery<Test3>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
-                classOption.PropertyOptions.Select(x => x.ColumnAttribute),
-                new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
-                _statements, new Test3(0, null, DateTime.Now, true));
+            InsertQuery<Test6, DbConnection> query = new InsertQuery<Test6, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+               classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+               new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+               _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
 
             Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null));
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(insert.Text, null, null));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(query.Text, null, null));
         }
     }
 }

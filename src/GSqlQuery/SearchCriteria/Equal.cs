@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using System;
 using System.Collections.Generic;
 
 namespace GSqlQuery.SearchCriteria
@@ -49,7 +48,7 @@ namespace GSqlQuery.SearchCriteria
         {
             string tableName = Table.GetTableName(statements);
 
-            string parameterName = $"@{ParameterPrefix}{DateTime.Now.Ticks}";
+            string parameterName = $"@{ParameterPrefix}{_idParam++}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}";

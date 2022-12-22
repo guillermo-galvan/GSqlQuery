@@ -1,5 +1,4 @@
-﻿using GSqlQuery.MySql.Queries;
-using GSqlQuery.Runner;
+﻿using System;
 
 namespace GSqlQuery.MySql
 {

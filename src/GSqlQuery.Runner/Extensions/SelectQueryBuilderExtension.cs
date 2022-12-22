@@ -5,8 +5,9 @@ using System.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GSqlQuery.Runner;
 
-namespace GSqlQuery.Runner
+namespace GSqlQuery
 {
     public static class SelectQueryBuilderExtension
     {

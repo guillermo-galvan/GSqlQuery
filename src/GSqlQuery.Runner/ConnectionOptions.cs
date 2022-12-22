@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GSqlQuery.Runner
+namespace GSqlQuery
 {
     public class ConnectionOptions<TDbConnection>
     {

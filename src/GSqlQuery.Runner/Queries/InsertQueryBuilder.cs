@@ -11,6 +11,8 @@ namespace GSqlQuery.Runner.Queries
         IBuilder<InsertQuery<T, TDbConnection>>
         where T : class, new()
     {
+        private static ulong _idParam = 0;
+
         private readonly object _entity;
         protected IEnumerable<CriteriaDetail> _criteria = null;
         protected PropertyOptions _propertyOptionsAutoIncrementing;
@@ -35,10 +37,9 @@ namespace GSqlQuery.Runner.Queries
 
         protected ColumnParameterDetail[] GetValues()
         {
-            long ticks = DateTime.Now.Ticks;
             _propertyOptionsAutoIncrementing = Columns.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing);
             return Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
-                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, Statements), new ParameterDetail($"@PI{ticks++}", x.GetValue(_entity), x)))
+                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, Statements), new ParameterDetail($"@PI{_idParam++}", x.GetValue(_entity), x)))
                           .ToArray();
         }
 

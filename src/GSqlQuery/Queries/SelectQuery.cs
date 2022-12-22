@@ -16,7 +16,7 @@ namespace GSqlQuery
         /// <param name="criteria">Query criteria</param>
         /// <param name="statements">Statements to use in the query</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        internal SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         { }
     }

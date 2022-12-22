@@ -1,6 +1,9 @@
 ﻿using GSqlQuery.Runner;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.MySql
 {
@@ -13,7 +16,7 @@ namespace GSqlQuery.MySql
         public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events) : base(connectionString, events)
         {}
 
-        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger? logger) : base(connectionString, events, logger)
+        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger logger) : base(connectionString, events, logger)
         {}
 
         public int ExecuteNonQuery(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
@@ -46,21 +49,26 @@ namespace GSqlQuery.MySql
             return base.ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
         }
 
-        public override MySqlDatabaseConnection GetConnection()
+        public override IConnection GetConnection()
         {
-            MySqlDatabaseConnection mySqlDatabase = new(_connectionString);
+            MySqlDatabaseConnection mySqlDatabase = new MySqlDatabaseConnection(_connectionString);
 
             if (mySqlDatabase.State != ConnectionState.Open)
             {
                 mySqlDatabase.Open();
             }
 
-            return mySqlDatabase; 
+            return mySqlDatabase;
+        }
+
+        MySqlDatabaseConnection IDatabaseManagement<MySqlDatabaseConnection>.GetConnection()
+        {
+            return (MySqlDatabaseConnection)GetConnection();
         }
 
         public async override Task<IConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
         {
-            MySqlDatabaseConnection databaseConnection = new(_connectionString);
+            MySqlDatabaseConnection databaseConnection = new MySqlDatabaseConnection(_connectionString);
 
             if (databaseConnection.State != ConnectionState.Open)
             {

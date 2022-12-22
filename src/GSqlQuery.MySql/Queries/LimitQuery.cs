@@ -1,11 +1,15 @@
 ﻿using GSqlQuery.Runner;
 using GSqlQuery.Runner.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace GSqlQuery.MySql.Queries
+namespace GSqlQuery.MySql
 {
     public class LimitQuery<T> : Query<T> where T : class, new()
     {
-        public LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, IStatements statements) :
+        internal LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         {
         }
@@ -14,7 +18,7 @@ namespace GSqlQuery.MySql.Queries
     public class LimitQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
         IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
     {
-        public LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail>? criteria, ConnectionOptions<TDbConnection> connectionOptions)
+        internal LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions)
         {
         }
@@ -37,6 +41,7 @@ namespace GSqlQuery.MySql.Queries
 
         public override Task<IEnumerable<T>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return DatabaseManagment.ExecuteReaderAsync<T>(this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
         }
@@ -47,6 +52,7 @@ namespace GSqlQuery.MySql.Queries
             {
                 throw new ArgumentNullException(nameof(dbConnection));
             }
+            cancellationToken.ThrowIfCancellationRequested();
             return DatabaseManagment.ExecuteReaderAsync<T>(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
         }
