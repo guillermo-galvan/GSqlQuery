@@ -5,14 +5,14 @@ namespace GSqlQuery.SQLServer
     public class SqlServerConnectionOptions : ConnectionOptions<SqlServerDatabaseConnection>
     {
         public SqlServerConnectionOptions(string connectionString) : base(new SqlServerStatements(), 
-            new SqlServerDatabaseManagment(connectionString))
+            new SqlServerDatabaseManagement(connectionString))
         {}
 
-        public SqlServerConnectionOptions(string connectionString, DatabaseManagmentEvents events) : 
-            base(new SqlServerStatements(), new SqlServerDatabaseManagment(connectionString, events))
+        public SqlServerConnectionOptions(string connectionString, DatabaseManagementEvents events) : 
+            base(new SqlServerStatements(), new SqlServerDatabaseManagement(connectionString, events))
         {}
 
-        public SqlServerConnectionOptions(IStatements statements, SqlServerDatabaseManagment sqlServerDatabaseManagment) :
+        public SqlServerConnectionOptions(IStatements statements, SqlServerDatabaseManagement sqlServerDatabaseManagment) :
             base(statements, sqlServerDatabaseManagment)
         {
 

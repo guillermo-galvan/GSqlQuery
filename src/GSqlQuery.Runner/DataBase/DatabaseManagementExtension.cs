@@ -2,7 +2,7 @@
 
 namespace GSqlQuery.Runner
 {
-    public static class DatabaseManagmentExtension
+    public static class DatabaseManagementExtension
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, IConnection> query)
         {

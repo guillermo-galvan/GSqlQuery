@@ -15,7 +15,7 @@ namespace GSqlQuery
 
         protected PropertyOptions _propertyOptionsAutoIncrementing = null;
 
-        public InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions,
+        internal InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions,
             object entity, PropertyOptions propertyOptionsAutoIncrementing) :
             base(text, columns, criteria, connectionOptions)
         {

@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
-    public class SqliteDatabaseManagment : DatabaseManagment, IDatabaseManagement<SqliteDatabaseConnection>
+    public class SqliteDatabaseManagement : DatabaseManagement, IDatabaseManagement<SqliteDatabaseConnection>
     {
-        public SqliteDatabaseManagment(string connectionString) :  base(connectionString, new SqliteDatabaseManagmentEvents())
+        public SqliteDatabaseManagement(string connectionString) :  base(connectionString, new SqliteDatabaseManagementEvents())
         { }
 
-        public SqliteDatabaseManagment(string connectionString, DatabaseManagmentEvents events) : base(connectionString, events)
+        public SqliteDatabaseManagement(string connectionString, DatabaseManagementEvents events) : base(connectionString, events)
         { }
 
-        public SqliteDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger logger) : base(connectionString, events, logger)
+        public SqliteDatabaseManagement(string connectionString, DatabaseManagementEvents events, ILogger logger) : base(connectionString, events, logger)
         { }
 
         public int ExecuteNonQuery(SqliteDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)

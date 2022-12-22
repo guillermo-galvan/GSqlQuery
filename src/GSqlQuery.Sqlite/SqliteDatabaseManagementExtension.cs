@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
-    public static class SqliteDatabaseManagmentExtension
+    public static class SqliteDatabaseManagementExtension
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, SqliteDatabaseConnection> query)
         {

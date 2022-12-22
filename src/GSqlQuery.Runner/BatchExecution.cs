@@ -20,7 +20,7 @@ namespace GSqlQuery.Runner
 
         IDatabaseManagement<TDbConnection> IExecute<int, TDbConnection>.DatabaseManagment => _connectionOptions.DatabaseManagment;
 
-        public BatchExecute(ConnectionOptions<TDbConnection> connectionOptions)
+        internal BatchExecute(ConnectionOptions<TDbConnection> connectionOptions)
         {
             _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
             _queries = new Queue<IQuery>();

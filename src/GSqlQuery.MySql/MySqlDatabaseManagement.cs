@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.MySql
 {
-    public sealed class MySqlDatabaseManagment : DatabaseManagment, IDatabaseManagement<MySqlDatabaseConnection>
+    public sealed class MySqlDatabaseManagement : DatabaseManagement, IDatabaseManagement<MySqlDatabaseConnection>
     {
-        public MySqlDatabaseManagment(string connectionString) :
-            base(connectionString, new MySqlDatabaseManagmentEvents())
+        public MySqlDatabaseManagement(string connectionString) :
+            base(connectionString, new MySqlDatabaseManagementEvents())
         {}
 
-        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events) : base(connectionString, events)
+        public MySqlDatabaseManagement(string connectionString, DatabaseManagementEvents events) : base(connectionString, events)
         {}
 
-        public MySqlDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger logger) : base(connectionString, events, logger)
+        public MySqlDatabaseManagement(string connectionString, DatabaseManagementEvents events, ILogger logger) : base(connectionString, events, logger)
         {}
 
         public int ExecuteNonQuery(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)

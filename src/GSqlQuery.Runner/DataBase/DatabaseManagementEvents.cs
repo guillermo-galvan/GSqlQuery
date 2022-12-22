@@ -9,7 +9,7 @@ namespace GSqlQuery
     /// <summary>
     /// 
     /// </summary>
-    public class DatabaseManagmentEvents
+    public class DatabaseManagementEvents
     {
         public bool IsTraceActive { get; set; } = false;
 

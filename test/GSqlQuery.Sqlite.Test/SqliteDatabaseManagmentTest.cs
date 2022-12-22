@@ -24,7 +24,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             int result = managment.ExecuteNonQuery(query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
             Assert.Equal(1, result);
         }
@@ -34,7 +34,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
             {
                 int result = managment.ExecuteNonQuery(connection, query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -47,7 +47,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = _connectionOptions.DatabaseManagment.GetConnection())
             {
                 int result = managment.ExecuteNonQuery(connection, query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -60,7 +60,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             int result = await managment.ExecuteNonQueryAsync(query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
             Assert.Equal(1, result);
         }
@@ -72,7 +72,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             int result = await managment.ExecuteNonQueryAsync(query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token);
             Assert.Equal(1, result);
         }
@@ -85,7 +85,7 @@ namespace GSqlQuery.Sqlite.Test
 
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             source.Cancel();
             await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await managment.ExecuteNonQueryAsync(query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token));
@@ -96,7 +96,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -111,7 +111,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token);
@@ -127,7 +127,7 @@ namespace GSqlQuery.Sqlite.Test
 
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 source.Cancel();
@@ -141,7 +141,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -156,7 +156,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test1 test1 = new Test1 () { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token);
@@ -172,7 +172,7 @@ namespace GSqlQuery.Sqlite.Test
 
             Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 source.Cancel();
@@ -186,7 +186,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             var result = managment.ExecuteReader<Test1>(query, classOptions.PropertyOptions,
                 query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
             Assert.True(result.Any());
@@ -197,7 +197,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
             {
                 var result = managment.ExecuteReader<Test1>(connection, query, classOptions.PropertyOptions, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -210,7 +210,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = _connectionOptions.DatabaseManagment.GetConnection())
             {
                 var result = managment.ExecuteReader<Test1>(connection, query, classOptions.PropertyOptions, query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -223,7 +223,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             var result = await managment.ExecuteReaderAsync<Test1>(query, classOptions.PropertyOptions,
                 query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
             Assert.True(result.Any());
@@ -237,7 +237,7 @@ namespace GSqlQuery.Sqlite.Test
 
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             var result = await managment.ExecuteReaderAsync<Test1>(query, classOptions.PropertyOptions,
                 query.GetParameters<Test1, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token);
             Assert.True(result.Any());
@@ -251,7 +251,7 @@ namespace GSqlQuery.Sqlite.Test
 
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             source.Cancel();
             await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await managment.ExecuteReaderAsync<Test1>(query, classOptions.PropertyOptions,
@@ -263,7 +263,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
                 var result = await managment.ExecuteReaderAsync<Test1>(connection, query, classOptions.PropertyOptions,
@@ -280,7 +280,7 @@ namespace GSqlQuery.Sqlite.Test
 
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 var result = await managment.ExecuteReaderAsync<Test1>(connection, query, classOptions.PropertyOptions,
@@ -297,7 +297,7 @@ namespace GSqlQuery.Sqlite.Test
 
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 source.Cancel();
@@ -312,7 +312,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
                 var result = await managment.ExecuteReaderAsync<Test1>(connection, query, classOptions.PropertyOptions,
@@ -329,7 +329,7 @@ namespace GSqlQuery.Sqlite.Test
 
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 var result = await managment.ExecuteReaderAsync<Test1>(connection, query, classOptions.PropertyOptions,
@@ -346,7 +346,7 @@ namespace GSqlQuery.Sqlite.Test
 
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             var query = Test1.Select(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 source.Cancel();
@@ -361,7 +361,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             var result = managment.ExecuteScalar<long>(query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
             Assert.True(result > 0);
         }
@@ -371,7 +371,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
             {
                 var result = managment.ExecuteScalar<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -384,7 +384,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = _connectionOptions.DatabaseManagment.GetConnection())
             {
                 var result = managment.ExecuteScalar<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -397,7 +397,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             var result = await managment.ExecuteScalarAsync<long>(query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
             Assert.True(result > 0);
         }
@@ -409,7 +409,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             var result = await managment.ExecuteScalarAsync<long>(query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token);
             Assert.True(result > 0);
         }
@@ -421,7 +421,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             source.Cancel();
             await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await managment.ExecuteScalarAsync<long>(query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token));
@@ -432,7 +432,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
                 var result = await managment.ExecuteScalarAsync<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -447,7 +447,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 var result = await managment.ExecuteScalarAsync<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token);
@@ -462,7 +462,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 source.Cancel();
@@ -476,7 +476,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
                 var result = await managment.ExecuteScalarAsync<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment));
@@ -491,7 +491,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 var result = await managment.ExecuteScalarAsync<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagment), token);
@@ -506,7 +506,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
             Test2 test1 = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
             var query = test1.Insert(_connectionOptions).Build();
-            var managment = new SqliteDatabaseManagment(Helper.ConnectionString);
+            var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
             {
                 source.Cancel();

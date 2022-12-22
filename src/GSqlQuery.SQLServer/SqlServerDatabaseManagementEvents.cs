@@ -4,7 +4,7 @@ using System.Data;
 
 namespace GSqlQuery.SQLServer
 {
-    public class SqlServerDatabaseManagmentEvents : DatabaseManagmentEvents
+    public class SqlServerDatabaseManagementEvents : DatabaseManagementEvents
     {
         public override Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>>? OnGetParameter { get; set; } = (type, parametersDetail) =>
         {

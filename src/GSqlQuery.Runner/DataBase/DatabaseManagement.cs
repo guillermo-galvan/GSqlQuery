@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
-    public abstract class DatabaseManagment : IDatabaseManagement<IConnection>
+    public abstract class DatabaseManagement : IDatabaseManagement<IConnection>
     {
         private class ColumnsPropertyOptions
         {
@@ -36,17 +36,17 @@ namespace GSqlQuery.Runner
         protected readonly string _connectionString;
         protected ILogger _logger;
 
-        public DatabaseManagmentEvents Events { get; set; }
+        public DatabaseManagementEvents Events { get; set; }
 
         public string ConnectionString => _connectionString;
 
-        public DatabaseManagment(string connectionString, DatabaseManagmentEvents events)
+        public DatabaseManagement(string connectionString, DatabaseManagementEvents events)
                 : this(connectionString, events, null)
         {
 
         }
 
-        public DatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger logger)
+        public DatabaseManagement(string connectionString, DatabaseManagementEvents events, ILogger logger)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             Events = events ?? throw new ArgumentNullException(nameof(events));

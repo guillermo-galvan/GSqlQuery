@@ -10,7 +10,7 @@ namespace GSqlQuery
     /// </summary>
     public interface IDatabaseManagement<TDbConnection>
     {
-        DatabaseManagmentEvents Events { get; set; }
+        DatabaseManagementEvents Events { get; set; }
 
         string ConnectionString { get; }
 

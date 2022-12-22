@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.MySql
 {
-    public static class MySqlDatabaseManagmentExtension
+    public static class MySqlDatabaseManagementExtension
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, MySqlDatabaseConnection> query)
         {

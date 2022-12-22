@@ -2,7 +2,7 @@
 
 namespace GSqlQuery.SQLServer
 {
-    public static  class SqlServerDatabaseManagmentExtension
+    public static  class SqlServerDatabaseManagementExtension
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query)
         {

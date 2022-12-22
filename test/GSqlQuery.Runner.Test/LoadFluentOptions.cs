@@ -390,7 +390,7 @@ namespace GSqlQuery.Runner.Test
         }
     }
 
-    internal class TestDatabaseManagmentEvents : DatabaseManagmentEvents
+    internal class TestDatabaseManagmentEvents : DatabaseManagementEvents
     {
         public override Func<Type, IEnumerable<ParameterDetail>, IEnumerable<IDataParameter>> OnGetParameter { get; set; } = (type, parametersDetail) =>
         {

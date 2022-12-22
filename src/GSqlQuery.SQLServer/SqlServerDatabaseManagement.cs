@@ -4,16 +4,16 @@ using System.Data;
 
 namespace GSqlQuery.SQLServer
 {
-    public class SqlServerDatabaseManagment : DatabaseManagment, IDatabaseManagement<SqlServerDatabaseConnection>
+    public class SqlServerDatabaseManagement : DatabaseManagement, IDatabaseManagement<SqlServerDatabaseConnection>
     {
-        public SqlServerDatabaseManagment(string connectionString) :
-            base(connectionString, new SqlServerDatabaseManagmentEvents())
+        public SqlServerDatabaseManagement(string connectionString) :
+            base(connectionString, new SqlServerDatabaseManagementEvents())
         { }
 
-        public SqlServerDatabaseManagment(string connectionString, DatabaseManagmentEvents events) : base(connectionString, events)
+        public SqlServerDatabaseManagement(string connectionString, DatabaseManagementEvents events) : base(connectionString, events)
         { }
 
-        public SqlServerDatabaseManagment(string connectionString, DatabaseManagmentEvents events, ILogger? logger) : base(connectionString, events, logger)
+        public SqlServerDatabaseManagement(string connectionString, DatabaseManagementEvents events, ILogger? logger) : base(connectionString, events, logger)
         { }
 
         public int ExecuteNonQuery(SqlServerDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
