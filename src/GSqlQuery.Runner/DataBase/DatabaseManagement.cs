@@ -105,7 +105,7 @@ namespace GSqlQuery.Runner
 
         private ColumnsPropertyOptions[] GetColumnsPropertyOptions(IEnumerable<PropertyOptions> propertyOptions, IQuery query)
         {
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
             return (from pro in propertyOptions
                     join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
@@ -135,7 +135,7 @@ namespace GSqlQuery.Runner
 
             foreach (var item in columns)
             {
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
                 valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(item.Column.Name)) : item.ValueDefault;
 #else
                 valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(reader.GetOrdinal(item.Column.Name))) : item.ValueDefault;

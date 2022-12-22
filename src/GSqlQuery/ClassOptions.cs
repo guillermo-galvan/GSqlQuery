@@ -36,7 +36,7 @@ namespace GSqlQuery
             foreach (PropertyInfo property in Type.GetProperties())
             {
                 Attribute[] arrayAttribute = Attribute.GetCustomAttributes(property);
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
                 if (arrayAttribute.FirstOrDefault(x => x is ColumnAttribute) is not ColumnAttribute tmp)
                 {
                     tmp = new ColumnAttribute(property.Name);

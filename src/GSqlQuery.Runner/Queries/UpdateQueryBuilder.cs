@@ -101,7 +101,7 @@ namespace GSqlQuery.Runner.Queries
         {
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             var column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
             _columnValues.TryAdd(column, value);
 #else
             if (!_columnValues.ContainsKey(column))
@@ -125,7 +125,7 @@ namespace GSqlQuery.Runner.Queries
             foreach (var item in options.MemberInfo)
             {
                 var propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
             _columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
 #else
                 if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))

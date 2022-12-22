@@ -12,7 +12,7 @@ namespace GSqlQuery.Runner.Extensions
             List<ParameterDetail> parameters = new List<ParameterDetail>();
             if (query.Criteria != null)
             {
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
                 return databaseManagment.Events.GetParameter<T>(query.Criteria.Where(x => x.ParameterDetails is not null).SelectMany(x => x.ParameterDetails));
 #else
                 return databaseManagment.Events.GetParameter<T>(query.Criteria.Where(x => x.ParameterDetails != null).SelectMany(x => x.ParameterDetails));
