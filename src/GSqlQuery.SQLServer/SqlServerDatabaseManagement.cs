@@ -1,6 +1,9 @@
 ﻿using GSqlQuery.Runner;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.SQLServer
 {
@@ -13,7 +16,7 @@ namespace GSqlQuery.SQLServer
         public SqlServerDatabaseManagement(string connectionString, DatabaseManagementEvents events) : base(connectionString, events)
         { }
 
-        public SqlServerDatabaseManagement(string connectionString, DatabaseManagementEvents events, ILogger? logger) : base(connectionString, events, logger)
+        public SqlServerDatabaseManagement(string connectionString, DatabaseManagementEvents events, ILogger logger) : base(connectionString, events, logger)
         { }
 
         public int ExecuteNonQuery(SqlServerDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
@@ -46,9 +49,9 @@ namespace GSqlQuery.SQLServer
             return base.ExecuteScalarAsync<T>(connection, query, parameters, cancellationToken);
         }
 
-        public override SqlServerDatabaseConnection GetConnection()
+        public override IConnection GetConnection()
         {
-            SqlServerDatabaseConnection databaseConnection = new(_connectionString);
+            SqlServerDatabaseConnection databaseConnection = new SqlServerDatabaseConnection(_connectionString);
 
             if (databaseConnection.State != ConnectionState.Open)
             {
@@ -58,9 +61,14 @@ namespace GSqlQuery.SQLServer
             return databaseConnection;
         }
 
+        SqlServerDatabaseConnection IDatabaseManagement<SqlServerDatabaseConnection>.GetConnection()
+        {
+            return (SqlServerDatabaseConnection)GetConnection();
+        }
+
         public async override Task<IConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
         {
-            SqlServerDatabaseConnection databaseConnection = new(_connectionString);
+            SqlServerDatabaseConnection databaseConnection = new SqlServerDatabaseConnection(_connectionString);
 
             if (databaseConnection.State != ConnectionState.Open)
             {
