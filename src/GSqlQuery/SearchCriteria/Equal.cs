@@ -1,5 +1,5 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Models;
+using System.Collections.Generic;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -34,7 +34,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="columnAttribute">ColumnAttribute</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public Equal(TableAttribute table, ColumnAttribute columnAttribute, T value, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public Equal(TableAttribute table, ColumnAttribute columnAttribute, T value, string logicalOperator) : base(table, columnAttribute, logicalOperator)
         {
             Value = value;
         }
@@ -48,7 +48,7 @@ namespace GSqlQuery.SearchCriteria
         {
             string tableName = Table.GetTableName(statements);
 
-            string parameterName = $"@{ParameterPrefix}{DateTime.Now.Ticks}";
+            string parameterName = $"@{ParameterPrefix}{_idParam++}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}";

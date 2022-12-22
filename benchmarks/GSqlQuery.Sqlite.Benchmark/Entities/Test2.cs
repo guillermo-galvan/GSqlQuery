@@ -1,7 +1,9 @@
-﻿namespace GSqlQuery.SqliteTest.Data
+﻿using System;
+
+namespace GSqlQuery.SqliteTest.Data
 {
     [Table("test2")]
-    public class Test2 : Runner.Entity<Test2>
+    public class Test2 : EntityExecute<Test2>
     {
         [Column("Id", Size = 20, IsAutoIncrementing = true, IsPrimaryKey = true)]
         public long Id { get; set; }

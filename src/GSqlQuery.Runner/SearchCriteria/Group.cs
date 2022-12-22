@@ -1,17 +1,19 @@
-﻿using GSqlQuery.Models;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace GSqlQuery.Runner.SearchCriteria
+namespace GSqlQuery.Runner
 {
     internal class Group<T, TReturn, TDbConnection, TResult> : Criteria, ISearchCriteria, IAndOr<T, TReturn>,
         IWhere<T, TReturn> where T : class, new() where TReturn : IQuery
     {
-        private readonly Queue<ISearchCriteria> _searchCriterias = new();
+        private readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
         private readonly IAndOr<T, TReturn> _andOr;
 
         public IAndOr<T, TReturn> AndOr => _andOr;
 
-        public Group(TableAttribute table, string? logicalOperator, IAndOr<T, TReturn> andOr) :
+        public Group(TableAttribute table, string logicalOperator, IAndOr<T, TReturn> andOr) :
             base(table, new ColumnAttribute("Group"), logicalOperator)
         {
             _andOr = andOr ?? throw new ArgumentNullException(nameof(andOr));
@@ -20,8 +22,8 @@ namespace GSqlQuery.Runner.SearchCriteria
         public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string criterion = string.Empty;
-            Queue<CriteriaDetail> criterias = new();
-            Queue<ParameterDetail> parameters = new();
+            Queue<CriteriaDetail> criterias = new Queue<CriteriaDetail>();
+            Queue<ParameterDetail> parameters = new Queue<ParameterDetail>();
 
             foreach (var item in _searchCriterias)
             {

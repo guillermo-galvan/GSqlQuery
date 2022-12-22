@@ -1,14 +1,14 @@
 ﻿using GSqlQuery.Extensions;
 using System.Linq.Expressions;
 using System.Data.Common;
-using GSqlQuery.Default;
-using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner.Test;
 using GSqlQuery.Runner.Test.Models;
+using System.Reflection;
+using System.Linq;
+using System;
+using System.Collections.Generic;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Extensions
 {
@@ -22,7 +22,7 @@ namespace GSqlQuery.Runner.Test.Extensions
 
         public GeneralExtensionTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -44,29 +44,29 @@ namespace GSqlQuery.Runner.Test.Extensions
         public void Should_return_the_classoption_and_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            var (Options, MemberInfos) = expression.GetOptionsAndMembers();
-            Assert.NotNull(Options);
-            Assert.NotNull(MemberInfos);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            Assert.NotNull(options.ClassOptions);
+            Assert.NotNull(options.MemberInfo);
         }
 
         [Fact]
         public void Should_return_the_classoption_and_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            var (Options, MemberInfos) = expression.GetOptionsAndMember();
-            Assert.NotNull(Options);
-            Assert.NotNull(MemberInfos);
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            Assert.NotNull(options.ClassOptions);
+            Assert.NotNull(options.MemberInfo);
         }
 
         [Fact]
         public void Should_vallidate_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            var (Options, MemberInfos) = expression.GetOptionsAndMembers();
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
 
             try
             {
-                MemberInfos.ValidateMemberInfos("test");
+                options.MemberInfo.ValidateMemberInfos("test");
                 Assert.True(true);
             }
             catch (Exception)
@@ -79,65 +79,21 @@ namespace GSqlQuery.Runner.Test.Extensions
         public void Should_vallidate_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            var (Options, MemberInfos) = expression.GetOptionsAndMember();
-            var result = MemberInfos.ValidateMemberInfo(Options);
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            var result = options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
             Assert.NotNull(result);
         }
 
         [Fact]
         public void Should_get_value()
         {
-            Test1 model = new(1, "Name", DateTime.Now, true);
+            Test1 model = new Test1(1, "Name", DateTime.Now, true);
             Expression<Func<Test1, object>> expression = x => x.Name;
-            var (Options, MemberInfos) = expression.GetOptionsAndMember();
-            var propertyOptions = MemberInfos.ValidateMemberInfo(Options);
+            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
+            var propertyOptions = options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
             var result = propertyOptions.GetValue(model);
             Assert.NotNull(result);
             Assert.NotEmpty(result.ToString());
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_delete_query()
-        {
-            DeleteQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_select_query()
-        {
-            SelectQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_update_query()
-        {
-            UpdateQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements);
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Should_get_parameters_in_insert_query()
-        {
-            InsertQuery<Test1> query = new("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_stantements, _classOptions.PropertyOptions) }, _stantements, new Test1());
-            var result = query.GetParameters<Test1, DbConnection>(LoadFluentOptions.GetDatabaseManagmentMock());
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Single(result);
         }
 
         [Fact]

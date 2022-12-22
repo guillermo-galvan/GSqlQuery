@@ -1,10 +1,24 @@
-﻿using GSqlQuery.Helpers;
-using GSqlQuery.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace GSqlQuery.Extensions
 {
+    public class ClassOptionsTupla<T>
+    {
+        public ClassOptions ClassOptions { get; set; }
+
+        public T MemberInfo { get; set; }
+
+        public ClassOptionsTupla(ClassOptions classOptions, T memberInfo)
+        {
+            ClassOptions = classOptions;
+            MemberInfo = memberInfo;
+        }
+    }
+
     public static class GeneralExtension
     {
         public static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptions options, IEnumerable<string> selectMember)
@@ -22,24 +36,24 @@ namespace GSqlQuery.Extensions
                     select prop.ColumnAttribute).ToArray();
         }
 
-        public static (ClassOptions Options, IEnumerable<MemberInfo> MemberInfos) GetOptionsAndMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        public static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
 
             IEnumerable<MemberInfo> memberInfos = expression.GetMembers();
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
 
-            return (options, memberInfos);
+            return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
         }
 
-        public static (ClassOptions Options, MemberInfo MemberInfos) GetOptionsAndMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        public static ClassOptionsTupla<MemberInfo> GetOptionsAndMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
 
             MemberInfo memberInfos = expression.GetMember();
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
 
-            return (options, memberInfos);
+            return new ClassOptionsTupla<MemberInfo>(options, memberInfos);
         }
 
         public static void ValidateMemberInfos(this IEnumerable<MemberInfo> memberInfos, string message)
@@ -52,7 +66,7 @@ namespace GSqlQuery.Extensions
 
         public static PropertyOptions ValidateMemberInfo(this MemberInfo memberInfo, ClassOptions options)
         {
-            PropertyOptions? result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
+            PropertyOptions result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
 
             if (result == null)
             {

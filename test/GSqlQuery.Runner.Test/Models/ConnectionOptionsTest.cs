@@ -1,5 +1,6 @@
-﻿using GSqlQuery.Runner.Models;
+﻿using System;
 using System.Data.Common;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Models
 {

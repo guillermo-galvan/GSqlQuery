@@ -1,7 +1,7 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner.Models;
+using GSqlQuery.Runner;
 
-namespace GSqlQuery.Runner
+namespace GSqlQuery
 {
     public class Execute
     {

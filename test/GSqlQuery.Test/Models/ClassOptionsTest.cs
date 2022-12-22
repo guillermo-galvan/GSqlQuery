@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Models;
+﻿using System;
+using Xunit;
 
 namespace GSqlQuery.Test.Models
 {
@@ -7,7 +8,7 @@ namespace GSqlQuery.Test.Models
         [Fact]
         public void Properties_cannot_be_null()
         {
-            ClassOptions classOptions = new(typeof(Test1));
+            ClassOptions classOptions = new ClassOptions(typeof(Test1));
             Assert.NotNull(classOptions);
             Assert.NotNull(classOptions.Table);
             Assert.NotNull(classOptions.PropertyOptions);

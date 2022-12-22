@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Runner.Models;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace GSqlQuery.Runner.Test.Data
@@ -10,7 +10,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM TableName;"
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM TableName;"
             };
 
             yield return new object[]
@@ -28,7 +28,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                 new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;"
+                 new ConnectionOptions<DbConnection>(new Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;"
             };
 
             yield return new object[]

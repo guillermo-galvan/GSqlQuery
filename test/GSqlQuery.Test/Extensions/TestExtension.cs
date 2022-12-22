@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Test.Extensions
+﻿using System.Collections.Generic;
+
+namespace GSqlQuery.Test.Extensions
 {
     internal static class TestExtension
     {

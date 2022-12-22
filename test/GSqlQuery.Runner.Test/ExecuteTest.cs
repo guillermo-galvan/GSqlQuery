@@ -1,6 +1,9 @@
-﻿using GSqlQuery.Runner.Models;
-using GSqlQuery.Runner.Test.Models;
+﻿using GSqlQuery.Runner.Test.Models;
+using System;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test
 {
@@ -10,7 +13,7 @@ namespace GSqlQuery.Runner.Test
 
         public ExecuteTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
 
         [Fact]

@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery
+﻿using System;
+
+namespace GSqlQuery
 {
     /// <summary>
     /// Defines how the property will be taken for the query

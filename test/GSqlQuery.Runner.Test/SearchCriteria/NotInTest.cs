@@ -1,8 +1,9 @@
-﻿using GSqlQuery.Runner.Default;
-using GSqlQuery.Runner.Models;
+﻿using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
-using GSqlQuery.SearchCriteria;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.SearchCriteria
 {
@@ -13,15 +14,15 @@ namespace GSqlQuery.Runner.Test.SearchCriteria
 
         public NotInTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
-            _selectQueryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            _statements = new Statements();
+            _selectQueryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()));
         }
 
         [Fact]
         public void Should_add_the_equality_query2()
         {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_statements);
@@ -33,7 +34,7 @@ namespace GSqlQuery.Runner.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and2()
         {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 }).AndNotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_statements);
@@ -45,7 +46,7 @@ namespace GSqlQuery.Runner.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or2()
         {
-            SelectWhere<Test1, DbConnection> where = new(_selectQueryBuilder);
+            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 }).OrNotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_statements);

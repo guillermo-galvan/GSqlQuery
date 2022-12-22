@@ -1,8 +1,10 @@
-﻿using GSqlQuery.Runner.Default;
-using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner.Models;
+﻿using GSqlQuery.Runner.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
@@ -18,13 +20,13 @@ namespace GSqlQuery.Runner
 
         IDatabaseManagement<TDbConnection> IExecute<int, TDbConnection>.DatabaseManagment => _connectionOptions.DatabaseManagment;
 
-        public BatchExecute(ConnectionOptions<TDbConnection> connectionOptions)
+        internal BatchExecute(ConnectionOptions<TDbConnection> connectionOptions)
         {
             _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
             _queries = new Queue<IQuery>();
             _parameters = new Queue<IDataParameter>();
-            _queryBuilder = new();
-            _columns = new();
+            _queryBuilder = new StringBuilder();
+            _columns = new Queue<ColumnAttribute>();
         }
 
         public BatchExecute<TDbConnection> Add<T, TResult>(Func<ConnectionOptions<TDbConnection>, IQuery<T, TDbConnection, TResult>> expression)

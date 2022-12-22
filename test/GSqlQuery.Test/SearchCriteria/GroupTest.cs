@@ -1,9 +1,11 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Test.SearchCriteria
 {
@@ -16,9 +18,9 @@ namespace GSqlQuery.Test.SearchCriteria
 
         public GroupTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
-            _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new GSqlQuery.Default.Statements());
+            _statements = new Statements();
+            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+                new Statements());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _tableAttribute = _classOptions.Table;
         }
@@ -26,8 +28,8 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_create_an_instance()
         {
-            SelectWhere<Test1> andOr = new(_queryBuilder);
-            Group<Test1, SelectQuery<Test1>> test = new(_tableAttribute, null, andOr);
+            SelectWhere<Test1> andOr = new SelectWhere<Test1>(_queryBuilder);
+            Group<Test1, SelectQuery<Test1>> test = new Group<Test1, SelectQuery<Test1>>(_tableAttribute, null, andOr);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -41,8 +43,8 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR")]
         public void Should_create_an_instance_1(string logicalOperator)
         {
-            SelectWhere<Test1> andOr = new(_queryBuilder);
-            Group<Test1, SelectQuery<Test1>> test = new(_tableAttribute, logicalOperator, andOr);
+            SelectWhere<Test1> andOr = new SelectWhere<Test1>(_queryBuilder);
+            Group<Test1, SelectQuery<Test1>> test = new Group<Test1, SelectQuery<Test1>>(_tableAttribute, logicalOperator, andOr);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -58,8 +60,8 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", "rwtfsd", "OR (Test1.Name = @Param AND Test1.Create <> @Param)")]
         public void Should_get_criteria_detail(string logicalOperator, string value, string querypart)
         {
-            SelectWhere<Test1> andOr = new(_queryBuilder);
-            Group<Test1, SelectQuery<Test1>> test = new(_tableAttribute, logicalOperator, andOr);
+            SelectWhere<Test1> andOr = new SelectWhere<Test1>(_queryBuilder);
+            Group<Test1, SelectQuery<Test1>> test = new Group<Test1, SelectQuery<Test1>>(_tableAttribute, logicalOperator, andOr);
             test.Equal(x => x.Name, value).AndNotEqual(x => x.Create, DateTime.Now);
             var result = test.GetCriteria(_statements, _classOptions.PropertyOptions);
 
@@ -83,7 +85,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.BeginGroup().Equal(x => x.Id, 1).CloseGroup();
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -95,7 +97,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.BeginGroup().Equal(x => x.Id, 1).AndEqual(x => x.IsTest, true).CloseGroup();
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -107,7 +109,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.BeginGroup().Equal(x => x.Id, 1).OrEqual(x => x.IsTest, true).CloseGroup();
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);

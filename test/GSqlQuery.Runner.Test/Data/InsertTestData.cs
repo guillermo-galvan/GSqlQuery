@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Runner.Models;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace GSqlQuery.Runner.Test.Data
@@ -10,7 +10,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection> (new GSqlQuery.Default.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param); "
+                new ConnectionOptions<DbConnection> (new Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param); "
             };
 
             yield return new object[]
@@ -28,7 +28,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection> (new GSqlQuery.Default.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);"
+                new ConnectionOptions<DbConnection> (new Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);"
             };
 
             yield return new object[]

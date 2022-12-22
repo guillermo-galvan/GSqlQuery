@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.Extensions
 {
@@ -7,15 +8,15 @@ namespace GSqlQuery.Extensions
         public static IAndOr<T, TReturn> GetAndOr<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression)
            where T : class, new() where TReturn : IQuery
         {
-            IAndOr<T, TReturn>? result = null;
+            IAndOr<T, TReturn> result = null;
 
             if (where is IAndOr<T, TReturn> andor)
             {
                 result = andor;
             }
 
-            result!.Validate(expression);
-            return result!;
+            result.Validate(expression);
+            return result;
         }
 
         /// <summary>
@@ -28,15 +29,15 @@ namespace GSqlQuery.Extensions
         public static IAndOr<T, TReturn> GetAndOr<T, TReturn>(this IWhere<T, TReturn> where)
             where T : class, new() where TReturn : IQuery
         {
-            IAndOr<T, TReturn>? result = null;
+            IAndOr<T, TReturn> result = null;
 
             if (where is IAndOr<T, TReturn> andor)
             {
                 result = andor;
             }
 
-            result!.NullValidate(ErrorMessages.ParameterNotNull, nameof(where));
-            return result!;
+            result.NullValidate(ErrorMessages.ParameterNotNull, nameof(where));
+            return result;
         }
 
         /// <summary>

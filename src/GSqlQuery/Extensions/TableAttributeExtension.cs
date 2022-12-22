@@ -1,6 +1,4 @@
-﻿using GSqlQuery;
-
-namespace GSqlQuery.Extensions
+﻿namespace GSqlQuery.Extensions
 {
     public static class TableAttributeExtension
     {

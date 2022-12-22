@@ -1,5 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Models;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -15,7 +16,7 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get Value 
         /// </summary>
-        public string? Value { get; }
+        public string Value { get; }
 
         /// <summary>
         /// Initializes a new instance of the Like class.
@@ -33,7 +34,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="columnAttribute">ColumnAttribute</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public Like(TableAttribute table, ColumnAttribute columnAttribute, string value, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public Like(TableAttribute table, ColumnAttribute columnAttribute, string value, string logicalOperator) : base(table, columnAttribute, logicalOperator)
         {
             Value = value;
         }
@@ -46,7 +47,7 @@ namespace GSqlQuery.SearchCriteria
         public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
-            string parameterName = $"@{ParameterPrefix}{DateTime.Now.Ticks}";
+            string parameterName = $"@{ParameterPrefix}{_idParam++}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} CONCAT('%', {parameterName}, '%')" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} CONCAT('%', {parameterName}, '%')";

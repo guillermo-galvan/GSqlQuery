@@ -1,9 +1,8 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
-using GSqlQuery.SearchCriteria;
-using GSqlQuery.Test.Data;
+﻿using GSqlQuery.Test.Data;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Test
 {
@@ -13,7 +12,7 @@ namespace GSqlQuery.Test
 
         public EntityTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
         }
 
         [Fact]
@@ -78,7 +77,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test3_TestData))]
         public void Should_generate_the_insert_query_with_auto_incrementing(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Insert(statements).Build();
 
             Assert.NotNull(query);
@@ -99,7 +98,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_query(IStatements statements, string queryText)
         {
-            Test6 test = new(1, null, DateTime.Now, true);
+            Test6 test = new Test6(1, null, DateTime.Now, true);
             var query = test.Insert(statements).Build();
 
             Assert.NotNull(query);
@@ -120,7 +119,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test3_TestData))]
         public void Should_generate_the_insert_static_query_with_auto_incrementing(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = Test3.Insert(statements, test).Build();
 
             Assert.NotNull(query);
@@ -141,7 +140,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_static_query(IStatements statements, string queryText)
         {
-            Test6 test = new(1, null, DateTime.Now, true);
+            Test6 test = new Test6(1, null, DateTime.Now, true);
             var query = Test6.Insert(statements, test).Build();
 
             Assert.NotNull(query);
@@ -162,7 +161,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData))]
         public void Should_generate_the_update_query(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(statements, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests).Build();
 
             Assert.NotNull(query);
@@ -183,7 +182,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData2))]
         public void Should_generate_the_update_query_with_where(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(statements, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
 

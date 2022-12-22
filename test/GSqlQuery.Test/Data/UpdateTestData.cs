@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace GSqlQuery.Test.Data
 {
@@ -8,7 +9,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;"
+                new Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;"
             };
 
             yield return new object[]
@@ -26,7 +27,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;"
+                new Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;"
             };
 
             yield return new object[]

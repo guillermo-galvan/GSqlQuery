@@ -1,7 +1,9 @@
-﻿namespace GSqlQuery.Runner.Test.Models
+﻿using System;
+
+namespace GSqlQuery.Runner.Test.Models
 {
     [Table("TableName")]
-    internal class Test3 : Entity<Test3>
+    internal class Test3 : EntityExecute<Test3>
     {
         [Column("Id", Size = 20, IsAutoIncrementing = true, IsPrimaryKey = true)]
         public int Ids { get; set; }

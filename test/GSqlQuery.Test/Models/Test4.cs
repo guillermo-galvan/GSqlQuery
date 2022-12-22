@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Test.Models
+﻿using System;
+
+namespace GSqlQuery.Test.Models
 {
     [Table("Scheme", "TableName")]
     internal class Test4

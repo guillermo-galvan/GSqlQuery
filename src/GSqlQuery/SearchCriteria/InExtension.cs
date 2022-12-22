@@ -1,8 +1,10 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
+using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace GSqlQuery.SearchCriteria
+namespace GSqlQuery
 {
     public static class InExtension
     {

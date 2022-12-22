@@ -1,5 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Models;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -41,7 +42,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="initialValue">Initial value</param>
         /// <param name="logicalOperator">Logical operator</param>
-        public Between(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue, string? logicalOperator) :
+        public Between(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue, string logicalOperator) :
             base(table, columnAttribute, logicalOperator)
         {
             Initial = initialValue;
@@ -56,7 +57,7 @@ namespace GSqlQuery.SearchCriteria
         public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
-            long tiks = DateTime.Now.Ticks;
+            ulong tiks = _idParam++;
             string parameterName1 = $"@{ParameterPrefix}1{tiks}";
             string parameterName2 = $"@{ParameterPrefix}2{tiks}";
 

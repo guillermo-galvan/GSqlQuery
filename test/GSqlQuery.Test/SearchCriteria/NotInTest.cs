@@ -1,9 +1,10 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Helpers;
-using GSqlQuery.Models;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Test.SearchCriteria
 {
@@ -17,8 +18,8 @@ namespace GSqlQuery.Test.SearchCriteria
 
         public NotInTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
-            _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            _statements = new Statements();
+            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _statements);
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
@@ -28,7 +29,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_create_an_instance()
         {
-            NotIn<int> test = new(_tableAttribute, _columnAttribute, new int[] { 1, 2, 3, 1, 4 });
+            NotIn<int> test = new NotIn<int>(_tableAttribute, _columnAttribute, new int[] { 1, 2, 3, 1, 4 });
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -42,7 +43,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", new int[] { 4, 5, 6, 7, 8, 9, 10 })]
         public void Should_create_an_instance_1(string logicalOperator, int[] value)
         {
-            NotIn<int> test = new(_tableAttribute, _columnAttribute, value, logicalOperator);
+            NotIn<int> test = new NotIn<int>(_tableAttribute, _columnAttribute, value, logicalOperator);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -58,7 +59,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", new int[] { 14, 15, 16, 17, 18 }, "OR Test1.Id NOT IN (@Param,@Param,@Param,@Param,@Param)")]
         public void Should_get_criteria_detail(string logicalOperator, int[] value, string querypart)
         {
-            NotIn<int> test = new(_tableAttribute, _columnAttribute, value, logicalOperator);
+            NotIn<int> test = new NotIn<int>(_tableAttribute, _columnAttribute, value, logicalOperator);
             var result = test.GetCriteria(_statements, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
@@ -81,7 +82,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -93,7 +94,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 }).AndNotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -105,7 +106,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
+            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 }).OrNotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);

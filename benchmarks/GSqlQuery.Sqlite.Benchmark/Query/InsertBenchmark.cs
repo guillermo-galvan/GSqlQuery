@@ -1,7 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.Runner;
-using GSqlQuery.Runner.Extensions;
 using GSqlQuery.SqliteTest.Data;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite.Benchmark.Query
 {
@@ -31,7 +33,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<Test1> GenerateQuery_Test1()
         {
-            Test1 test = new() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+            Test1 test = new Test1() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             test.Id += 1;
             return Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync() : test.Insert(_connectionOptions).Build().Execute();
         }
@@ -39,40 +41,43 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<Test1> GenerateQueryTransaction_Test1()
         {
-            using var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync();
-            using var transaction = await connection.BeginTransactionAsync();
+            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            {
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    Test1 test = new Test1() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+                    test.Id += 1;
+                    var result = Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection) : test.Insert(_connectionOptions).Build().Execute(transaction.Connection);
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
 
-            Test1 test = new() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
-            test.Id += 1;
-            var result = Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection) : test.Insert(_connectionOptions).Build().Execute(transaction.Connection);
-
-            await transaction.CommitAsync();
-            await connection.CloseAsync();
-
-            return result;
+                    return result;
+                }
+            }
         }
 
         [Benchmark]
         public async Task<Test2> GenerateQuery_Test2()
         {
-            Test2 test = new() {  IsBool = false, Money = 200m , Time = DateTime.Now  };
+            Test2 test = new Test2() {  IsBool = false, Money = 200m , Time = DateTime.Now  };
             return Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync() : test.Insert(_connectionOptions).Build().Execute();
         }
 
         [Benchmark]
         public async Task<Test2> GenerateQueryTransaction_Test2()
         {
-            using var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
-            var result = Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection) 
-                               : test.Insert(_connectionOptions).Build().Execute(transaction.Connection);
-
-            await transaction.CommitAsync();
-            await connection.CloseAsync();
-
-            return result;
+            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            {
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
+                    var result = Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection)
+                                       : test.Insert(_connectionOptions).Build().Execute(transaction.Connection);
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
+                    return result;
+                }
+            }
         }
     }
 
@@ -84,8 +89,8 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<List<Test1>> GenerateQuery_Test1()
         {
-            List<Test1> result = new();
-            Test1 test = new() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+            List<Test1> result = new List<Test1>();
+            Test1 test = new Test1() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             for (int i = 0; i < Rows; i++)
             {
                 test.Id += 1;
@@ -98,29 +103,32 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<List<Test1>> GenerateQueryTransaction_Test1()
         {
-            List<Test1> result = new();
+            List<Test1> result = new List<Test1>();
 
-            using var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-
-            Test1 test = new() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
-            for (int i = 0; i < Rows; i++)
+            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
-                test.Id += 1;
-                result.Add(Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection) : test.Insert(_connectionOptions).Build().Execute(transaction.Connection));
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    Test1 test = new Test1() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        test.Id += 1;
+                        result.Add(Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection) : test.Insert(_connectionOptions).Build().Execute(transaction.Connection));
+                    }
+
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
+
+                    return result;
+                }
             }
-
-            await transaction.CommitAsync();
-            await connection.CloseAsync();
-
-            return result;
         }
 
         [Benchmark]
         public async Task<List<Test2>> GenerateQuery_Test2()
         {
-            List<Test2> result = new();
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
+            List<Test2> result = new List<Test2>();
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
 
             for (int i = 0; i < Rows; i++)
             {
@@ -133,20 +141,23 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<List<Test2>> GenerateQueryTransaction_Test2()
         {
-            List<Test2> result = new();
-            using var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
-            for (int i = 0; i < Rows; i++)
+            List<Test2> result = new List<Test2>();
+            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
-                result.Add(Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection) 
-                                 : test.Insert(_connectionOptions).Build().Execute(transaction.Connection));
-            }
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        result.Add(Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync(transaction.Connection)
+                                         : test.Insert(_connectionOptions).Build().Execute(transaction.Connection));
+                    }
 
-            await transaction.CommitAsync();
-            await connection.CloseAsync();
-            return result;
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
+                    return result;
+                }
+            }
         }
     }
 
@@ -159,7 +170,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         public async Task<int> Batch_GenerateQuery_Test1()
         {
             Console.WriteLine("Batch_GenerateQuery_Test1");
-            Test1 test = new() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+            Test1 test = new Test1() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var batch = Execute.BatchExecuteFactory(_connectionOptions);
             for (int i = 0; i < Rows; i++)
             {
@@ -174,30 +185,34 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         public async Task<int> Batch_GenerateQueryTransaction_Test1()
         {
             Console.WriteLine("Batch_GenerateQueryTransaction_Test1");
-            using var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var batch = Execute.BatchExecuteFactory(_connectionOptions);
-
-            Test1 test = new() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
-            for (int i = 0; i < Rows; i++)
+            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
-                test.Id += 1;
-                batch.Add(sb => test.Insert(sb).Build());
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    var batch = Execute.BatchExecuteFactory(_connectionOptions);
+
+                    Test1 test = new Test1() { Id = LastId, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        test.Id += 1;
+                        batch.Add(sb => test.Insert(sb).Build());
+                    }
+
+                    int result = Async ? await batch.ExecuteAsync(transaction.Connection) : batch.Execute(transaction.Connection);
+
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
+
+                    return result;
+                }
             }
-
-            int result = Async ? await batch.ExecuteAsync(transaction.Connection) : batch.Execute(transaction.Connection);
-
-            await transaction.CommitAsync();
-            await connection.CloseAsync();
-
-            return result;
         }
 
         [Benchmark]
         public async Task<int> Batch_GenerateQuery_Test2()
         {
             Console.WriteLine("Batch_GenerateQuery_Test2");
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
             var batch = Execute.BatchExecuteFactory(_connectionOptions);
             for (int i = 0; i < Rows; i++)
             {
@@ -211,22 +226,25 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         public async Task<int> Batch_GenerateQueryTransaction_Test2()
         {
             Console.WriteLine("Batch_GenerateQueryTransaction_Test2");
-            using var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
-            var batch = Execute.BatchExecuteFactory(_connectionOptions);
-            for (int i = 0; i < Rows; i++)
+            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
             {
-                batch.Add(sb => test.Insert(sb).Build());
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
+                    var batch = Execute.BatchExecuteFactory(_connectionOptions);
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        batch.Add(sb => test.Insert(sb).Build());
+                    }
+
+                    int result = Async ? await batch.ExecuteAsync(transaction.Connection) : batch.Execute(transaction.Connection);
+
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
+
+                    return result;
+                }
             }
-
-            int result = Async ? await batch.ExecuteAsync(transaction.Connection) : batch.Execute(transaction.Connection);
-
-            await transaction.CommitAsync();
-            await connection.CloseAsync();
-
-            return result;
         }
     }
 }

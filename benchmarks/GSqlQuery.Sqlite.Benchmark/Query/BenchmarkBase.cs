@@ -1,7 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace GSqlQuery.Sqlite.Benchmark.Query
 {
+    [SimpleJob(RuntimeMoniker.Net70, baseline: true)]
+    [SimpleJob(RuntimeMoniker.Net50)]
     [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public abstract class BenchmarkBase
     {

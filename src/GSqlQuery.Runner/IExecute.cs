@@ -1,4 +1,7 @@
-﻿namespace GSqlQuery.Runner
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace GSqlQuery
 {
     /// <summary>
     /// 
@@ -6,7 +9,7 @@
     /// <typeparam name="TResult"></typeparam>
     public interface IExecute<TResult, TDbConnection>
     {
-        public IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
+        IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
 
         TResult Execute();
 

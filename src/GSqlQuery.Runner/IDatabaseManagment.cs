@@ -1,14 +1,16 @@
-﻿using GSqlQuery.Models;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace GSqlQuery.Runner
+namespace GSqlQuery
 {
     /// <summary>
     /// 
     /// </summary>
     public interface IDatabaseManagement<TDbConnection>
     {
-        DatabaseManagmentEvents Events { get; set; }
+        DatabaseManagementEvents Events { get; set; }
 
         string ConnectionString { get; }
 

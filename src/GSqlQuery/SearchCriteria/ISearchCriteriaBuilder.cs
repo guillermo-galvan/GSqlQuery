@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.SearchCriteria
+﻿using System.Collections.Generic;
+
+namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Search Criteria Builder 
@@ -15,6 +17,6 @@
         /// Build the criteria
         /// </summary>
         /// <returns>Criteria detail enumerable</returns>
-        public IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements);
+        IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements);
     }
 }

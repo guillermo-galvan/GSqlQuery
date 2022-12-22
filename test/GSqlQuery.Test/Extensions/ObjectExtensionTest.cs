@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.Extensions;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Test.Extensions
 {

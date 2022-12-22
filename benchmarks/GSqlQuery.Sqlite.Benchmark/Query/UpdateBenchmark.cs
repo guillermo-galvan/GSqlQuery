@@ -1,7 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.SqliteTest.Data;
-using GSqlQuery.SearchCriteria;
-using GSqlQuery.Runner.Extensions;
+using GSqlQuery.Runner;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace GSqlQuery.Sqlite.Benchmark.Query
 {
@@ -31,7 +33,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<int> Update_Bool()
         {
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
             test.IsBool = true;
             var query = test.Update(_connectionOptions, x => x.IsBool).Where().Equal(x => x.IsBool, false).Build();
             return Async ? await query.ExecuteAsync() : query.Execute();
@@ -40,7 +42,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<int> Update_DateTime()
         {
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
             test.Time = DateTime.Now;
             var query = test.Update(_connectionOptions, x => x.Time).Build();
             return Async ? await query.ExecuteAsync() : query.Execute();
@@ -49,7 +51,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<int> Update_Decimal()
         {
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
             test.Money = 1263.36m;
             var query = test.Update(_connectionOptions, x => x.Money).Build();
             return Async ? await query.ExecuteAsync() : query.Execute();
@@ -58,7 +60,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<int> Update_AllColumns()
         {
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
             test.Money = 1263.36m;
             test.Time = DateTime.Now;
             test.IsBool = true;
@@ -69,7 +71,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<int> Update_AllColumns_by_Id()
         {
-            Test2 test = new() { IsBool = false, Money = 200m, Time = DateTime.Now };
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
             test.Money = 1263.36m;
             test.Time = DateTime.Now;
             test.IsBool = true;

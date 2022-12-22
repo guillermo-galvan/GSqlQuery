@@ -2,8 +2,9 @@
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Running;
+using System;
 
-namespace MyBenchmarks
+namespace GSqlQuery.Benchmark
 {
     public class Program
     {

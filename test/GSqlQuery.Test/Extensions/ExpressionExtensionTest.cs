@@ -1,6 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using GSqlQuery.Extensions;
 using GSqlQuery.Test.Models;
+using Xunit;
 
 namespace GSqlQuery.Test.Extensions
 {

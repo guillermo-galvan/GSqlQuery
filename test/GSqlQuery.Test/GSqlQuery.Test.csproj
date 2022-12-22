@@ -1,18 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-
+	  <TargetFrameworks>net7.0;net462</TargetFrameworks>
     <IsPackable>false</IsPackable>
-  </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="TestResults\**" />
-    <EmbeddedResource Remove="TestResults\**" />
-    <None Remove="TestResults\**" />
-  </ItemGroup>
+    <SignAssembly>True</SignAssembly>
+
+    <AssemblyOriginatorKeyFile>$(MSBuildStartupDirectory)\src\GsqlQuery_key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />

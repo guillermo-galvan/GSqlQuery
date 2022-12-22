@@ -1,5 +1,5 @@
-﻿using GSqlQuery.Runner.Models;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace GSqlQuery.Runner.Test.Data
@@ -10,7 +10,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
             };
 
             yield return new object[]
@@ -28,7 +28,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-               new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
+               new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
             };
 
             yield return new object[]
@@ -46,7 +46,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;"
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;"
             };
 
             yield return new object[]
@@ -64,7 +64,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
             };
 
             yield return new object[]
@@ -82,7 +82,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-               new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
+               new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
             };
 
             yield return new object[]
@@ -100,7 +100,7 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection>(new GSqlQuery.Default.Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
             };
 
             yield return new object[]

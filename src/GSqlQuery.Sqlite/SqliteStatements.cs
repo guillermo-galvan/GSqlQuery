@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.Sqlite
+﻿namespace GSqlQuery.Sqlite
 {
     public class SqliteStatements : Statements
     {

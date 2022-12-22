@@ -1,9 +1,9 @@
-﻿using GSqlQuery.Runner.Models;
-using GSqlQuery.Runner.Test.Data;
+﻿using GSqlQuery.Runner.Test.Data;
 using GSqlQuery.Runner.Test.Extensions;
 using GSqlQuery.Runner.Test.Models;
-using GSqlQuery.SearchCriteria;
+using System;
 using System.Data.Common;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test
 {
@@ -29,7 +29,7 @@ namespace GSqlQuery.Runner.Test
         [Fact]
         public void Throw_exception_if_property_is_not_selected()
         {
-            ConnectionOptions<DbConnection> connectionOptions = new(new Models.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+            ConnectionOptions<DbConnection> connectionOptions = new ConnectionOptions<DbConnection>(new Models.Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
             Assert.Throws<InvalidOperationException>(() => Test3.Select(connectionOptions, x => x));
         }
 
@@ -77,7 +77,7 @@ namespace GSqlQuery.Runner.Test
         [ClassData(typeof(Insert_Test3_TestData_ConnectionOptions))]
         public void Should_generate_the_insert_query_with_auto_incrementing2(ConnectionOptions<DbConnection> connection, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Insert(connection).Build();
 
             Assert.NotNull(query);
@@ -98,7 +98,7 @@ namespace GSqlQuery.Runner.Test
         [ClassData(typeof(Insert_Test6_TestData_ConnectionOptions))]
         public void Should_generate_the_insert_query2(ConnectionOptions<DbConnection> connection, string queryText)
         {
-            Test6 test = new(1, null, DateTime.Now, true);
+            Test6 test = new Test6(1, null, DateTime.Now, true);
             var query = test.Insert(connection).Build();
 
             Assert.NotNull(query);
@@ -119,7 +119,7 @@ namespace GSqlQuery.Runner.Test
         [ClassData(typeof(Insert_Test3_TestData_ConnectionOptions))]
         public void Should_generate_the_insert_static_query_with_auto_incrementing2(ConnectionOptions<DbConnection> connection, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = Test3.Insert(connection, test).Build();
 
             Assert.NotNull(query);
@@ -140,7 +140,7 @@ namespace GSqlQuery.Runner.Test
         [ClassData(typeof(Insert_Test6_TestData_ConnectionOptions))]
         public void Should_generate_the_insert_static_query2(ConnectionOptions<DbConnection> connection, string queryText)
         {
-            Test6 test = new(1, null, DateTime.Now, true);
+            Test6 test = new Test6(1, null, DateTime.Now, true);
             var query = Test6.Insert(connection, test).Build();
 
             Assert.NotNull(query);
@@ -161,7 +161,7 @@ namespace GSqlQuery.Runner.Test
         [ClassData(typeof(Update_Test3_TestData_Connection))]
         public void Should_generate_the_update_query2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(connectionOptions, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests).Build();
 
             Assert.NotNull(query);
@@ -182,7 +182,7 @@ namespace GSqlQuery.Runner.Test
         [ClassData(typeof(Update_Test3_TestData2_Connection))]
         public void Should_generate_the_update_query_with_where2(ConnectionOptions<DbConnection> connectionOptions, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(connectionOptions, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
 

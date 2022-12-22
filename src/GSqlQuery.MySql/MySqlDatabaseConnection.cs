@@ -1,6 +1,8 @@
-﻿using GSqlQuery.Runner.DataBase;
+﻿using GSqlQuery.Runner;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.MySql
 {
@@ -21,6 +23,7 @@ namespace GSqlQuery.MySql
 
         public async Task<MySqlDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return (MySqlDatabaseTransaction)SetTransaction(new MySqlDatabaseTransaction(this, await ((MySqlConnection)_connection).BeginTransactionAsync(cancellationToken)));
         }
 
@@ -34,6 +37,7 @@ namespace GSqlQuery.MySql
 
         public override Task CloseAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             return ((MySqlConnection)_connection).CloseAsync(cancellationToken);
         }
 

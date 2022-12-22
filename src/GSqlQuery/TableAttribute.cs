@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery
+﻿using System;
+
+namespace GSqlQuery
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
     public class TableAttribute : Attribute
@@ -11,7 +13,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? Scheme { get; private set; } = null;
+        public string Scheme { get; private set; } = null;
 
         /// <summary>
         /// 

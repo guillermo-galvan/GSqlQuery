@@ -21,7 +21,7 @@
         /// <param name="table">Table Attribute</param>
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public IsNotNull(TableAttribute table, ColumnAttribute columnAttribute, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public IsNotNull(TableAttribute table, ColumnAttribute columnAttribute, string logicalOperator) : base(table, columnAttribute, logicalOperator)
         { }
     }
 }

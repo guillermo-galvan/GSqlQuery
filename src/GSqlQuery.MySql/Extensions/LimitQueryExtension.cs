@@ -1,10 +1,6 @@
-﻿using GSqlQuery.MySql.Default;
-using GSqlQuery.Default;
-using GSqlQuery.Runner;
-using GSqlQuery.Runner.Default;
-using GSqlQuery.Runner.Models;
+﻿using System;
 
-namespace GSqlQuery.MySql.Extensions
+namespace GSqlQuery.MySql
 {
     public static class LimitQueryExtension
     {

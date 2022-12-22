@@ -1,11 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.Benchmarks.Data;
-using GSqlQuery.Default;
-using GSqlQuery.SearchCriteria;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.Benchmarks.Query
 {
-    [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public abstract class UpdateBenchmark : CreateStaments
     {
         protected User _user;
