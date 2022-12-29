@@ -22,7 +22,7 @@ namespace GSqlQuery.SQLServer
         }
 
 
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
         public async Task<SqlServerDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -36,7 +36,7 @@ namespace GSqlQuery.SQLServer
         }
 #endif
 
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
         public async Task<SqlServerDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();

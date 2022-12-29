@@ -21,7 +21,7 @@ namespace GSqlQuery.Sqlite
             return (SqliteDatabaseTransaction)SetTransaction(new SqliteDatabaseTransaction(this, ((SqliteConnection)_connection).BeginTransaction(isolationLevel)));
         }
 
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
         public async Task<SqliteDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -36,7 +36,7 @@ namespace GSqlQuery.Sqlite
         }
 #endif
 
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
 
         public async Task<SqliteDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
         {

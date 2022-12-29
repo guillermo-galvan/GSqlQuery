@@ -37,7 +37,7 @@ namespace GSqlQuery.Runner
         public Task CommitAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
             return _transaction.CommitAsync(cancellationToken);
 #else
             _transaction.Commit();
@@ -53,7 +53,7 @@ namespace GSqlQuery.Runner
         public Task RollbackAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
             return _transaction.RollbackAsync(cancellationToken);
 #else
             _transaction.Rollback();
