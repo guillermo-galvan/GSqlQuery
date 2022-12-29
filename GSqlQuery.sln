@@ -33,7 +33,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBase", "DataBase", "{98
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.MySql.Test", "test\GSqlQuery.MySql.Test\GSqlQuery.MySql.Test.csproj", "{234EBE3E-1DD8-40E1-B8FB-AD4C199B30F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSqlQuery.MySql.Benchmark", "benchmarks\GSqlQuery.MySql.Benchmark\GSqlQuery.MySql.Benchmark.csproj", "{1C819B59-07EA-47A4-B78D-924E1D048148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.MySql.Benchmark", "benchmarks\GSqlQuery.MySql.Benchmark\GSqlQuery.MySql.Benchmark.csproj", "{1C819B59-07EA-47A4-B78D-924E1D048148}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA8518E7-BE87-474F-BDF2-8E5D068C530B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
