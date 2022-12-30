@@ -41,7 +41,6 @@ namespace GSqlQuery.Runner.Test
         [Fact]
         public void Throw_exception_if_property_is_not_selected2()
         {
-            ConnectionOptions<DbConnection> connectionOptions = null;
             Assert.Throws<InvalidOperationException>(() => EntityExecute<Test1>.Select(_connectionOptions, x => x));
         }
 

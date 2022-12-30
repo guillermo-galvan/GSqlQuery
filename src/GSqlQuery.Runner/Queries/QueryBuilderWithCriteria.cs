@@ -6,8 +6,8 @@ namespace GSqlQuery.Runner
         IQueryBuilderWithWhere<T, TReturn, TDbConnection>, IQueryBuilder<T, TReturn, TDbConnection>, IBuilder<TReturn>
         where T : class, new() where TReturn : IQuery
     {
-        protected QueryBuilderWithCriteria(ConnectionOptions<TDbConnection> connectionOptions, QueryType queryType)
-            : base(connectionOptions != null ? connectionOptions.Statements : null, queryType)
+        protected QueryBuilderWithCriteria(ConnectionOptions<TDbConnection> connectionOptions)
+            : base(connectionOptions != null ? connectionOptions.Statements : null)
         {
             ConnectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
         }

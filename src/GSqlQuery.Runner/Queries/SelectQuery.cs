@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery
 { 
-    public class SelectQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
+    public sealed class SelectQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
         IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
     {
         internal SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions) :

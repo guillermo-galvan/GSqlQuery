@@ -11,7 +11,7 @@ namespace GSqlQuery.MySql
         private readonly int? _length;
 
         public LimitQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T>> queryBuilder, IStatements statements, int start, int? length)
-            : base(statements, QueryType.Custom)
+            : base(statements)
         {
             _selectQuery = queryBuilder.Build();
             _start = start;
@@ -20,7 +20,7 @@ namespace GSqlQuery.MySql
         }
 
         public LimitQueryBuilder(IAndOr<T, SelectQuery<T>> queryBuilder, IStatements statements, int start, int? length)
-            : base(statements, QueryType.Custom)
+            : base(statements)
         {
             _selectQuery = queryBuilder.Build();
             _start = start;
@@ -29,7 +29,7 @@ namespace GSqlQuery.MySql
         }
 
         public LimitQueryBuilder(IQueryBuilder<T, OrderByQuery<T>> queryBuilder, IStatements statements, int start, int? length)
-            : base(statements, QueryType.Custom)
+            : base(statements)
         {
             _selectQuery = queryBuilder.Build();
             _start = start;
@@ -39,15 +39,14 @@ namespace GSqlQuery.MySql
 
         public override LimitQuery<T> Build()
         {
-            return new LimitQuery<T>(GenerateQuery(), _selectQuery.Columns, _selectQuery.Criteria, _selectQuery.Statements);
+            var query = GenerateQuery(_selectQuery, _start, _length);
+            return new LimitQuery<T>(query, _selectQuery.Columns, _selectQuery.Criteria, _selectQuery.Statements);
         }
 
-        protected override string GenerateQuery()
+        internal static string GenerateQuery(IQuery selectQuery, int start, int? length)
         {
-            string result = _selectQuery.Text.Replace(";", "");
-
-            result = _length.HasValue ? $"{result} LIMIT {_start},{_length};" : $"{result} LIMIT {_start};";
-
+            string result = selectQuery.Text.Replace(";", "");
+            result = length.HasValue ? $"{result} LIMIT {start},{length};" : $"{result} LIMIT {start};";
             return result;
         }
     }
@@ -63,7 +62,7 @@ namespace GSqlQuery.MySql
 
         public LimitQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
-            : base(connectionOptions, QueryType.Custom)
+            : base(connectionOptions)
         {
             _selectQuery = queryBuilder.Build();
             _start = start;
@@ -73,7 +72,7 @@ namespace GSqlQuery.MySql
 
         public LimitQueryBuilder(IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
-            : base(connectionOptions, QueryType.Custom)
+            : base(connectionOptions)
         {
             _selectQuery = queryBuilder.Build();
             _start = start;
@@ -83,7 +82,7 @@ namespace GSqlQuery.MySql
 
         public LimitQueryBuilder(IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
-            : base(connectionOptions, QueryType.Custom)
+            : base(connectionOptions)
         {
             _selectQuery = queryBuilder.Build();
             _start = start;
@@ -93,17 +92,9 @@ namespace GSqlQuery.MySql
 
         public override LimitQuery<T, TDbConnection> Build()
         {
-            return new LimitQuery<T, TDbConnection>(GenerateQuery(), _selectQuery.Columns, _selectQuery.Criteria,
+            var query = LimitQueryBuilder<T>.GenerateQuery(_selectQuery, _start, _length);
+            return new LimitQuery<T, TDbConnection>(query, _selectQuery.Columns, _selectQuery.Criteria,
                 new ConnectionOptions<TDbConnection>(_selectQuery.Statements, _selectQuery.DatabaseManagment));
-        }
-
-        protected override string GenerateQuery()
-        {
-            string result = _selectQuery.Text.Replace(";", "");
-
-            result = _length.HasValue ? $"{result} LIMIT {_start},{_length};" : $"{result} LIMIT {_start};";
-
-            return result;
         }
     }
 }

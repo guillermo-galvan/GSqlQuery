@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace GSqlQuery.Extensions
 {
-    public static class IAndOrExtension
+    internal static class IAndOrExtension
     {
-        public static string GetCliteria<T, TReturn>(this IAndOr<T, TReturn> andOr, IStatements statements, ref IEnumerable<CriteriaDetail> criterias) where TReturn : IQuery
+        internal static string GetCliteria<T, TReturn>(this IAndOr<T, TReturn> andOr, IStatements statements, ref IEnumerable<CriteriaDetail> criterias) where TReturn : IQuery
         {
             if (andOr != null)
             {

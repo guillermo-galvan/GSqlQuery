@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// Delete query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class DeleteQuery<T> : Query<T> where T : class, new()
+    public sealed class DeleteQuery<T> : Query<T> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the DeleteQuery class.

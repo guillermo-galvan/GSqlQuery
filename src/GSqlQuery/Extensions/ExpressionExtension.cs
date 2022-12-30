@@ -14,7 +14,7 @@ namespace GSqlQuery.Extensions
         /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>IEnumerable of MemberInfo</returns>
-		public static IEnumerable<MemberInfo> GetMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+		internal static IEnumerable<MemberInfo> GetMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             Expression withoutUnary = RemoveUnary(expression.Body);
 
@@ -43,7 +43,7 @@ namespace GSqlQuery.Extensions
         /// <param name="expression"></param>
         /// <returns>MemberInfo</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static MemberInfo GetMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static MemberInfo GetMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             Expression withoutUnary = RemoveUnary(expression.Body);
             MemberInfo result = null;
@@ -64,7 +64,7 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ColumnAttribute</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static ColumnAttribute GetColumnAttribute<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ColumnAttribute GetColumnAttribute<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             MemberInfo memberInfo = expression.GetMember();
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));

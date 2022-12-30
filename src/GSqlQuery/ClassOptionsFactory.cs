@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace GSqlQuery
 {
-    public class ClassOptionsFactory
+    public sealed class ClassOptionsFactory
     {
         private static readonly ConcurrentDictionary<Type, ClassOptions> _entities = new ConcurrentDictionary<Type, ClassOptions>();
 

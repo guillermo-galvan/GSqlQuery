@@ -1,4 +1,5 @@
 ﻿using GSqlQuery.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -6,10 +7,9 @@ namespace GSqlQuery.Queries
     internal class CountQueryBuilder<T> : QueryBuilderWithCriteria<T, CountQuery<T>>, IQueryBuilderWithWhere<T, CountQuery<T>> where T : class, new()
     {
         private readonly IQueryBuilder<T, SelectQuery<T>> _queryBuilder;
-        private SelectQuery<T> _selectQuery;
 
         public CountQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T>> queryBuilder, IStatements statements)
-            : base(statements, QueryType.Custom)
+            : base(statements)
         {
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
@@ -18,8 +18,9 @@ namespace GSqlQuery.Queries
 
         public override CountQuery<T> Build()
         {
-            _selectQuery = _queryBuilder.Build();
-            return new CountQuery<T>(GenerateQuery(), _selectQuery.Columns, _criteria, _queryBuilder.Statements);
+            SelectQuery<T> selectQuery = _queryBuilder.Build();
+            var query = CreateQuery(_andOr != null, Statements, selectQuery.Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty);
+            return new CountQuery<T>(query, selectQuery.Columns, _criteria, _queryBuilder.Statements);
         }
 
         public override IWhere<T, CountQuery<T>> Where()
@@ -29,21 +30,21 @@ namespace GSqlQuery.Queries
             return (IWhere<T, CountQuery<T>>)_andOr;
         }
 
-        protected override string GenerateQuery()
+        internal static string CreateQuery(bool isWhere, IStatements statements, IEnumerable<ColumnAttribute> columns, string tableName, string criterias)
         {
             string result = string.Empty;
 
-            if (_andOr == null)
+            if (!isWhere)
             {
-                result = string.Format(Statements.Select,
-                    $"COUNT({string.Join(",", _selectQuery.Columns.Select(x => x.GetColumnName(_tableName, Statements)))})",
-                    _tableName);
+                result = string.Format(statements.Select,
+                    $"COUNT({string.Join(",", columns.Select(x => x.GetColumnName(tableName, statements)))})",
+                    tableName);
             }
             else
             {
-                result = string.Format(Statements.SelectWhere,
-                    $"COUNT({string.Join(",", _selectQuery.Columns.Select(x => x.GetColumnName(_tableName, Statements)))})",
-                    _tableName, GetCriteria());
+                result = string.Format(statements.SelectWhere,
+                    $"COUNT({string.Join(",", columns.Select(x => x.GetColumnName(tableName, statements)))})",
+                    tableName, criterias);
             }
 
             return result;

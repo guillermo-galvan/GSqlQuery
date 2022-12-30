@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace GSqlQuery.Extensions
 {
-    public static class ColumnAttributeExtension
+    internal static class ColumnAttributeExtension
     {
         /// <summary>
         /// Get the column name with format
@@ -13,7 +13,7 @@ namespace GSqlQuery.Extensions
         /// <param name="statements">IStatements</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static string GetColumnName(this ColumnAttribute column, string tableName, IStatements statements)
+        internal static string GetColumnName(this ColumnAttribute column, string tableName, IStatements statements)
         {
             column.NullValidate(ErrorMessages.ParameterNotNull, nameof(column));
             tableName.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableName));
@@ -22,7 +22,7 @@ namespace GSqlQuery.Extensions
             return statements.IncrudeTableNameInQuery ? $"{tableName}.{string.Format(statements.Format, column.Name)}" : $"{string.Format(statements.Format, column.Name)}";
         }
 
-        public static PropertyOptions GetPropertyOptions(this ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
+        internal static PropertyOptions GetPropertyOptions(this ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
         {
             return propertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
         }

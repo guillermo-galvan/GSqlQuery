@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery
 {
-    public class InsertQuery<T, TDbConnection> : Query<T, TDbConnection, T>, IQuery<T, TDbConnection, T>,
+    public sealed class InsertQuery<T, TDbConnection> : Query<T, TDbConnection, T>, IQuery<T, TDbConnection, T>,
         IExecute<T, TDbConnection> where T : class, new()
     {
         public object Entity { get; }
 
-        protected PropertyOptions _propertyOptionsAutoIncrementing = null;
+        private PropertyOptions _propertyOptionsAutoIncrementing = null;
 
         internal InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions,
             object entity, PropertyOptions propertyOptionsAutoIncrementing) :

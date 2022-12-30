@@ -1,17 +1,13 @@
-﻿using GSqlQuery.Extensions;
-using System.Linq;
-
-namespace GSqlQuery.Runner.Queries
+﻿namespace GSqlQuery.Runner.Queries
 {
     internal class CountQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, CountQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection>,
         IQueryBuilder<T, CountQuery<T, TDbConnection>, TDbConnection>, IBuilder<CountQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly IQueryBuilder<T, SelectQuery<T, TDbConnection>> _queryBuilder;
-        private IQuery _selectQuery;
 
         public CountQueryBuilder(IQueryBuilder<T, SelectQuery<T, TDbConnection>> queryBuilder,
-            ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions, QueryType.Custom)
+            ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions)
         {
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
@@ -20,8 +16,9 @@ namespace GSqlQuery.Runner.Queries
 
         public override CountQuery<T, TDbConnection> Build()
         {
-            _selectQuery = _queryBuilder.Build();
-            return new CountQuery<T, TDbConnection>(GenerateQuery(), _selectQuery.Columns, _criteria, ConnectionOptions);
+            IQuery selectQuery = _queryBuilder.Build();
+            var query = GSqlQuery.Queries.CountQueryBuilder<T>.CreateQuery(_andOr != null, Statements, selectQuery.Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty);
+            return new CountQuery<T, TDbConnection>(query, selectQuery.Columns, _criteria, ConnectionOptions);
         }
 
         public override IWhere<T, CountQuery<T, TDbConnection>> Where()
@@ -29,26 +26,6 @@ namespace GSqlQuery.Runner.Queries
             CountWhere<T, TDbConnection> selectWhere = new CountWhere<T, TDbConnection>(this);
             _andOr = selectWhere;
             return (IWhere<T, CountQuery<T, TDbConnection>>)_andOr;
-        }
-
-        protected override string GenerateQuery()
-        {
-            string result = string.Empty;
-
-            if (_andOr == null)
-            {
-                result = string.Format(ConnectionOptions.Statements.Select,
-                    $"COUNT({string.Join(",", _selectQuery.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
-                    _tableName);
-            }
-            else
-            {
-                result = string.Format(ConnectionOptions.Statements.SelectWhere,
-                    $"COUNT({string.Join(",", _selectQuery.Columns.Select(x => x.GetColumnName(_tableName, ConnectionOptions.Statements)))})",
-                    _tableName, GetCriteria());
-            }
-
-            return result;
         }
     }
 }

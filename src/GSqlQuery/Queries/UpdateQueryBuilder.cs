@@ -26,7 +26,7 @@ namespace GSqlQuery.Queries
         /// <param name="columnValues">Column values</param>
         /// <exception cref="ArgumentNullException"></exception>
         public UpdateQueryBuilder(IStatements statements, IEnumerable<string> selectMember, object value) :
-            base(statements, QueryType.Update)
+            base(statements)
         {
             _columnValues = new Dictionary<ColumnAttribute, object>();
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
@@ -37,7 +37,7 @@ namespace GSqlQuery.Queries
         }
 
         public UpdateQueryBuilder(IStatements statements, object entity, IEnumerable<string> selectMember) :
-           base(statements, QueryType.Update)
+           base(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
@@ -50,88 +50,67 @@ namespace GSqlQuery.Queries
             };
         }
 
-        private Queue<CriteriaDetail> GetUpdateCliterias()
+        internal static string CreateQuery(IDictionary<ColumnAttribute, object> columnValues, bool isWhere, IStatements statements, IEnumerable<PropertyOptions> columns, 
+            string tableName, string criterias, ref IEnumerable<CriteriaDetail> criteria)
+        {
+            if (columnValues == null)
+            {
+                throw new InvalidOperationException("Column values not found");
+            }
+
+            Queue<CriteriaDetail> tmpCriteria = GetUpdateCliterias(columnValues,statements,columns,tableName);
+            string query = string.Empty;
+
+            if (!isWhere)
+            {
+                query = string.Format(statements.Update, tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)));
+            }
+            else
+            {
+                query = string.Format(statements.UpdateWhere, tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)), criterias);
+                foreach (var item in criteria)
+                {
+                    tmpCriteria.Enqueue(item);
+                }
+            }
+            criteria = tmpCriteria;
+            return query;
+        }
+
+        private static Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, IStatements statements, IEnumerable<PropertyOptions> columns, string tableName)
         {
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
             long ticks = DateTime.Now.Ticks;
-            foreach (var item in _columnValues)
+            foreach (var item in columnValues)
             {
-                PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
+                PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{ticks++}";
-                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, Statements)}={paramName}",
+                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
             return criteriaDetails;
         }
 
-        protected override string GenerateQuery()
-        {
-            if (_columnValues == null)
-            {
-                throw new InvalidOperationException("Column values not found");
-            }
-            Queue<CriteriaDetail> criteria = GetUpdateCliterias();
-            string query = string.Empty;
-            _criteria = null;
-
-            if (_queryType == QueryType.Update)
-            {
-                query = string.Format(Statements.Update, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)));
-            }
-            else
-            {
-                string where = GetCriteria();
-                query = string.Format(Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
-                foreach (var item in _criteria)
-                {
-                    criteria.Enqueue(item);
-                }
-            }
-
-            _criteria = criteria;
-            return query;
-        }
-
-        /// <summary>
-        ///  Build update query
-        /// </summary>
-        /// <returns>UpdateQuery</returns>
-        public override UpdateQuery<T> Build()
-        {
-            return new UpdateQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
-        }
-
-        /// <summary>
-        /// Add where query
-        /// </summary>
-        /// <returns>IWhere</returns>
-        public override IWhere<T, UpdateQuery<T>> Where()
-        {
-            ChangeQueryType();
-            UpdateWhere<T> selectWhere = new UpdateWhere<T>(this);
-            _andOr = selectWhere;
-            return (IWhere<T, UpdateQuery<T>>)_andOr;
-        }
-
-        public ISet<T, UpdateQuery<T>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
+        internal static void AddSet<TProperties>(IDictionary<ColumnAttribute, object> columnValues, 
+            System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
         {
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             var column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
 
 #if NET5_0_OR_GREATER
-            _columnValues.TryAdd(column, value);
+            columnValues.TryAdd(column, value);
 #else
-            if (!_columnValues.ContainsKey(column)) 
+            if (!columnValues.ContainsKey(column))
             {
-                _columnValues.Add(column, value);
+                columnValues.Add(column, value);
             }
 #endif
-            return this;
         }
 
-        public ISet<T, UpdateQuery<T>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
+        internal static void AddSet<TProperties>(object entity, IDictionary<ColumnAttribute, object> columnValues,
+            System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
         {
-            if (_entity == null)
+            if (entity == null)
             {
                 throw new InvalidOperationException(ErrorMessages.EntityNotFound);
             }
@@ -144,18 +123,39 @@ namespace GSqlQuery.Queries
                 var propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
 
 #if NET5_0_OR_GREATER
-                _columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
+                columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(entity));
 #else
-                if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
+                if (!columnValues.ContainsKey(propertyOptions.ColumnAttribute))
                 {
-                    _columnValues.Add(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
+                    columnValues.Add(propertyOptions.ColumnAttribute, propertyOptions.GetValue(entity));
                 }
 #endif
             }
+        }
 
+        public override UpdateQuery<T> Build()
+        {
+            var query = CreateQuery(_columnValues, _andOr != null, Statements, Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty, ref _criteria);
+            return new UpdateQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+        }
+
+        public override IWhere<T, UpdateQuery<T>> Where()
+        {
+            UpdateWhere<T> selectWhere = new UpdateWhere<T>(this);
+            _andOr = selectWhere;
+            return (IWhere<T, UpdateQuery<T>>)_andOr;
+        }
+
+        public ISet<T, UpdateQuery<T>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
+        {
+            AddSet(_columnValues,expression, value);
+            return this;
+        }
+
+        public ISet<T, UpdateQuery<T>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
+        {
+            AddSet(_entity, _columnValues, expression);
             return this;
         }
     }
-
-
 }

@@ -231,6 +231,9 @@ dotnet_diagnostic.IDE0063.severity = none
 # IDE0090: Use 'new(...)'
 dotnet_diagnostic.IDE0090.severity = none
 
+# CS1066: The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
+dotnet_diagnostic.CS1066.severity = none
+
 [*.{cs,vb}]
 dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_null_propagation = true:suggestion

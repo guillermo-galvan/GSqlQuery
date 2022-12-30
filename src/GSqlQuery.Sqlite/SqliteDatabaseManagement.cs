@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
-    public class SqliteDatabaseManagement : DatabaseManagement, IDatabaseManagement<SqliteDatabaseConnection>
+    public sealed class SqliteDatabaseManagement : DatabaseManagement, IDatabaseManagement<SqliteDatabaseConnection>
     {
         public SqliteDatabaseManagement(string connectionString) :  base(connectionString, new SqliteDatabaseManagementEvents())
         { }

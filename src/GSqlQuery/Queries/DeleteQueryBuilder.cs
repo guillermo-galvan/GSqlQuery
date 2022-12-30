@@ -15,21 +15,21 @@ namespace GSqlQuery.Queries
         /// <param name="statements">Statements to build the query</param>
         /// <exception cref="ArgumentNullException"></exception>
         public DeleteQueryBuilder(IStatements statements)
-            : base(statements, QueryType.Delete)
+            : base(statements)
         {
         }
 
-        protected override string GenerateQuery()
+        internal static string CreateQuery(bool isWhere, IStatements statements, string tableName, string criterias)
         {
-            string result = string.Empty;
+            string result;
 
-            if (_queryType == QueryType.Delete)
+            if (!isWhere)
             {
-                result = string.Format(Statements.Delete, _tableName);
+                result = string.Format(statements.Delete, tableName);
             }
-            else if (_queryType == QueryType.DeleteWhere)
+            else
             {
-                result = string.Format(Statements.DeleteWhere, _tableName, GetCriteria());
+                result = string.Format(statements.DeleteWhere, tableName, criterias);
             }
 
             return result;
@@ -40,7 +40,8 @@ namespace GSqlQuery.Queries
         /// </summary>
         public override DeleteQuery<T> Build()
         {
-            return new DeleteQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            var query = CreateQuery(_andOr != null, Statements, _tableName, _andOr != null ? GetCriteria() : string.Empty);
+            return new DeleteQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
 
         /// <summary>
@@ -49,7 +50,6 @@ namespace GSqlQuery.Queries
         /// <returns>Implementation of the IWhere interface</returns>
         public override IWhere<T, DeleteQuery<T>> Where()
         {
-            ChangeQueryType();
             _andOr = new DeleteWhere<T>(this);
             return (IWhere<T, DeleteQuery<T>>)_andOr;
         }

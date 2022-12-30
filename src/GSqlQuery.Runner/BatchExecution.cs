@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
-    public class BatchExecute<TDbConnection> : IExecute<int, TDbConnection>
+    public sealed class BatchExecute<TDbConnection> : IExecute<int, TDbConnection>
     {
         private readonly ConnectionOptions<TDbConnection> _connectionOptions;
         private readonly Queue<IQuery> _queries;
