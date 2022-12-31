@@ -50,7 +50,7 @@ namespace GSqlQuery.Queries
         /// <returns>Implementation of the IWhere interface</returns>
         public override IWhere<T, DeleteQuery<T>> Where()
         {
-            _andOr = new DeleteWhere<T>(this);
+            _andOr = new AndOrBase<T,DeleteQuery<T>>(this);
             return (IWhere<T, DeleteQuery<T>>)_andOr;
         }
     }

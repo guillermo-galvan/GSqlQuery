@@ -22,26 +22,26 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_add_criteria2()
+        public void Should_add_criteria_SelectQuery()
         {
-            SelectWhere<Test1, DbConnection> query = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
+            AndOrBase<Test1,SelectQuery<Test1, DbConnection>> query = new AndOrBase<Test1, SelectQuery<Test1, DbConnection>>(_selectQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
         }
 
         [Fact]
-        public void Throw_exception_if_null_ISearchCriteria_is_added2()
+        public void Throw_exception_if_null_ISearchCriteria_is_added_SelectQuery()
         {
-            SelectWhere<Test1, DbConnection> query = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1, DbConnection>> query = new AndOrBase<Test1, SelectQuery<Test1, DbConnection>>(_selectQueryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
 
         [Fact]
-        public void Should_build_the_criteria2()
+        public void Should_build_the_criteria_SelectQuery()
         {
-            SelectWhere<Test1, DbConnection> query = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1, DbConnection>> query = new AndOrBase<Test1, SelectQuery<Test1, DbConnection>>(_selectQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 
@@ -51,24 +51,24 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface_with_expression2()
+        public void Should_get_the_IAndOr_interface_with_expression_SelectQuery()
         {
-            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1, DbConnection>> where = new AndOrBase<Test1, SelectQuery<Test1, DbConnection>>(_selectQueryBuilder);
             var andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_with_expression2()
+        public void Throw_exception_if_expression_is_null_with_expression_SelectQuery()
         {
-            SelectWhere<Test1, DbConnection> where = null;
+            AndOrBase<Test1, SelectQuery<Test1, DbConnection>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr(x => x.Id));
         }
 
         [Fact]
-        public void Should_validate_of_IAndOr2()
+        public void Should_validate_of_IAndOr_SelectQuery()
         {
-            var andOr = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
+            var andOr = new AndOrBase<Test1, SelectQuery<Test1, DbConnection>>(_selectQueryBuilder);
             try
             {
                 andOr.Validate(x => x.IsTest);
@@ -81,16 +81,16 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_in_IAndOr2()
+        public void Throw_exception_if_expression_is_null_in_IAndOr_SelectQuery()
         {
             IAndOr<Test1, SelectQuery<Test1, DbConnection>> andOr = null;
             Assert.Throws<ArgumentNullException>(() => andOr.Validate(x => x.Id));
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface2()
+        public void Should_get_the_IAndOr_interface_SelectQuery()
         {
-            SelectWhere<Test1, DbConnection> where = new SelectWhere<Test1, DbConnection>(_selectQueryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1, DbConnection>> where = new AndOrBase<Test1, SelectQuery<Test1, DbConnection>>(_selectQueryBuilder);
             IAndOr<Test1, SelectQuery<Test1, DbConnection>> andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }

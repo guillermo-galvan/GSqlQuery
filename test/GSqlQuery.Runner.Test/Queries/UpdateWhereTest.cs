@@ -23,26 +23,26 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_add_criteria2()
+        public void Should_add_criteria_UpdateQuery()
         {
-            UpdateWhere<Test1, DbConnection> query = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
+            AndOrBase<Test1,UpdateQuery<Test1, DbConnection>> query = new AndOrBase<Test1, UpdateQuery<Test1, DbConnection>>(_updateQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
         }
 
         [Fact]
-        public void Throw_exception_if_null_ISearchCriteria_is_added2()
+        public void Throw_exception_if_null_ISearchCriteria_is_added_UpdateQuery()
         {
-            UpdateWhere<Test1, DbConnection> query = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
+            AndOrBase<Test1, UpdateQuery<Test1, DbConnection>> query = new AndOrBase<Test1, UpdateQuery<Test1, DbConnection>>(_updateQueryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
 
         [Fact]
-        public void Should_build_the_criteria2()
+        public void Should_build_the_criteria_UpdateQuery()
         {
-            UpdateWhere<Test1, DbConnection> query = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
+            AndOrBase<Test1, UpdateQuery<Test1, DbConnection>> query = new AndOrBase<Test1, UpdateQuery<Test1, DbConnection>>(_updateQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 
@@ -52,24 +52,24 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface_with_expression2()
+        public void Should_get_the_IAndOr_interface_with_expression_UpdateQuery()
         {
-            UpdateWhere<Test1, DbConnection> where = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
+            AndOrBase<Test1, UpdateQuery<Test1, DbConnection>> where = new AndOrBase<Test1, UpdateQuery<Test1, DbConnection>>(_updateQueryBuilder);
             var andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_with_expression2()
+        public void Throw_exception_if_expression_is_null_with_expression_UpdateQuery()
         {
-            UpdateWhere<Test1, DbConnection> where = null;
+            AndOrBase<Test1, UpdateQuery<Test1, DbConnection>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr(x => x.Id));
         }
 
         [Fact]
-        public void Should_validate_of_IAndOr2()
+        public void Should_validate_of_IAndOr_UpdateQuery()
         {
-            var andOr = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
+            var andOr = new AndOrBase<Test1, UpdateQuery<Test1, DbConnection>>(_updateQueryBuilder);
             try
             {
                 andOr.Validate(x => x.IsTest);
@@ -82,24 +82,24 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_in_IAndOr2()
+        public void Throw_exception_if_expression_is_null_in_IAndOr_UpdateQuery()
         {
             IAndOr<Test1, UpdateQuery<Test1, DbConnection>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.Validate(x => x.Id));
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface2()
+        public void Should_get_the_IAndOr_interface_UpdateQuery()
         {
-            UpdateWhere<Test1, DbConnection> where = new UpdateWhere<Test1, DbConnection>(_updateQueryBuilder);
+            AndOrBase<Test1, UpdateQuery<Test1, DbConnection>> where = new AndOrBase<Test1, UpdateQuery<Test1, DbConnection>>(_updateQueryBuilder);
             var andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null2()
+        public void Throw_exception_if_expression_is_null_UpdateQuery()
         {
-            UpdateWhere<Test1, DbConnection> where = null;
+            AndOrBase<Test1, UpdateQuery<Test1, DbConnection>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr());
         }
     }

@@ -27,8 +27,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override IWhere<T, SelectQuery<T, TDbConnection>> Where()
         {
-            SelectWhere<T, TDbConnection> selectWhere = new SelectWhere<T, TDbConnection>(this);
-            _andOr = selectWhere;
+            _andOr = new AndOrBase<T,SelectQuery<T,TDbConnection>>(this);
             return (IWhere<T, SelectQuery<T, TDbConnection>>)_andOr;
         }
     }

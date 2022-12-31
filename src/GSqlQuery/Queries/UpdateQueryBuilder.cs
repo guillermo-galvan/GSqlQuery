@@ -15,6 +15,7 @@ namespace GSqlQuery.Queries
     {
         private readonly IDictionary<ColumnAttribute, object> _columnValues;
         protected readonly object _entity;
+        private static ulong _idParam = 0;
 
         public IDictionary<ColumnAttribute, object> ColumnValues => _columnValues;
 
@@ -34,6 +35,11 @@ namespace GSqlQuery.Queries
             {
                 _columnValues.Add(item, value);
             };
+
+            if (_idParam > ulong.MaxValue - 2100)
+            {
+                _idParam = 0;
+            }
         }
 
         public UpdateQueryBuilder(IStatements statements, object entity, IEnumerable<string> selectMember) :
@@ -48,6 +54,11 @@ namespace GSqlQuery.Queries
             {
                 _columnValues.Add(item.ColumnAttribute, item.PropertyInfo.GetValue(entity));
             };
+
+            if (_idParam > ulong.MaxValue - 2100)
+            {
+                _idParam = 0;
+            }
         }
 
         internal static string CreateQuery(IDictionary<ColumnAttribute, object> columnValues, bool isWhere, IStatements statements, IEnumerable<PropertyOptions> columns, 
@@ -80,11 +91,10 @@ namespace GSqlQuery.Queries
         private static Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, IStatements statements, IEnumerable<PropertyOptions> columns, string tableName)
         {
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
-            long ticks = DateTime.Now.Ticks;
             foreach (var item in columnValues)
             {
                 PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = $"@PU{ticks++}";
+                string paramName = $"@PU{_idParam++}";
                 criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
@@ -141,8 +151,7 @@ namespace GSqlQuery.Queries
 
         public override IWhere<T, UpdateQuery<T>> Where()
         {
-            UpdateWhere<T> selectWhere = new UpdateWhere<T>(this);
-            _andOr = selectWhere;
+            _andOr = new AndOrBase<T, UpdateQuery<T>>(this);
             return (IWhere<T, UpdateQuery<T>>)_andOr;
         }
 

@@ -50,8 +50,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override IWhere<T, UpdateQuery<T, TDbConnection>> Where()
         {
-            UpdateWhere<T, TDbConnection> selectWhere = new UpdateWhere<T, TDbConnection>(this);
-            _andOr = selectWhere;
+            _andOr = new AndOrBase<T,UpdateQuery<T,TDbConnection>>(this);
             return (IWhere<T, UpdateQuery<T, TDbConnection>>)_andOr;
         }
 

@@ -14,6 +14,10 @@ namespace GSqlQuery.Queries
             : base(statements)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
+            if (_idParam > ulong.MaxValue - 2100)
+            {
+                _idParam = 0;
+            }
         }
 
         internal static string CreateQuery(IStatements statements, IEnumerable<PropertyOptions> columns, string tableName, object entity, ref IEnumerable<CriteriaDetail> criteria)

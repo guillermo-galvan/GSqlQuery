@@ -23,8 +23,7 @@
 
         public override IWhere<T, CountQuery<T, TDbConnection>> Where()
         {
-            CountWhere<T, TDbConnection> selectWhere = new CountWhere<T, TDbConnection>(this);
-            _andOr = selectWhere;
+            _andOr = new AndOrBase<T, CountQuery<T, TDbConnection>>(this);
             return (IWhere<T, CountQuery<T, TDbConnection>>)_andOr;
         }
     }

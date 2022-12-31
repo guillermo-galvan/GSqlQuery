@@ -25,8 +25,7 @@ namespace GSqlQuery.Queries
 
         public override IWhere<T, CountQuery<T>> Where()
         {
-            CountWhere<T> selectWhere = new CountWhere<T>(this);
-            _andOr = selectWhere;
+            _andOr = new AndOrBase<T,CountQuery<T>>(this);
             return (IWhere<T, CountQuery<T>>)_andOr;
         }
 

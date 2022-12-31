@@ -23,26 +23,26 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_add_criteria2()
+        public void Should_add_criteria_CountQuery()
         {
-            CountWhere<Test1, DbConnection> query = new CountWhere<Test1, DbConnection>(_connectionCountQueryBuilder);
+            AndOrBase<Test1,CountQuery<Test1, DbConnection>> query = new AndOrBase<Test1, CountQuery<Test1, DbConnection>>(_connectionCountQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
         }
 
         [Fact]
-        public void Throw_exception_if_null_ISearchCriteria_is_added2()
+        public void Throw_exception_if_null_ISearchCriteria_is_added_CountQuery()
         {
-            CountWhere<Test1, DbConnection> query = new CountWhere<Test1, DbConnection>(_connectionCountQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1, DbConnection>> query = new AndOrBase<Test1, CountQuery<Test1, DbConnection>>(_connectionCountQueryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
 
         [Fact]
-        public void Should_build_the_criteria2()
+        public void Should_build_the_criteria_CountQuery()
         {
-            CountWhere<Test1, DbConnection> query = new CountWhere<Test1, DbConnection>(_connectionCountQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1, DbConnection>> query = new AndOrBase<Test1, CountQuery<Test1, DbConnection>>(_connectionCountQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             var criteria = query.BuildCriteria(new Statements());
@@ -51,24 +51,24 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface_with_expression2()
+        public void Should_get_the_IAndOr_interface_with_expression_CountQuery()
         {
-            CountWhere<Test1, DbConnection> where = new CountWhere<Test1, DbConnection>(_connectionCountQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1, DbConnection>> where = new AndOrBase<Test1, CountQuery<Test1, DbConnection>>(_connectionCountQueryBuilder);
             var andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_with_expression2()
+        public void Throw_exception_if_expression_is_null_with_expression_CountQuery()
         {
-            CountWhere<Test1, DbConnection> where = null;
+            AndOrBase<Test1, CountQuery<Test1, DbConnection>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr(x => x.Id));
         }
 
         [Fact]
-        public void Should_validate_of_IAndOr2()
+        public void Should_validate_of_IAndOr_CountQuery()
         {
-            var andOr = new CountWhere<Test1, DbConnection>(_connectionCountQueryBuilder);
+            var andOr = new AndOrBase<Test1, CountQuery<Test1, DbConnection>>(_connectionCountQueryBuilder);
             try
             {
                 andOr.Validate(x => x.IsTest);
@@ -81,24 +81,24 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_in_IAndOr2()
+        public void Throw_exception_if_expression_is_null_in_IAndOr_CountQuery()
         {
             IAndOr<Test1, CountQuery<Test1, DbConnection>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.Validate(x => x.Id));
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface2()
+        public void Should_get_the_IAndOr_interface_CountQuery()
         {
-            CountWhere<Test1, DbConnection> where = new CountWhere<Test1, DbConnection>(_connectionCountQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1, DbConnection>> where = new AndOrBase<Test1, CountQuery<Test1, DbConnection>>(_connectionCountQueryBuilder);
             var andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null2()
+        public void Throw_exception_if_expression_is_null_CountQuery()
         {
-            CountWhere<Test1, DbConnection> where = null;
+            AndOrBase<Test1, CountQuery<Test1, DbConnection>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr());
         }
     }

@@ -64,8 +64,7 @@ namespace GSqlQuery.Queries
         /// <returns>IWhere</returns>
         public override IWhere<T, SelectQuery<T>> Where()
         {
-            SelectWhere<T> selectWhere = new SelectWhere<T>(this);
-            _andOr = selectWhere;
+            _andOr = new AndOrBase<T,SelectQuery<T>>(this);
             return (IWhere<T, SelectQuery<T>>)_andOr;
         }
     }

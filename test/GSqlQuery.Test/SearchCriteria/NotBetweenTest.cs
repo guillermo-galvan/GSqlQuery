@@ -84,7 +84,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_Between_query()
         {
-            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.NotBetween(x => x.Id, 1, 2);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -96,7 +96,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.NotBetween(x => x.Id, 1, 3).AndNotBetween(x => x.IsTest, true, false);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -108,7 +108,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.NotBetween(x => x.Id, 1, 5).OrNotBetween(x => x.IsTest, true, false);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);

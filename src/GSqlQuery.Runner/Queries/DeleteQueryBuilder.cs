@@ -19,7 +19,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override IWhere<T, DeleteQuery<T, TDbConnection>> Where()
         {
-            _andOr = new DeleteWhere<T, TDbConnection>(this);
+            _andOr = new AndOrBase<T,DeleteQuery<T, TDbConnection>>(this);
             return (IWhere<T, DeleteQuery<T, TDbConnection>>)_andOr;
         }
     }

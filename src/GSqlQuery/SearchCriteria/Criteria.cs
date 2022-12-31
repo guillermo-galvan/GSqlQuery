@@ -34,6 +34,10 @@ namespace GSqlQuery.SearchCriteria
             Table = table ?? throw new ArgumentNullException(nameof(table));
             Column = columnAttribute ?? throw new ArgumentNullException(nameof(columnAttribute));
             LogicalOperator = logicalOperator;
+            if (_idParam > ulong.MaxValue - 2100)
+            {
+                _idParam = 0;
+            }
         }
 
         /// <summary>
