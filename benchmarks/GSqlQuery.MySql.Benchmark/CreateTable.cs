@@ -72,7 +72,7 @@ namespace GSqlQuery.MySql.Benchmark
         internal static void CreateData()
         {
             var connectionOptions = GetConnectionOptions();
-            using (var connection = connectionOptions.DatabaseManagment.GetConnection())
+            using (var connection = connectionOptions.DatabaseManagement.GetConnection())
             {
                 using (var transaction = connection.BeginTransaction())
                 {

@@ -8,9 +8,9 @@ namespace GSqlQuery.Sqlite
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, SqliteDatabaseConnection> query)
         {
-            query.DatabaseManagment.GetConnection();
+            query.DatabaseManagement.GetConnection();
 
-            using (var connection = query.DatabaseManagment.GetConnection())
+            using (var connection = query.DatabaseManagement.GetConnection())
             {
                 using (var transaction = connection.BeginTransaction())
                 {
@@ -28,7 +28,7 @@ namespace GSqlQuery.Sqlite
 
         public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, SqliteDatabaseConnection> query, CancellationToken cancellationToken = default)
         {
-            using (var connection = await query.DatabaseManagment.GetConnectionAsync(cancellationToken))
+            using (var connection = await query.DatabaseManagement.GetConnectionAsync(cancellationToken))
             {
                 using (var transaction = await connection.BeginTransactionAsync(cancellationToken))
                 {

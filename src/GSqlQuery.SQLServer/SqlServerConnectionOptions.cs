@@ -12,8 +12,8 @@ namespace GSqlQuery.SQLServer
             base(new SqlServerStatements(), new SqlServerDatabaseManagement(connectionString, events))
         {}
 
-        public SqlServerConnectionOptions(IStatements statements, SqlServerDatabaseManagement sqlServerDatabaseManagment) :
-            base(statements, sqlServerDatabaseManagment)
+        public SqlServerConnectionOptions(IStatements statements, SqlServerDatabaseManagement sqlServerDatabaseManagement) :
+            base(statements, sqlServerDatabaseManagement)
         {
 
         }

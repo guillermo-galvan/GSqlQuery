@@ -11,7 +11,7 @@ namespace GSqlQuery.Runner.Test.Models
         {
             var connectionOptions = new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
 
-            Assert.NotNull(connectionOptions.DatabaseManagment);
+            Assert.NotNull(connectionOptions.DatabaseManagement);
             Assert.NotNull(connectionOptions.Statements);
         }
 

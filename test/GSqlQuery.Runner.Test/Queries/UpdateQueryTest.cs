@@ -43,7 +43,7 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
-            Assert.NotNull(query.DatabaseManagment);
+            Assert.NotNull(query.DatabaseManagement);
             Assert.NotNull(query.Statements);
         }
 

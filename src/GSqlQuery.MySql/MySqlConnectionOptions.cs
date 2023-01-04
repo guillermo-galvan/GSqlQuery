@@ -12,8 +12,8 @@ namespace GSqlQuery.MySql
             base(new MySqlStatements(), new MySqlDatabaseManagement(connectionString, events))
         {}
 
-        public MySqlConnectionOptions(IStatements statements, MySqlDatabaseManagement mySqlDatabaseManagment) :
-            base(statements, mySqlDatabaseManagment)
+        public MySqlConnectionOptions(IStatements statements, MySqlDatabaseManagement mySqlDatabaseManagement) :
+            base(statements, mySqlDatabaseManagement)
         {}
     }
 }

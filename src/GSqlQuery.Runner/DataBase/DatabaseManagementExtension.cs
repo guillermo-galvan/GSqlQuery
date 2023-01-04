@@ -6,7 +6,7 @@ namespace GSqlQuery.Runner
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, IConnection> query)
         {
-            using (var connection = query.DatabaseManagment.GetConnection())
+            using (var connection = query.DatabaseManagement.GetConnection())
             {
                 using (var transaction = connection.BeginTransaction())
                 {
@@ -25,7 +25,7 @@ namespace GSqlQuery.Runner
 
         public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, IConnection> query)
         {
-            using (var connection = await query.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await query.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {

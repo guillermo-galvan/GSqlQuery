@@ -94,7 +94,7 @@ namespace GSqlQuery.MySql
         {
             var query = LimitQueryBuilder<T>.GenerateQuery(_selectQuery, _start, _length);
             return new LimitQuery<T, TDbConnection>(query, _selectQuery.Columns, _selectQuery.Criteria,
-                new ConnectionOptions<TDbConnection>(_selectQuery.Statements, _selectQuery.DatabaseManagment));
+                new ConnectionOptions<TDbConnection>(_selectQuery.Statements, _selectQuery.DatabaseManagement));
         }
     }
 }

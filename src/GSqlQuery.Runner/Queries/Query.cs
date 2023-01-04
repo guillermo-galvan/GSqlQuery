@@ -7,14 +7,14 @@ namespace GSqlQuery.Runner
 {
     public abstract class Query<T, TDbConnection, TResult> : Query<T>, IQuery<T, TDbConnection, TResult> where T : class, new()
     {
-        public IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
+        public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
         protected Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria,
             ConnectionOptions<TDbConnection> connectionOptions) :
             base(text, columns, criteria, connectionOptions?.Statements)
         {
             connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
-            DatabaseManagment = connectionOptions.DatabaseManagment;
+            DatabaseManagement = connectionOptions.DatabaseManagement;
         }
 
         public abstract TResult Execute();

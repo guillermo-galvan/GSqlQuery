@@ -21,7 +21,7 @@ namespace GSqlQuery.Sqlite.Test
         public void Commit()
         {
             Test2 test = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
-            using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
+            using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 using (var transaction = connection.BeginTransaction())
                 {
@@ -39,7 +39,7 @@ namespace GSqlQuery.Sqlite.Test
         public async Task CommitAsync()
         {
             Test2 test = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
@@ -59,7 +59,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
 
             Test2 test = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
             {
                 using (var transaction = await connection.BeginTransactionAsync(token))
                 {
@@ -79,7 +79,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
 
             Test2 test = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
             {
                 using (var transaction = await connection.BeginTransactionAsync(token))
                 {
@@ -94,7 +94,7 @@ namespace GSqlQuery.Sqlite.Test
         public void Rollback()
         {
             Test2 test = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
-            using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
+            using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 using (var transaction = connection.BeginTransaction())
                 {
@@ -112,7 +112,7 @@ namespace GSqlQuery.Sqlite.Test
         public async Task RollbackAsync()
         {
             Test2 test = new Test2() { IsBool = true, Money = Convert.ToDecimal(200d + new Random().NextDouble()), Time = DateTime.Now };
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
@@ -132,7 +132,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
 
             Test2 test = new Test2() { IsBool = true, Money = Convert.ToDecimal(100d + new Random().NextDouble()), Time = DateTime.Now };
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
             {
                 using (var transaction = await connection.BeginTransactionAsync(token))
                 {
@@ -152,7 +152,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationToken token = source.Token;
 
             Test2 test = new Test2() { IsBool = true, Money = 100m, Time = DateTime.Now };
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync(token))
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
             {
                 using (var transaction = await connection.BeginTransactionAsync(token))
                 {

@@ -19,7 +19,7 @@ namespace GSqlQuery.MySql.Test
         }
 
         [Fact]
-        public void Create_MySqlConnectionOptions_With_statements_and_sqlServerDatabaseManagment()
+        public void Create_MySqlConnectionOptions_With_statements_and_sqlServerDatabaseManagement()
         {
             var SqliteConnectionOptions = new MySqlConnectionOptions(new MySqlStatements(), new MySqlDatabaseManagement(Helper.ConnectionString));
             Assert.NotNull(SqliteConnectionOptions);

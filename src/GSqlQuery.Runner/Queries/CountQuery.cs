@@ -17,24 +17,24 @@ namespace GSqlQuery
 
         public override int Execute()
         {
-            return DatabaseManagment.ExecuteScalar<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            return DatabaseManagement.ExecuteScalar<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagement));
         }
 
         public override int Execute(TDbConnection dbConnection)
         {
             dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return DatabaseManagment.ExecuteScalar<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+            return DatabaseManagement.ExecuteScalar<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagement));
         }
 
         public override Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            return DatabaseManagment.ExecuteScalarAsync<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
+            return DatabaseManagement.ExecuteScalarAsync<int>(this, this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken);
         }
 
         public override Task<int> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
             dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return DatabaseManagment.ExecuteScalarAsync<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
+            return DatabaseManagement.ExecuteScalarAsync<int>(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken);
         }
     }
 }

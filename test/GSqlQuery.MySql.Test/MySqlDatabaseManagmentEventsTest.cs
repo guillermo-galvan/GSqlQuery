@@ -5,11 +5,11 @@ using Xunit;
 
 namespace GSqlQuery.MySql.Test
 {
-    public class MySqlDatabaseManagmentEventsTest
+    public class MySqlDatabaseManagementEventsTest
     {
         private readonly MySqlConnectionOptions _connectionOptions;
 
-        public MySqlDatabaseManagmentEventsTest()
+        public MySqlDatabaseManagementEventsTest()
         {
             _connectionOptions = new MySqlConnectionOptions(Helper.ConnectionString);
         }
@@ -31,7 +31,7 @@ namespace GSqlQuery.MySql.Test
                 }
             }
 
-            var result = _connectionOptions.DatabaseManagment.Events.GetParameter<Test1>(parameters);
+            var result = _connectionOptions.DatabaseManagement.Events.GetParameter<Test1>(parameters);
             Assert.NotNull(result);
             Assert.Equal(parameters.Count, result.Count());
         }
@@ -53,7 +53,7 @@ namespace GSqlQuery.MySql.Test
                 }
             }
 
-            var result = _connectionOptions.DatabaseManagment.Events.OnGetParameter(typeof(Test1), parameters);
+            var result = _connectionOptions.DatabaseManagement.Events.OnGetParameter(typeof(Test1), parameters);
             Assert.NotNull(result);
             Assert.Empty(result);
         }

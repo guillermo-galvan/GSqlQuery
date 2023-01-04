@@ -8,7 +8,7 @@ namespace GSqlQuery.SQLServer
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, SqlServerDatabaseConnection> query)
         {
-            using (var connection = query.DatabaseManagment.GetConnection())
+            using (var connection = query.DatabaseManagement.GetConnection())
             {
                 using (var transaction = connection.BeginTransaction())
                 {
@@ -26,7 +26,7 @@ namespace GSqlQuery.SQLServer
 
         public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, SqlServerDatabaseConnection> query, CancellationToken cancellationToken = default)
         {
-            using (var connection = await query.DatabaseManagment.GetConnectionAsync(cancellationToken))
+            using (var connection = await query.DatabaseManagement.GetConnectionAsync(cancellationToken))
             {
                 using (var transaction = await connection.BeginTransactionAsync(cancellationToken))
                 {

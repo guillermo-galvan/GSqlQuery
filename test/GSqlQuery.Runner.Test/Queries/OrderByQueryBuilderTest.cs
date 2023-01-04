@@ -30,7 +30,7 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.DatabaseManagment);
+            Assert.NotNull(query.DatabaseManagement);
             Assert.NotNull(query.Statements);
             Assert.Null(query.Criteria);
         }
@@ -46,7 +46,7 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.DatabaseManagment);
+            Assert.NotNull(query.DatabaseManagement);
             Assert.NotNull(query.Statements);
             Assert.NotNull(query.Criteria);
         }
@@ -62,7 +62,7 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotNull(result);
             Assert.NotNull(result.ConnectionOptions);
             Assert.NotNull(result.ConnectionOptions.Statements);
-            Assert.NotNull(result.ConnectionOptions.DatabaseManagment);
+            Assert.NotNull(result.ConnectionOptions.DatabaseManagement);
             Assert.NotNull(result.Columns);
             Assert.NotEmpty(result.Columns);
             Assert.Equal(queryBuilder.Columns.Count(), result.Columns.Count());

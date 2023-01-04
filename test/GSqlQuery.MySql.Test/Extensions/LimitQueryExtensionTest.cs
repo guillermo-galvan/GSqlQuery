@@ -74,7 +74,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         [Fact]
         public void Limit_execute_with_connection_by_select()
         {
-            using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
+            using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 var result = Test1.Select(_connectionOptions).Limit(0, 5).Build().Execute(connection);
                 Assert.NotNull(result);
@@ -85,7 +85,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         [Fact]
         public void Limit_execute_with_connection_by_select_and_where()
         {
-            using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
+            using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 var result = Test1.Select(_connectionOptions).Where().IsNotNull(x => x.Id).Limit(0, 5).Build().Execute(connection);
                 Assert.NotNull(result);
@@ -96,7 +96,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         [Fact]
         public void Limit_execute_with_connection_by_select_and_orderby()
         {
-            using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
+            using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 var result = Test1.Select(_connectionOptions).OrderBy(x => x.Id, OrderBy.ASC).Limit(0, 5).Build().Execute(connection);
                 Assert.NotNull(result);
@@ -107,7 +107,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         [Fact]
         public void Throw_exeception_when_connection_is_null()
         {
-            using (var connection = _connectionOptions.DatabaseManagment.GetConnection())
+            using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 Assert.Throws<ArgumentNullException>(() => Test1.Select(_connectionOptions).OrderBy(x => x.Id, OrderBy.ASC).Limit(0, 5).Build().Execute(null));
             }
@@ -180,7 +180,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         [Fact]
         public async Task Limit_executeasync_with_connection_by_select()
         {
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 var result = await Test1.Select(_connectionOptions).Limit(0, 5).Build().ExecuteAsync(connection);
                 Assert.NotNull(result);
@@ -191,7 +191,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         [Fact]
         public async void Limit_executeasync_with_connection_by_select_and_where()
         {
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 var result = await Test1.Select(_connectionOptions).Where().IsNotNull(x => x.Id).Limit(0, 5).Build().ExecuteAsync(connection);
                 Assert.NotNull(result);
@@ -202,7 +202,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         [Fact]
         public async void Limit_executeasync_with_connection_by_select_and_orderby()
         {
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 var result = await Test1.Select(_connectionOptions).OrderBy(x => x.Id, OrderBy.ASC).Limit(0, 5).Build().ExecuteAsync(connection);
                 Assert.NotNull(result);
@@ -221,7 +221,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = cancellationTokenSource.Token;
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 var result = await Test1.Select(_connectionOptions).Limit(0, 5).Build().ExecuteAsync(connection,token);
                 Assert.NotNull(result);
@@ -234,7 +234,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = cancellationTokenSource.Token;
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 var result = await Test1.Select(_connectionOptions).Where().IsNotNull(x => x.Id).Limit(0, 5).Build().ExecuteAsync(connection,token);
                 Assert.NotNull(result);
@@ -247,7 +247,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = cancellationTokenSource.Token;
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 var result = await Test1.Select(_connectionOptions).OrderBy(x => x.Id, OrderBy.ASC).Limit(0, 5).Build().ExecuteAsync(connection, token);
                 Assert.NotNull(result);
@@ -260,7 +260,7 @@ namespace GSqlQuery.MySql.Test.Extensions
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = cancellationTokenSource.Token;
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 cancellationTokenSource.Cancel();
                 await Assert.ThrowsAsync<OperationCanceledException>(async () => await Test1.Select(_connectionOptions).OrderBy(x => x.Id, OrderBy.ASC).Limit(0, 5).Build().ExecuteAsync(connection,token));

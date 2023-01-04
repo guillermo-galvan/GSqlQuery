@@ -6,12 +6,12 @@ namespace GSqlQuery
     {
         public IStatements Statements { get; }
 
-        public IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
+        public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
-        public ConnectionOptions(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagment)
+        public ConnectionOptions(IStatements statements, IDatabaseManagement<TDbConnection> databaseManagement)
         {
             Statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            DatabaseManagment = databaseManagment ?? throw new ArgumentNullException(nameof(databaseManagment));
+            DatabaseManagement = databaseManagement ?? throw new ArgumentNullException(nameof(databaseManagement));
         }
     }
 }
