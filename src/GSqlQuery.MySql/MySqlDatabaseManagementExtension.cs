@@ -6,7 +6,7 @@ namespace GSqlQuery.MySql
 {
     public static class MySqlDatabaseManagementExtension
     {
-        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, MySqlDatabaseConnection> query)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, MySqlDatabaseConnection> query)
         {
             using (var connection = query.DatabaseManagment.GetConnection())
             {
@@ -20,12 +20,12 @@ namespace GSqlQuery.MySql
             }
         }
 
-        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, MySqlDatabaseConnection> query, MySqlDatabaseTransaction transaction)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, MySqlDatabaseConnection> query, MySqlDatabaseTransaction transaction)
         {
             return query.Execute(transaction.Connection);
         }
 
-        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, MySqlDatabaseConnection> query, CancellationToken cancellationToken = default)
+        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, MySqlDatabaseConnection> query, CancellationToken cancellationToken = default)
         {
             using (var connection = await query.DatabaseManagment.GetConnectionAsync(cancellationToken))
             {
@@ -39,7 +39,7 @@ namespace GSqlQuery.MySql
             }
         }
 
-        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, MySqlDatabaseConnection> query, MySqlDatabaseTransaction transaction,
+        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, MySqlDatabaseConnection> query, MySqlDatabaseTransaction transaction,
             CancellationToken cancellationToken = default)
         {
             return query.ExecuteAsync(transaction.Connection,cancellationToken);

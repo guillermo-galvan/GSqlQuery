@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace GSqlQuery
 {
     public class InsertQuery<T, TDbConnection> : Query<T, TDbConnection, T>, IQuery<T, TDbConnection, T>,
-        IExecute<T, TDbConnection> where T : class, new()
+        IExecuteDatabaseManagement<T, TDbConnection> where T : class, new()
     {
         public object Entity { get; }
 

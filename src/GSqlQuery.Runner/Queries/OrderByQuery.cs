@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GSqlQuery
 {
     public class OrderByQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
-        IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
+        IExecuteDatabaseManagement<IEnumerable<T>, TDbConnection> where T : class, new()
     {
         public OrderByQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions)

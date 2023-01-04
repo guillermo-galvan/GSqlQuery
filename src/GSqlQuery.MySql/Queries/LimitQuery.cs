@@ -16,7 +16,7 @@ namespace GSqlQuery.MySql
     }
 
     public class LimitQuery<T, TDbConnection> : Query<T, TDbConnection, IEnumerable<T>>, IQuery<T, TDbConnection, IEnumerable<T>>,
-        IExecute<IEnumerable<T>, TDbConnection> where T : class, new()
+        IExecuteDatabaseManagement<IEnumerable<T>, TDbConnection> where T : class, new()
     {
         internal LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions)
