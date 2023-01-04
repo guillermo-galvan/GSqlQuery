@@ -6,7 +6,7 @@ namespace GSqlQuery.Sqlite
 {
     public static class SqliteDatabaseManagementExtension
     {
-        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, SqliteDatabaseConnection> query)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, SqliteDatabaseConnection> query)
         {
             query.DatabaseManagment.GetConnection();
 
@@ -21,12 +21,12 @@ namespace GSqlQuery.Sqlite
                 }
             }
         }
-        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, SqliteDatabaseConnection> query, SqliteDatabaseTransaction transaction)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, SqliteDatabaseConnection> query, SqliteDatabaseTransaction transaction)
         {
             return query.Execute(transaction.Connection);
         }
 
-        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqliteDatabaseConnection> query, CancellationToken cancellationToken = default)
+        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, SqliteDatabaseConnection> query, CancellationToken cancellationToken = default)
         {
             using (var connection = await query.DatabaseManagment.GetConnectionAsync(cancellationToken))
             {
@@ -40,7 +40,7 @@ namespace GSqlQuery.Sqlite
             }
         }
 
-        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqliteDatabaseConnection> query, 
+        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, SqliteDatabaseConnection> query, 
             SqliteDatabaseTransaction transaction, CancellationToken cancellationToken = default)
         {
             return query.ExecuteAsync(transaction.Connection, cancellationToken);

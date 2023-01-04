@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery
 {
+<<<<<<< HEAD
     public sealed class CountQuery<T, TDbConnection> : Query<T, TDbConnection, int>, IQuery<T, TDbConnection, int>,
+        IExecute<int, TDbConnection> where T : class, new()
+=======
+    public class CountQuery<T, TDbConnection> : Query<T, TDbConnection, int>, IQuery<T, TDbConnection, int>,
         IExecuteDatabaseManagement<int, TDbConnection> where T : class, new()
+>>>>>>> dev
     {
         internal CountQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions)
