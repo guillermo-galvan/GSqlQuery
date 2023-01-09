@@ -41,7 +41,7 @@ namespace GSqlQuery
             options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
             var query = queryBuilder.Build();
             return new OrderByQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder,
-                new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagment));
+                new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagement));
         }
 
         public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>

@@ -6,22 +6,9 @@ using System.Reflection;
 
 namespace GSqlQuery.Extensions
 {
-    public class ClassOptionsTupla<T>
+    internal static class GeneralExtension
     {
-        public ClassOptions ClassOptions { get; set; }
-
-        public T MemberInfo { get; set; }
-
-        public ClassOptionsTupla(ClassOptions classOptions, T memberInfo)
-        {
-            ClassOptions = classOptions;
-            MemberInfo = memberInfo;
-        }
-    }
-
-    public static class GeneralExtension
-    {
-        public static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptions options, IEnumerable<string> selectMember)
+        internal static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptions options, IEnumerable<string> selectMember)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             return (from prop in options.PropertyOptions
@@ -29,14 +16,14 @@ namespace GSqlQuery.Extensions
                     select prop).ToArray();
         }
 
-        public static IEnumerable<ColumnAttribute> GetColumnsQuery(this ClassOptions options, IEnumerable<string> selectMember)
+        internal static IEnumerable<ColumnAttribute> GetColumnsQuery(this ClassOptions options, IEnumerable<string> selectMember)
         {
             return (from prop in options.PropertyOptions
                     join sel in selectMember on prop.PropertyInfo.Name equals sel
                     select prop.ColumnAttribute).ToArray();
         }
 
-        public static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
 
@@ -46,7 +33,7 @@ namespace GSqlQuery.Extensions
             return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
         }
 
-        public static ClassOptionsTupla<MemberInfo> GetOptionsAndMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<MemberInfo> GetOptionsAndMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
 
@@ -56,7 +43,7 @@ namespace GSqlQuery.Extensions
             return new ClassOptionsTupla<MemberInfo>(options, memberInfos);
         }
 
-        public static void ValidateMemberInfos(this IEnumerable<MemberInfo> memberInfos, string message)
+        internal static void ValidateMemberInfos(this IEnumerable<MemberInfo> memberInfos, string message)
         {
             if (!memberInfos.Any())
             {
@@ -64,7 +51,7 @@ namespace GSqlQuery.Extensions
             }
         }
 
-        public static PropertyOptions ValidateMemberInfo(this MemberInfo memberInfo, ClassOptions options)
+        internal static PropertyOptions ValidateMemberInfo(this MemberInfo memberInfo, ClassOptions options)
         {
             PropertyOptions result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
 
@@ -76,7 +63,7 @@ namespace GSqlQuery.Extensions
             return result;
         }
 
-        public static object GetValue(this PropertyOptions options, object entity)
+        internal static object GetValue(this PropertyOptions options, object entity)
         {
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
         }

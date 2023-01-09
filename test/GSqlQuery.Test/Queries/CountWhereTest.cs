@@ -22,26 +22,26 @@ namespace GSqlQuery.Test.Queries
         }
 
         [Fact]
-        public void Should_add_criteria()
+        public void Should_add_criteria_CountQuery()
         {
-            CountWhere<Test1> query = new CountWhere<Test1>(_countQueryBuilder);
+            AndOrBase<Test1,CountQuery<Test1>> query = new AndOrBase<Test1, CountQuery<Test1>>(_countQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
         }
 
         [Fact]
-        public void Throw_exception_if_null_ISearchCriteria_is_added()
+        public void Throw_exception_if_null_ISearchCriteria_is_added_CountQuery()
         {
-            CountWhere<Test1> query = new CountWhere<Test1>(_countQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1>> query = new AndOrBase<Test1, CountQuery<Test1>>(_countQueryBuilder);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
 
         [Fact]
-        public void Should_build_the_criteria()
+        public void Should_build_the_criteria_CountQuery()
         {
-            CountWhere<Test1> query = new CountWhere<Test1>(_countQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1>> query = new AndOrBase<Test1, CountQuery<Test1>>(_countQueryBuilder);
             Assert.NotNull(query);
             query.Add(_equal);
 
@@ -51,24 +51,24 @@ namespace GSqlQuery.Test.Queries
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface_with_expression()
+        public void Should_get_the_IAndOr_interface_with_expression_CountQuery()
         {
-            CountWhere<Test1> where = new CountWhere<Test1>(_countQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1>> where = new AndOrBase<Test1, CountQuery<Test1>>(_countQueryBuilder);
             IAndOr<Test1, CountQuery<Test1>> andOr = where.GetAndOr(x => x.Id);
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_with_expression()
+        public void Throw_exception_if_expression_is_null_with_expression_CountQuery()
         {
-            CountWhere<Test1> where = null;
+            AndOrBase<Test1, CountQuery<Test1>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr(x => x.Id));
         }
 
         [Fact]
-        public void Should_validate_of_IAndOr()
+        public void Should_validate_of_IAndOr_CountQuery()
         {
-            IAndOr<Test1, CountQuery<Test1>> andOr = new CountWhere<Test1>(_countQueryBuilder);
+            IAndOr<Test1, CountQuery<Test1>> andOr = new AndOrBase<Test1, CountQuery<Test1>>(_countQueryBuilder);
             try
             {
                 andOr.Validate(x => x.IsTest);
@@ -81,24 +81,24 @@ namespace GSqlQuery.Test.Queries
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_in_IAndOr()
+        public void Throw_exception_if_expression_is_null_in_IAndOr_CountQuery()
         {
             IAndOr<Test1, CountQuery<Test1>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.Validate(x => x.Id));
         }
 
         [Fact]
-        public void Should_get_the_IAndOr_interface()
+        public void Should_get_the_IAndOr_interface_CountQuery()
         {
-            CountWhere<Test1> where = new CountWhere<Test1>(_countQueryBuilder);
+            AndOrBase<Test1, CountQuery<Test1>> where = new AndOrBase<Test1, CountQuery<Test1>>(_countQueryBuilder);
             IAndOr<Test1, CountQuery<Test1>> andOr = where.GetAndOr();
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null()
+        public void Throw_exception_if_expression_is_null_CountQuery()
         {
-            CountWhere<Test1> where = null;
+            AndOrBase<Test1, CountQuery<Test1>> where = null;
             Assert.Throws<ArgumentNullException>(() => where.GetAndOr());
         }
     }

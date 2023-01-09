@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.SQLServer
 {
-    public class SqlServerDatabaseManagement : DatabaseManagement, IDatabaseManagement<SqlServerDatabaseConnection>
+    public sealed class SqlServerDatabaseManagement : DatabaseManagement, IDatabaseManagement<SqlServerDatabaseConnection>
     {
         public SqlServerDatabaseManagement(string connectionString) :
             base(connectionString, new SqlServerDatabaseManagementEvents())

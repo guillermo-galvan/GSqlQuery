@@ -18,7 +18,7 @@ namespace GSqlQuery.Runner.Queries
         public IDictionary<ColumnAttribute, object> ColumnValues => _columnValues;
 
         public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, IEnumerable<string> selectMember, object value) :
-            base(connectionOptions, QueryType.Update)
+            base(connectionOptions)
         {
             _columnValues = new Dictionary<ColumnAttribute, object>();
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
@@ -29,7 +29,7 @@ namespace GSqlQuery.Runner.Queries
         }
 
         public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object entity, IEnumerable<string> selectMember) :
-            base(connectionOptions, QueryType.Update)
+            base(connectionOptions)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
@@ -42,99 +42,27 @@ namespace GSqlQuery.Runner.Queries
             };
         }
 
-        private Queue<CriteriaDetail> GetUpdateCliterias()
-        {
-            Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
-            long ticks = DateTime.Now.Ticks; 
-            foreach (var item in _columnValues)
-            {
-                PropertyOptions options = Columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = $"@PU{ticks++}";
-                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(_tableName, ConnectionOptions.Statements)}={paramName}",
-                    new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
-            }
-            return criteriaDetails;
-        }
-
-        protected override string GenerateQuery()
-        {
-            if (_columnValues == null)
-            {
-                throw new InvalidOperationException("Column values not found");
-            }
-            Queue<CriteriaDetail> criteria = GetUpdateCliterias();
-            string query = string.Empty;
-            _criteria = null;
-
-            if (_queryType == QueryType.Update)
-            {
-                query = string.Format(ConnectionOptions.Statements.Update, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)));
-            }
-            else
-            {
-                string where = GetCriteria();
-                query = string.Format(ConnectionOptions.Statements.UpdateWhere, _tableName, string.Join(",", criteria.Select(x => x.QueryPart)), where);
-                foreach (var item in _criteria)
-                {
-                    criteria.Enqueue(item);
-                }
-            }
-
-            _criteria = criteria;
-            return query;
-        }
-
         public override UpdateQuery<T, TDbConnection> Build()
         {
-            return new UpdateQuery<T, TDbConnection>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
+            var query = GSqlQuery.Queries.UpdateQueryBuilder<T>.CreateQuery(_columnValues, _andOr != null, Statements, Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty, ref _criteria);
+            return new UpdateQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
         }
 
         public override IWhere<T, UpdateQuery<T, TDbConnection>> Where()
         {
-            ChangeQueryType();
-            UpdateWhere<T, TDbConnection> selectWhere = new UpdateWhere<T, TDbConnection>(this);
-            _andOr = selectWhere;
+            _andOr = new AndOrBase<T,UpdateQuery<T,TDbConnection>>(this);
             return (IWhere<T, UpdateQuery<T, TDbConnection>>)_andOr;
         }
 
         public ISet<T, UpdateQuery<T, TDbConnection>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
-            var column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
-#if NET5_0_OR_GREATER
-            _columnValues.TryAdd(column, value);
-#else
-            if (!_columnValues.ContainsKey(column))
-            { 
-                _columnValues.Add(column, value);
-            }
-#endif
+            GSqlQuery.Queries.UpdateQueryBuilder<T>.AddSet(_columnValues, expression, value);
             return this;
         }
 
         public ISet<T, UpdateQuery<T, TDbConnection>> Set<TProperties>(System.Linq.Expressions.Expression<Func<T, TProperties>> expression)
         {
-            if (_entity == null)
-            {
-                throw new InvalidOperationException(ErrorMessages.EntityNotFound);
-            }
-
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-
-            foreach (var item in options.MemberInfo)
-            {
-                var propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
-#if NET5_0_OR_GREATER
-            _columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
-#else
-                if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
-                {
-                    _columnValues.Add(propertyOptions.ColumnAttribute, propertyOptions.GetValue(_entity));
-                }
-#endif
-            }
-
+            GSqlQuery.Queries.UpdateQueryBuilder<T>.AddSet(_entity, _columnValues, expression);
             return this;
         }
     }

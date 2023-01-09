@@ -23,6 +23,6 @@ namespace GSqlQuery
 
     public interface IExecuteDatabaseManagement<TResult, TDbConnection> : IExecute<TResult, TDbConnection>
     {
-        IDatabaseManagement<TDbConnection> DatabaseManagment { get; }
+        IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
     }
 }

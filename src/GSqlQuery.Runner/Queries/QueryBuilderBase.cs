@@ -7,8 +7,8 @@ namespace GSqlQuery.Runner
     {
         public ConnectionOptions<TDbConnection> ConnectionOptions { get; }
 
-        public QueryBuilderBase(ConnectionOptions<TDbConnection> connectionOptions, QueryType queryType)
-            : base(connectionOptions != null ? connectionOptions.Statements : null, queryType)
+        public QueryBuilderBase(ConnectionOptions<TDbConnection> connectionOptions)
+            : base(connectionOptions != null ? connectionOptions.Statements : null)
         {
             ConnectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
         }

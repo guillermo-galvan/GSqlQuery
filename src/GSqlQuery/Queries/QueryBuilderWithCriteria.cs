@@ -8,7 +8,7 @@ namespace GSqlQuery
         protected IEnumerable<CriteriaDetail> _criteria = null;
         protected IAndOr<T, TReturn> _andOr;
 
-        protected QueryBuilderWithCriteria(IStatements statements, QueryType queryType) : base(statements, queryType)
+        protected QueryBuilderWithCriteria(IStatements statements) : base(statements)
         { }
 
         public abstract IWhere<T, TReturn> Where();

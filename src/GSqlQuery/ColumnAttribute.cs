@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// Defines how the property will be taken for the query
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class ColumnAttribute : Attribute
+    public sealed class ColumnAttribute : Attribute
     {
         /// <summary>
         /// Column name

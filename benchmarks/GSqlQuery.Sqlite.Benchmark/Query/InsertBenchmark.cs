@@ -41,7 +41,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<Test1> GenerateQueryTransaction_Test1()
         {
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
@@ -66,7 +66,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<Test2> GenerateQueryTransaction_Test2()
         {
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
@@ -105,7 +105,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         {
             List<Test1> result = new List<Test1>();
 
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
@@ -142,7 +142,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         public async Task<List<Test2>> GenerateQueryTransaction_Test2()
         {
             List<Test2> result = new List<Test2>();
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
@@ -185,7 +185,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         public async Task<int> Batch_GenerateQueryTransaction_Test1()
         {
             Console.WriteLine("Batch_GenerateQueryTransaction_Test1");
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {
@@ -226,7 +226,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         public async Task<int> Batch_GenerateQueryTransaction_Test2()
         {
             Console.WriteLine("Batch_GenerateQueryTransaction_Test2");
-            using (var connection = await _connectionOptions.DatabaseManagment.GetConnectionAsync())
+            using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 using (var transaction = await connection.BeginTransactionAsync())
                 {

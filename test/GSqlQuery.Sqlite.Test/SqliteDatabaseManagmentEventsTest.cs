@@ -32,7 +32,7 @@ namespace GSqlQuery.Sqlite.Test
                 }
             }
 
-            var result = _connectionOptions.DatabaseManagment.Events.GetParameter<Test1>(parameters);
+            var result = _connectionOptions.DatabaseManagement.Events.GetParameter<Test1>(parameters);
             Assert.NotNull(result);
             Assert.Equal(parameters.Count, result.Count());
         }
@@ -54,7 +54,7 @@ namespace GSqlQuery.Sqlite.Test
                 }
             }
 
-            var result = _connectionOptions.DatabaseManagment.Events.OnGetParameter(typeof(Test1), parameters);
+            var result = _connectionOptions.DatabaseManagement.Events.OnGetParameter(typeof(Test1), parameters);
             Assert.NotNull(result);
             Assert.Empty(result);
         }

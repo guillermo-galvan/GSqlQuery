@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace GSqlQuery.Extensions
 {
-    public static class FluentSQLExtension
+    public static class GSqlQueryExtension
     {
         public static IAndOr<T, TReturn> GetAndOr<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression)
            where T : class, new() where TReturn : IQuery

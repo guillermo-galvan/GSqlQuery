@@ -5,7 +5,7 @@ namespace GSqlQuery
     /// <summary>
     /// Parameter detail 
     /// </summary>
-    public class ParameterDetail
+    public sealed class ParameterDetail
     {
         /// <summary>
         /// Get Column

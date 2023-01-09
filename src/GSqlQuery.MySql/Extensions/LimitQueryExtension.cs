@@ -53,7 +53,7 @@ namespace GSqlQuery.MySql
             }
             var query = queryBuilder.Build();
             return new LimitQueryBuilder<T, TDbConnection>(queryBuilder, 
-                new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagment), start, length);
+                new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagement), start, length);
         }
 
         public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(

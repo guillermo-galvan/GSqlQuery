@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
-    public class SqliteDatabaseConnection : Connection, IConnection
+    public sealed class SqliteDatabaseConnection : Connection, IConnection
     {
         public SqliteDatabaseConnection(string connectionString) : base(new SqliteConnection(connectionString))
         { }
@@ -53,7 +53,6 @@ namespace GSqlQuery.Sqlite
         }
 
 #endif
-
 
         ITransaction IConnection.BeginTransaction() => BeginTransaction();
 

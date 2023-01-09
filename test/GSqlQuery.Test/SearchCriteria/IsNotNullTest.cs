@@ -73,7 +73,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.IsNotNull(x => x.Id);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -85,7 +85,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.IsNotNull(x => x.Id).AndIsNotNull(x => x.IsTest);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);
@@ -97,7 +97,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            SelectWhere<Test1> where = new SelectWhere<Test1>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.IsNotNull(x => x.Id).OrIsNotNull(x => x.IsTest);
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Statements);

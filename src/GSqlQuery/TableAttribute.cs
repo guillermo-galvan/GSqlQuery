@@ -3,7 +3,7 @@
 namespace GSqlQuery
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
-    public class TableAttribute : Attribute
+    public sealed class TableAttribute : Attribute
     {
         /// <summary>
         /// 

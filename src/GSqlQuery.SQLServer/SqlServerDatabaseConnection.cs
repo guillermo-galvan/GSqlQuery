@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.SQLServer
 {
-    public class SqlServerDatabaseConnection : Connection, IConnection
+    public sealed class SqlServerDatabaseConnection : Connection, IConnection
     {
         public SqlServerDatabaseConnection(string connectionString) : base(new SqlConnection(connectionString))
         { }

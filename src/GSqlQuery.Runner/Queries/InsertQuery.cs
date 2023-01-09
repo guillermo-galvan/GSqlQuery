@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery
 {
-    public class InsertQuery<T, TDbConnection> : Query<T, TDbConnection, T>, IQuery<T, TDbConnection, T>,
+    public sealed class InsertQuery<T, TDbConnection> : Query<T, TDbConnection, T>, IQuery<T, TDbConnection, T>,
         IExecuteDatabaseManagement<T, TDbConnection> where T : class, new()
     {
         public object Entity { get; }
 
-        protected PropertyOptions _propertyOptionsAutoIncrementing = null;
+        private PropertyOptions _propertyOptionsAutoIncrementing = null;
 
         internal InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions,
             object entity, PropertyOptions propertyOptionsAutoIncrementing) :
@@ -28,13 +28,13 @@ namespace GSqlQuery
             object idResult;
             if (connection == null)
             {
-                idResult = isAsync ? await DatabaseManagment.ExecuteScalarAsync<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken)
-                                   : DatabaseManagment.ExecuteScalar<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                idResult = isAsync ? await DatabaseManagement.ExecuteScalarAsync<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken)
+                                   : DatabaseManagement.ExecuteScalar<object>(this, this.GetParameters<T, TDbConnection>(DatabaseManagement));
             }
             else
             {
-                idResult = isAsync ? await DatabaseManagment.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken)
-                                   : DatabaseManagment.ExecuteScalar<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                idResult = isAsync ? await DatabaseManagement.ExecuteScalarAsync<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken)
+                                   : DatabaseManagement.ExecuteScalar<object>(connection, this, this.GetParameters<T, TDbConnection>(DatabaseManagement));
             }
 
             var newType = Nullable.GetUnderlyingType(_propertyOptionsAutoIncrementing.PropertyInfo.PropertyType);
@@ -50,7 +50,7 @@ namespace GSqlQuery
             }
             else
             {
-                DatabaseManagment.ExecuteNonQuery(this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                DatabaseManagement.ExecuteNonQuery(this, this.GetParameters<T, TDbConnection>(DatabaseManagement));
             }
 
             return (T)Entity;
@@ -66,7 +66,7 @@ namespace GSqlQuery
             }
             else
             {
-                DatabaseManagment.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment));
+                DatabaseManagement.ExecuteNonQuery(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagement));
             }
 
             return (T)Entity;
@@ -80,7 +80,7 @@ namespace GSqlQuery
             }
             else
             {
-                await DatabaseManagment.ExecuteNonQueryAsync(this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
+                await DatabaseManagement.ExecuteNonQueryAsync(this, this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken);
             }
 
             return (T)Entity;
@@ -96,7 +96,7 @@ namespace GSqlQuery
             }
             else
             {
-                await DatabaseManagment.ExecuteNonQueryAsync(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagment), cancellationToken);
+                await DatabaseManagement.ExecuteNonQueryAsync(dbConnection, this, this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken);
             }
 
             return (T)Entity;

@@ -5,61 +5,46 @@ using System.Linq;
 
 namespace GSqlQuery.Queries
 {
-    public class ColumnParameterDetail
-    {
-        public string ColumnName { get; set; }
-
-        public ParameterDetail ParameterDetail { get; set; }
-
-        public ColumnParameterDetail(string columnName, ParameterDetail parameterDetail)
-        {
-            ColumnName = columnName;
-            ParameterDetail = parameterDetail;
-        }
-    }
-
     internal class InsertQueryBuilder<T> : QueryBuilderBase<T, InsertQuery<T>>, IQueryBuilder<T, InsertQuery<T>> where T : class, new()
     {
         private static ulong _idParam = 0;
         protected readonly object _entity;
-        protected IEnumerable<CriteriaDetail> _criteria = null;
-        protected PropertyOptions _propertyOptionsAutoIncrementing = null;
 
         public InsertQueryBuilder(IStatements statements, object entity)
-            : base(statements, QueryType.Insert)
+            : base(statements)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
+            if (_idParam > ulong.MaxValue - 2100)
+            {
+                _idParam = 0;
+            }
         }
 
-        protected string GetInsertQuery()
+        internal static string CreateQuery(IStatements statements, IEnumerable<PropertyOptions> columns, string tableName, object entity, ref IEnumerable<CriteriaDetail> criteria)
         {
-            ColumnParameterDetail[] values = GetValues();
-            CriteriaDetail criteriaDetail = new CriteriaDetail(string.Join(",", values.Select(x => x.ParameterDetail.Name)), values.Select(x => x.ParameterDetail));
-            _criteria = new CriteriaDetail[] { criteriaDetail };
-            string text = _propertyOptionsAutoIncrementing != null ?
-                $"{string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.ColumnName)), criteriaDetail.QueryPart)} {Statements.ValueAutoIncrementingQuery}"
-                : string.Format(Statements.Insert, _tableName, string.Join(",", values.Select(x => x.ColumnName)), criteriaDetail.QueryPart);
+            AutoIncrementingClass autoIncrementingClass = GetValues(statements, columns, tableName, entity);
+            CriteriaDetail criteriaDetail = new CriteriaDetail(string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail.Name)), autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail));
+            criteria = new CriteriaDetail[] { criteriaDetail };
+            string text = autoIncrementingClass.WithAutoIncrementing ?
+                $"{string.Format(statements.Insert, tableName, string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName)), criteriaDetail.QueryPart)} {statements.ValueAutoIncrementingQuery}"
+                : string.Format(statements.Insert, tableName, string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName)), criteriaDetail.QueryPart);
 
             return text;
         }
 
-        protected ColumnParameterDetail[] GetValues()
+        internal static AutoIncrementingClass GetValues(IStatements statements, IEnumerable<PropertyOptions> columns, string tableName, object entity)
         {
-            long ticks = DateTime.Now.Ticks;
-            _propertyOptionsAutoIncrementing = Columns.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing);
-            return Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
-                          .Select(x => new  ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, Statements), new ParameterDetail($"@PI{_idParam++}", x.GetValue(_entity), x)))
+            var columnsParameters = columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
+                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(tableName, statements), new ParameterDetail($"@PI{_idParam++}", x.GetValue(entity), x)))
                           .ToArray();
+            return new AutoIncrementingClass(columns.Any(x => x.ColumnAttribute.IsAutoIncrementing), columnsParameters);
         }
 
         public override InsertQuery<T> Build()
         {
-            return new InsertQuery<T>(GenerateQuery(), Columns.Select(x => x.ColumnAttribute), _criteria, Statements, _entity);
-        }
-
-        protected override string GenerateQuery()
-        {
-            return GetInsertQuery();
+            IEnumerable<CriteriaDetail> criteria = null;
+            var query = CreateQuery(Statements, Columns, _tableName, _entity, ref criteria);
+            return new InsertQuery<T>(query, Columns.Select(x => x.ColumnAttribute), criteria, Statements, _entity);
         }
     }
 }

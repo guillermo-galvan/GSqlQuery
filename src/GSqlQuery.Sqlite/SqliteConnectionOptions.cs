@@ -12,8 +12,8 @@ namespace GSqlQuery.Sqlite
             base(new SqliteStatements(), new SqliteDatabaseManagement(connectionString, events))
         { }
 
-        public SqliteConnectionOptions(IStatements statements, SqliteDatabaseManagement sqlServerDatabaseManagment) :
-            base(statements, sqlServerDatabaseManagment)
+        public SqliteConnectionOptions(IStatements statements, SqliteDatabaseManagement sqlServerDatabaseManagement) :
+            base(statements, sqlServerDatabaseManagement)
         {
 
         }

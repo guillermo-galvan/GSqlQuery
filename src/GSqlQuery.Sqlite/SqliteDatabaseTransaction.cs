@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace GSqlQuery.Sqlite
 {
-    public class SqliteDatabaseTransaction : Transaction
+    public sealed class SqliteDatabaseTransaction : Transaction
     {
         public SqliteDatabaseTransaction(SqliteDatabaseConnection connection, DbTransaction transaction) : base(connection, transaction)
         {
