@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GSqlQuery.MySql.Benchmark.Entities
+namespace GSqlQuery.MySql.Benchmark.Data
 {
     [Table("GSQLQuery", "test2")]
     public class Test2 : EntityExecute<Test2>

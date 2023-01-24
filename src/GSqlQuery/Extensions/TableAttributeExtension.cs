@@ -1,8 +1,8 @@
 ﻿namespace GSqlQuery.Extensions
 {
-    internal static class TableAttributeExtension
+    public static class TableAttributeExtension
     {
-        internal static string GetTableName(this TableAttribute tableAttribute, IStatements statements)
+        public static string GetTableName(this TableAttribute tableAttribute, IStatements statements)
         {
             tableAttribute.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableAttribute));
             statements.NullValidate(ErrorMessages.ParameterNotNull, nameof(statements));

@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.MySql.Benchmark.Entities
+﻿namespace GSqlQuery.MySql.Benchmark.Data
 {
     [Table("GSQLQuery", "test1")]
     public class Test1 : EntityExecute<Test1>

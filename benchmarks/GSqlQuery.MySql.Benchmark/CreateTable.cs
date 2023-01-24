@@ -1,4 +1,4 @@
-﻿using GSqlQuery.MySql.Benchmark.Entities;
+﻿using GSqlQuery.MySql.Benchmark.Data;
 using GSqlQuery.Runner;
 using MySql.Data.MySqlClient;
 using System;
@@ -8,7 +8,7 @@ namespace GSqlQuery.MySql.Benchmark
 {
     internal static class CreateTable
     {
-        internal const string ConnectionString = "server=127.0.0.1;uid=root;pwd=saadmin";
+        internal const string ConnectionString = "server=127.0.0.1;uid=root;pwd=saadmin;";
 
         internal static MySqlConnectionOptions GetConnectionOptions()
         {
