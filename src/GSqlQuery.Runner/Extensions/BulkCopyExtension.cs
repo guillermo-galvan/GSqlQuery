@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace GSqlQuery
 {
@@ -11,10 +12,12 @@ namespace GSqlQuery
             DataTable dataTable = new DataTable(classOption.Table.Name);
             foreach (PropertyOptions property in classOption.PropertyOptions)
             {
-                DataColumn dataColumn = new DataColumn();
-                dataColumn.DataType = property.PropertyInfo.PropertyType;
-                dataColumn.ColumnName = property.ColumnAttribute.Name;
-                dataColumn.AutoIncrement = property.ColumnAttribute.IsAutoIncrementing;
+                DataColumn dataColumn = new DataColumn
+                {
+                    DataType = property.PropertyInfo.PropertyType,
+                    ColumnName = property.ColumnAttribute.Name,
+                    AutoIncrement = property.ColumnAttribute.IsAutoIncrementing
+                };
                 dataTable.Columns.Add(dataColumn);
             }
 
@@ -23,6 +26,11 @@ namespace GSqlQuery
 
         public static DataTable FillTable<T>(IEnumerable<T> values)
         {
+            if (values == null && !values.Any())
+            {
+                throw new InvalidOperationException("Sequence contains no elements");
+            }
+
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(T));
 
             DataTable dataTable = CreateTable(classOption);

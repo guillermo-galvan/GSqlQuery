@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using GSqlQuery.MySql.Benchmark.Entities;
+using GSqlQuery.MySql.Benchmark.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

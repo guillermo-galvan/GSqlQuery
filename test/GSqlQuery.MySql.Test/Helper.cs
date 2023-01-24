@@ -5,7 +5,7 @@ namespace GSqlQuery.MySql.Test
 {
     internal class Helper
     {
-        internal const string ConnectionString = "server=127.0.0.1;uid=root;pwd=saadmin";
+        internal const string ConnectionString = "server=127.0.0.1;uid=root;pwd=saadmin;";
 
         private static bool IsFirtsExecute = true;
         private readonly static Mutex mut = new Mutex();

@@ -1,4 +1,4 @@
-﻿namespace GSqlQuery.MySql.Benchmark.Entities
+﻿namespace GSqlQuery.MySql.Benchmark.Data
 {
     [Table("information_schema", "tables")]
     internal class Tables : EntityExecute<Tables>
@@ -10,7 +10,7 @@
         public string Name { get; set; }
 
         public Tables()
-        {}
+        { }
 
         public Tables(string tableSchema, string name)
         {
