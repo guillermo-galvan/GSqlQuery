@@ -1,6 +1,5 @@
 ﻿using GSqlQuery.Extensions;
 using System.Linq.Expressions;
-using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System.Reflection;
 using System.Linq;
@@ -12,20 +11,8 @@ namespace GSqlQuery.Test.Extensions
 {
     public class GeneralExtensionTest
     {
-        private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
-        private readonly Equal<int> _equal;
-        private readonly IStatements _stantements;
-        private readonly ClassOptions _classOptions;
-
         public GeneralExtensionTest()
-        {
-            _stantements = new Statements();
-            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
-            _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-        }
+        {}
 
         [Fact]
         public void Should_return_the_column_attribute()
@@ -103,6 +90,28 @@ namespace GSqlQuery.Test.Extensions
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(3, result.Count());
+        }
+
+        [Fact]
+        public void Should_return_JoinCriteriaPart_two_tables()
+        {
+            Expression<Func<JoinTwoTables<Test3, Test6>, int>> expression = x => x.Table1.Ids;
+            var result = expression.GetJoinColumn();
+            Assert.NotNull(result);
+            Assert.NotNull(result.Table);
+            Assert.NotNull(result.Column);
+            Assert.NotNull(result.MemberInfo);
+        }
+
+        [Fact]
+        public void Should_return_JoinCriteriaPart_three_tables()
+        {
+            Expression<Func<JoinThreeTables<Test3, Test6, Test1>, int>> expression = x => x.Table1.Ids;
+            var result = expression.GetJoinColumn();
+            Assert.NotNull(result);
+            Assert.NotNull(result.Table);
+            Assert.NotNull(result.Column);
+            Assert.NotNull(result.MemberInfo);
         }
     }
 }

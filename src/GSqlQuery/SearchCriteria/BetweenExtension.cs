@@ -21,7 +21,8 @@ namespace GSqlQuery
             TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            andor.Add(new Between<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, final));
+            var columnInfo = expression.GetColumnAttribute();
+            andor.Add(new Between<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final));
             return andor;
         }
 
@@ -39,7 +40,8 @@ namespace GSqlQuery
             TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
-            andOr.Add(new Between<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, final, "AND"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new Between<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final, "AND"));
             return andOr;
         }
 
@@ -57,7 +59,8 @@ namespace GSqlQuery
             TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
-            andOr.Add(new Between<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), initial, final, "OR"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new Between<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final, "OR"));
             return andOr;
         }
     }

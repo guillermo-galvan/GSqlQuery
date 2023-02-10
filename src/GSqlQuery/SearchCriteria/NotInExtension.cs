@@ -21,7 +21,8 @@ namespace GSqlQuery
             where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            andor.Add(new NotIn<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), values));
+            var columnInfo = expression.GetColumnAttribute();
+            andor.Add(new NotIn<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, values));
             return andor;
         }
 
@@ -38,7 +39,8 @@ namespace GSqlQuery
             IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
-            andOr.Add(new NotIn<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), values, "AND"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new NotIn<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, values, "AND"));
             return andOr;
         }
 
@@ -55,7 +57,8 @@ namespace GSqlQuery
             IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
-            andOr.Add(new NotIn<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), values, "OR"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new NotIn<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, values, "OR"));
             return andOr;
         }
     }

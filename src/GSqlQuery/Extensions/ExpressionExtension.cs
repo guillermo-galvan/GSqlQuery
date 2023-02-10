@@ -64,11 +64,11 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ColumnAttribute</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static ColumnAttribute GetColumnAttribute<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<ColumnAttribute>  GetColumnAttribute<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             MemberInfo memberInfo = expression.GetMember();
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return memberInfo.ValidateMemberInfo(options).ColumnAttribute;
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfo.DeclaringType);
+            return new ClassOptionsTupla<ColumnAttribute>(options, memberInfo.ValidateMemberInfo(options).ColumnAttribute);
         }
 
         private static Expression RemoveUnary(Expression toUnwrap)

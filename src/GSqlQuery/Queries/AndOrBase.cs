@@ -12,12 +12,12 @@ namespace GSqlQuery
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
         private readonly IQueryBuilderWithWhere<T, TReturn> _queryBuilderWithWhere;
 
-        public IEnumerable<PropertyOptions> Columns { get; protected set; }
+        protected IEnumerable<PropertyOptions> Columns { get; set; }
 
-        public AndOrBase(IQueryBuilderWithWhere<T, TReturn> queryBuilderWithWhere) : base()
+        public AndOrBase(IQueryBuilderWithWhere<T, TReturn> queryBuilderWithWhere, bool isColumns = true) : base()
         {
             _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentException(nameof(queryBuilderWithWhere));
-            Columns = ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions;
+            Columns = isColumns ? ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions : Enumerable.Empty<PropertyOptions>();
         }
 
         public void Add(ISearchCriteria criteria)

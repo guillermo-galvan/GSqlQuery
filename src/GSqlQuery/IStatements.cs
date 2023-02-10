@@ -61,5 +61,11 @@
         string SelectOrderBy { get; }
 
         bool IncrudeTableNameInQuery { get; }
+
+        string Join { get; }
+
+        string JoinSelect { get; }
+
+        string JoinSelectWhere { get; }
     }
 }

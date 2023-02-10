@@ -20,7 +20,8 @@ namespace GSqlQuery
             where T : class, new() where TReturn : IQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            andor.Add(new IsNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute()));
+            var columnInfo = expression.GetColumnAttribute();
+            andor.Add(new IsNull(columnInfo.ClassOptions.Table, columnInfo.MemberInfo));
             return andor;
         }
 
@@ -37,7 +38,8 @@ namespace GSqlQuery
             where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
-            andOr.Add(new IsNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), "AND"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new IsNull(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, "AND"));
             return andOr;
         }
 
@@ -54,7 +56,8 @@ namespace GSqlQuery
             where T : class, new() where TReturn : IQuery
         {
             andOr.Validate(expression);
-            andOr.Add(new IsNull(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), "OR"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new IsNull(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, "OR"));
             return andOr;
         }
     }

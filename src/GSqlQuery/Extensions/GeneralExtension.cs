@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSqlQuery.Queries;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -66,6 +67,41 @@ namespace GSqlQuery.Extensions
         internal static object GetValue(this PropertyOptions options, object entity)
         {
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
+        }
+
+        internal static JoinCriteriaPart GetJoinColumn<T1,T2,TProperties>(this Expression<Func<JoinTwoTables<T1, T2>, TProperties>> expression)
+            where T1 : class, new()
+            where T2 : class, new()
+        {
+            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
+            MemberInfo memberInfos = expression.GetMember();
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
+            ColumnAttribute columnAttribute =  options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
+
+            return new JoinCriteriaPart() 
+            {
+                Column = columnAttribute,
+                Table = options.Table,
+                MemberInfo = memberInfos,
+            };
+        }
+
+        internal static JoinCriteriaPart GetJoinColumn<T1, T2,T3, TProperties>(this Expression<Func<JoinThreeTables<T1,T2,T3>, TProperties>> expression)
+            where T1 : class, new()
+            where T2 : class, new()
+            where T3 : class, new()
+        {
+            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
+            MemberInfo memberInfos = expression.GetMember();
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
+            ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
+
+            return new JoinCriteriaPart()
+            {
+                Column = columnAttribute,
+                Table = options.Table,
+                MemberInfo = memberInfos,
+            };
         }
     }
 }

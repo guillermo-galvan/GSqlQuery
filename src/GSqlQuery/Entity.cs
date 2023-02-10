@@ -20,7 +20,7 @@ namespace GSqlQuery
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
+        public static IJoinQueryBuilder<T, SelectQuery<T>> Select<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -35,7 +35,7 @@ namespace GSqlQuery
         /// <returns>Instance of IQueryBuilder with which to create the query</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public static IQueryBuilderWithWhere<T, SelectQuery<T>> Select(IStatements statements)
+        public static IJoinQueryBuilder<T, SelectQuery<T>> Select(IStatements statements)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             return new SelectQueryBuilder<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions.Select(x => x.PropertyInfo.Name), statements);

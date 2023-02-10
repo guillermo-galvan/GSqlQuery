@@ -2,7 +2,7 @@
 
 namespace GSqlQuery
 {
-    public sealed class ColumnsOrderBy
+    internal sealed class ColumnsOrderBy
     {
         public IEnumerable<PropertyOptions> Columns { get; }
 
