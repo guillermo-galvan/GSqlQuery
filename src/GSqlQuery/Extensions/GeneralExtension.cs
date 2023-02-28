@@ -69,7 +69,7 @@ namespace GSqlQuery.Extensions
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
         }
 
-        internal static JoinCriteriaPart GetJoinColumn<T1,T2,TProperties>(this Expression<Func<JoinTwoTables<T1, T2>, TProperties>> expression)
+        internal static JoinCriteriaPart GetJoinColumn<T1,T2,TProperties>(this Expression<Func<Join<T1, T2>, TProperties>> expression)
             where T1 : class, new()
             where T2 : class, new()
         {
@@ -86,7 +86,7 @@ namespace GSqlQuery.Extensions
             };
         }
 
-        internal static JoinCriteriaPart GetJoinColumn<T1, T2,T3, TProperties>(this Expression<Func<JoinThreeTables<T1,T2,T3>, TProperties>> expression)
+        internal static JoinCriteriaPart GetJoinColumn<T1, T2,T3, TProperties>(this Expression<Func<Join<T1,T2,T3>, TProperties>> expression)
             where T1 : class, new()
             where T2 : class, new()
             where T3 : class, new()

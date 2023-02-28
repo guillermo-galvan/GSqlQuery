@@ -3,11 +3,12 @@ using System.Linq;
 
 namespace GSqlQuery.Queries
 {
-    internal class AndOrJoin<T1, T2> : AndOrBase<JoinTwoTables<T1, T2>, JoinQuery<JoinTwoTables<T1, T2>>>
+    internal class AndOrJoin<T1, T2,TReturn> : AndOrBase<Join<T1, T2>, TReturn>
         where T1 : class, new()
         where T2 : class, new()
+        where TReturn : IQuery
     {
-        public AndOrJoin(IQueryBuilderWithWhere<JoinTwoTables<T1, T2>, JoinQuery<JoinTwoTables<T1, T2>>> queryBuilderWithWhere) :
+        public AndOrJoin(IQueryBuilderWithWhere<Join<T1, T2>, TReturn> queryBuilderWithWhere) :
             base(queryBuilderWithWhere, false)
         {
         }
@@ -25,12 +26,13 @@ namespace GSqlQuery.Queries
         }
     }
 
-    internal class AndOrJoin<T1, T2, T3> : AndOrBase<JoinThreeTables<T1, T2, T3>, JoinQuery<JoinThreeTables<T1, T2, T3>>>
+    internal class AndOrJoin<T1, T2, T3, TReturn> : AndOrBase<Join<T1, T2, T3>, TReturn>
         where T1 : class, new()
         where T2 : class, new()
         where T3 : class, new()
+        where TReturn : IQuery
     {
-        public AndOrJoin(IQueryBuilderWithWhere<JoinThreeTables<T1, T2, T3>, JoinQuery<JoinThreeTables<T1, T2, T3>>> queryBuilderWithWhere)
+        public AndOrJoin(IQueryBuilderWithWhere<Join<T1, T2, T3>, TReturn> queryBuilderWithWhere)
             : base(queryBuilderWithWhere, false)
         {
         }

@@ -63,17 +63,17 @@ namespace GSqlQuery.Queries
             return new SelectQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
 
-        public IComparisonOperators<JoinTwoTables<T, TJoin>, JoinQuery<JoinTwoTables<T, TJoin>>> InnerJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> InnerJoin<TJoin>() where TJoin : class, new()
         {
             return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName,Columns, JoinEnum.Inner,Statements);
         }
 
-        public IComparisonOperators<JoinTwoTables<T, TJoin>, JoinQuery<JoinTwoTables<T, TJoin>>> LeftJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> LeftJoin<TJoin>() where TJoin : class, new()
         {
             return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName,Columns, JoinEnum.Left, Statements);
         }
 
-        public IComparisonOperators<JoinTwoTables<T, TJoin>, JoinQuery<JoinTwoTables<T, TJoin>>> RightJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> RightJoin<TJoin>() where TJoin : class, new()
         {
             return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinEnum.Right, Statements);
         }
@@ -88,7 +88,7 @@ namespace GSqlQuery.Queries
             return (IWhere<T, SelectQuery<T>>)_andOr;
         }
 
-        private IComparisonOperators<JoinTwoTables<T, TJoin>, JoinQuery<JoinTwoTables<T, TJoin>>> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
+        private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class, new()
         {
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -98,18 +98,18 @@ namespace GSqlQuery.Queries
             return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, joinEnum, Statements, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
         }
 
-        public IComparisonOperators<JoinTwoTables<T, TJoin>, JoinQuery<JoinTwoTables<T, TJoin>>> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
             where TJoin : class, new()
         {
             return Join(JoinEnum.Inner, expression);
         }
 
-        public IComparisonOperators<JoinTwoTables<T, TJoin>, JoinQuery<JoinTwoTables<T, TJoin>>> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
             return Join(JoinEnum.Left, expression);
         }
 
-        public IComparisonOperators<JoinTwoTables<T, TJoin>, JoinQuery<JoinTwoTables<T, TJoin>>> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
             return Join(JoinEnum.Right, expression);
         }

@@ -95,7 +95,7 @@ namespace GSqlQuery.Test.Extensions
         [Fact]
         public void Should_return_JoinCriteriaPart_two_tables()
         {
-            Expression<Func<JoinTwoTables<Test3, Test6>, int>> expression = x => x.Table1.Ids;
+            Expression<Func<Join<Test3, Test6>, int>> expression = x => x.Table1.Ids;
             var result = expression.GetJoinColumn();
             Assert.NotNull(result);
             Assert.NotNull(result.Table);
@@ -106,7 +106,7 @@ namespace GSqlQuery.Test.Extensions
         [Fact]
         public void Should_return_JoinCriteriaPart_three_tables()
         {
-            Expression<Func<JoinThreeTables<Test3, Test6, Test1>, int>> expression = x => x.Table1.Ids;
+            Expression<Func<Join<Test3, Test6, Test1>, int>> expression = x => x.Table1.Ids;
             var result = expression.GetJoinColumn();
             Assert.NotNull(result);
             Assert.NotNull(result.Table);

@@ -7,9 +7,9 @@ using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
-    internal class JoinQueryBuilderWithWhere<T1, T2> : QueryBuilderWithCriteria<JoinTwoTables<T1, T2>, JoinQuery<JoinTwoTables<T1, T2>>>, 
-        IJoinQueryBuilderWithWhere<T1, T2, JoinQuery<JoinTwoTables<T1, T2>>>,
-        IComparisonOperators<JoinTwoTables<T1, T2>, JoinQuery<JoinTwoTables<T1, T2>>>,
+    internal class JoinQueryBuilderWithWhere<T1, T2> : QueryBuilderWithCriteria<Join<T1, T2>, JoinQuery<Join<T1, T2>>>, 
+        IJoinQueryBuilderWithWhere<T1, T2, JoinQuery<Join<T1, T2>>>,
+        IComparisonOperators<Join<T1, T2>, JoinQuery<Join<T1, T2>>>,
         IAddJoinCriteria<JoinModel>
         where T1 : class, new()
         where T2 : class, new()
@@ -119,39 +119,39 @@ namespace GSqlQuery.Queries
                 $"{joinModel.LogicalOperator} {partRight} {joinCriteria} {partLeft}";
         }
 
-        public IComparisonOperators<JoinThreeTables<T1, T2, TJoin>, JoinQuery<JoinThreeTables<T1, T2, TJoin>>> InnerJoin<TJoin>() where TJoin : class, new()
-        {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Inner, Statements);
-        }
-
-        public IComparisonOperators<JoinThreeTables<T1, T2, TJoin>, JoinQuery<JoinThreeTables<T1, T2, TJoin>>> LeftJoin<TJoin>() where TJoin : class, new()
-        {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Left, Statements);
-        }
-
-        public IComparisonOperators<JoinThreeTables<T1, T2, TJoin>, JoinQuery<JoinThreeTables<T1, T2, TJoin>>> RightJoin<TJoin>() where TJoin : class, new()
-        {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Right, Statements);
-        }
-
         public void AddColumns(JoinModel joinModel)
         {
             _tableNameT2.Joins.Enqueue(joinModel);
         }
 
-        public override IWhere<JoinTwoTables<T1, T2>, JoinQuery<JoinTwoTables<T1, T2>>> Where()
+        public override IWhere<Join<T1, T2>, JoinQuery<Join<T1, T2>>> Where()
         {
-            _andOr = new AndOrJoin<T1,T2>(this);
-            return (IWhere<JoinTwoTables<T1, T2>, JoinQuery<JoinTwoTables<T1, T2>>>)_andOr;
+            _andOr = new AndOrJoin<T1,T2, JoinQuery<Join<T1, T2>>>(this);
+            return (IWhere<Join<T1, T2>, JoinQuery<Join<T1, T2>>>)_andOr;
         }
 
-        public override JoinQuery<JoinTwoTables<T1, T2>> Build()
+        public override JoinQuery<Join<T1, T2>> Build()
         {
             var query = CreateQuery(_andOr != null, Statements, _joinInfos, _andOr != null ? GetCriteria() : "");
-            return new JoinQuery<JoinTwoTables<T1, T2>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            return new JoinQuery<Join<T1, T2>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
 
-        private IComparisonOperators<JoinThreeTables<T1, T2, TJoin>, JoinQuery<JoinThreeTables<T1, T2, TJoin>>> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> InnerJoin<TJoin>() where TJoin : class, new()
+        {
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Inner, Statements);
+        }
+
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> LeftJoin<TJoin>() where TJoin : class, new()
+        {
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Left, Statements);
+        }
+
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> RightJoin<TJoin>() where TJoin : class, new()
+        {
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Right, Statements);
+        }
+
+        private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class, new()
         {
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -161,26 +161,26 @@ namespace GSqlQuery.Queries
             return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, Statements, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
         }
 
-        public IComparisonOperators<JoinThreeTables<T1, T2, TJoin>, JoinQuery<JoinThreeTables<T1, T2, TJoin>>> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression) 
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression) 
             where TJoin : class, new()
         {
            return Join(JoinEnum.Inner, expression);
         }
 
-        public IComparisonOperators<JoinThreeTables<T1, T2, TJoin>, JoinQuery<JoinThreeTables<T1, T2, TJoin>>> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
             return Join(JoinEnum.Left, expression);
         }
 
-        public IComparisonOperators<JoinThreeTables<T1, T2, TJoin>, JoinQuery<JoinThreeTables<T1, T2, TJoin>>> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
             return Join(JoinEnum.Right, expression);
         }
     }
 
-    internal class JoinQueryBuilderWithWhere<T1, T2, T3> : QueryBuilderWithCriteria<JoinThreeTables<T1, T2, T3>, JoinQuery<JoinThreeTables<T1, T2, T3>>>,
-        IJoinQueryBuilderWithWhere<T1, T2, T3, JoinQuery<JoinThreeTables<T1, T2, T3>>>,
-        IComparisonOperators<JoinThreeTables<T1, T2,T3>, JoinQuery<JoinThreeTables<T1, T2, T3>>>, 
+    internal class JoinQueryBuilderWithWhere<T1, T2, T3> : QueryBuilderWithCriteria<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>>,
+        IJoinQueryBuilderWithWhere<T1, T2, T3, JoinQuery<Join<T1, T2, T3>>>,
+        IComparisonOperators<Join<T1, T2,T3>, JoinQuery<Join<T1, T2, T3>>>, 
         IAddJoinCriteria<JoinModel>
         where T1 : class, new()
         where T2 : class, new()
@@ -209,16 +209,16 @@ namespace GSqlQuery.Queries
             _tableNameT3.Joins.Enqueue(joinModel);
         }
 
-        public override JoinQuery<JoinThreeTables<T1, T2, T3>> Build()
+        public override JoinQuery<Join<T1, T2, T3>> Build()
         {
             var query = JoinQueryBuilderWithWhere<T1, T2>.CreateQuery(_andOr != null, Statements, _joinInfos, _andOr != null ? GetCriteria() : "");
-            return new JoinQuery<JoinThreeTables<T1, T2,T3>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            return new JoinQuery<Join<T1, T2,T3>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
         }
 
-        public override IWhere<JoinThreeTables<T1, T2, T3>, JoinQuery<JoinThreeTables<T1, T2, T3>>> Where()
+        public override IWhere<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>> Where()
         {
-            _andOr = new AndOrJoin<T1, T2, T3>(this);
-            return (IWhere<JoinThreeTables<T1, T2, T3>, JoinQuery<JoinThreeTables<T1, T2, T3>>>)_andOr;
+            _andOr = new AndOrJoin<T1, T2, T3, JoinQuery<Join<T1, T2, T3>>>(this);
+            return (IWhere<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>>)_andOr;
         }
     }
 

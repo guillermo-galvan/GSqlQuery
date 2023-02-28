@@ -10,12 +10,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM TableName;"
+                new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM Test3;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection>(new Models.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM [TableName];"
+                new ConnectionOptions<DbConnection>(new Models.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM [Test3];"
             };
         }
 
@@ -28,12 +28,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                 new ConnectionOptions<DbConnection>(new Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;"
+                 new ConnectionOptions<DbConnection>(new Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Create IS NOT NULL;"
             };
 
             yield return new object[]
             {
-                 new ConnectionOptions<DbConnection>(new Models.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] IS NOT NULL;"
+                 new ConnectionOptions<DbConnection>(new Models.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"DELETE FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] IS NOT NULL;"
             };
         }
 

@@ -10,12 +10,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection> (new Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param); "
+                new ConnectionOptions<DbConnection> (new Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO Test3 (Test3.Name,Test3.Create,Test3.IsTests) VALUES (@Param,@Param,@Param); "
             };
 
             yield return new object[]
             {
-                new ConnectionOptions<DbConnection> (new Models.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param); SELECT SCOPE_IDENTITY();"
+                new ConnectionOptions<DbConnection> (new Models.Statements(),LoadFluentOptions.GetDatabaseManagmentMock()),"INSERT INTO [Test3] ([Test3].[Name],[Test3].[Create],[Test3].[IsTests]) VALUES (@Param,@Param,@Param); SELECT SCOPE_IDENTITY();"
             };
         }
 

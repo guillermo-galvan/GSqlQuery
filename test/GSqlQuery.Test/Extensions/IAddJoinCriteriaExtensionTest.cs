@@ -21,8 +21,8 @@ namespace GSqlQuery.Test.Extensions
         {
             var addJoinCriteria = (IAddJoinCriteria<JoinModel>)Test3.Select(_stantements).InnerJoin<Test6>();
 
-            Expression<Func<JoinTwoTables<Test3, Test6>, int>> expression1 = x => x.Table1.Ids;
-            Expression<Func<JoinTwoTables<Test3, Test6>, int>> expression2 = x => x.Table2.Ids;
+            Expression<Func<Join<Test3, Test6>, int>> expression1 = x => x.Table1.Ids;
+            Expression<Func<Join<Test3, Test6>, int>> expression2 = x => x.Table2.Ids;
 
             addJoinCriteria.AddColumnJoin(null,expression1, JoinCriteriaEnum.Equal,expression2);
         }
@@ -32,8 +32,8 @@ namespace GSqlQuery.Test.Extensions
         {
             var addJoinCriteria = (IAddJoinCriteria<JoinModel>)Test3.Select(_stantements).InnerJoin<Test6>();
 
-            Expression<Func<JoinThreeTables<Test3, Test6, Test1>, int>> expression1 = x => x.Table1.Ids;
-            Expression<Func<JoinThreeTables<Test3, Test6, Test1>, int>> expression2 = x => x.Table3.Id;
+            Expression<Func<Join<Test3, Test6, Test1>, int>> expression1 = x => x.Table1.Ids;
+            Expression<Func<Join<Test3, Test6, Test1>, int>> expression2 = x => x.Table3.Id;
 
             addJoinCriteria.AddColumnJoin(null, expression1, JoinCriteriaEnum.Equal, expression2);
         }

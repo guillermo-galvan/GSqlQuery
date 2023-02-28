@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner;
 using GSqlQuery.Runner.Queries;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ namespace GSqlQuery
     public abstract class EntityExecute<T> : Entity<T>, Runner.ICreate<T>, Runner.IRead<T>, Runner.IUpdate<T>, Runner.IDelete<T>
         where T : class, new()
     {
-        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>
+        public static IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection>
            Select<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));
@@ -21,7 +20,7 @@ namespace GSqlQuery
             return new SelectQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), connectionOptions);
         }
 
-        public static IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>
+        public static IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection>
             Select<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
         {
             connectionOptions.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(connectionOptions));

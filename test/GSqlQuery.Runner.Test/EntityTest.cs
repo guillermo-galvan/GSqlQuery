@@ -276,5 +276,17 @@ namespace GSqlQuery.Runner.Test
             }
             Assert.Equal(queryText, result);
         }
+
+        [Fact]
+        public void Should_generate_the_inner_join_two_tables_query()
+        {
+            var connection = new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+
+            //var tmp = Test3.Select(connection).InnerJoin<Test6>().Equal(x => x.Table1.IsTests, x => x.Table2.IsTests).AndEqual(x => x.Table1.Ids, x => x.Table2.Ids).Build();
+
+
+            //var tmp = Test3.Select(connection).InnerJoin<Test6>().Equal(x => x.Table1.IsTests, x => x.Table2.IsTests).AndEqual(x => x.Table1.Ids, x => x.Table2.Ids)
+            //                                  .InnerJoin<Test1>().Equal(x => x.Table1.IsTests, x => x.Table3.IsTest).AndEqual(x => x.Table1.Ids, x => x.Table2.Ids).Build();
+        }
     }
 }
