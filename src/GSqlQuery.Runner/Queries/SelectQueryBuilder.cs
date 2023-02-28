@@ -11,8 +11,8 @@ using System.Runtime.CompilerServices;
 namespace GSqlQuery.Runner.Queries
 {
     internal class SelectQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, SelectQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection>,        
+        IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderRunner<T, SelectQuery<T, TDbConnection>, TDbConnection>,        
         IBuilder<SelectQuery<T, TDbConnection>>,
         IJoinQueryBuilder<T, SelectQuery<T,TDbConnection>, TDbConnection>
         where T : class, new()

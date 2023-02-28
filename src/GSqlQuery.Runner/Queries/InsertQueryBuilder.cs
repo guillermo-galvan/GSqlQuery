@@ -6,7 +6,7 @@ using System.Linq;
 namespace GSqlQuery.Runner.Queries
 {
     internal class InsertQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, InsertQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, InsertQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderRunner<T, InsertQuery<T, TDbConnection>, TDbConnection>,
         IBuilder<InsertQuery<T, TDbConnection>>
         where T : class, new()
     {

@@ -11,16 +11,16 @@ namespace GSqlQuery
 {
     public static class SelectQueryBuilderExtension
     {
-        public static IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection>
-            Count<T, TDbConnection>(this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder) where T : class, new()
+        public static IQueryBuilderWithWhereRunner<T, CountQuery<T, TDbConnection>, TDbConnection>
+            Count<T, TDbConnection>(this IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder) where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             return new CountQueryBuilder<T, TDbConnection>(queryBuilder, queryBuilder.ConnectionOptions);
         }
 
-        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>
+        public static IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection>
            OrderBy<T, TDbConnection, TProperties>
-           (this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
+           (this IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
            Expression<Func<T, TProperties>> expression, OrderBy orderBy)
            where T : class, new()
         {
@@ -30,7 +30,7 @@ namespace GSqlQuery
             return new OrderByQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.ConnectionOptions);
         }
 
-        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>
+        public static IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection>
             OrderBy<T, TDbConnection, TProperties>
             (this IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder,
             Expression<Func<T, TProperties>> expression, OrderBy orderBy)
@@ -44,9 +44,9 @@ namespace GSqlQuery
                 new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagement));
         }
 
-        public static IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>
+        public static IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection>
             OrderBy<T, TDbConnection, TProperties>
-            (this IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
+            (this IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class, new()
         {

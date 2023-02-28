@@ -3,7 +3,7 @@
 namespace GSqlQuery.Runner
 {
     public abstract class QueryBuilderWithCriteria<T, TReturn, TDbConnection> : QueryBuilderWithCriteria<T, TReturn>,
-        IQueryBuilderWithWhere<T, TReturn, TDbConnection>, IQueryBuilder<T, TReturn, TDbConnection>, IBuilder<TReturn>
+        IQueryBuilderWithWhereRunner<T, TReturn, TDbConnection>, IQueryBuilderRunner<T, TReturn, TDbConnection>, IBuilder<TReturn>
         where T : class, new() where TReturn : IQuery
     {
         protected QueryBuilderWithCriteria(ConnectionOptions<TDbConnection> connectionOptions)

@@ -3,7 +3,7 @@ using System;
 
 namespace GSqlQuery
 {
-    public interface IJoinQueryBuilder<T, TReturn, TDbConnection> : IQueryBuilderWithWhere<T, TReturn,TDbConnection> 
+    public interface IJoinQueryBuilder<T, TReturn, TDbConnection> : IQueryBuilderWithWhereRunner<T, TReturn,TDbConnection> 
         where T : class, new() 
         where TReturn : IQuery
     {

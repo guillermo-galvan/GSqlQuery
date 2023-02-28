@@ -33,8 +33,8 @@ namespace GSqlQuery.MySql
             return new LimitQueryBuilder<T>(queryBuilder, queryBuilder.Statements, start, length);
         }
 
-        public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
-            this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
+        public static IQueryBuilderRunner<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
+            this IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
         {
             if (queryBuilder == null)
             {
@@ -44,7 +44,7 @@ namespace GSqlQuery.MySql
             return new LimitQueryBuilder<T,TDbConnection>(queryBuilder, queryBuilder.ConnectionOptions, start, length);
         }
 
-        public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
+        public static IQueryBuilderRunner<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
             this IAndOr<T, SelectQuery<T, TDbConnection>> queryBuilder, int start, int? length) where T : class, new()
         {
             if (queryBuilder == null)
@@ -56,8 +56,8 @@ namespace GSqlQuery.MySql
                 new ConnectionOptions<TDbConnection>(query.Statements, query.DatabaseManagement), start, length);
         }
 
-        public static IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
-            this IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
+        public static IQueryBuilderRunner<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
+            this IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder, int start, int? length) where T : class, new()
         {
             if (queryBuilder == null)
             {

@@ -52,15 +52,15 @@ namespace GSqlQuery.MySql
     }
 
     internal class LimitQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, LimitQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, LimitQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderRunner<T, LimitQuery<T, TDbConnection>, TDbConnection>,
         IBuilder<LimitQuery<T, TDbConnection>>
         where T : class, new()
     {
-        private readonly IQuery<T, TDbConnection, IEnumerable<T>> _selectQuery;
+        private readonly IQueryRunner<T, TDbConnection, IEnumerable<T>> _selectQuery;
         private readonly int _start;
         private readonly int? _length;
 
-        public LimitQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
+        public LimitQueryBuilder(IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
             : base(connectionOptions)
         {
@@ -80,7 +80,7 @@ namespace GSqlQuery.MySql
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        public LimitQueryBuilder(IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
+        public LimitQueryBuilder(IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions, int start, int? length)
             : base(connectionOptions)
         {

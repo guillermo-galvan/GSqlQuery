@@ -1,8 +1,8 @@
 ﻿namespace GSqlQuery.Runner.Queries
 {
     internal class CountQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, CountQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilderWithWhere<T, CountQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, CountQuery<T, TDbConnection>, TDbConnection>, IBuilder<CountQuery<T, TDbConnection>> where T : class, new()
+        IQueryBuilderWithWhereRunner<T, CountQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderRunner<T, CountQuery<T, TDbConnection>, TDbConnection>, IBuilder<CountQuery<T, TDbConnection>> where T : class, new()
     {
         private readonly IQueryBuilder<T, SelectQuery<T, TDbConnection>> _queryBuilder;
 

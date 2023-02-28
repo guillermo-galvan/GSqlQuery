@@ -5,16 +5,16 @@ using System.Linq;
 namespace GSqlQuery.Runner.Queries
 {
     internal class OrderByQueryBuilder<T, TDbConnection> : QueryBuilderBase<T, OrderByQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, OrderByQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection>,
         IBuilder<OrderByQuery<T, TDbConnection>>
         where T : class, new()
     {
-        private readonly IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> _queryBuilder;
+        private readonly IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection> _queryBuilder;
         private readonly IAndOr<T, SelectQuery<T, TDbConnection>> _andorBuilder;
         private readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
+            IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder,
             ConnectionOptions<TDbConnection> connectionOptions)
             : base(connectionOptions)
         {

@@ -29,7 +29,7 @@ namespace GSqlQuery.Runner
             _columns = new Queue<ColumnAttribute>();
         }
 
-        public BatchExecute<TDbConnection> Add<T, TResult>(Func<ConnectionOptions<TDbConnection>, IQuery<T, TDbConnection, TResult>> expression)
+        public BatchExecute<TDbConnection> Add<T, TResult>(Func<ConnectionOptions<TDbConnection>, IQueryRunner<T, TDbConnection, TResult>> expression)
             where T : class, new()
         {
             IQuery query = expression.Invoke(_connectionOptions);

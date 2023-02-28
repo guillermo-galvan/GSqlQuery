@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
-    public abstract class Query<T, TDbConnection, TResult> : Query<T>, IQuery<T, TDbConnection, TResult> where T : class, new()
+    public abstract class Query<T, TDbConnection, TResult> : Query<T>, IQueryRunner<T, TDbConnection, TResult> where T : class, new()
     {
         public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 

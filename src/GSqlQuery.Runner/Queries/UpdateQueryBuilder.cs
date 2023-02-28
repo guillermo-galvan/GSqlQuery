@@ -7,8 +7,8 @@ using System.Reflection;
 namespace GSqlQuery.Runner.Queries
 {
     internal class UpdateQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilderWithWhere<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, UpdateQuery<T, TDbConnection>, TDbConnection>, IBuilder<UpdateQuery<T, TDbConnection>>,
+        IQueryBuilderWithWhereRunner<T, UpdateQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderRunner<T, UpdateQuery<T, TDbConnection>, TDbConnection>, IBuilder<UpdateQuery<T, TDbConnection>>,
         ISet<T, UpdateQuery<T, TDbConnection>>
         where T : class, new()
     {

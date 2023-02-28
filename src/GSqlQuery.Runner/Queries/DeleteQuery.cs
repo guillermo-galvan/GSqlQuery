@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery
 {
-    public sealed class DeleteQuery<T, TDbConnection> : Query<T, TDbConnection, int>, IQuery<T, TDbConnection, int>,
+    public sealed class DeleteQuery<T, TDbConnection> : Query<T, TDbConnection, int>, IQueryRunner<T, TDbConnection, int>,
         IExecuteDatabaseManagement<int, TDbConnection> where T : class, new()
     {
         internal DeleteQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)

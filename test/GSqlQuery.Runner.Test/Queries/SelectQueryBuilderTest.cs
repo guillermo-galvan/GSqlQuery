@@ -54,7 +54,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _connectionOptions);
-            IQuery<Test1, DbConnection, IEnumerable<Test1>> query = queryBuilder.Build();
+            IQueryRunner<Test1, DbConnection, IEnumerable<Test1>> query = queryBuilder.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);

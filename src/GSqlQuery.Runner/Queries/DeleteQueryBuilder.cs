@@ -3,8 +3,8 @@
 namespace GSqlQuery.Runner.Queries
 {
     internal class DeleteQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, DeleteQuery<T, TDbConnection>, TDbConnection>, IBuilder<DeleteQuery<T, TDbConnection>>
+        IQueryBuilderWithWhereRunner<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
+        IQueryBuilderRunner<T, DeleteQuery<T, TDbConnection>, TDbConnection>, IBuilder<DeleteQuery<T, TDbConnection>>
         where T : class, new()
     {
         public DeleteQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions)
