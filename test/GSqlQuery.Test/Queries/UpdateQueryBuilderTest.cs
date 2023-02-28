@@ -23,7 +23,7 @@ namespace GSqlQuery.Test.Queries
             UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_statements, _columnsValue, string.Empty);
 
             Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.Statements);
+            Assert.NotNull(queryBuilder.Options);
             Assert.NotNull(queryBuilder.Columns);
             Assert.NotEmpty(queryBuilder.Columns);
             Assert.NotNull(queryBuilder.ColumnValues);

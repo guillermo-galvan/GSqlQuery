@@ -36,7 +36,7 @@ namespace GSqlQuery.Queries
         {
             SelectQuery<T> selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             var iswhere = selectQuery.Criteria != null && selectQuery.Criteria.Any();
-            var query = CreateQuery(iswhere, _columnsByOrderBy, Statements, selectQuery.Columns, _tableName, 
+            var query = CreateQuery(iswhere, _columnsByOrderBy, Options, selectQuery.Columns, _tableName, 
                 iswhere ? string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)) : string.Empty);
             return new OrderByQuery<T>(query, selectQuery.Columns, selectQuery.Criteria, selectQuery.Statements);
         }

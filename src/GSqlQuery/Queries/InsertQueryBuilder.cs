@@ -43,8 +43,8 @@ namespace GSqlQuery.Queries
         public override InsertQuery<T> Build()
         {
             IEnumerable<CriteriaDetail> criteria = null;
-            var query = CreateQuery(Statements, Columns, _tableName, _entity, ref criteria);
-            return new InsertQuery<T>(query, Columns.Select(x => x.ColumnAttribute), criteria, Statements, _entity);
+            var query = CreateQuery(Options, Columns, _tableName, _entity, ref criteria);
+            return new InsertQuery<T>(query, Columns.Select(x => x.ColumnAttribute), criteria, Options, _entity);
         }
     }
 }

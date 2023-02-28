@@ -145,8 +145,8 @@ namespace GSqlQuery.Queries
 
         public override UpdateQuery<T> Build()
         {
-            var query = CreateQuery(_columnValues, _andOr != null, Statements, Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty, ref _criteria);
-            return new UpdateQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            var query = CreateQuery(_columnValues, _andOr != null, Options, Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty, ref _criteria);
+            return new UpdateQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         public override IWhere<T, UpdateQuery<T>> Where()

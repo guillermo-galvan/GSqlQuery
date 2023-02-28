@@ -22,9 +22,9 @@ namespace GSqlQuery.Runner.Test.Queries
             DeleteQueryBuilder<Test1, DbConnection> queryBuilder = new DeleteQueryBuilder<Test1, DbConnection>(_connectionOptions);
 
             Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.ConnectionOptions);
-            Assert.NotNull(queryBuilder.ConnectionOptions.Statements);
-            Assert.NotNull(queryBuilder.ConnectionOptions.DatabaseManagement);
+            Assert.NotNull(queryBuilder.Options);
+            Assert.NotNull(queryBuilder.Options.Statements);
+            Assert.NotNull(queryBuilder.Options.DatabaseManagement);
             Assert.NotNull(queryBuilder.Columns);
             Assert.NotEmpty(queryBuilder.Columns);
         }

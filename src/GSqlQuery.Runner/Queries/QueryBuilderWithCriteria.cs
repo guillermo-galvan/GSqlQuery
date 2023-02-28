@@ -9,9 +9,9 @@ namespace GSqlQuery.Runner
         protected QueryBuilderWithCriteria(ConnectionOptions<TDbConnection> connectionOptions)
             : base(connectionOptions != null ? connectionOptions.Statements : null)
         {
-            ConnectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+            Options = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
         }
 
-        public ConnectionOptions<TDbConnection> ConnectionOptions { get; }
+        public ConnectionOptions<TDbConnection> Options { get; }
     }
 }

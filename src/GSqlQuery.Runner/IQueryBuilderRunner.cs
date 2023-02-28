@@ -4,6 +4,6 @@
         where T : class, new() where
         TReturn : IQuery
     {
-        ConnectionOptions<TDbConnection> ConnectionOptions { get; }
+        new ConnectionOptions<TDbConnection> Options { get; }
     }
 }

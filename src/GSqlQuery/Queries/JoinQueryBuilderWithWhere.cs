@@ -132,23 +132,23 @@ namespace GSqlQuery.Queries
 
         public override JoinQuery<Join<T1, T2>> Build()
         {
-            var query = CreateQuery(_andOr != null, Statements, _joinInfos, _andOr != null ? GetCriteria() : "");
-            return new JoinQuery<Join<T1, T2>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            var query = CreateQuery(_andOr != null, Options, _joinInfos, _andOr != null ? GetCriteria() : "");
+            return new JoinQuery<Join<T1, T2>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> InnerJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Inner, Statements);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Inner, Options);
         }
 
         public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> LeftJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Left, Statements);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Left, Options);
         }
 
         public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> RightJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Right, Statements);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Right, Options);
         }
 
         private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
@@ -158,7 +158,7 @@ namespace GSqlQuery.Queries
             options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
             var selectMember = options.MemberInfo.Select(x => x.Name);
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, Statements, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, Options, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
         }
 
         public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression) 
@@ -211,8 +211,8 @@ namespace GSqlQuery.Queries
 
         public override JoinQuery<Join<T1, T2, T3>> Build()
         {
-            var query = JoinQueryBuilderWithWhere<T1, T2>.CreateQuery(_andOr != null, Statements, _joinInfos, _andOr != null ? GetCriteria() : "");
-            return new JoinQuery<Join<T1, T2,T3>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            var query = JoinQueryBuilderWithWhere<T1, T2>.CreateQuery(_andOr != null, Options, _joinInfos, _andOr != null ? GetCriteria() : "");
+            return new JoinQuery<Join<T1, T2,T3>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         public override IWhere<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>> Where()

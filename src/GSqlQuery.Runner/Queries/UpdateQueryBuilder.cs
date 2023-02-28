@@ -44,8 +44,8 @@ namespace GSqlQuery.Runner.Queries
 
         public override UpdateQuery<T, TDbConnection> Build()
         {
-            var query = GSqlQuery.Queries.UpdateQueryBuilder<T>.CreateQuery(_columnValues, _andOr != null, Statements, Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty, ref _criteria);
-            return new UpdateQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
+            var query = GSqlQuery.Queries.UpdateQueryBuilder<T>.CreateQuery(_columnValues, _andOr != null, Options.Statements, Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty, ref _criteria);
+            return new UpdateQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         public override IWhere<T, UpdateQuery<T, TDbConnection>> Where()

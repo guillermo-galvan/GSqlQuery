@@ -19,7 +19,7 @@ namespace GSqlQuery.Runner.Test.Queries
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
             _selectQueryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock()));
-            _connectionCountQueryBuilder = new CountQueryBuilder<Test1, DbConnection>(_selectQueryBuilder, _selectQueryBuilder.ConnectionOptions);
+            _connectionCountQueryBuilder = new CountQueryBuilder<Test1, DbConnection>(_selectQueryBuilder, _selectQueryBuilder.Options);
         }
 
         [Fact]

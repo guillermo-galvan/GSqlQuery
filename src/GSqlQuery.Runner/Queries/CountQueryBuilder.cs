@@ -17,8 +17,8 @@
         public override CountQuery<T, TDbConnection> Build()
         {
             IQuery selectQuery = _queryBuilder.Build();
-            var query = GSqlQuery.Queries.CountQueryBuilder<T>.CreateQuery(_andOr != null, Statements, selectQuery.Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty);
-            return new CountQuery<T, TDbConnection>(query, selectQuery.Columns, _criteria, ConnectionOptions);
+            var query = GSqlQuery.Queries.CountQueryBuilder<T>.CreateQuery(_andOr != null, Options.Statements, selectQuery.Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty);
+            return new CountQuery<T, TDbConnection>(query, selectQuery.Columns, _criteria, Options);
         }
 
         public override IWhere<T, CountQuery<T, TDbConnection>> Where()

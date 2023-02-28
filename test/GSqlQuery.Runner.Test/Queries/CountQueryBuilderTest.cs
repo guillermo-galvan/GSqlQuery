@@ -46,9 +46,9 @@ namespace GSqlQuery.Runner.Test.Queries
             var result = queryBuilder.Count();
 
             Assert.NotNull(result);
-            Assert.NotNull(result.ConnectionOptions);
-            Assert.NotNull(result.ConnectionOptions.Statements);
-            Assert.NotNull(result.ConnectionOptions.DatabaseManagement);
+            Assert.NotNull(result.Options);
+            Assert.NotNull(result.Options.Statements);
+            Assert.NotNull(result.Options.DatabaseManagement);
             Assert.NotNull(result.Columns);
             Assert.NotEmpty(result.Columns);
             Assert.Equal(queryBuilder.Columns.Count(), result.Columns.Count());

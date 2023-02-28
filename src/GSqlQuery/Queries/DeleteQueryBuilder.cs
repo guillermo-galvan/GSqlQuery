@@ -40,8 +40,8 @@ namespace GSqlQuery.Queries
         /// </summary>
         public override DeleteQuery<T> Build()
         {
-            var query = CreateQuery(_andOr != null, Statements, _tableName, _andOr != null ? GetCriteria() : string.Empty);
-            return new DeleteQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            var query = CreateQuery(_andOr != null, Options, _tableName, _andOr != null ? GetCriteria() : string.Empty);
+            return new DeleteQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         /// <summary>

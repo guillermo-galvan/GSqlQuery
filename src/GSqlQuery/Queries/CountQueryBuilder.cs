@@ -19,8 +19,8 @@ namespace GSqlQuery.Queries
         public override CountQuery<T> Build()
         {
             SelectQuery<T> selectQuery = _queryBuilder.Build();
-            var query = CreateQuery(_andOr != null, Statements, selectQuery.Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty);
-            return new CountQuery<T>(query, selectQuery.Columns, _criteria, _queryBuilder.Statements);
+            var query = CreateQuery(_andOr != null, Options, selectQuery.Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty);
+            return new CountQuery<T>(query, selectQuery.Columns, _criteria, _queryBuilder.Options);
         }
 
         public override IWhere<T, CountQuery<T>> Where()

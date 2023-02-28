@@ -85,7 +85,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -97,7 +97,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 }).AndNotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -109,7 +109,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.NotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 }).OrNotIn(x => x.Id, new int[] { 4, 5, 6, 7, 8, 9, 10 });
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

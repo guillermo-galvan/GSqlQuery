@@ -15,7 +15,7 @@ namespace GSqlQuery
 
         protected string GetCriteria()
         {
-            return _andOr.GetCliteria(Statements, ref _criteria);
+            return _andOr.GetCliteria(Options, ref _criteria);
         }
     }
 }

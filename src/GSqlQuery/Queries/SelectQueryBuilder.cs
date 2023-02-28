@@ -59,23 +59,23 @@ namespace GSqlQuery.Queries
         /// <returns>SelectQuery</returns>
         public override SelectQuery<T> Build()
         {
-            var query = CreateQuery(_andOr != null, Statements, Columns, _tableName, _andOr != null ? GetCriteria() : "");
-            return new SelectQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Statements);
+            var query = CreateQuery(_andOr != null, Options, Columns, _tableName, _andOr != null ? GetCriteria() : "");
+            return new SelectQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> InnerJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName,Columns, JoinEnum.Inner,Statements);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName,Columns, JoinEnum.Inner,Options);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> LeftJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName,Columns, JoinEnum.Left, Statements);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName,Columns, JoinEnum.Left, Options);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> RightJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinEnum.Right, Statements);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinEnum.Right, Options);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace GSqlQuery.Queries
             options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
             var selectMember = options.MemberInfo.Select(x => x.Name);
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, joinEnum, Statements, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, joinEnum, Options, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)

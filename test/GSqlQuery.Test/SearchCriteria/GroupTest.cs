@@ -88,7 +88,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.BeginGroup().Equal(x => x.Id, 1).CloseGroup();
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -100,7 +100,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.BeginGroup().Equal(x => x.Id, 1).AndEqual(x => x.IsTest, true).CloseGroup();
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -112,7 +112,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
             var andOr = where.BeginGroup().Equal(x => x.Id, 1).OrEqual(x => x.IsTest, true).CloseGroup();
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);

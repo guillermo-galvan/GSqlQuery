@@ -11,7 +11,7 @@ namespace GSqlQuery.MySql
                 throw new ArgumentNullException(nameof(queryBuilder));
             }
 
-            return new LimitQueryBuilder<T>(queryBuilder, queryBuilder.Statements, start, length);
+            return new LimitQueryBuilder<T>(queryBuilder, queryBuilder.Options, start, length);
         }
 
         public static IQueryBuilder<T, LimitQuery<T>> Limit<T>(this IAndOr<T, SelectQuery<T>> queryBuilder, int start, int? length) where T : class, new()
@@ -30,7 +30,7 @@ namespace GSqlQuery.MySql
             {
                 throw new ArgumentNullException(nameof(queryBuilder));
             }
-            return new LimitQueryBuilder<T>(queryBuilder, queryBuilder.Statements, start, length);
+            return new LimitQueryBuilder<T>(queryBuilder, queryBuilder.Options, start, length);
         }
 
         public static IQueryBuilderRunner<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
@@ -41,7 +41,7 @@ namespace GSqlQuery.MySql
                 throw new ArgumentNullException(nameof(queryBuilder));
             }
 
-            return new LimitQueryBuilder<T,TDbConnection>(queryBuilder, queryBuilder.ConnectionOptions, start, length);
+            return new LimitQueryBuilder<T,TDbConnection>(queryBuilder, queryBuilder.Options, start, length);
         }
 
         public static IQueryBuilderRunner<T, LimitQuery<T, TDbConnection>, TDbConnection> Limit<T, TDbConnection>(
@@ -64,7 +64,7 @@ namespace GSqlQuery.MySql
                 throw new ArgumentNullException(nameof(queryBuilder));
             }
 
-            return new LimitQueryBuilder<T, TDbConnection>(queryBuilder, queryBuilder.ConnectionOptions, start, length);
+            return new LimitQueryBuilder<T, TDbConnection>(queryBuilder, queryBuilder.Options, start, length);
         }
     }
 }

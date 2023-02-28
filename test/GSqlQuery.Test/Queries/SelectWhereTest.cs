@@ -44,7 +44,7 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = ((ISearchCriteriaBuilder<Test1, SelectQuery<Test1>>)query).BuildCriteria(_queryBuilder.Statements);
+            var criteria = ((ISearchCriteriaBuilder<Test1, SelectQuery<Test1>>)query).BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }

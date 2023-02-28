@@ -13,8 +13,8 @@ namespace GSqlQuery.Runner.Queries
 
         public override DeleteQuery<T, TDbConnection> Build()
         {
-            var query = GSqlQuery.Queries.DeleteQueryBuilder<T>.CreateQuery(_andOr != null, ConnectionOptions.Statements, _tableName, _andOr != null ? GetCriteria() : string.Empty);
-            return new DeleteQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
+            var query = GSqlQuery.Queries.DeleteQueryBuilder<T>.CreateQuery(_andOr != null, Options.Statements, _tableName, _andOr != null ? GetCriteria() : string.Empty);
+            return new DeleteQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         public override IWhere<T, DeleteQuery<T, TDbConnection>> Where()

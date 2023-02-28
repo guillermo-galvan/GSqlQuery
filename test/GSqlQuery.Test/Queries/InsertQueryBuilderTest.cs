@@ -20,7 +20,7 @@ namespace GSqlQuery.Test.Queries
             InsertQueryBuilder<Test3> queryBuilder = new InsertQueryBuilder<Test3>(_statements, new Test3(1, null, DateTime.Now, true));
 
             Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.Statements);
+            Assert.NotNull(queryBuilder.Options);
             Assert.NotNull(queryBuilder.Columns);
             Assert.NotEmpty(queryBuilder.Columns);
         }

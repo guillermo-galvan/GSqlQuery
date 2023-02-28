@@ -34,7 +34,7 @@ namespace GSqlQuery.Runner.Queries
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T2));
             _tableNameT2 = new JoinInfo
             {
-                TableName = tmp.Table.GetTableName(ConnectionOptions.Statements),
+                TableName = tmp.Table.GetTableName(Options.Statements),
                 Columns = columnsT2 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
                 JoinEnum = joinEnum
             };
@@ -51,8 +51,8 @@ namespace GSqlQuery.Runner.Queries
 
         public override JoinQuery<Join<T1, T2>, TDbConnection> Build()
         {
-            var query = JoinQueryBuilderWithWhere<T1,T2>.CreateQuery(_andOr != null, Statements, _joinInfos, _andOr != null ? GetCriteria() : "");
-            return new JoinQuery<Join<T1, T2>, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
+            var query = JoinQueryBuilderWithWhere<T1,T2>.CreateQuery(_andOr != null, Options.Statements, _joinInfos, _andOr != null ? GetCriteria() : "");
+            return new JoinQuery<Join<T1, T2>, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
         public override IWhere<Join<T1, T2>, JoinQuery<Join<T1, T2>, TDbConnection>> Where()

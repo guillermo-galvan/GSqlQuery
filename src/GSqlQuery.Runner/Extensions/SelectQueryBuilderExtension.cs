@@ -15,7 +15,7 @@ namespace GSqlQuery
             Count<T, TDbConnection>(this IQueryBuilderWithWhereRunner<T, SelectQuery<T, TDbConnection>, TDbConnection> queryBuilder) where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            return new CountQueryBuilder<T, TDbConnection>(queryBuilder, queryBuilder.ConnectionOptions);
+            return new CountQueryBuilder<T, TDbConnection>(queryBuilder, queryBuilder.Options);
         }
 
         public static IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection>
@@ -27,7 +27,7 @@ namespace GSqlQuery
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
             options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
-            return new OrderByQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.ConnectionOptions);
+            return new OrderByQueryBuilder<T, TDbConnection>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Options);
         }
 
         public static IQueryBuilderRunner<T, OrderByQuery<T, TDbConnection>, TDbConnection>

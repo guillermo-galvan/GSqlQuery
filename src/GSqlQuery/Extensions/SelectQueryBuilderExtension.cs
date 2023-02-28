@@ -13,7 +13,7 @@ namespace GSqlQuery
         public static IQueryBuilderWithWhere<T, CountQuery<T>> Count<T>(this IQueryBuilderWithWhere<T, SelectQuery<T>> queryBuilder) where T : class, new()
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
-            return new CountQueryBuilder<T>(queryBuilder, queryBuilder.Statements);
+            return new CountQueryBuilder<T>(queryBuilder, queryBuilder.Options);
         }
 
         public static IQueryBuilder<T, OrderByQuery<T>> OrderBy<T, TProperties>
@@ -23,7 +23,7 @@ namespace GSqlQuery
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
             options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
-            return new OrderByQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Statements);
+            return new OrderByQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Options);
         }
 
         public static IQueryBuilder<T, OrderByQuery<T>> OrderBy<T, TProperties>

@@ -14,7 +14,7 @@ namespace GSqlQuery
         /// <summary>
         /// Statements to use in the query
         /// </summary>
-        public IStatements Statements => _statements;
+        public IStatements Options => _statements;
 
         public QueryBuilderBase(IStatements statements)
         {

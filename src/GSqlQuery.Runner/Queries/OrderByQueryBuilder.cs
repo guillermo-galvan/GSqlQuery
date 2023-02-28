@@ -41,9 +41,9 @@ namespace GSqlQuery.Runner.Queries
         {
             SelectQuery<T, TDbConnection> selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             var iswhere = selectQuery.Criteria != null && selectQuery.Criteria.Any();
-            var query = GSqlQuery.Queries.OrderByQueryBuilder<T>.CreateQuery(iswhere, _columnsByOrderBy, Statements, selectQuery.Columns, _tableName, 
+            var query = GSqlQuery.Queries.OrderByQueryBuilder<T>.CreateQuery(iswhere, _columnsByOrderBy, Options.Statements, selectQuery.Columns, _tableName, 
                 iswhere ? string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)) : string.Empty);
-            return new OrderByQuery<T, TDbConnection>(query, selectQuery.Columns, selectQuery.Criteria, ConnectionOptions);
+            return new OrderByQuery<T, TDbConnection>(query, selectQuery.Columns, selectQuery.Criteria, Options);
         }
 
         internal void AddOrderBy(IEnumerable<string> selectMember, OrderBy orderBy)

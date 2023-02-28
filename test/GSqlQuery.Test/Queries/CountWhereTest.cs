@@ -18,7 +18,7 @@ namespace GSqlQuery.Test.Queries
         {
             _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
             _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new Statements());
-            _countQueryBuilder = new CountQueryBuilder<Test1>(_queryBuilder, _queryBuilder.Statements);
+            _countQueryBuilder = new CountQueryBuilder<Test1>(_queryBuilder, _queryBuilder.Options);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = ((ISearchCriteriaBuilder<Test1, CountQuery<Test1>>)query).BuildCriteria(_queryBuilder.Statements);
+            var criteria = ((ISearchCriteriaBuilder<Test1, CountQuery<Test1>>)query).BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }

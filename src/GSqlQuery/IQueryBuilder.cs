@@ -13,6 +13,6 @@ namespace GSqlQuery
         /// <summary>
         /// Statements to use in the query
         /// </summary>
-        IStatements Statements { get; }
+        IStatements Options { get; }
     }
 }
