@@ -38,7 +38,7 @@ namespace GSqlQuery.MySql
         public override Task CloseAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return ((MySqlConnection)_connection).CloseAsync(cancellationToken);
+            return ((MySqlConnection)_connection).CloseAsync();
         }
 
         ITransaction IConnection.BeginTransaction() => BeginTransaction();

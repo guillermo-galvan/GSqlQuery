@@ -15,7 +15,6 @@ namespace GSqlQuery.Queries
     {
         private readonly IDictionary<ColumnAttribute, object> _columnValues;
         protected readonly object _entity;
-        private static ulong _idParam = 0;
 
         public IDictionary<ColumnAttribute, object> ColumnValues => _columnValues;
 
@@ -35,11 +34,6 @@ namespace GSqlQuery.Queries
             {
                 _columnValues.Add(item, value);
             };
-
-            if (_idParam > ulong.MaxValue - 2100)
-            {
-                _idParam = 0;
-            }
         }
 
         public UpdateQueryBuilder(IStatements statements, object entity, IEnumerable<string> selectMember) :
@@ -54,11 +48,6 @@ namespace GSqlQuery.Queries
             {
                 _columnValues.Add(item.ColumnAttribute, item.PropertyInfo.GetValue(entity));
             };
-
-            if (_idParam > ulong.MaxValue - 2100)
-            {
-                _idParam = 0;
-            }
         }
 
         internal static string CreateQuery(IDictionary<ColumnAttribute, object> columnValues, bool isWhere, IStatements statements, IEnumerable<PropertyOptions> columns, 
@@ -94,7 +83,7 @@ namespace GSqlQuery.Queries
             foreach (var item in columnValues)
             {
                 PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = $"@PU{_idParam++}";
+                string paramName = $"@PU{Helpers.GetIdParam()}";
                 criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, statements)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }

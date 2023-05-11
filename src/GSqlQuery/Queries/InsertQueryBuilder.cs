@@ -7,17 +7,12 @@ namespace GSqlQuery.Queries
 {
     internal class InsertQueryBuilder<T> : QueryBuilderBase<T, InsertQuery<T>>, IQueryBuilder<T, InsertQuery<T>> where T : class, new()
     {
-        private static ulong _idParam = 0;
         protected readonly object _entity;
 
         public InsertQueryBuilder(IStatements statements, object entity)
             : base(statements)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
-            if (_idParam > ulong.MaxValue - 2100)
-            {
-                _idParam = 0;
-            }
         }
 
         internal static string CreateQuery(IStatements statements, IEnumerable<PropertyOptions> columns, string tableName, object entity, ref IEnumerable<CriteriaDetail> criteria)
@@ -35,7 +30,7 @@ namespace GSqlQuery.Queries
         internal static AutoIncrementingClass GetValues(IStatements statements, IEnumerable<PropertyOptions> columns, string tableName, object entity)
         {
             var columnsParameters = columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
-                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(tableName, statements), new ParameterDetail($"@PI{_idParam++}", x.GetValue(entity), x)))
+                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(tableName, statements), new ParameterDetail($"@PI{Helpers.GetIdParam()}", x.GetValue(entity), x)))
                           .ToArray();
             return new AutoIncrementingClass(columns.Any(x => x.ColumnAttribute.IsAutoIncrementing), columnsParameters);
         }

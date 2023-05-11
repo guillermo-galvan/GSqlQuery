@@ -47,7 +47,7 @@ namespace GSqlQuery.SearchCriteria
         public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(statements);
-            string parameterName = $"@{ParameterPrefix}{_idParam++}";
+            string parameterName = $"@{ParameterPrefix}{Helpers.GetIdParam()}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} CONCAT('%', {parameterName}, '%')" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} CONCAT('%', {parameterName}, '%')";

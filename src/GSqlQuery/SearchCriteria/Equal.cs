@@ -48,7 +48,7 @@ namespace GSqlQuery.SearchCriteria
         {
             string tableName = Table.GetTableName(statements);
 
-            string parameterName = $"@{ParameterPrefix}{_idParam++}";
+            string parameterName = $"@{ParameterPrefix}{Helpers.GetIdParam()}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
                 $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}" :
                 $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}";
