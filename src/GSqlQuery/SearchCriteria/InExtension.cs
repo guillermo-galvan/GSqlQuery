@@ -18,9 +18,9 @@ namespace GSqlQuery
         /// <param name="values">Values</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> In<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery
+            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery<T>
         {
-            IAndOr<T, TReturn> andor = where.GetAndOr(expression); 
+            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             var columnInfo = expression.GetColumnAttribute();
             andor.Add(new In<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, values));
             return andor;
@@ -36,7 +36,7 @@ namespace GSqlQuery
         /// <param name="values">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndIn<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery
+            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -54,7 +54,7 @@ namespace GSqlQuery
         /// <param name="values">Values</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrIn<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery
+            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();

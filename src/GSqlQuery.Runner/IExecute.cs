@@ -19,10 +19,7 @@ namespace GSqlQuery
         TResult Execute(TDbConnection dbConnection);
 
         Task<TResult> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default);
-    }
 
-    public interface IExecuteDatabaseManagement<TResult, TDbConnection> : IExecute<TResult, TDbConnection>
-    {
         IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
     }
 }

@@ -158,7 +158,7 @@ namespace GSqlQuery.Runner
                 {
                     connection.Close();
                 }
-            }   
+            }
         }
 
         public int ExecuteNonQuery(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)

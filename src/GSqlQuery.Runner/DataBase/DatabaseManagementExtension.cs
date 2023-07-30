@@ -4,7 +4,7 @@ namespace GSqlQuery.Runner
 {
     public static class DatabaseManagementExtension
     {
-        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, IConnection> query)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, IConnection> query)
         {
             using (var connection = query.DatabaseManagement.GetConnection())
             {
@@ -18,12 +18,12 @@ namespace GSqlQuery.Runner
             }
         }
 
-        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, IConnection> query, ITransaction transaction)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, IConnection> query, ITransaction transaction)
         {
             return query.Execute(transaction.Connection);
         }
 
-        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, IConnection> query)
+        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, IConnection> query)
         {
             using (var connection = await query.DatabaseManagement.GetConnectionAsync())
             {
@@ -37,7 +37,7 @@ namespace GSqlQuery.Runner
             }
         }
 
-        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, IConnection> query, ITransaction transaction)
+        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, IConnection> query, ITransaction transaction)
         {
             return query.ExecuteAsync(transaction.Connection);
         }

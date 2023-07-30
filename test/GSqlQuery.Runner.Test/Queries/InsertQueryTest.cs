@@ -1,10 +1,10 @@
-﻿using GSqlQuery.SearchCriteria;
-using System.Data.Common;
-using GSqlQuery.Runner.Test.Models;
+﻿using GSqlQuery.Runner.Test.Models;
+using GSqlQuery.SearchCriteria;
 using System;
+using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
@@ -17,8 +17,8 @@ namespace GSqlQuery.Runner.Test.Queries
         private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
         private readonly Test1 _test1;
-        private readonly ConnectionOptions<DbConnection> _connectionOptions;
-        private readonly ConnectionOptions<DbConnection> _connectionOptionsAsync;
+        private readonly ConnectionOptions<IDbConnection> _connectionOptions;
+        private readonly ConnectionOptions<IDbConnection> _connectionOptionsAsync;
 
         public InsertQueryTest()
         {
@@ -28,14 +28,14 @@ namespace GSqlQuery.Runner.Test.Queries
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
             _test1 = new Test1();
-            _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
-            _connectionOptionsAsync = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync());
+            _connectionOptions = new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMock());
+            _connectionOptionsAsync = new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMockAsync());
         }
 
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            InsertQuery<Test1, DbConnection> query = new InsertQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1, null);
+            InsertQuery<Test1, IDbConnection> query = new InsertQuery<Test1, IDbConnection>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1, null);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Columns);
@@ -49,20 +49,11 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Throw_an_exception_if_nulls_are_passed_in_the_parameters2()
-        {
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1, null));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null, _test1, null));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, _test1, null));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1, DbConnection>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions, null, null));
-        }
-
-        [Fact]
         public void Should_execute_the_query()
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            InsertQuery<Test3, DbConnection> query = new InsertQuery<Test3, DbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test3, IDbConnection> query = new InsertQuery<Test3, IDbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
@@ -76,7 +67,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
 
-            InsertQuery<Test6, DbConnection> query = new InsertQuery<Test6, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
@@ -87,7 +78,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_DatabaseManagment_not_found()
         {
-            InsertQuery<Test1, DbConnection> query = new InsertQuery<Test1, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test1, IDbConnection> query = new InsertQuery<Test1, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                _connectionOptions, new Test6(1, null, DateTime.Now, true), null);
@@ -99,11 +90,11 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            InsertQuery<Test3, DbConnection> query = new InsertQuery<Test3, DbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test3, IDbConnection> query = new InsertQuery<Test3, IDbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
-            var result = query.Execute(LoadFluentOptions.GetDbConnection());
+            var result = query.Execute(LoadGSqlQueryOptions.GetIDbConnection());
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -113,11 +104,11 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
 
-            InsertQuery<Test6, DbConnection> query = new InsertQuery<Test6, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
-            var result = query.Execute(LoadFluentOptions.GetDbConnection());
+            var result = query.Execute(LoadGSqlQueryOptions.GetIDbConnection());
             Assert.NotNull(result);
         }
 
@@ -126,7 +117,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            InsertQuery<Test3, DbConnection> query = new InsertQuery<Test3, DbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test3, IDbConnection> query = new InsertQuery<Test3, IDbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
@@ -140,7 +131,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
 
-            InsertQuery<Test6, DbConnection> query = new InsertQuery<Test6, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
@@ -151,7 +142,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public async Task Throw_exception_if_DatabaseManagment_not_found_Async()
         {
-            InsertQuery<Test1, DbConnection> query = new InsertQuery<Test1, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test1, IDbConnection> query = new InsertQuery<Test1, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 new ColumnAttribute[] { _columnAttribute },
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                _connectionOptionsAsync, new Test6(1, null, DateTime.Now, true), null);
@@ -163,11 +154,11 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            InsertQuery<Test3, DbConnection> query = new InsertQuery<Test3, DbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test3, IDbConnection> query = new InsertQuery<Test3, IDbConnection>("INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync, new Test3(0, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
+            var result = await query.ExecuteAsync(LoadGSqlQueryOptions.GetIDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
             Assert.Equal(1, result.Ids);
         }
@@ -177,11 +168,11 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
 
-            InsertQuery<Test6, DbConnection> query = new InsertQuery<Test6, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+            InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
                 classOption.PropertyOptions.Select(x => x.ColumnAttribute),
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
-            var result = await query.ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
+            var result = await query.ExecuteAsync(LoadGSqlQueryOptions.GetIDbConnection(), CancellationToken.None);
             Assert.NotNull(result);
         }
     }

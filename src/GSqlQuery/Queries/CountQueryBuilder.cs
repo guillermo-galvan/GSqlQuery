@@ -1,52 +1,54 @@
 ﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
 {
-    internal class CountQueryBuilder<T> : QueryBuilderWithCriteria<T, CountQuery<T>>, IQueryBuilderWithWhere<T, CountQuery<T>> where T : class, new()
+    internal abstract class CountQueryBuilder<T, TReturn, TOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn>
+        where T : class, new()
+        where TReturn : CountQuery<T>
+        where TSelectQuery : SelectQuery<T>
     {
-        private readonly IQueryBuilder<T, SelectQuery<T>> _queryBuilder;
+        protected readonly IQueryBuilder<TSelectQuery, TOptions> _queryBuilder;
 
-        public CountQueryBuilder(IQueryBuilderWithWhere<T, SelectQuery<T>> queryBuilder, IStatements statements)
-            : base(statements)
+        public CountQueryBuilder(IQueryBuilderWithWhere<TSelectQuery, TOptions> queryBuilder, IStatements statements) : base(statements)
         {
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
-            _andOr = null;
         }
 
-        public override CountQuery<T> Build()
-        {
-            SelectQuery<T> selectQuery = _queryBuilder.Build();
-            var query = CreateQuery(_andOr != null, Options, selectQuery.Columns, _tableName, _andOr != null ? GetCriteria() : string.Empty);
-            return new CountQuery<T>(query, selectQuery.Columns, _criteria, _queryBuilder.Options);
-        }
-
-        public override IWhere<T, CountQuery<T>> Where()
-        {
-            _andOr = new AndOrBase<T,CountQuery<T>>(this);
-            return (IWhere<T, CountQuery<T>>)_andOr;
-        }
-
-        internal static string CreateQuery(bool isWhere, IStatements statements, IEnumerable<ColumnAttribute> columns, string tableName, string criterias)
+        internal string CreateQuery(IStatements statements)
         {
             string result = string.Empty;
+            var selectQuery = _queryBuilder.Build();
+            Columns = _queryBuilder.Columns;
 
-            if (!isWhere)
+            if (_andOr == null)
             {
                 result = string.Format(statements.Select,
-                    $"COUNT({string.Join(",", columns.Select(x => x.GetColumnName(tableName, statements)))})",
-                    tableName);
+                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.GetColumnName(_tableName, statements)))})",
+                    _tableName);
             }
             else
             {
                 result = string.Format(statements.SelectWhere,
-                    $"COUNT({string.Join(",", columns.Select(x => x.GetColumnName(tableName, statements)))})",
-                    tableName, criterias);
+                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.GetColumnName(_tableName, statements)))})",
+                    _tableName, GetCriteria());
             }
 
             return result;
+        }
+    }
+
+    internal class CountQueryBuilder<T> : CountQueryBuilder<T, CountQuery<T>, IStatements, SelectQuery<T>> where T : class, new()
+    {
+        public CountQueryBuilder(IQueryBuilderWithWhere<SelectQuery<T>, IStatements> queryBuilder)
+            : base(queryBuilder, queryBuilder.Options)
+        { }
+
+        public override CountQuery<T> Build()
+        {
+            var query = CreateQuery(Options);
+            return new CountQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, _queryBuilder.Options);
         }
     }
 }

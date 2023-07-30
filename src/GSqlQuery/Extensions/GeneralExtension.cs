@@ -17,6 +17,37 @@ namespace GSqlQuery.Extensions
                     select prop).ToArray();
         }
 
+        internal static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptionsTupla<IEnumerable<MemberInfo>> optionsTupla)
+        {
+            optionsTupla.NullValidate(ErrorMessages.ParameterNotNull, nameof(optionsTupla));
+
+            List<PropertyOptions> properties = new List<PropertyOptions>();
+            var listName = optionsTupla.MemberInfo.Select(x => x.Name);
+
+            if (optionsTupla.MemberInfo.Any(x => x.DeclaringType.IsGenericType))
+            {
+                foreach (var item in optionsTupla.ClassOptions.PropertyOptions.Where(x => x.PropertyInfo.PropertyType.IsClass))
+                {
+                    var classOptions = ClassOptionsFactory.GetClassOptions(item.PropertyInfo.PropertyType);
+                    var a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
+
+                    properties.AddRange(a);
+                }
+            }
+            else
+            {
+                foreach (var item in optionsTupla.MemberInfo)
+                {
+                    var classOptions = ClassOptionsFactory.GetClassOptions(item.DeclaringType);
+                    var a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
+
+                    properties.AddRange(a);
+                }
+            }
+
+            return properties;
+        }
+
         internal static IEnumerable<ColumnAttribute> GetColumnsQuery(this ClassOptions options, IEnumerable<string> selectMember)
         {
             return (from prop in options.PropertyOptions
@@ -55,13 +86,7 @@ namespace GSqlQuery.Extensions
         internal static PropertyOptions ValidateMemberInfo(this MemberInfo memberInfo, ClassOptions options)
         {
             PropertyOptions result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
-
-            if (result == null)
-            {
-                throw new InvalidOperationException($"Could not find property {memberInfo.Name} on type {options.Type.Name}");
-            }
-
-            return result;
+            return result ?? throw new InvalidOperationException($"Could not find property {memberInfo.Name} on type {options.Type.Name}");
         }
 
         internal static object GetValue(this PropertyOptions options, object entity)
@@ -69,16 +94,16 @@ namespace GSqlQuery.Extensions
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
         }
 
-        internal static JoinCriteriaPart GetJoinColumn<T1,T2,TProperties>(this Expression<Func<Join<T1, T2>, TProperties>> expression)
+        internal static JoinCriteriaPart GetJoinColumn<T1, T2, TProperties>(this Expression<Func<Join<T1, T2>, TProperties>> expression)
             where T1 : class, new()
             where T2 : class, new()
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
             MemberInfo memberInfos = expression.GetMember();
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
-            ColumnAttribute columnAttribute =  options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
+            ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
 
-            return new JoinCriteriaPart() 
+            return new JoinCriteriaPart()
             {
                 Column = columnAttribute,
                 Table = options.Table,
@@ -86,7 +111,7 @@ namespace GSqlQuery.Extensions
             };
         }
 
-        internal static JoinCriteriaPart GetJoinColumn<T1, T2,T3, TProperties>(this Expression<Func<Join<T1,T2,T3>, TProperties>> expression)
+        internal static JoinCriteriaPart GetJoinColumn<T1, T2, T3, TProperties>(this Expression<Func<Join<T1, T2, T3>, TProperties>> expression)
             where T1 : class, new()
             where T2 : class, new()
             where T3 : class, new()

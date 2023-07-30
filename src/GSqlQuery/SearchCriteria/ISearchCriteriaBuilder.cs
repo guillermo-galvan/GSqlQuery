@@ -5,7 +5,7 @@ namespace GSqlQuery.SearchCriteria
     /// <summary>
     /// Search Criteria Builder 
     /// </summary>
-    public interface ISearchCriteriaBuilder<T, TReturn> : IBuilder<TReturn> where TReturn : IQuery
+    public interface ISearchCriteriaBuilder<TReturn> : IBuilder<TReturn> where TReturn : IQuery
     {
         /// <summary>
         /// Add a search criteria

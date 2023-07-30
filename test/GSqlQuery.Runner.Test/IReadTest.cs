@@ -1,18 +1,18 @@
-using GSqlQuery.Runner.Test.Data;
+﻿using GSqlQuery.Runner.Test.Data;
 using GSqlQuery.Runner.Test.Models;
 using System;
-using System.Data.Common;
+using System.Data;
 using Xunit;
 
 namespace GSqlQuery.Runner.Test
 {
     public class IReadTest
     {
-        private readonly ConnectionOptions<DbConnection> _connectionOptions;
+        private readonly ConnectionOptions<IDbConnection> _connectionOptions;
 
         public IReadTest()
         {
-            _connectionOptions = new ConnectionOptions<DbConnection>(new Statements(), LoadFluentOptions.GetDatabaseManagmentMock());
+            _connectionOptions = new ConnectionOptions<IDbConnection>(new Statements(), LoadGSqlQueryOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]
@@ -27,14 +27,14 @@ namespace GSqlQuery.Runner.Test
         [Fact]
         public void Throw_an_exception_if_null_connectionoptions_is_passed()
         {
-            ConnectionOptions<DbConnection> connectionOptions = null;
+            ConnectionOptions<IDbConnection> connectionOptions = null;
             Assert.Throws<ArgumentNullException>(() => EntityExecute<Test1>.Select(connectionOptions));
         }
 
         [Fact]
         public void Throw_an_exception_if_null_connectionoptions_is_passed_1()
         {
-            ConnectionOptions<DbConnection> connectionOptions = null;
+            ConnectionOptions<IDbConnection> connectionOptions = null;
             Assert.Throws<ArgumentNullException>(() => EntityExecute<Test1>.Select(connectionOptions, (x) => x.IsTest));
         }
 
@@ -46,7 +46,7 @@ namespace GSqlQuery.Runner.Test
 
         [Theory]
         [ClassData(typeof(Select_Test1_TestData_ConnectionOptions))]
-        public void Retrieve_all_properties_of_the_query2(ConnectionOptions<DbConnection> connectionOptions, string query)
+        public void Retrieve_all_properties_of_the_query2(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             var queryBuilder = EntityExecute<Test1>.Select(connectionOptions);
             Assert.NotNull(queryBuilder);
@@ -57,7 +57,7 @@ namespace GSqlQuery.Runner.Test
 
         [Theory]
         [ClassData(typeof(Select_Test1_TestData2_ConnectionOptions))]
-        public void Retrieve_some_properties_from_the_query2(ConnectionOptions<DbConnection> connectionOptions, string query)
+        public void Retrieve_some_properties_from_the_query2(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             var queryBuilder = EntityExecute<Test1>.Select(connectionOptions, x => new { x.Id, x.Name, x.Create });
             Assert.NotNull(queryBuilder);
@@ -74,7 +74,7 @@ namespace GSqlQuery.Runner.Test
 
         [Theory]
         [ClassData(typeof(Select_Test3_TestData_ConnectionOptions))]
-        public void Retrieve_all_properties_from_the_query_with_attributes2(ConnectionOptions<DbConnection> connectionOptions, string query)
+        public void Retrieve_all_properties_from_the_query_with_attributes2(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             var queryBuilder = EntityExecute<Test3>.Select(connectionOptions);
             Assert.NotNull(queryBuilder);
@@ -85,7 +85,7 @@ namespace GSqlQuery.Runner.Test
 
         [Theory]
         [ClassData(typeof(Select_Test4_TestData_ConnectionOptions))]
-        public void Retrieve_all_properties_from_the_query_with_attributes_and_scheme2(ConnectionOptions<DbConnection> connectionOptions, string query)
+        public void Retrieve_all_properties_from_the_query_with_attributes_and_scheme2(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             var queryBuilder = EntityExecute<Test4>.Select(connectionOptions);
             Assert.NotNull(queryBuilder);

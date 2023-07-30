@@ -1,7 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
-
-namespace GSqlQuery
+﻿namespace GSqlQuery
 {
     /// <summary>
     /// Base class to generate the delete query
@@ -9,6 +6,6 @@ namespace GSqlQuery
     /// <typeparam name="T">The type of object from which the query is generated</typeparam>
     public interface IDelete<T> where T : class, new()
     {
-        
+
     }
 }

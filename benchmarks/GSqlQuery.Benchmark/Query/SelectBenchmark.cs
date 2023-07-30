@@ -43,12 +43,6 @@ namespace GSqlQuery.Benchmarks.Query
         }
 
         [Benchmark]
-        public IQuery GenerateGroupWhereQuery()
-        {
-            return User.Select(_statements).Where().BeginGroup().Equal(x => x.Id, 1).CloseGroup().Build();
-        }
-
-        [Benchmark]
         public IQuery GenerateLikeWhereQuery()
         {
             return User.Select(_statements).Where().Like(x => x.Name, "23").Build();

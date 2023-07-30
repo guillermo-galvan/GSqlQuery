@@ -18,7 +18,7 @@ namespace GSqlQuery
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> Between<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
+            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -37,7 +37,7 @@ namespace GSqlQuery
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
+            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -56,7 +56,7 @@ namespace GSqlQuery
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery
+            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();

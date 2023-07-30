@@ -9,7 +9,7 @@ namespace GSqlQuery.Sqlite
 {
     public sealed class SqliteDatabaseManagement : DatabaseManagement, IDatabaseManagement<SqliteDatabaseConnection>
     {
-        public SqliteDatabaseManagement(string connectionString) :  base(connectionString, new SqliteDatabaseManagementEvents())
+        public SqliteDatabaseManagement(string connectionString) : base(connectionString, new SqliteDatabaseManagementEvents())
         { }
 
         public SqliteDatabaseManagement(string connectionString, DatabaseManagementEvents events) : base(connectionString, events)

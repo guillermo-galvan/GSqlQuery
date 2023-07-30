@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.SearchCriteria
+﻿using System;
+
+namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria is not null

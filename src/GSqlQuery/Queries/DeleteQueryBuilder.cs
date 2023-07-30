@@ -2,11 +2,37 @@
 
 namespace GSqlQuery.Queries
 {
+    internal abstract class DeleteQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
+        where T : class, new()
+        where TReturn : DeleteQuery<T>
+    {
+        public DeleteQueryBuilder(IStatements statements)
+            : base(statements)
+        {
+        }
+
+        internal string CreateQuery(IStatements statements)
+        {
+            string result;
+
+            if (_andOr == null)
+            {
+                result = string.Format(statements.Delete, _tableName);
+            }
+            else
+            {
+                result = string.Format(statements.DeleteWhere, _tableName, GetCriteria());
+            }
+
+            return result;
+        }
+    }
     /// <summary>
     /// Delete query builder
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class DeleteQueryBuilder<T> : QueryBuilderWithCriteria<T, DeleteQuery<T>>, IQueryBuilderWithWhere<T, DeleteQuery<T>> where T : class, new()
+    internal class DeleteQueryBuilder<T> : DeleteQueryBuilder<T, DeleteQuery<T>>
+        where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the DeleteQueryBuilder class.
@@ -19,39 +45,12 @@ namespace GSqlQuery.Queries
         {
         }
 
-        internal static string CreateQuery(bool isWhere, IStatements statements, string tableName, string criterias)
-        {
-            string result;
-
-            if (!isWhere)
-            {
-                result = string.Format(statements.Delete, tableName);
-            }
-            else
-            {
-                result = string.Format(statements.DeleteWhere, tableName, criterias);
-            }
-
-            return result;
-        }
-
         /// <summary>
         /// Build delete query
         /// </summary>
         public override DeleteQuery<T> Build()
         {
-            var query = CreateQuery(_andOr != null, Options, _tableName, _andOr != null ? GetCriteria() : string.Empty);
-            return new DeleteQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
-        }
-
-        /// <summary>
-        /// Add where query
-        /// </summary>
-        /// <returns>Implementation of the IWhere interface</returns>
-        public override IWhere<T, DeleteQuery<T>> Where()
-        {
-            _andOr = new AndOrBase<T,DeleteQuery<T>>(this);
-            return (IWhere<T, DeleteQuery<T>>)_andOr;
+            return new DeleteQuery<T>(CreateQuery(Options), Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
     }
 }

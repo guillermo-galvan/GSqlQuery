@@ -9,7 +9,7 @@ namespace GSqlQuery.MySql
     public sealed class MySqlDatabaseConnection : Connection, IConnection
     {
         public MySqlDatabaseConnection(string connectionString) : base(new MySqlConnection(connectionString))
-        {}
+        { }
 
         public MySqlDatabaseTransaction BeginTransaction()
         {
@@ -30,15 +30,15 @@ namespace GSqlQuery.MySql
         public async Task<MySqlDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return 
-                (MySqlDatabaseTransaction)SetTransaction(new MySqlDatabaseTransaction(this, 
+            return
+                (MySqlDatabaseTransaction)SetTransaction(new MySqlDatabaseTransaction(this,
                 await ((MySqlConnection)_connection).BeginTransactionAsync(isolationLevel, cancellationToken)));
         }
 
         public override Task CloseAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return ((MySqlConnection)_connection).CloseAsync(cancellationToken);
+            return ((MySqlConnection)_connection).CloseAsync();
         }
 
         ITransaction IConnection.BeginTransaction() => BeginTransaction();
@@ -47,7 +47,7 @@ namespace GSqlQuery.MySql
 
         async Task<ITransaction> IConnection.BeginTransactionAsync(CancellationToken cancellationToken = default) => await BeginTransactionAsync(cancellationToken);
 
-        async Task<ITransaction> IConnection.BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default) => 
+        async Task<ITransaction> IConnection.BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default) =>
             await BeginTransactionAsync(isolationLevel, cancellationToken);
 
         ~MySqlDatabaseConnection()

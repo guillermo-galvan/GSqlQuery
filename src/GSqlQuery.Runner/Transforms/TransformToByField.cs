@@ -14,7 +14,7 @@ namespace GSqlQuery.Runner.Transforms
 
             public object Value { get; set; }
 
-            public ParamValue(string propertyName , object value)
+            public ParamValue(string propertyName, object value)
             {
                 PropertyName = propertyName;
                 Value = value;

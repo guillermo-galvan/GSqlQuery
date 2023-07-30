@@ -64,7 +64,7 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ColumnAttribute</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static ClassOptionsTupla<ColumnAttribute>  GetColumnAttribute<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<ColumnAttribute> GetColumnAttribute<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             MemberInfo memberInfo = expression.GetMember();
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfo.DeclaringType);

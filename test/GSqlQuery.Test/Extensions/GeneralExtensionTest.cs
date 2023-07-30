@@ -1,18 +1,18 @@
 ﻿using GSqlQuery.Extensions;
-using System.Linq.Expressions;
 using GSqlQuery.Test.Models;
-using System.Reflection;
-using System.Linq;
-using Xunit;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using Xunit;
 
 namespace GSqlQuery.Test.Extensions
 {
     public class GeneralExtensionTest
     {
         public GeneralExtensionTest()
-        {}
+        { }
 
         [Fact]
         public void Should_return_the_column_attribute()

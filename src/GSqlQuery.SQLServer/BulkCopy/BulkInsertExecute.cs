@@ -13,6 +13,10 @@ namespace GSqlQuery.SQLServer
         private readonly Queue<DataTable> _tables;
         private readonly string _connectionString;
 
+        public IDatabaseManagement<SqlServerDatabaseConnection> DatabaseManagement { get; }
+
+        IDatabaseManagement<SqlConnection> IExecute<int, SqlConnection>.DatabaseManagement => throw new NotImplementedException();
+
         public BulkInsertExecute(string connectionString)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
@@ -22,6 +26,7 @@ namespace GSqlQuery.SQLServer
 
             _connectionString = connectionString;
             _tables = new Queue<DataTable>();
+            DatabaseManagement = new SqlServerDatabaseManagement(_connectionString);
         }
 
         public int Execute()

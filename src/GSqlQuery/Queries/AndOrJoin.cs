@@ -3,12 +3,13 @@ using System.Linq;
 
 namespace GSqlQuery.Queries
 {
-    internal class AndOrJoin<T1, T2,TReturn> : AndOrBase<Join<T1, T2>, TReturn>
+    internal class AndOrJoin<T1, T2, TJoin, TReturn, TOptions> : AndOrBase<TJoin, TReturn, TOptions>
         where T1 : class, new()
         where T2 : class, new()
-        where TReturn : IQuery
+        where TJoin : class, new()
+        where TReturn : IQuery<TJoin>
     {
-        public AndOrJoin(IQueryBuilderWithWhere<Join<T1, T2>, TReturn> queryBuilderWithWhere) :
+        public AndOrJoin(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere) :
             base(queryBuilderWithWhere, false)
         {
         }
@@ -26,13 +27,14 @@ namespace GSqlQuery.Queries
         }
     }
 
-    internal class AndOrJoin<T1, T2, T3, TReturn> : AndOrBase<Join<T1, T2, T3>, TReturn>
+    internal class AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions> : AndOrBase<TJoin, TReturn, TOptions>
         where T1 : class, new()
         where T2 : class, new()
         where T3 : class, new()
-        where TReturn : IQuery
+        where TJoin : class, new()
+        where TReturn : IQuery<TJoin>
     {
-        public AndOrJoin(IQueryBuilderWithWhere<Join<T1, T2, T3>, TReturn> queryBuilderWithWhere)
+        public AndOrJoin(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere)
             : base(queryBuilderWithWhere, false)
         {
         }
@@ -50,4 +52,5 @@ namespace GSqlQuery.Queries
                 x.GetCriteria(statements, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions)).ToArray();
         }
     }
+
 }

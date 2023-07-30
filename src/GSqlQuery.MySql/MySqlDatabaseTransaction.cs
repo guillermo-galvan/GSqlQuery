@@ -5,9 +5,9 @@ namespace GSqlQuery.MySql
 {
     public sealed class MySqlDatabaseTransaction : Transaction
     {
-        public MySqlDatabaseTransaction(MySqlDatabaseConnection mySqlDatabaseConnection, MySqlTransaction mySqlTransaction) 
+        public MySqlDatabaseTransaction(MySqlDatabaseConnection mySqlDatabaseConnection, MySqlTransaction mySqlTransaction)
             : base(mySqlDatabaseConnection, mySqlTransaction)
-        {}
+        { }
 
         public MySqlDatabaseConnection Connection => (MySqlDatabaseConnection)_connection;
 

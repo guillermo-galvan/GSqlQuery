@@ -11,13 +11,13 @@ namespace GSqlQuery.MySql
     {
         public MySqlDatabaseManagement(string connectionString) :
             base(connectionString, new MySqlDatabaseManagementEvents())
-        {}
+        { }
 
         public MySqlDatabaseManagement(string connectionString, DatabaseManagementEvents events) : base(connectionString, events)
-        {}
+        { }
 
         public MySqlDatabaseManagement(string connectionString, DatabaseManagementEvents events, ILogger logger) : base(connectionString, events, logger)
-        {}
+        { }
 
         public int ExecuteNonQuery(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
@@ -36,7 +36,7 @@ namespace GSqlQuery.MySql
 
         public Task<IEnumerable<T>> ExecuteReaderAsync<T>(MySqlDatabaseConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class, new()
         {
-            return base.ExecuteReaderAsync<T>(connection,query, propertyOptions, parameters, cancellationToken);
+            return base.ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters, cancellationToken);
         }
 
         public T ExecuteScalar<T>(MySqlDatabaseConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)

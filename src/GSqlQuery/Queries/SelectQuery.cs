@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// Select query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public sealed class SelectQuery<T> : Query<T> where T : class, new()
+    public class SelectQuery<T> : Query<T> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the SelectQuery class.

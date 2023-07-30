@@ -53,10 +53,20 @@
 
         public virtual bool IncrudeTableNameInQuery => true;
 
-        public string Join => "JOIN {0} ON {1}";
+        public virtual string Join => "JOIN {0} ON {1}";
 
-        public string JoinSelect => "SELECT {0} FROM {1} {2};";
+        public virtual string JoinSelect => "SELECT {0} FROM {1} {2};";
 
-        public string JoinSelectWhere => "SELECT {0} FROM {1} {2} WHERE {3};";
+        public virtual string JoinSelectWhere => "SELECT {0} FROM {1} {2} WHERE {3};";
+
+        /// <summary>
+        /// Instructions to format the select, example "SELECT {0} FROM {1} {2} ORDER BY {3};"
+        /// </summary>
+        public virtual string JoinSelectOrderBy => "SELECT {0} FROM {1} {2} ORDER BY {3};";
+
+        // <summary>
+        /// Instructions to format the select, example "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};"
+        /// </summary>
+        public virtual string JoinSelectWhereOrderBy => "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};";
     }
 }

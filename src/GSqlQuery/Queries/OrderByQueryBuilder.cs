@@ -4,15 +4,22 @@ using System.Linq;
 
 namespace GSqlQuery.Queries
 {
-    internal class OrderByQueryBuilder<T> : QueryBuilderBase<T, OrderByQuery<T>>, IQueryBuilder<T, OrderByQuery<T>> where T : class, new()
+    internal interface IOrderByQueryBuilder
     {
-        private readonly IQueryBuilderWithWhere<T, SelectQuery<T>> _queryBuilder;
-        private readonly IAndOr<T, SelectQuery<T>> _andorBuilder;
-        private readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
+        void AddOrderBy(IEnumerable<string> selectMember, OrderBy orderBy);
+    }
 
-        public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, SelectQuery<T>> queryBuilder, IStatements statements)
-            : base(statements)
+    internal abstract class OrderByQueryBuilder<T, TReturn, TOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn>, IOrderByQueryBuilder
+        where T : class, new()
+        where TReturn : OrderByQuery<T>
+        where TSelectQuery : SelectQuery<T>
+    {
+        protected readonly IQueryBuilderWithWhere<TSelectQuery, TOptions> _queryBuilder;
+        protected readonly IAndOr<T, TSelectQuery> _andorBuilder;
+        protected readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
+
+        protected OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
+            IQueryBuilderWithWhere<T, TSelectQuery, TOptions> queryBuilder, IStatements statements) : base(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
@@ -21,9 +28,8 @@ namespace GSqlQuery.Queries
             Columns = queryBuilder.Columns;
         }
 
-        public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-           IAndOr<T, SelectQuery<T>> andOr, IStatements statements)
-           : base(statements)
+        protected OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
+           IAndOr<T, TSelectQuery> andOr, IStatements statements) : base(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
@@ -32,44 +38,59 @@ namespace GSqlQuery.Queries
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        public override OrderByQuery<T> Build()
+        public void AddOrderBy(IEnumerable<string> selectMember, OrderBy orderBy)
         {
-            SelectQuery<T> selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
-            var iswhere = selectQuery.Criteria != null && selectQuery.Criteria.Any();
-            var query = CreateQuery(iswhere, _columnsByOrderBy, Options, selectQuery.Columns, _tableName, 
-                iswhere ? string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)) : string.Empty);
-            return new OrderByQuery<T>(query, selectQuery.Columns, selectQuery.Criteria, selectQuery.Statements);
+            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
+            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
         }
 
-        internal static string CreateQuery(bool isWhere, Queue<ColumnsOrderBy> columnsByOrderBy, IStatements statements, IEnumerable<ColumnAttribute> columns, 
-            string tableName, string criterias)
+        internal string CreateQuery(IStatements statements, out IEnumerable<ColumnAttribute> columns, out IEnumerable<CriteriaDetail> criteria)
         {
+            TSelectQuery selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             string columnsOrderby =
-                string.Join(",", columnsByOrderBy.Select(x => $"{string.Join(",", x.Columns.Select(y => y.ColumnAttribute.GetColumnName(tableName, statements)))} {x.OrderBy}"));
+                string.Join(",", _columnsByOrderBy.Select(x => $"{string.Join(",", x.Columns.Select(y => y.ColumnAttribute.GetColumnName(_tableName, statements)))} {x.OrderBy}"));
+
+            columns = selectQuery.Columns;
+            criteria = selectQuery.Criteria;
 
             string result = string.Empty;
 
-            if (!isWhere)
+            if (selectQuery.Criteria == null || !selectQuery.Criteria.Any())
             {
                 result = string.Format(statements.SelectOrderBy,
-                     string.Join(",", columns.Select(x => x.GetColumnName(tableName, statements))),
-                     tableName,
+                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements))),
+                     _tableName,
                      columnsOrderby);
             }
             else
             {
                 result = string.Format(statements.SelectWhereOrderBy,
-                     string.Join(",", columns.Select(x => x.GetColumnName(tableName, statements))),
-                     tableName, criterias, columnsOrderby);
+                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements))),
+                     _tableName, string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)), columnsOrderby);
             }
 
             return result;
         }
+    }
 
-        internal void AddOrderBy(IEnumerable<string> selectMember, OrderBy orderBy)
+    internal class OrderByQueryBuilder<T> : OrderByQueryBuilder<T, OrderByQuery<T>, IStatements, SelectQuery<T>>,
+        IQueryBuilder<OrderByQuery<T>, IStatements>
+        where T : class, new()
+    {
+        public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
+            IQueryBuilderWithWhere<T, SelectQuery<T>, IStatements> queryBuilder)
+            : base(selectMember, orderBy, queryBuilder, queryBuilder.Options)
+        { }
+
+        public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
+           IAndOr<T, SelectQuery<T>> andOr, IStatements statements)
+           : base(selectMember, orderBy, andOr, statements)
+        { }
+
+        public override OrderByQuery<T> Build()
         {
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
+            var query = CreateQuery(Options, out IEnumerable<ColumnAttribute> columns, out IEnumerable<CriteriaDetail> criteria);
+            return new OrderByQuery<T>(query, columns, criteria, Options);
         }
     }
 }

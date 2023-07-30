@@ -1,157 +1,62 @@
-﻿using System.Collections.Generic;
-using GSqlQuery.Extensions;
+﻿using GSqlQuery.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System;
 using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
-    internal class JoinQueryBuilderWithWhere<T1, T2> : QueryBuilderWithCriteria<Join<T1, T2>, JoinQuery<Join<T1, T2>>>, 
-        IJoinQueryBuilderWithWhere<T1, T2, JoinQuery<Join<T1, T2>>>,
-        IComparisonOperators<Join<T1, T2>, JoinQuery<Join<T1, T2>>>,
-        IAddJoinCriteria<JoinModel>
+    internal class JoinQueryBuilderWithWhere<T1, T2> : JoinQueryBuilderWithWhereBase<T1, T2, Join<T1, T2>, JoinQuery<Join<T1, T2>>, IStatements>,
+        IJoinQueryBuilderWithWhere<T1, T2, JoinQuery<Join<T1, T2>>, IStatements>
         where T1 : class, new()
         where T2 : class, new()
     {
-        private readonly Queue<JoinInfo> _joinInfos;
-        private readonly JoinInfo _tableNameT2;
-
-        public JoinQueryBuilderWithWhere(string tableName,IEnumerable<PropertyOptions> columns, JoinEnum joinEnum, IStatements statements,
-            IEnumerable<PropertyOptions> columnsT2 = null) : base(statements) 
+        public JoinQueryBuilderWithWhere(string tableName, IEnumerable<PropertyOptions> columns, JoinEnum joinEnum, IStatements statements,
+            IEnumerable<PropertyOptions> columnsT2 = null) : base(null, statements)
         {
-            _joinInfos = new Queue<JoinInfo>();
-
-            _joinInfos.Enqueue(new JoinInfo 
+            _joinInfos.Enqueue(new JoinInfo
             {
                 TableName = tableName,
-                Columns= columns,
+                Columns = columns,
                 IsMain = true,
             });
 
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T2));
-            _tableNameT2 = new JoinInfo
+            _joinInfo = new JoinInfo
             {
                 TableName = tmp.Table.GetTableName(statements),
                 Columns = columnsT2 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
                 JoinEnum = joinEnum
             };
 
-            _joinInfos.Enqueue(_tableNameT2);
+            _joinInfos.Enqueue(_joinInfo);
 
             Columns = _joinInfos.SelectMany(x => x.Columns);
         }
 
-        internal static string CreateQuery(bool isWhere, IStatements statements, IEnumerable<JoinInfo> joinInfos,
-            string criterias)
-        {
-            var columns = joinInfos.Select(x => new { x.TableName ,x.Columns }).SelectMany(c => c.Columns.Select(x => x.ColumnAttribute.GetColumnName(c.TableName, statements)));
-            var tableMain = joinInfos.First(x => x.IsMain);
-            Queue<string> JoinQuerys = new Queue<string>();
-
-            foreach (var item in joinInfos.Where(x => !x.IsMain))
-            {
-                var a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(statements, x)));
-
-                JoinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(statements.Join, item.TableName, a)}");
-            }
-
-            string result = string.Empty;
-
-            if (!isWhere)
-            {
-                result = string.Format(statements.JoinSelect, string.Join(",", columns), tableMain.TableName, string.Join(" ", JoinQuerys));
-            }
-            else
-            {
-                result = string.Format(statements.JoinSelectWhere, string.Join(",", columns), tableMain.TableName, string.Join(" ", JoinQuerys), criterias);
-            }
-
-            return result;
-        }
-
-        private static string GetJoinQuery(JoinEnum joinEnum)
-        {
-            switch (joinEnum)
-            {
-                case JoinEnum.Inner:
-                    return "INNER";
-                case JoinEnum.Left:
-                    return "LEFT";
-                case JoinEnum.Right:
-                    return "RIGHT";
-                case JoinEnum.None:
-                default:
-                    return "";
-            }
-        }
-
-        private static string CreateJoinQueryPart(IStatements statements, JoinModel joinModel)
-        { 
-            string partRight = joinModel.JoinModel1.Column.GetColumnName(joinModel.JoinModel1.Table.GetTableName(statements), statements);
-            string partLeft = joinModel.JoinModel2.Column.GetColumnName(joinModel.JoinModel2.Table.GetTableName(statements), statements);
-
-            string joinCriteria = string.Empty;
-
-            switch (joinModel.JoinCriteria)
-            {
-                case JoinCriteriaEnum.Equal:
-                    joinCriteria = "=";
-                    break;
-                case JoinCriteriaEnum.NotEqual:
-                    joinCriteria = "<>";
-                    break;
-                case JoinCriteriaEnum.GreaterThan:
-                    joinCriteria = ">";
-                    break;
-                case JoinCriteriaEnum.LessThan:
-                    joinCriteria = "<";
-                    break;
-                case JoinCriteriaEnum.GreaterThanOrEqual:
-                    joinCriteria = ">=";
-                    break;
-                case JoinCriteriaEnum.LessThanOrEqual:
-                    joinCriteria = "<=";
-                    break;
-            }
-
-            return string.IsNullOrWhiteSpace(joinModel.LogicalOperator) ? $"{partRight} {joinCriteria} { partLeft}" : 
-                $"{joinModel.LogicalOperator} {partRight} {joinCriteria} {partLeft}";
-        }
-
-        public void AddColumns(JoinModel joinModel)
-        {
-            _tableNameT2.Joins.Enqueue(joinModel);
-        }
-
-        public override IWhere<Join<T1, T2>, JoinQuery<Join<T1, T2>>> Where()
-        {
-            _andOr = new AndOrJoin<T1,T2, JoinQuery<Join<T1, T2>>>(this);
-            return (IWhere<Join<T1, T2>, JoinQuery<Join<T1, T2>>>)_andOr;
-        }
-
         public override JoinQuery<Join<T1, T2>> Build()
         {
-            var query = CreateQuery(_andOr != null, Options, _joinInfos, _andOr != null ? GetCriteria() : "");
+            var query = CreateQuery(Options);
             return new JoinQuery<Join<T1, T2>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
 
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> InnerJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> InnerJoin<TJoin>() where TJoin : class, new()
         {
             return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Inner, Options);
         }
 
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> LeftJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> LeftJoin<TJoin>() where TJoin : class, new()
         {
             return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Left, Options);
         }
 
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> RightJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> RightJoin<TJoin>() where TJoin : class, new()
         {
             return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinEnum.Right, Options);
         }
 
-        private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
+        private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class, new()
         {
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -161,64 +66,37 @@ namespace GSqlQuery.Queries
             return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, Options, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
         }
 
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression) 
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
             where TJoin : class, new()
         {
-           return Join(JoinEnum.Inner, expression);
+            return Join(JoinEnum.Inner, expression);
         }
 
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
             return Join(JoinEnum.Left, expression);
         }
 
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
             return Join(JoinEnum.Right, expression);
         }
     }
 
-    internal class JoinQueryBuilderWithWhere<T1, T2, T3> : QueryBuilderWithCriteria<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>>,
-        IJoinQueryBuilderWithWhere<T1, T2, T3, JoinQuery<Join<T1, T2, T3>>>,
-        IComparisonOperators<Join<T1, T2,T3>, JoinQuery<Join<T1, T2, T3>>>, 
-        IAddJoinCriteria<JoinModel>
+    internal class JoinQueryBuilderWithWhere<T1, T2, T3> : JoinQueryBuilderWithWhereBase<T1, T2, T3, Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>, IStatements>,
+        IJoinQueryBuilderWithWhere<T1, T2, T3, JoinQuery<Join<T1, T2, T3>>, IStatements>
         where T1 : class, new()
         where T2 : class, new()
         where T3 : class, new()
     {
-        private readonly Queue<JoinInfo> _joinInfos;
-        private readonly JoinInfo _tableNameT3;
-
-        public JoinQueryBuilderWithWhere(Queue<JoinInfo> joinInfos, JoinEnum joinEnum, IStatements statements, IEnumerable<PropertyOptions> columnsT3 = null) : base(statements)
-        {
-            _joinInfos = joinInfos;
-            var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
-            _tableNameT3 = new JoinInfo
-            {
-                TableName = tmp.Table.GetTableName(statements),
-                Columns = columnsT3 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
-                JoinEnum = joinEnum
-            };
-
-            _joinInfos.Enqueue(_tableNameT3);
-            Columns = _joinInfos.SelectMany(x => x.Columns);
-        }
-
-        public void AddColumns(JoinModel joinModel)
-        {
-            _tableNameT3.Joins.Enqueue(joinModel);
-        }
+        public JoinQueryBuilderWithWhere(Queue<JoinInfo> joinInfos, JoinEnum joinEnum, IStatements statements, IEnumerable<PropertyOptions> columnsT3 = null) :
+            base(joinInfos, joinEnum, statements, columnsT3)
+        { }
 
         public override JoinQuery<Join<T1, T2, T3>> Build()
         {
-            var query = JoinQueryBuilderWithWhere<T1, T2>.CreateQuery(_andOr != null, Options, _joinInfos, _andOr != null ? GetCriteria() : "");
-            return new JoinQuery<Join<T1, T2,T3>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
-        }
-
-        public override IWhere<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>> Where()
-        {
-            _andOr = new AndOrJoin<T1, T2, T3, JoinQuery<Join<T1, T2, T3>>>(this);
-            return (IWhere<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>>)_andOr;
+            var query = CreateQuery(Options);
+            return new JoinQuery<Join<T1, T2, T3>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
         }
     }
 

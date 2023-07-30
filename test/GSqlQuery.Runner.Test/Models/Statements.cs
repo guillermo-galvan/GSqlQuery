@@ -31,5 +31,9 @@
         public string JoinSelect => "SELECT {0} FROM {1} {2};";
 
         public string JoinSelectWhere => "SELECT {0} FROM {1} {2} WHERE {3};";
+
+        public string JoinSelectOrderBy => "SELECT {0} FROM {1} {2} ORDER BY {3};";
+
+        public string JoinSelectWhereOrderBy => "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};";
     }
 }

@@ -20,7 +20,7 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="name"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public TableAttribute( string name) 
+        public TableAttribute(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {

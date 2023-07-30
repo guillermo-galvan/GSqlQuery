@@ -1,11 +1,11 @@
-﻿using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner;
+﻿using GSqlQuery.Runner;
+using GSqlQuery.Runner.Extensions;
 using GSqlQuery.Sqlite.Test.Data;
-using Xunit;
 using System;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace GSqlQuery.Sqlite.Test
 {
@@ -154,7 +154,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             CancellationTokenSource source = new CancellationTokenSource();
             CancellationToken token = source.Token;
-            Test1 test1 = new Test1 () { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+            Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
             var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
