@@ -60,7 +60,7 @@
         /// </summary>
         string SelectOrderBy { get; }
 
-        bool IncrudeTableNameInQuery { get; }
+        bool IncludeTableNameInColumns { get; }
 
         /// <summary>
         /// Instructions to format the JOIN, "JOIN {0} ON {1}"

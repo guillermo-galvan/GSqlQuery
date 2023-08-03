@@ -24,7 +24,7 @@
 
         public string SelectOrderBy => "SELECT {0} FROM {1} ORDER BY {2};";
 
-        public bool IncrudeTableNameInQuery => true;
+        public bool IncludeTableNameInColumns => true;
 
         public string Join => "JOIN {0} ON {1}";
 

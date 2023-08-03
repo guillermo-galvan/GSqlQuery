@@ -20,7 +20,7 @@ namespace GSqlQuery.Runner.Queries
 
             _joinInfos.Enqueue(new JoinInfo
             {
-                TableName = tableName,
+                ClassOptions = ClassOptionsFactory.GetClassOptions(typeof(T1)),
                 Columns = columns,
                 IsMain = true,
             });
@@ -28,9 +28,9 @@ namespace GSqlQuery.Runner.Queries
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T2));
             _joinInfo = new JoinInfo
             {
-                TableName = tmp.Table.GetTableName(options.Statements),
+               ClassOptions = tmp,
                 Columns = columnsT2 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
-                JoinEnum = joinEnum
+                JoinEnum = joinEnum,
             };
 
             _joinInfos.Enqueue(_joinInfo);

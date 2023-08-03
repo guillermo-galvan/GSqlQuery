@@ -51,7 +51,7 @@
 
         public virtual string SelectWhereOrderBy => "SELECT {0} FROM {1} WHERE {2} ORDER BY {3};";
 
-        public virtual bool IncrudeTableNameInQuery => true;
+        public virtual bool IncludeTableNameInColumns => true;
 
         public virtual string Join => "JOIN {0} ON {1}";
 

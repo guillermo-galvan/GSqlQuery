@@ -70,11 +70,11 @@ namespace GSqlQuery.Queries
 
             if (_andorBuilder == null)
             {
-                result = string.Format(statements.JoinSelectOrderBy, string.Join(",", joinColumns), tableMain.TableName, string.Join(" ", JoinQuerys), columnsOrderby);
+                result = string.Format(statements.JoinSelectOrderBy, string.Join(",", joinColumns), tableMain.ClassOptions.Table.GetTableName(statements), string.Join(" ", JoinQuerys), columnsOrderby);
             }
             else
             {
-                result = string.Format(statements.JoinSelectWhereOrderBy, string.Join(",", joinColumns), tableMain.TableName, string.Join(" ", JoinQuerys),
+                result = string.Format(statements.JoinSelectWhereOrderBy, string.Join(",", joinColumns), tableMain.ClassOptions.Table.GetTableName(statements), string.Join(" ", JoinQuerys),
                     string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)), columnsOrderby);
             }
 

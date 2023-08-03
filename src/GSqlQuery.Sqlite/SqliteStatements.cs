@@ -6,6 +6,6 @@
 
         public override string ValueAutoIncrementingQuery => "SELECT last_insert_rowid();";
 
-        public override bool IncrudeTableNameInQuery => false;
+        public override bool IncludeTableNameInColumns => false;
     }
 }

@@ -13,7 +13,7 @@ namespace GSqlQuery.Queries
 
         internal static IEnumerable<string> GetColumns(IEnumerable<JoinInfo> joinInfos, IStatements statements)
         {
-            return joinInfos.Select(x => new { x.TableName, x.Columns }).SelectMany(c => c.Columns.Select(x => x.ColumnAttribute.GetColumnName(c.TableName, statements)));
+            return joinInfos.SelectMany(c => c.Columns.Select(x => x.ColumnAttribute.GetColumnNameJoin(c, statements)));
         }
 
         internal static IEnumerable<string> CreateJoinQuery(IEnumerable<JoinInfo> joinInfos, IStatements statements)
@@ -24,7 +24,7 @@ namespace GSqlQuery.Queries
             {
                 var a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(statements, x)));
 
-                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(statements.Join, item.TableName, a)}");
+                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(statements.Join, item.ClassOptions.Table.GetTableName(statements), a)}");
             }
 
             return joinQuerys;
@@ -116,13 +116,15 @@ namespace GSqlQuery.Queries
             IEnumerable<string> JoinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, statements);
 
             string result;
+            string tableName = tableMain.ClassOptions.Table.GetTableName(statements);
+
             if (_andOr == null)
             {
-                result = string.Format(statements.JoinSelect, string.Join(",", columns), tableMain.TableName, string.Join(" ", JoinQuerys));
+                result = string.Format(statements.JoinSelect, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys));
             }
             else
             {
-                result = string.Format(statements.JoinSelectWhere, string.Join(",", columns), tableMain.TableName, string.Join(" ", JoinQuerys), GetCriteria());
+                result = string.Format(statements.JoinSelectWhere, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys), GetCriteria());
             }
 
             return result;
@@ -150,9 +152,9 @@ namespace GSqlQuery.Queries
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
             _joinInfo = new JoinInfo
             {
-                TableName = tmp.Table.GetTableName(statements),
                 Columns = columnsT3 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
-                JoinEnum = joinEnum
+                JoinEnum = joinEnum,
+                ClassOptions = tmp,
             };
 
             _joinInfos.Enqueue(_joinInfo);

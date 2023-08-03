@@ -9,6 +9,7 @@ namespace GSqlQuery
     {
         private readonly IStatements _statements;
         protected readonly string _tableName;
+        protected readonly ClassOptions _classOptions;
 
         public IEnumerable<PropertyOptions> Columns { get; protected set; }
 
@@ -20,8 +21,9 @@ namespace GSqlQuery
         public QueryBuilderBase(IStatements statements)
         {
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));
-            Columns = ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions;
-            _tableName = ClassOptionsFactory.GetClassOptions(typeof(T)).Table.GetTableName(statements);
+            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
+            Columns = _classOptions.PropertyOptions;
+            _tableName = _classOptions.Table.GetTableName(statements);
         }
 
         public abstract TReturn Build();
