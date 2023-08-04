@@ -9,7 +9,7 @@ namespace GSqlQuery.Extensions
         internal static void AddColumnJoin<T1, T2, TProperties>(
             this IAddJoinCriteria<JoinModel> joinCriteria, string logicalOperador,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
-            JoinCriteriaEnum joinCriteriaEnum,
+            JoinCriteriaType joinCriteriaEnum,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()
@@ -27,7 +27,7 @@ namespace GSqlQuery.Extensions
         internal static void AddColumnJoin<T1, T2, T3, TProperties>(
             this IAddJoinCriteria<JoinModel> joinCriteria, string logicalOperador,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
-            JoinCriteriaEnum joinCriteriaEnum,
+            JoinCriteriaType joinCriteriaEnum,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()

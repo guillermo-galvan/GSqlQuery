@@ -1,6 +1,6 @@
 ﻿namespace GSqlQuery.Queries
 {
-    internal enum JoinEnum
+    internal enum JoinType
     {
         None,
         Inner,

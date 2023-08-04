@@ -10,7 +10,7 @@ namespace GSqlQuery.Queries
 
         public Queue<JoinModel> Joins { get; set; } = new Queue<JoinModel>();
 
-        public JoinEnum JoinEnum { get; set; }
+        public JoinType JoinEnum { get; set; }
 
         public ClassOptions ClassOptions { get; set; }
     }

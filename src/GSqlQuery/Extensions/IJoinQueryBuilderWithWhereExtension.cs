@@ -10,7 +10,7 @@ namespace GSqlQuery
         #region JoinTwoTables
         internal static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions>
             AddColumn<T1, T2, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
-            Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaEnum criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
+            Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
@@ -20,7 +20,7 @@ namespace GSqlQuery
 
         internal static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions>
             AddColumn<T1, T2, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith, string logicalOperador,
-            Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaEnum criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
+            Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
@@ -42,7 +42,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrEqual<T1, T2, TReturn, TOptions, TProperties>(
@@ -53,7 +53,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndNotEqual<T1, T2, TReturn, TOptions, TProperties>(
@@ -64,7 +64,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrNotEqual<T1, T2, TReturn, TOptions, TProperties>(
@@ -75,7 +75,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndGreaterThan<T1, T2, TReturn, TOptions, TProperties>(
@@ -86,7 +86,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrGreaterThan<T1, T2, TReturn, TOptions, TProperties>(
@@ -97,7 +97,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndLessThan<T1, T2, TReturn, TOptions, TProperties>(
@@ -108,7 +108,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrLessThan<T1, T2, TReturn, TOptions, TProperties>(
@@ -119,7 +119,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndGreaterThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
@@ -130,7 +130,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrGreaterThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
@@ -141,7 +141,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndLessThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
@@ -152,7 +152,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrLessThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
@@ -163,14 +163,14 @@ namespace GSqlQuery
             where T2 : class, new()
             where TReturn : IQuery<Join<T1, T2>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
         #endregion
 
         #region ThreeTable
         internal static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions>
             AddColumn<T1, T2, T3, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
-            Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaEnum criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
+            Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()
             where T3 : class, new()
@@ -181,7 +181,7 @@ namespace GSqlQuery
 
         internal static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions>
             AddColumn<T1, T2, T3, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith, string logicalOperador,
-            Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaEnum criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
+            Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()
             where T3 : class, new()
@@ -205,7 +205,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -217,7 +217,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndNotEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -229,7 +229,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrNotEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -241,7 +241,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndGreaterThan<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -253,7 +253,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrGreaterThan<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -265,7 +265,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndLessThan<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -277,7 +277,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrLessThan<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -289,7 +289,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndGreaterThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -301,7 +301,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrGreaterThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -313,7 +313,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndLessThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -325,7 +325,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrLessThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
@@ -337,7 +337,7 @@ namespace GSqlQuery
             where T3 : class, new()
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
 
         #endregion

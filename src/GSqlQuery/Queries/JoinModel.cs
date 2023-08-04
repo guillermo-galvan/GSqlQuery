@@ -6,7 +6,7 @@
 
         public JoinCriteriaPart JoinModel2 { get; set; }
 
-        public JoinCriteriaEnum JoinCriteria { get; set; }
+        public JoinCriteriaType JoinCriteria { get; set; }
 
         public string LogicalOperator { get; set; }
     }

@@ -514,5 +514,13 @@ namespace GSqlQuery.Sqlite.Test
                 await managment.ExecuteScalarAsync<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagement), token));
             }
         }
+
+        [Fact]
+        public async Task Join_Test()
+        {
+            var a = Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build();
+
+            var n =  a.Text;
+        }
     }
 }

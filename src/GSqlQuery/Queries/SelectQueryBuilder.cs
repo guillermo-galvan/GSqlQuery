@@ -69,20 +69,20 @@ namespace GSqlQuery.Queries
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> InnerJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinEnum.Inner, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Inner, Options);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> LeftJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinEnum.Left, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Left, Options);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> RightJoin<TJoin>() where TJoin : class, new()
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinEnum.Right, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Right, Options);
         }
 
-        private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> Join<TJoin, TProperties>(JoinEnum joinEnum, Expression<Func<TJoin, TProperties>> expression)
+        private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class, new()
         {
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -95,17 +95,17 @@ namespace GSqlQuery.Queries
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
             where TJoin : class, new()
         {
-            return Join(JoinEnum.Inner, expression);
+            return Join(JoinType.Inner, expression);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
-            return Join(JoinEnum.Left, expression);
+            return Join(JoinType.Left, expression);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
         {
-            return Join(JoinEnum.Right, expression);
+            return Join(JoinType.Right, expression);
         }
     }
 }

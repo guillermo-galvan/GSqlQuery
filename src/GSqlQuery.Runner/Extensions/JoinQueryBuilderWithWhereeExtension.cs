@@ -12,7 +12,7 @@ namespace GSqlQuery
         internal static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
             AddColumn<T1, T2, TProperties, TDbConnection>
             (IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection> joinQueryBuilderWith,
-            string logicalOperador, Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaEnum criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
+            string logicalOperador, Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()
         {
@@ -33,7 +33,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -44,7 +44,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -55,7 +55,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -66,7 +66,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -77,7 +77,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -88,7 +88,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -99,7 +99,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -110,7 +110,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -121,7 +121,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -132,7 +132,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -143,7 +143,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, JoinQuery<Join<T1, T2>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -154,7 +154,7 @@ namespace GSqlQuery
             where T1 : class, new()
             where T2 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
         #endregion
 
@@ -163,7 +163,7 @@ namespace GSqlQuery
         internal static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
             AddColumn<T1, T2, T3, TProperties, TDbConnection>
             (IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection> joinQueryBuilderWith,
-            string logicalOperador, Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaEnum criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
+            string logicalOperador, Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class, new()
             where T2 : class, new()
             where T3 : class, new()
@@ -186,7 +186,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -198,7 +198,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.Equal, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.Equal, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -210,7 +210,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -222,7 +222,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.NotEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.NotEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -234,7 +234,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -246,7 +246,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -258,7 +258,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -270,7 +270,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThan, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThan, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -282,7 +282,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -294,7 +294,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.GreaterThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -306,7 +306,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
@@ -318,7 +318,7 @@ namespace GSqlQuery
             where T2 : class, new()
             where T3 : class, new()
         {
-            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaEnum.LessThanOrEqual, field2);
+            return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
 
         #endregion

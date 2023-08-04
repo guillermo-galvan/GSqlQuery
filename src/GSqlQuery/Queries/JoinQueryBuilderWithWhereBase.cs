@@ -30,17 +30,17 @@ namespace GSqlQuery.Queries
             return joinQuerys;
         }
 
-        internal static string GetJoinQuery(JoinEnum joinEnum)
+        internal static string GetJoinQuery(JoinType joinEnum)
         {
             switch (joinEnum)
             {
-                case JoinEnum.Inner:
+                case JoinType.Inner:
                     return "INNER";
-                case JoinEnum.Left:
+                case JoinType.Left:
                     return "LEFT";
-                case JoinEnum.Right:
+                case JoinType.Right:
                     return "RIGHT";
-                case JoinEnum.None:
+                case JoinType.None:
                 default:
                     return "";
             }
@@ -55,22 +55,22 @@ namespace GSqlQuery.Queries
 
             switch (joinModel.JoinCriteria)
             {
-                case JoinCriteriaEnum.Equal:
+                case JoinCriteriaType.Equal:
                     joinCriteria = "=";
                     break;
-                case JoinCriteriaEnum.NotEqual:
+                case JoinCriteriaType.NotEqual:
                     joinCriteria = "<>";
                     break;
-                case JoinCriteriaEnum.GreaterThan:
+                case JoinCriteriaType.GreaterThan:
                     joinCriteria = ">";
                     break;
-                case JoinCriteriaEnum.LessThan:
+                case JoinCriteriaType.LessThan:
                     joinCriteria = "<";
                     break;
-                case JoinCriteriaEnum.GreaterThanOrEqual:
+                case JoinCriteriaType.GreaterThanOrEqual:
                     joinCriteria = ">=";
                     break;
-                case JoinCriteriaEnum.LessThanOrEqual:
+                case JoinCriteriaType.LessThanOrEqual:
                     joinCriteria = "<=";
                     break;
             }
@@ -146,7 +146,7 @@ namespace GSqlQuery.Queries
             return (IWhere<TJoin, TReturn>)_andOr;
         }
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinEnum joinEnum, IStatements statements, IEnumerable<PropertyOptions> columnsT3 = null)
+        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinEnum, IStatements statements, IEnumerable<PropertyOptions> columnsT3 = null)
             : base(joinInfos, statements)
         {
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
