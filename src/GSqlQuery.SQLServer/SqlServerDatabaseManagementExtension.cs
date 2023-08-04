@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.SQLServer
 {
-    public static  class SqlServerDatabaseManagementExtension
+    public static class SqlServerDatabaseManagementExtension
     {
         public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query)
         {

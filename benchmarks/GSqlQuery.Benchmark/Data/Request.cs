@@ -8,7 +8,7 @@
 
         public string Url { get; set; }
 
-        public Request() {}
+        public Request() { }
 
         public Request(int id, string url)
         {

@@ -103,7 +103,7 @@ namespace GSqlQuery.MySql
         public override LimitQuery<T, TDbConnection> Build()
         {
             var query = GenerateQuery();
-            return new LimitQuery<T, TDbConnection>(query, _selectQuery.Columns, _selectQuery.Criteria,Options);
+            return new LimitQuery<T, TDbConnection>(query, _selectQuery.Columns, _selectQuery.Criteria, Options);
         }
     }
 }

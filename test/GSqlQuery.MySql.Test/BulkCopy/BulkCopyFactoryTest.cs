@@ -20,7 +20,7 @@ namespace GSqlQuery.MySql.Test.BulkCopy
             Helper.CreateDatatable();
         }
 
-        private IEnumerable<Test1> GetTest1s() 
+        private IEnumerable<Test1> GetTest1s()
         {
             var path = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "Data", "Test1_10000.csv");
             Queue<Test1> list = new Queue<Test1>();
@@ -28,7 +28,7 @@ namespace GSqlQuery.MySql.Test.BulkCopy
             foreach (var item in File.ReadAllLines(path))
             {
                 string[] columns = item.Split(',');
-                list.Enqueue(new Test1() { Id = Convert.ToInt64(columns[0]), Money = Convert.ToDecimal(columns[1]), Nombre = columns[2], GUID = columns[3], URL = columns[4]});
+                list.Enqueue(new Test1() { Id = Convert.ToInt64(columns[0]), Money = Convert.ToDecimal(columns[1]), Nombre = columns[2], GUID = columns[3], URL = columns[4] });
             }
 
             return list;
@@ -42,7 +42,7 @@ namespace GSqlQuery.MySql.Test.BulkCopy
             foreach (var item in File.ReadAllLines(path))
             {
                 string[] columns = item.Split(',');
-                list.Enqueue(new Test2() { Money = Convert.ToDecimal(columns[0]), IsBool = Convert.ToBoolean(columns[1] == "1"), Time = Convert.ToDateTime(columns[2])});
+                list.Enqueue(new Test2() { Money = Convert.ToDecimal(columns[0]), IsBool = Convert.ToBoolean(columns[1] == "1"), Time = Convert.ToDateTime(columns[2]) });
             }
 
             return list;
@@ -117,7 +117,7 @@ namespace GSqlQuery.MySql.Test.BulkCopy
             var beforeTotal = await Test2.Select(new MySqlConnectionOptions(Helper.ConnectionString), x => x.Id).Count().Build().ExecuteAsync();
             var beforeTotal1 = await Test1.Select(new MySqlConnectionOptions(Helper.ConnectionString), x => x.Id).Count().Build().ExecuteAsync();
 
-            var bulkcopy =  await BulkCopyFactory.Create(CONNECTIONSTRING).Copy(data).Copy(data1).ExecuteAsync();
+            var bulkcopy = await BulkCopyFactory.Create(CONNECTIONSTRING).Copy(data).Copy(data1).ExecuteAsync();
 
             var total = await Test2.Select(new MySqlConnectionOptions(Helper.ConnectionString), x => x.Id).Count().Build().ExecuteAsync();
             var total1 = await Test1.Select(new MySqlConnectionOptions(Helper.ConnectionString), x => x.Id).Count().Build().ExecuteAsync();
@@ -155,7 +155,7 @@ namespace GSqlQuery.MySql.Test.BulkCopy
         public async Task ExecuteAsync_with_connection_Throw_exeception()
         {
             var data = GetTest2s();
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>  await BulkCopyFactory.Create(CONNECTIONSTRING).Copy(data).ExecuteAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await BulkCopyFactory.Create(CONNECTIONSTRING).Copy(data).ExecuteAsync(null));
         }
     }
 }

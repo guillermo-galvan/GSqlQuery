@@ -28,7 +28,7 @@ namespace GSqlQuery.Runner.Queries
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T2));
             _joinInfo = new JoinInfo
             {
-               ClassOptions = tmp,
+                ClassOptions = tmp,
                 Columns = columnsT2 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
                 JoinEnum = joinEnum,
             };

@@ -13,7 +13,7 @@ namespace GSqlQuery.Benchmark.Data
 
         public DateTime DateTime { get; set; }
 
-        public UserRequest() {}
+        public UserRequest() { }
 
         public UserRequest(int userId, int requestId, DateTime dateTime)
         {
