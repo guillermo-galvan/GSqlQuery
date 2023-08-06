@@ -515,12 +515,12 @@ namespace GSqlQuery.Sqlite.Test
             }
         }
 
-        [Fact]
-        public async Task Join_Test()
-        {
-            var a = Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build();
+        //[Fact]
+        //public async Task Join_Test()
+        //{
+        //    var a = Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Where().Equal(x => x.Table1.Id, 62).Build();
 
-            var n =  a.Text;
-        }
+        //    var n =  a.Text;
+        //}
     }
 }

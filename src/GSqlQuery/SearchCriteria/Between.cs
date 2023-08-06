@@ -61,8 +61,8 @@ namespace GSqlQuery.SearchCriteria
             string parameterName2 = $"@{ParameterPrefix}2{tiks}";
 
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName1} AND {parameterName2}";
+                $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}";
 
             var property = Column.GetPropertyOptions(propertyOptions);
 

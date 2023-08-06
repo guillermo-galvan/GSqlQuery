@@ -71,7 +71,7 @@ namespace GSqlQuery.Test
         public void Should_get_the_column_name()
         {
             ColumnAttribute column = new ColumnAttribute("Test");
-            var result = column.GetColumnName("Test", new Statements());
+            var result = column.GetColumnName("Test", new Statements(), QueryType.Read);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal("Test.Test", result);
@@ -82,10 +82,10 @@ namespace GSqlQuery.Test
         {
             ColumnAttribute column = new ColumnAttribute("Test");
 
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new Statements()));
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", null));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new Statements(), QueryType.Read));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", null, QueryType.Read));
             column = null;
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new Statements()));
+            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new Statements(), QueryType.Read));
         }
 
         [Theory]

@@ -37,7 +37,7 @@ namespace GSqlQuery.Queries
         internal AutoIncrementingClass GetValues(IStatements statements)
         {
             var columnsParameters = Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
-                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, statements), new ParameterDetail($"@PI{_idParam++}", x.GetValue(_entity), x)))
+                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Create), new ParameterDetail($"@PI{_idParam++}", x.GetValue(_entity), x)))
                           .ToArray();
             return new AutoIncrementingClass(Columns.Any(x => x.ColumnAttribute.IsAutoIncrementing), columnsParameters);
         }

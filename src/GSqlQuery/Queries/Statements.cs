@@ -51,8 +51,6 @@
 
         public virtual string SelectWhereOrderBy => "SELECT {0} FROM {1} WHERE {2} ORDER BY {3};";
 
-        public virtual bool IncludeTableNameInColumns => true;
-
         public virtual string Join => "JOIN {0} ON {1}";
 
         public virtual string JoinSelect => "SELECT {0} FROM {1} {2};";
@@ -68,5 +66,10 @@
         /// Instructions to format the select, example "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};"
         /// </summary>
         public virtual string JoinSelectWhereOrderBy => "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};";
+
+        public virtual string GetColumnName(string tableName, ColumnAttribute column, QueryType queryType)
+        {
+            return $"{tableName}.{string.Format(Format, column.Name)}";
+        }
     }
 }

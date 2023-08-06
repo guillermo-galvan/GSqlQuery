@@ -48,8 +48,8 @@ namespace GSqlQuery.Queries
 
         internal static string CreateJoinQueryPart(IStatements statements, JoinModel joinModel)
         {
-            string partRight = joinModel.JoinModel1.Column.GetColumnName(joinModel.JoinModel1.Table.GetTableName(statements), statements);
-            string partLeft = joinModel.JoinModel2.Column.GetColumnName(joinModel.JoinModel2.Table.GetTableName(statements), statements);
+            string partRight = joinModel.JoinModel1.Column.GetColumnName(joinModel.JoinModel1.Table.GetTableName(statements), statements, QueryType.Join);
+            string partLeft = joinModel.JoinModel2.Column.GetColumnName(joinModel.JoinModel2.Table.GetTableName(statements), statements, QueryType.Join);
 
             string joinCriteria = string.Empty;
 

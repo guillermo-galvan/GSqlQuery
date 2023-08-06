@@ -38,8 +38,8 @@ namespace GSqlQuery.SearchCriteria
             string tableName = Table.GetTableName(statements);
 
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, statements)} {RelationalOperator}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator}";
+                $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator}" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator}";
 
             return new CriteriaDetail(this, criterion, Enumerable.Empty<ParameterDetail>());
         }

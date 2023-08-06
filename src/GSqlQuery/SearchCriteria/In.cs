@@ -65,7 +65,7 @@ namespace GSqlQuery.SearchCriteria
                 parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks}", item, property);
             }
 
-            string criterion = $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
+            string criterion = $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
             criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
             return new CriteriaDetail(this, criterion, parameters);
         }

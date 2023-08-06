@@ -57,7 +57,7 @@ namespace GSqlQuery.Queries
             TSelectQuery selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             string columnsOrderby =
                 string.Join(",", _columnsByOrderBy.Select(x =>
-                $"{string.Join(",", x.Columns.Select(y => y.ColumnAttribute.GetColumnName(ClassOptionsFactory.GetClassOptions(y.PropertyInfo.DeclaringType).Table.GetTableName(statements), statements)))} {x.OrderBy}"));
+                $"{string.Join(",", x.Columns.Select(y => y.ColumnAttribute.GetColumnName(ClassOptionsFactory.GetClassOptions(y.PropertyInfo.DeclaringType).Table.GetTableName(statements), statements, QueryType.Join)))} {x.OrderBy}"));
 
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;

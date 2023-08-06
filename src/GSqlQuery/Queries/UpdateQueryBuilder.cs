@@ -83,7 +83,7 @@ namespace GSqlQuery.Queries
             {
                 PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{_idParam++}";
-                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, statements)}={paramName}",
+                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, statements, QueryType.Criteria)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
             return criteriaDetails;

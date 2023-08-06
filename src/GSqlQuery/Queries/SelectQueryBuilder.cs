@@ -26,13 +26,13 @@ namespace GSqlQuery.Queries
             if (_andOr == null)
             {
                 result = string.Format(statements.Select,
-                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements))),
+                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read))),
                     _tableName);
             }
             else
             {
                 result = string.Format(statements.SelectWhere,
-                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements))),
+                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read))),
                     _tableName, GetCriteria());
             }
 

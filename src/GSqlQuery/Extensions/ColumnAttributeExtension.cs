@@ -14,13 +14,13 @@ namespace GSqlQuery.Extensions
         /// <param name="statements">IStatements</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static string GetColumnName(this ColumnAttribute column, string tableName, IStatements statements)
+        internal static string GetColumnName(this ColumnAttribute column, string tableName, IStatements statements, QueryType queryType)
         {
             column.NullValidate(ErrorMessages.ParameterNotNull, nameof(column));
             tableName.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableName));
             statements.NullValidate(ErrorMessages.ParameterNotNull, nameof(statements));
 
-            return statements.IncludeTableNameInColumns ? $"{tableName}.{string.Format(statements.Format, column.Name)}" : $"{string.Format(statements.Format, column.Name)}";
+            return statements.GetColumnName(tableName, column, queryType);
         }
 
         internal static PropertyOptions GetPropertyOptions(this ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
@@ -32,7 +32,7 @@ namespace GSqlQuery.Extensions
         {
             string columnName = string.Format(statements.Format, column.Name);
             string alias = string.Format(statements.Format, $"{joinInfo.ClassOptions.Type.Name}_{column.Name}");
-            columnName = statements.IncludeTableNameInColumns ? $"{joinInfo.ClassOptions.Table.GetTableName(statements)}.{columnName}" : $"{columnName}";
+            columnName = statements.GetColumnName(joinInfo.ClassOptions.Table.GetTableName(statements), column, QueryType.Join);
             return $"{columnName} as {alias}";
         }
     }

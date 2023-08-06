@@ -48,7 +48,7 @@ namespace GSqlQuery.Queries
         {
             TSelectQuery selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             string columnsOrderby =
-                string.Join(",", _columnsByOrderBy.Select(x => $"{string.Join(",", x.Columns.Select(y => y.ColumnAttribute.GetColumnName(_tableName, statements)))} {x.OrderBy}"));
+                string.Join(",", _columnsByOrderBy.Select(x => $"{string.Join(",", x.Columns.Select(y => y.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read)))} {x.OrderBy}"));
 
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;
@@ -58,14 +58,14 @@ namespace GSqlQuery.Queries
             if (selectQuery.Criteria == null || !selectQuery.Criteria.Any())
             {
                 result = string.Format(statements.SelectOrderBy,
-                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements))),
+                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements, QueryType.Read))),
                      _tableName,
                      columnsOrderby);
             }
             else
             {
                 result = string.Format(statements.SelectWhereOrderBy,
-                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements))),
+                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements, QueryType.Read))),
                      _tableName, string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)), columnsOrderby);
             }
 
