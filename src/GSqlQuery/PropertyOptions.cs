@@ -10,11 +10,14 @@ namespace GSqlQuery
 
         public ColumnAttribute ColumnAttribute { get; }
 
-        public PropertyOptions(int positionObject, PropertyInfo propertyInfo, ColumnAttribute columnAttribute)
+        public TableAttribute TableAttribute { get; }
+
+        public PropertyOptions(int positionObject, PropertyInfo propertyInfo, ColumnAttribute columnAttribute, TableAttribute tableAttribute)
         {
             PositionConstructor = positionObject;
             PropertyInfo = propertyInfo;
             ColumnAttribute = columnAttribute;
+            TableAttribute = tableAttribute;
         }
     }
 }

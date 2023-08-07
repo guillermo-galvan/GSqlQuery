@@ -25,7 +25,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override OrderByQuery<T, TDbConnection> Build()
         {
-            var query = CreateQuery(Options.Statements, out IEnumerable<ColumnAttribute> columns, out IEnumerable<CriteriaDetail> criteria);
+            var query = CreateQuery(Options.Statements, out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria);
             return new OrderByQuery<T, TDbConnection>(query, columns, criteria, Options);
         }
     }

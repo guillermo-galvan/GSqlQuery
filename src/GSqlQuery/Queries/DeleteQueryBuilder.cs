@@ -50,7 +50,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         public override DeleteQuery<T> Build()
         {
-            return new DeleteQuery<T>(CreateQuery(Options), Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new DeleteQuery<T>(CreateQuery(Options), Columns, _criteria, Options);
         }
     }
 }

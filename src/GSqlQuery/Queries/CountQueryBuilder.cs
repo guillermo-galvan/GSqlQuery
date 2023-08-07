@@ -25,13 +25,13 @@ namespace GSqlQuery.Queries
             if (_andOr == null)
             {
                 result = string.Format(statements.Select,
-                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.GetColumnName(_tableName, statements, QueryType.Read)))})",
+                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read)))})",
                     _tableName);
             }
             else
             {
                 result = string.Format(statements.SelectWhere,
-                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.GetColumnName(_tableName, statements, QueryType.Read)))})",
+                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read)))})",
                     _tableName, GetCriteria());
             }
 
@@ -48,7 +48,7 @@ namespace GSqlQuery.Queries
         public override CountQuery<T> Build()
         {
             var query = CreateQuery(Options);
-            return new CountQuery<T>(query, Columns.Select(x => x.ColumnAttribute), _criteria, _queryBuilder.Options);
+            return new CountQuery<T>(query, Columns, _criteria, _queryBuilder.Options);
         }
     }
 }

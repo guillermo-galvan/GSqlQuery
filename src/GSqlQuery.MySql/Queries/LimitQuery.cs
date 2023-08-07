@@ -8,7 +8,7 @@ namespace GSqlQuery.MySql
 {
     public class LimitQuery<T> : Query<T> where T : class, new()
     {
-        internal LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        internal LimitQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         {
         }
@@ -19,7 +19,7 @@ namespace GSqlQuery.MySql
     {
         public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
-        internal LimitQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
+        internal LimitQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions.Statements)
         {
             DatabaseManagement = connectionOptions.DatabaseManagement;

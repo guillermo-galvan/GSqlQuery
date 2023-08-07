@@ -20,13 +20,13 @@ namespace GSqlQuery
         public ClassOptions(Type type)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
+            Table = GetTableAttribute();
             PropertyOptions = GetProperties();
             if (!PropertyOptions.Any())
             {
                 throw new Exception($"{Type.Name} has no properties");
             }
             ConstructorInfo = GetConstructor() ?? throw new Exception("No constructor found");
-            Table = GetTableAttribute();
         }
 
         private Queue<PropertyOptions> GetProperties()
@@ -45,7 +45,7 @@ namespace GSqlQuery
                 ColumnAttribute tmp = (arrayAttribute.FirstOrDefault(x => x is ColumnAttribute) as ColumnAttribute) ?? new ColumnAttribute(property.Name);
 #endif
 
-                properties.Enqueue(new PropertyOptions(0, property, tmp));
+                properties.Enqueue(new PropertyOptions(0, property, tmp, Table));
             }
 
             return properties;

@@ -9,11 +9,13 @@ namespace GSqlQuery
     /// <typeparam name="T">The type to query</typeparam>
     public abstract class Query<T> : QueryBase, IQuery<T> where T : class, new()
     {
+        private readonly ClassOptions _classOptions;
+
         public IStatements Statements { get; }
 
-        protected ClassOptions GetClassOptions()
+        protected virtual ClassOptions GetClassOptions()
         {
-            return ClassOptionsFactory.GetClassOptions(typeof(T));
+            return _classOptions;
         }
 
         /// <summary>
@@ -24,9 +26,10 @@ namespace GSqlQuery
         /// <param name="statements">Statements to use in the query</param>
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        public Query(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria)
         {
+            _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
             Statements = statements ?? throw new ArgumentNullException(nameof(statements));
         }
     }

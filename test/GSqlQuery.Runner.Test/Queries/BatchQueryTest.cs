@@ -32,11 +32,11 @@ namespace GSqlQuery.Runner.Test.Queries
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
-               classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+               classOption.PropertyOptions,
                new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
 
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, _classOptions.PropertyOptions, null));
             Assert.Throws<ArgumentNullException>(() => new BatchQuery(query.Text, null, null));
         }
     }

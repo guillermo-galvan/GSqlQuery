@@ -154,7 +154,7 @@ namespace GSqlQuery.Queries
 
         public override UpdateQuery<T> Build()
         {
-            return new UpdateQuery<T>(CreateQuery(Options), Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new UpdateQuery<T>(CreateQuery(Options), Columns, _criteria, Options);
         }
 
         public ISet<T, UpdateQuery<T>, IStatements> Set<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)

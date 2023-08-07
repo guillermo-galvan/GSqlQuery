@@ -14,7 +14,7 @@ namespace GSqlQuery.Runner
         private readonly Queue<IQuery> _queries;
         private readonly Queue<IDataParameter> _parameters;
         private readonly StringBuilder _queryBuilder;
-        private readonly Queue<ColumnAttribute> _columns;
+        private readonly Queue<PropertyOptions> _columns;
 
         public ConnectionOptions<TDbConnection> DatabaseManagement => _connectionOptions;
 
@@ -26,7 +26,7 @@ namespace GSqlQuery.Runner
             _queries = new Queue<IQuery>();
             _parameters = new Queue<IDataParameter>();
             _queryBuilder = new StringBuilder();
-            _columns = new Queue<ColumnAttribute>();
+            _columns = new Queue<PropertyOptions>();
         }
 
         public BatchExecute<TDbConnection> Add<T>(Func<ConnectionOptions<TDbConnection>, IQuery<T>> expression)

@@ -19,7 +19,7 @@ namespace GSqlQuery.Runner.Queries
         public override CountQuery<T, TDbConnection> Build()
         {
             var query = CreateQuery(Options.Statements);
-            return new CountQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, _queryBuilder.Options);
+            return new CountQuery<T, TDbConnection>(query, Columns, _criteria, _queryBuilder.Options);
         }
 
         IWhere<CountQuery<T, TDbConnection>> IQueryBuilderWithWhere<CountQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>.Where()

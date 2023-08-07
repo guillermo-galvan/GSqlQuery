@@ -18,7 +18,7 @@ namespace GSqlQuery.Runner.Queries
         public override InsertQuery<T, TDbConnection> Build()
         {
             var query = CreateQuery(Options.Statements, out IEnumerable<CriteriaDetail> criteria);
-            return new InsertQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), criteria, Options, _entity, Columns.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
+            return new InsertQuery<T, TDbConnection>(query, Columns, criteria, Options, _entity, Columns.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
         }
     }
 }

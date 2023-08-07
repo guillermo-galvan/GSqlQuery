@@ -16,7 +16,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override DeleteQuery<T, TDbConnection> Build()
         {
-            return new DeleteQuery<T, TDbConnection>(CreateQuery(Options.Statements), Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new DeleteQuery<T, TDbConnection>(CreateQuery(Options.Statements), Columns, _criteria, Options);
         }
 
         IWhere<DeleteQuery<T, TDbConnection>> IQueryBuilderWithWhere<DeleteQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>.Where()

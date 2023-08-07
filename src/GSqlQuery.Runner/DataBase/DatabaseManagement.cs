@@ -10,29 +10,26 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
+    public class PropertyOptionsColumn
+    {
+        public PropertyOptions Property { get; set; }
+
+        public bool IsColumnInQuery { get; set; }
+
+        public Type Type { get; set; }
+
+        public object ValueDefault { get; set; }
+
+        internal PropertyOptionsColumn(PropertyOptions propertyOptions, bool isColumnInQuery, Type type)
+        {
+            Property = propertyOptions;
+            IsColumnInQuery = isColumnInQuery;
+            Type = type;
+        }
+    }
+
     public abstract class DatabaseManagement : IDatabaseManagement<IConnection>
     {
-        private class ColumnsPropertyOptions
-        {
-            public PropertyOptions Property { get; set; }
-
-            public bool IsColumnInQuery { get; set; }
-
-            public ColumnAttribute Column { get; set; }
-
-            public Type Type { get; set; }
-
-            public object ValueDefault { get; set; }
-
-            public ColumnsPropertyOptions(PropertyOptions propertyOptions, bool isColumnInQuery, ColumnAttribute columnAttribute, Type type)
-            {
-                Property = propertyOptions;
-                IsColumnInQuery = isColumnInQuery;
-                Column = columnAttribute;
-                Type = type;
-            }
-        }
-
         protected readonly string _connectionString;
         protected ILogger _logger;
 
@@ -91,36 +88,27 @@ namespace GSqlQuery.Runner
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
 
-            if (!classOptions.IsConstructorByParam)
-            {
-                _logger?.LogWarning("{0} constructor with properties {1} not found", classOptions.Type.Name,
-                    string.Join(", ", classOptions.PropertyOptions.Select(x => $"{x.PropertyInfo.Name}")));
-                return new TransformToByField<T>(classOptions.PropertyOptions.Count());
-            }
-            else
-            {
-                return new TransformToByConstructor<T>(classOptions.PropertyOptions.Count());
-            }
+            return Events.GetTransformTo<T>(classOptions, _logger);
         }
 
-        private ColumnsPropertyOptions[] GetColumnsPropertyOptions(IEnumerable<PropertyOptions> propertyOptions, IQuery query)
+        private PropertyOptionsColumn[] GetColumnsPropertyOptions(IEnumerable<PropertyOptions> propertyOptions, IQuery query)
         {
 #if NET5_0_OR_GREATER
             return (from pro in propertyOptions
-                    join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
+                    join ca in query.Columns on pro.ColumnAttribute.Name equals ca.ColumnAttribute.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
                     select
-                        new ColumnsPropertyOptions(pro, left is not null, left, Nullable.GetUnderlyingType(pro.PropertyInfo.PropertyType) ?? pro.PropertyInfo.PropertyType)
+                        new PropertyOptionsColumn(pro, left is not null, Nullable.GetUnderlyingType(pro.PropertyInfo.PropertyType) ?? pro.PropertyInfo.PropertyType)
                         {
                             ValueDefault = pro.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(pro.PropertyInfo.PropertyType) : null
                         }
                    ).ToArray();
 #else
             return (from pro in propertyOptions
-                    join ca in query.Columns on pro.ColumnAttribute.Name equals ca.Name into leftJoin
+                    join ca in query.Columns on pro.ColumnAttribute.Name equals ca.ColumnAttribute.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
                     select
-                        new ColumnsPropertyOptions(pro, left != null, left, Nullable.GetUnderlyingType(pro.PropertyInfo.PropertyType) ?? pro.PropertyInfo.PropertyType)
+                        new PropertyOptionsColumn(pro, left != null, Nullable.GetUnderlyingType(pro.PropertyInfo.PropertyType) ?? pro.PropertyInfo.PropertyType)
                         {
                             ValueDefault = pro.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(pro.PropertyInfo.PropertyType) : null
                         }
@@ -129,16 +117,16 @@ namespace GSqlQuery.Runner
 #endif
         }
 
-        private T CreateObject<T>(ITransformTo<T> transformToEntity, ColumnsPropertyOptions[] columns, DbDataReader reader)
+        private T CreateObject<T>(ITransformTo<T> transformToEntity, PropertyOptionsColumn[] columns, DbDataReader reader)
         {
             object valor;
 
             foreach (var item in columns)
             {
 #if NET5_0_OR_GREATER
-                valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(item.Column.Name)) : item.ValueDefault;
+                valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(item.Property.ColumnAttribute.Name)) : item.ValueDefault;
 #else
-                valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(reader.GetOrdinal(item.Column.Name))) : item.ValueDefault;
+                valor = item.IsColumnInQuery ? SwitchTypeValue(item.Type, reader.GetValue(reader.GetOrdinal(item.Property.ColumnAttribute.Name))) : item.ValueDefault;
 #endif
                 transformToEntity.SetValue(item.Property.PositionConstructor, item.Property.PropertyInfo.Name, valor);
             }
@@ -163,7 +151,7 @@ namespace GSqlQuery.Runner
 
         public int ExecuteNonQuery(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
-            Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteNonQuery Query: {@Text} Parameters: {@parameters}",
+            Events.WriteTrace(_logger, "ExecuteNonQuery Query: {@Text} Parameters: {@parameters}",
              new object[] { query.Text, parameters });
             using (var command = CreateCommand(connection, query, parameters))
             {
@@ -189,7 +177,7 @@ namespace GSqlQuery.Runner
         public Task<int> ExecuteNonQueryAsync(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteNonQueryAsync Query: {@Text} Parameters: {@parameters}",
+            Events.WriteTrace(_logger, "ExecuteNonQueryAsync Query: {@Text} Parameters: {@parameters}",
              new object[] { query.Text, parameters });
             using (var command = CreateCommand(connection, query, parameters))
             {
@@ -214,7 +202,7 @@ namespace GSqlQuery.Runner
 
         public IEnumerable<T> ExecuteReader<T>(IConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new()
         {
-            Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteReader Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
+            Events.WriteTrace(_logger, "ExecuteReader Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
               new object[] { typeof(T).FullName, query.Text, parameters });
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
             Queue<T> result = new Queue<T>();
@@ -251,7 +239,7 @@ namespace GSqlQuery.Runner
         public async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class, new()
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteReaderAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
+            Events.WriteTrace(_logger, "ExecuteReaderAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
                new object[] { typeof(T).FullName, query.Text, parameters });
             ITransformTo<T> transformToEntity = GetTransformTo<T>();
             Queue<T> result = new Queue<T>();
@@ -288,7 +276,7 @@ namespace GSqlQuery.Runner
 
         public T ExecuteScalar<T>(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters)
         {
-            Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteScalar Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
+            Events.WriteTrace(_logger, "ExecuteScalar Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
                 new object[] { typeof(T).FullName, query.Text, parameters });
             using (var command = CreateCommand(connection, query, parameters))
             {
@@ -315,7 +303,7 @@ namespace GSqlQuery.Runner
         public async Task<T> ExecuteScalarAsync<T>(IConnection connection, IQuery query, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Events?.OnWriteTrace(Events.IsTraceActive, _logger, "ExecuteScalarAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
+            Events.WriteTrace(_logger, "ExecuteScalarAsync Type: {@FullName} Query: {@Text} Parameters: {@parameters}",
                 new object[] { typeof(T).FullName, query.Text, parameters });
             using (var command = CreateCommand(connection, query, parameters))
             {

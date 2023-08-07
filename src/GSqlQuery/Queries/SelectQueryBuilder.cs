@@ -64,7 +64,7 @@ namespace GSqlQuery.Queries
         /// <returns>SelectQuery</returns>
         public override SelectQuery<T> Build()
         {
-            return new SelectQuery<T>(CreateQuery(Options), Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new SelectQuery<T>(CreateQuery(Options), Columns, _criteria, Options);
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> InnerJoin<TJoin>() where TJoin : class, new()

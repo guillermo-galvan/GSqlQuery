@@ -33,7 +33,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            UpdateQuery<Test1, IDbConnection> query = new UpdateQuery<Test1, IDbConnection>("query", new ColumnAttribute[] { _columnAttribute },
+            UpdateQuery<Test1, IDbConnection> query = new UpdateQuery<Test1, IDbConnection>("query", _classOptions.PropertyOptions,
                 new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _connectionOptions);
 
             Assert.NotNull(query);
@@ -53,7 +53,7 @@ namespace GSqlQuery.Runner.Test.Queries
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             UpdateQuery<Test3, IDbConnection> query = new UpdateQuery<Test3, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions);
             var result = query.Execute();
             Assert.Equal(1, result);
@@ -63,7 +63,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Throw_exception_if_connection_not_found()
         {
             UpdateQuery<Test1, IDbConnection> query = new UpdateQuery<Test1, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
+                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                 _connectionOptions);
             Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
@@ -74,7 +74,7 @@ namespace GSqlQuery.Runner.Test.Queries
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             UpdateQuery<Test3, IDbConnection> query = new UpdateQuery<Test3, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptions);
             var result = query.Execute(LoadGSqlQueryOptions.GetIDbConnection());
             Assert.Equal(1, result);
@@ -86,7 +86,7 @@ namespace GSqlQuery.Runner.Test.Queries
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             UpdateQuery<Test3, IDbConnection> query = new UpdateQuery<Test3, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync);
             var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.Equal(1, result);
@@ -96,7 +96,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public async Task Throw_exception_if_connection_not_found_Async()
         {
             UpdateQuery<Test1, IDbConnection> query = new UpdateQuery<Test1, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
+                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) },
                 _connectionOptionsAsync);
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
@@ -107,7 +107,7 @@ namespace GSqlQuery.Runner.Test.Queries
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             UpdateQuery<Test3, IDbConnection> query = new UpdateQuery<Test3, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;",
-                new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
+                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                 _connectionOptionsAsync);
             var result = await query.ExecuteAsync(LoadGSqlQueryOptions.GetIDbConnection(), CancellationToken.None);
             Assert.Equal(1, result);

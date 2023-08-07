@@ -55,7 +55,7 @@ namespace GSqlQuery.Runner.Queries
         public override JoinQuery<Join<T1, T2>, TDbConnection> Build()
         {
             var query = CreateQuery(Options.Statements);
-            return new JoinQuery<Join<T1, T2>, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new JoinQuery<Join<T1, T2>, TDbConnection>(query, Columns, _criteria, Options);
         }
 
         public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, TDbConnection>, ConnectionOptions<TDbConnection>> InnerJoin<TJoin>() where TJoin : class, new()
@@ -142,7 +142,7 @@ namespace GSqlQuery.Runner.Queries
         public override JoinQuery<Join<T1, T2, T3>, TDbConnection> Build()
         {
             var query = CreateQuery(Options.Statements);
-            return new JoinQuery<Join<T1, T2, T3>, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new JoinQuery<Join<T1, T2, T3>, TDbConnection>(query, Columns, _criteria, Options);
         }
 
         IWhere<JoinQuery<Join<T1, T2, T3>, TDbConnection>> IQueryBuilderWithWhere<JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>>.Where()

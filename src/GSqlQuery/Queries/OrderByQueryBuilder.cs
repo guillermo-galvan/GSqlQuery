@@ -44,7 +44,7 @@ namespace GSqlQuery.Queries
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
         }
 
-        internal string CreateQuery(IStatements statements, out IEnumerable<ColumnAttribute> columns, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(IStatements statements, out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria)
         {
             TSelectQuery selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             string columnsOrderby =
@@ -58,14 +58,14 @@ namespace GSqlQuery.Queries
             if (selectQuery.Criteria == null || !selectQuery.Criteria.Any())
             {
                 result = string.Format(statements.SelectOrderBy,
-                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements, QueryType.Read))),
+                     string.Join(",", columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read))),
                      _tableName,
                      columnsOrderby);
             }
             else
             {
                 result = string.Format(statements.SelectWhereOrderBy,
-                     string.Join(",", columns.Select(x => x.GetColumnName(_tableName, statements, QueryType.Read))),
+                     string.Join(",", columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read))),
                      _tableName, string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)), columnsOrderby);
             }
 
@@ -89,7 +89,7 @@ namespace GSqlQuery.Queries
 
         public override OrderByQuery<T> Build()
         {
-            var query = CreateQuery(Options, out IEnumerable<ColumnAttribute> columns, out IEnumerable<CriteriaDetail> criteria);
+            var query = CreateQuery(Options, out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria);
             return new OrderByQuery<T>(query, columns, criteria, Options);
         }
     }

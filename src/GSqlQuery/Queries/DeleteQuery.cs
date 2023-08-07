@@ -16,7 +16,7 @@ namespace GSqlQuery
         /// <param name="criteria">Query criteria</param>
         /// <param name="statements">Statements to use in the query</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal DeleteQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        internal DeleteQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         { }
     }

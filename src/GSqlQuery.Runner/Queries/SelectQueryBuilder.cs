@@ -23,7 +23,7 @@ namespace GSqlQuery.Runner.Queries
 
         public override SelectQuery<T, TDbConnection> Build()
         {
-            return new SelectQuery<T, TDbConnection>(CreateQuery(Options.Statements), Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new SelectQuery<T, TDbConnection>(CreateQuery(Options.Statements), Columns, _criteria, Options);
         }
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, TDbConnection>, ConnectionOptions<TDbConnection>> Join<TJoin, TProperties>

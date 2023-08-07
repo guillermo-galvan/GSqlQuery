@@ -11,7 +11,7 @@ namespace GSqlQuery
     {
         public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
-        internal SelectQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
+        internal SelectQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
             : base(text, columns, criteria, connectionOptions.Statements)
         {
             DatabaseManagement = connectionOptions.DatabaseManagement;

@@ -38,7 +38,7 @@ namespace GSqlQuery.Queries
         public override JoinQuery<Join<T1, T2>> Build()
         {
             var query = CreateQuery(Options);
-            return new JoinQuery<Join<T1, T2>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new JoinQuery<Join<T1, T2>>(query, Columns, _criteria, Options);
         }
 
         public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IStatements> InnerJoin<TJoin>() where TJoin : class, new()
@@ -96,7 +96,7 @@ namespace GSqlQuery.Queries
         public override JoinQuery<Join<T1, T2, T3>> Build()
         {
             var query = CreateQuery(Options);
-            return new JoinQuery<Join<T1, T2, T3>>(query, Columns.Select(x => x.ColumnAttribute), _criteria, Options);
+            return new JoinQuery<Join<T1, T2, T3>>(query, Columns, _criteria, Options);
         }
     }
 
