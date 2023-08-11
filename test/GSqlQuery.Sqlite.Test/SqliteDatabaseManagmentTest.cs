@@ -516,13 +516,51 @@ namespace GSqlQuery.Sqlite.Test
         }
 
         [Fact]
-        public async Task Join_Test()
+        public async Task InnerJoin_Test_async()
         {
-            var a = Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build();
+            var result = await Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().ExecuteAsync();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
 
-            var n = a.Text;
+        [Fact]
+        public void InnerJoin_Test()
+        {
+            var result = Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().Execute();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
 
-            var result = a.Execute();
+        [Fact]
+        public async Task LeftJoin_Test_async()
+        {
+            var result = await Test1.Select(_connectionOptions).LeftJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().ExecuteAsync();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public void LeftJoin_Test()
+        {
+            var result = Test1.Select(_connectionOptions).LeftJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().Execute();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public async Task RightJoin_Test_async()
+        {
+            var result = await Test1.Select(_connectionOptions).RightJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().ExecuteAsync();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public void RightJoin_Test()
+        {
+            var result = Test1.Select(_connectionOptions).RightJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().Execute();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
         }
     }
 }

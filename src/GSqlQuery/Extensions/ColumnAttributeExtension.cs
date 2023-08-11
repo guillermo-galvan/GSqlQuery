@@ -30,10 +30,19 @@ namespace GSqlQuery.Extensions
 
         internal static string GetColumnNameJoin(this ColumnAttribute column, JoinInfo joinInfo, IStatements statements)
         {
-            string columnName = string.Format(statements.Format, column.Name);
-            string alias = string.Format(statements.Format, $"{joinInfo.ClassOptions.Type.Name}_{column.Name}");
-            columnName = statements.GetColumnName(joinInfo.ClassOptions.Table.GetTableName(statements), column, QueryType.Join);
+            string alias = GetAliasJoinFormat(statements, joinInfo.ClassOptions.Type.Name, column.Name);
+            string columnName = statements.GetColumnName(joinInfo.ClassOptions.Table.GetTableName(statements), column, QueryType.Join);
             return $"{columnName} as {alias}";
+        }
+
+        internal static string GetAliasJoinFormat(IStatements statements, string tableName, string columnName)
+        {
+            return string.Format(statements.Format, $"{tableName}_{columnName}");
+        }
+
+        internal static string GetAliasJoin(string tableName, string columnName)
+        {
+            return $"{tableName}_{columnName}";
         }
     }
 }

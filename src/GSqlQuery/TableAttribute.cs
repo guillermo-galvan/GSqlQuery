@@ -45,5 +45,10 @@ namespace GSqlQuery
 
             Scheme = scheme;
         }
+
+        public override string ToString()
+        {
+            return string.IsNullOrWhiteSpace(Scheme) ? $"Table Name: {Name}" : $"Scheme Name: {Scheme}, Table Name: {Name}";
+        }
     }
 }

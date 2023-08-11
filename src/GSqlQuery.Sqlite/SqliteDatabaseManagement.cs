@@ -28,12 +28,14 @@ namespace GSqlQuery.Sqlite
             return base.ExecuteNonQueryAsync(connection, query, parameters, cancellationToken);
         }
 
-        public IEnumerable<T> ExecuteReader<T>(SqliteDatabaseConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters) where T : class, new()
+        public IEnumerable<T> ExecuteReader<T>(SqliteDatabaseConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+            where T : class, new()
         {
             return base.ExecuteReader<T>(connection, query, propertyOptions, parameters);
         }
 
-        public Task<IEnumerable<T>> ExecuteReaderAsync<T>(SqliteDatabaseConnection connection, IQuery query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class, new()
+        public Task<IEnumerable<T>> ExecuteReaderAsync<T>(SqliteDatabaseConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) 
+            where T : class, new()
         {
             return base.ExecuteReaderAsync<T>(connection, query, propertyOptions, parameters, cancellationToken);
         }

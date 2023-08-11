@@ -36,5 +36,10 @@ namespace GSqlQuery
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
+
+        public override string ToString()
+        {
+            return $"Column Name: {Name}";
+        }
     }
 }

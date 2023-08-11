@@ -26,9 +26,14 @@ namespace GSqlQuery
 
         public virtual void WriteTrace(ILogger logger, string message, object[] param) => OnWriteTrace(IsTraceActive, logger, message, param);
 
-        public virtual ITransformTo<T> GetTransformTo<T>(ClassOptions classOptions, ILogger logger)
+        public virtual ITransformTo<T> GetTransformTo<T>(ClassOptions classOptions, IQuery<T> query, ILogger logger)
+           where T : class, new()
         {
-            if (!classOptions.IsConstructorByParam)
+            if (query is JoinQuery<T> joinQuery)
+            {
+                return new JoinTransformTo<T>(classOptions.PropertyOptions.Count());
+            }
+            else if (!classOptions.IsConstructorByParam)
             {
                 logger?.LogWarning("{0} constructor with properties {1} not found", classOptions.Type.Name,
                 string.Join(", ", classOptions.PropertyOptions.Select(x => $"{x.PropertyInfo.Name}")));

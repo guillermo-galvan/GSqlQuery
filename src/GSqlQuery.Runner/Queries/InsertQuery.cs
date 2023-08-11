@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery
 {
-    public sealed class InsertQuery<T, TDbConnection> : InsertQuery<T>, IExecute<T, TDbConnection>
+    public sealed class InsertQuery<T, TDbConnection> : InsertQuery<T>, IExecute<T, TDbConnection>, IQuery<T>
         where T : class, new()
     {
         public object Entity { get; }
