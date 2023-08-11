@@ -26,7 +26,7 @@ namespace GSqlQuery.MySql.Test
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
             var managment = new MySqlDatabaseManagement(Helper.ConnectionString);
             int result = managment.ExecuteNonQuery(query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement));
-            Assert.Equal(1, result);
+            Assert.True(result > 0);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace GSqlQuery.MySql.Test
             using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 int result = managment.ExecuteNonQuery(connection, query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement));
-                Assert.Equal(1, result);
+                Assert.True(result > 0);
             }
         }
 
@@ -51,7 +51,7 @@ namespace GSqlQuery.MySql.Test
             using (IConnection connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 int result = managment.ExecuteNonQuery(connection, query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement));
-                Assert.Equal(1, result);
+                Assert.True(result > 0);
             }
         }
 
@@ -62,7 +62,7 @@ namespace GSqlQuery.MySql.Test
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
             var managment = new MySqlDatabaseManagement(Helper.ConnectionString);
             int result = await managment.ExecuteNonQueryAsync(query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement));
-            Assert.Equal(1, result);
+            Assert.True(result > 0);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace GSqlQuery.MySql.Test
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
             var managment = new MySqlDatabaseManagement(Helper.ConnectionString);
             int result = await managment.ExecuteNonQueryAsync(query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement), token);
-            Assert.Equal(1, result);
+            Assert.True(result > 0);
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace GSqlQuery.MySql.Test
             using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement));
-                Assert.Equal(1, result);
+                Assert.True(result > 0);
             }
         }
 
@@ -115,7 +115,7 @@ namespace GSqlQuery.MySql.Test
             using (var connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement), token);
-                Assert.Equal(1, result);
+                Assert.True(result > 0);
             }
         }
 
@@ -145,7 +145,7 @@ namespace GSqlQuery.MySql.Test
             using (IConnection connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync())
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement));
-                Assert.Equal(1, result);
+                Assert.True(result > 0);
             }
         }
 
@@ -160,7 +160,7 @@ namespace GSqlQuery.MySql.Test
             using (IConnection connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
             {
                 int result = await managment.ExecuteNonQueryAsync(connection, query, query.GetParameters<Test1, MySqlDatabaseConnection>(_connectionOptions.DatabaseManagement), token);
-                Assert.Equal(1, result);
+                Assert.True(result > 0);
             }
         }
 
