@@ -57,7 +57,7 @@ namespace GSqlQuery.SearchCriteria
             ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
             int count = 0;
             int index = 0;
-            ulong ticks = _idParam++;
+            ulong ticks = Helpers.GetIdParam();
             var property = Column.GetPropertyOptions(propertyOptions);
 
             foreach (var item in Values)
