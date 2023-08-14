@@ -6,18 +6,19 @@ using System.Linq;
 
 namespace GSqlQuery
 {
-    public class AndOrBase<T, TReturn> : WhereBase<T, TReturn>, IAndOr<T, TReturn>, ISearchCriteriaBuilder<T, TReturn>
-        where T : class, new() where TReturn : IQuery
+    public class AndOrBase<T, TReturn, TOptions> : WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
+        where TReturn : IQuery<T>
+        where T : class, new()
     {
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
-        private readonly IQueryBuilderWithWhere<T, TReturn> _queryBuilderWithWhere;
+        internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere;
 
-        public IEnumerable<PropertyOptions> Columns { get; protected set; }
+        protected IEnumerable<PropertyOptions> Columns { get; set; }
 
-        public AndOrBase(IQueryBuilderWithWhere<T, TReturn> queryBuilderWithWhere) : base()
+        public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, bool isColumns = true) : base()
         {
             _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentException(nameof(queryBuilderWithWhere));
-            Columns = ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions;
+            Columns = isColumns ? ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions : Enumerable.Empty<PropertyOptions>();
         }
 
         public void Add(ISearchCriteria criteria)

@@ -50,8 +50,8 @@ namespace GSqlQuery.SearchCriteria
 
             string parameterName = $"@{ParameterPrefix}{Helpers.GetIdParam()}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, statements)} {RelationalOperator} {parameterName}";
+                $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} {parameterName}" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} {parameterName}";
 
             return new CriteriaDetail(this, criterion, new ParameterDetail[] { new ParameterDetail(parameterName, Value, Column.GetPropertyOptions(propertyOptions)) });
         }

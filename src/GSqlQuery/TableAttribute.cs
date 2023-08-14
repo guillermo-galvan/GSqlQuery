@@ -20,7 +20,7 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="name"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public TableAttribute( string name) 
+        public TableAttribute(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -44,6 +44,11 @@ namespace GSqlQuery
             }
 
             Scheme = scheme;
+        }
+
+        public override string ToString()
+        {
+            return string.IsNullOrWhiteSpace(Scheme) ? $"Table Name: {Name}" : $"Scheme Name: {Scheme}, Table Name: {Name}";
         }
     }
 }

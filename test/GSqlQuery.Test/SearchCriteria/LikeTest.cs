@@ -83,10 +83,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
             var andOr = where.Like(x => x.Id, "ds");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -95,10 +95,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
             var andOr = where.Like(x => x.Id, "1256").AndLike(x => x.IsTest, "1");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -107,10 +107,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
             var andOr = where.Like(x => x.Id, "1256").OrLike(x => x.IsTest, "45981");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

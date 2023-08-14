@@ -2,25 +2,26 @@
 
 namespace GSqlQuery.Runner.Queries
 {
-    internal class DeleteQueryBuilder<T, TDbConnection> : QueryBuilderWithCriteria<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, TDbConnection>,
-        IQueryBuilder<T, DeleteQuery<T, TDbConnection>, TDbConnection>, IBuilder<DeleteQuery<T, TDbConnection>>
+    internal class DeleteQueryBuilder<T, TDbConnection> : GSqlQuery.Queries.DeleteQueryBuilder<T, DeleteQuery<T, TDbConnection>>,
+        IQueryBuilder<DeleteQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>,
+        IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>
         where T : class, new()
     {
-        public DeleteQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions)
+        new public ConnectionOptions<TDbConnection> Options { get; }
+
+        public DeleteQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions.Statements)
         {
+            Options = connectionOptions;
         }
 
         public override DeleteQuery<T, TDbConnection> Build()
         {
-            var query = GSqlQuery.Queries.DeleteQueryBuilder<T>.CreateQuery(_andOr != null, ConnectionOptions.Statements, _tableName, _andOr != null ? GetCriteria() : string.Empty);
-            return new DeleteQuery<T, TDbConnection>(query, Columns.Select(x => x.ColumnAttribute), _criteria, ConnectionOptions);
+            return new DeleteQuery<T, TDbConnection>(CreateQuery(Options.Statements), Columns, _criteria, Options);
         }
 
-        public override IWhere<T, DeleteQuery<T, TDbConnection>> Where()
+        IWhere<DeleteQuery<T, TDbConnection>> IQueryBuilderWithWhere<DeleteQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>.Where()
         {
-            _andOr = new AndOrBase<T,DeleteQuery<T, TDbConnection>>(this);
-            return (IWhere<T, DeleteQuery<T, TDbConnection>>)_andOr;
+            return Where();
         }
     }
 }

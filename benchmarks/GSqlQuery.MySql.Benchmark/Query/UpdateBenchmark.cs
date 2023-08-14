@@ -76,7 +76,7 @@ namespace GSqlQuery.MySql.Benchmark.Query
             test.Money = 1263.36m;
             test.Time = DateTime.Now;
             test.IsBool = true;
-            var query = test.Update(_connectionOptions, x => new { x.Money, x.Time, x.IsBool}).Where().Equal(x => x.Id, 1).Build();
+            var query = test.Update(_connectionOptions, x => new { x.Money, x.Time, x.IsBool }).Where().Equal(x => x.Id, 1).Build();
             return Async ? await query.ExecuteAsync() : query.Execute();
         }
     }

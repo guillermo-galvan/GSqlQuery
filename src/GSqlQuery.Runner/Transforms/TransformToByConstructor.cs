@@ -1,40 +1,35 @@
-﻿namespace GSqlQuery.Runner.Transforms
+﻿using System.Collections.Generic;
+using System.Data.Common;
+
+namespace GSqlQuery.Runner.Transforms
 {
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class TransformToByConstructor<T> : TransformTo<T>
+    internal class TransformToByConstructor<T> : TransformTo<T> where T : class, new()
     {
-        private readonly object[] _fields;
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="numColumns"></param>
         public TransformToByConstructor(int numColumns) : base(numColumns)
-        {
-            _fields = new object[numColumns];
-        }
+        {}
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public override T Generate()
+        public override T Generate(IEnumerable<PropertyOptionsInEntity> columns, DbDataReader reader)
         {
-            return (T)_classOptions.ConstructorInfo.Invoke(_fields);
-        }
+            object[] fields = new object[_numColumns];
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="propertyName"></param>
-        /// <param name="value"></param>
-        public override void SetValue(int position, string propertyName, object value)
-        {
-            _fields[position] = value;
+            foreach (var item in columns)
+            {
+                fields[item.Property.PositionConstructor] = item.Ordinal.HasValue ? TransformTo.SwitchTypeValue(item.Type, reader.GetValue(item.Ordinal.Value)) : item.ValueDefault;                
+            }
+
+            return (T)_classOptions.ConstructorInfo.Invoke(fields);
         }
     }
 }

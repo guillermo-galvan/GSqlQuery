@@ -4,7 +4,7 @@ namespace GSqlQuery.Sqlite
 {
     public class SqliteConnectionOptions : ConnectionOptions<SqliteDatabaseConnection>
     {
-        public SqliteConnectionOptions(string connectionString) : 
+        public SqliteConnectionOptions(string connectionString) :
             base(new SqliteStatements(), new SqliteDatabaseManagement(connectionString))
         { }
 

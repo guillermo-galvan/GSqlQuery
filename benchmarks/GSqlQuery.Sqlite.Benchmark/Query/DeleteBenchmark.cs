@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.SqliteTest.Data;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite.Benchmark.Query
 {
@@ -26,7 +26,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         }
     }
 
-    public class Delete : DeleteBenchmark 
+    public class Delete : DeleteBenchmark
     {
         [Params(true, false)]
         public bool IsBool { get; set; }

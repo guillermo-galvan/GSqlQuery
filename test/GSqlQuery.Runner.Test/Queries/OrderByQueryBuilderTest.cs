@@ -1,9 +1,9 @@
-﻿using System.Data.Common;
+﻿using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
-using GSqlQuery.Runner.Queries;
-using System.Collections.Generic;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
@@ -11,18 +11,19 @@ namespace GSqlQuery.Runner.Test.Queries
     public class OrderByQueryBuilderTest
     {
         private readonly IStatements _stantements;
-        private readonly ConnectionOptions<DbConnection> _connectionOptions;
+        private readonly ConnectionOptions<IDbConnection> _connectionOptions;
 
         public OrderByQueryBuilderTest()
         {
             _stantements = new Statements();
-            _connectionOptions = new ConnectionOptions<DbConnection>(_stantements, LoadFluentOptions.GetDatabaseManagmentMock());
+            _connectionOptions = new ConnectionOptions<IDbConnection>(_stantements, LoadGSqlQueryOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]
         public void Should_return_an_orderBy_query2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id) },
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder =
+                new SelectQueryBuilder<Test1, IDbConnection>(new List<string> { nameof(Test1.Id) },
                 _connectionOptions);
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             var query = result.Build();
@@ -38,7 +39,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_orderBy_query_with_where2()
         {
-            var queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id) }, _connectionOptions)
+            var queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(new List<string> { nameof(Test1.Id) }, _connectionOptions)
                             .Where().Equal(x => x.IsTest, true).OrEqual(x => x.IsTest, false);
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             var query = result.Build();
@@ -54,15 +55,15 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = new SelectQueryBuilder<Test1, DbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _connectionOptions);
 
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC);
 
             Assert.NotNull(result);
-            Assert.NotNull(result.ConnectionOptions);
-            Assert.NotNull(result.ConnectionOptions.Statements);
-            Assert.NotNull(result.ConnectionOptions.DatabaseManagement);
+            Assert.NotNull(result.Options);
+            Assert.NotNull(result.Options.Statements);
+            Assert.NotNull(result.Options.DatabaseManagement);
             Assert.NotNull(result.Columns);
             Assert.NotEmpty(result.Columns);
             Assert.Equal(queryBuilder.Columns.Count(), result.Columns.Count());
@@ -71,7 +72,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters2()
         {
-            SelectQueryBuilder<Test1, DbConnection> queryBuilder = null;
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = null;
             Assert.Throws<ArgumentNullException>(() => queryBuilder.OrderBy(x => x.Id, OrderBy.ASC));
         }
     }

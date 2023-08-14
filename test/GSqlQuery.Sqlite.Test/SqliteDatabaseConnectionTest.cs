@@ -77,7 +77,7 @@ namespace GSqlQuery.Sqlite.Test
             CancellationTokenSource source = new CancellationTokenSource();
             CancellationToken token = source.Token;
             using (SqliteDatabaseConnection result = new SqliteDatabaseConnection(Helper.ConnectionString))
-            { 
+            {
                 await result.OpenAsync(token);
                 source.Cancel();
                 await Assert.ThrowsAsync<OperationCanceledException>(async () => await result.CloseAsync(token));
@@ -136,7 +136,7 @@ namespace GSqlQuery.Sqlite.Test
                 }
                 result.Close();
             }
-                
+
         }
 
         [Fact]
@@ -167,7 +167,7 @@ namespace GSqlQuery.Sqlite.Test
                 }
                 await result.CloseAsync();
             }
-             
+
         }
 
         [Fact]
@@ -228,7 +228,7 @@ namespace GSqlQuery.Sqlite.Test
                 await Assert.ThrowsAsync<OperationCanceledException>(async () => await result.BeginTransactionAsync(isolationLevel, token));
                 await result.CloseAsync();
             }
-                
+
         }
 
         [Fact]
@@ -325,7 +325,7 @@ namespace GSqlQuery.Sqlite.Test
                     Assert.NotNull(transaction);
                 await result.CloseAsync();
             }
-            
+
         }
 
         [Theory]
@@ -350,7 +350,7 @@ namespace GSqlQuery.Sqlite.Test
             using (SqliteDatabaseConnection result = new SqliteDatabaseConnection(Helper.ConnectionString))
             {
                 result.Open();
-                using (var transaction = result.BeginTransaction()) 
+                using (var transaction = result.BeginTransaction())
                     result.RemoveTransaction(transaction);
                 result.Close();
             }

@@ -1,12 +1,11 @@
-﻿using GSqlQuery.Runner;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace GSqlQuery.SQLServer
 {
-    public static  class SqlServerDatabaseManagementExtension
+    public static class SqlServerDatabaseManagementExtension
     {
-        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, SqlServerDatabaseConnection> query)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query)
         {
             using (var connection = query.DatabaseManagement.GetConnection())
             {
@@ -19,12 +18,12 @@ namespace GSqlQuery.SQLServer
                 }
             }
         }
-        public static TResult ExecuteWithTransaction<TResult>(this IExecuteDatabaseManagement<TResult, SqlServerDatabaseConnection> query, SqlServerDatabaseTransaction transaction)
+        public static TResult ExecuteWithTransaction<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query, SqlServerDatabaseTransaction transaction)
         {
             return query.Execute(transaction.Connection);
         }
 
-        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, SqlServerDatabaseConnection> query, CancellationToken cancellationToken = default)
+        public static async Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query, CancellationToken cancellationToken = default)
         {
             using (var connection = await query.DatabaseManagement.GetConnectionAsync(cancellationToken))
             {
@@ -38,7 +37,7 @@ namespace GSqlQuery.SQLServer
             }
         }
 
-        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecuteDatabaseManagement<TResult, SqlServerDatabaseConnection> query, SqlServerDatabaseTransaction transaction, CancellationToken cancellationToken = default)
+        public static Task<TResult> ExecuteWithTransactionAsync<TResult>(this IExecute<TResult, SqlServerDatabaseConnection> query, SqlServerDatabaseTransaction transaction, CancellationToken cancellationToken = default)
         {
             return query.ExecuteAsync(transaction.Connection, cancellationToken);
         }

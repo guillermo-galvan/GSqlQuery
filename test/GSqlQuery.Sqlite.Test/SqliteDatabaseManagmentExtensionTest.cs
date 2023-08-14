@@ -40,7 +40,7 @@ namespace GSqlQuery.Sqlite.Test
                     Assert.True(result.Id > 0);
                 }
             }
-            
+
         }
 
         [Fact]

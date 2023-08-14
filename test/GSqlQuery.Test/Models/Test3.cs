@@ -2,7 +2,7 @@
 
 namespace GSqlQuery.Test.Models
 {
-    [Table("TableName")]
+    [Table("Test3")]
     internal class Test3 : Entity<Test3>
     {
         [Column("Id", Size = 20, IsAutoIncrementing = true, IsPrimaryKey = true)]

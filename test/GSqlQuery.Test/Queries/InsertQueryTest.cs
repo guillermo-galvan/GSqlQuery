@@ -28,7 +28,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            InsertQuery<Test1> query = new InsertQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1);
+            InsertQuery<Test1> query = new InsertQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Columns);
@@ -44,9 +44,9 @@ namespace GSqlQuery.Test.Queries
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
             Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1));
-            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, null));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null, _test1));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, _test1));
+            Assert.Throws<ArgumentNullException>(() => new InsertQuery<Test1>(null, _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements, null));
         }
     }
 }

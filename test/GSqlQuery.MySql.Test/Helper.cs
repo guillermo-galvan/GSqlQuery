@@ -13,11 +13,11 @@ namespace GSqlQuery.MySql.Test
         internal static void CreateDatatable()
         {
             mut.WaitOne();
-            
-            if (IsFirtsExecute) 
+
+            if (IsFirtsExecute)
             {
                 using (MySqlConnection connection = new MySqlConnection(ConnectionString))
-                { 
+                {
                     connection.Open();
 
                     using (var createCommand = connection.CreateCommand())

@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.SQLServer
 {
@@ -12,6 +12,10 @@ namespace GSqlQuery.SQLServer
     {
         private readonly Queue<DataTable> _tables;
         private readonly string _connectionString;
+
+        public IDatabaseManagement<SqlServerDatabaseConnection> DatabaseManagement { get; }
+
+        IDatabaseManagement<SqlConnection> IExecute<int, SqlConnection>.DatabaseManagement => throw new NotImplementedException();
 
         public BulkInsertExecute(string connectionString)
         {
@@ -22,6 +26,7 @@ namespace GSqlQuery.SQLServer
 
             _connectionString = connectionString;
             _tables = new Queue<DataTable>();
+            DatabaseManagement = new SqlServerDatabaseManagement(_connectionString);
         }
 
         public int Execute()
@@ -109,7 +114,8 @@ namespace GSqlQuery.SQLServer
 
         IBulkCopyExecute IBulkCopy.Copy<T>(IEnumerable<T> values) => Copy(values);
 
-        private void ValidConnection(SqlConnection sqlConnection) {
+        private void ValidConnection(SqlConnection sqlConnection)
+        {
 
             if (sqlConnection == null)
             {
@@ -123,7 +129,8 @@ namespace GSqlQuery.SQLServer
 
         }
 
-        private void ValidTransaction(SqlTransaction sqlTransaction) {
+        private void ValidTransaction(SqlTransaction sqlTransaction)
+        {
             if (sqlTransaction == null)
             {
                 throw new ArgumentNullException(nameof(sqlTransaction));

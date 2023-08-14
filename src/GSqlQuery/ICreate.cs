@@ -1,7 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
-
-namespace GSqlQuery
+﻿namespace GSqlQuery
 {
     /// <summary>
     /// Base class to generate the insert query
@@ -14,6 +11,6 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="key">The name of the statement collection</param>
         /// <returns>Instance of IQuery</returns>
-        IQueryBuilder<T, InsertQuery<T>> Insert(IStatements statements);
+        IQueryBuilder<InsertQuery<T>, IStatements> Insert(IStatements statements);
     }
 }

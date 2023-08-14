@@ -1,11 +1,11 @@
-﻿using GSqlQuery.Runner.Extensions;
-using GSqlQuery.Runner;
+﻿using GSqlQuery.Runner;
+using GSqlQuery.Runner.Extensions;
 using GSqlQuery.Sqlite.Test.Data;
-using Xunit;
 using System;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace GSqlQuery.Sqlite.Test
 {
@@ -154,7 +154,7 @@ namespace GSqlQuery.Sqlite.Test
         {
             CancellationTokenSource source = new CancellationTokenSource();
             CancellationToken token = source.Token;
-            Test1 test1 = new Test1 () { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
+            Test1 test1 = new Test1() { Id = 1, GUID = Guid.NewGuid().ToString(), Money = 120m, Nombre = "Test", URL = "https://guillermo-galvan.com/" };
             var query = test1.Update(_connectionOptions, x => new { x.GUID, x.Money }).Where().Equal(x => x.Id, 1).Build();
             var managment = new SqliteDatabaseManagement(Helper.ConnectionString);
             using (IConnection connection = await _connectionOptions.DatabaseManagement.GetConnectionAsync(token))
@@ -513,6 +513,54 @@ namespace GSqlQuery.Sqlite.Test
                 await Assert.ThrowsAsync<OperationCanceledException>(async () =>
                 await managment.ExecuteScalarAsync<long>(connection, query, query.GetParameters<Test2, SqliteDatabaseConnection>(_connectionOptions.DatabaseManagement), token));
             }
+        }
+
+        [Fact]
+        public async Task InnerJoin_Test_async()
+        {
+            var result = await Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().ExecuteAsync();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public void InnerJoin_Test()
+        {
+            var result = Test1.Select(_connectionOptions).InnerJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().Execute();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public async Task LeftJoin_Test_async()
+        {
+            var result = await Test1.Select(_connectionOptions).LeftJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().ExecuteAsync();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public void LeftJoin_Test()
+        {
+            var result = Test1.Select(_connectionOptions).LeftJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().Execute();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public async Task RightJoin_Test_async()
+        {
+            var result = await Test1.Select(_connectionOptions).RightJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().ExecuteAsync();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public void RightJoin_Test()
+        {
+            var result = Test1.Select(_connectionOptions).RightJoin<Test2>().Equal(x => x.Table1.Id, x => x.Table2.Id).Build().Execute();
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
         }
     }
 }

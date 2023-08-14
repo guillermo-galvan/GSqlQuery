@@ -22,7 +22,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [IterationSetup]
         public virtual void InitializeTest()
         {
-            LastId = Test1.Select(_connectionOptions,x => x.Id).Count().Build().Execute();
+            LastId = Test1.Select(_connectionOptions, x => x.Id).Count().Build().Execute();
             int count = Test2.Select(_connectionOptions, x => x.Id).Count().Build().Execute();
             Console.WriteLine("Init Initialize test 1 {0}, test 2 {1}", LastId, count);
         }
@@ -59,7 +59,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
         [Benchmark]
         public async Task<Test2> GenerateQuery_Test2()
         {
-            Test2 test = new Test2() {  IsBool = false, Money = 200m , Time = DateTime.Now  };
+            Test2 test = new Test2() { IsBool = false, Money = 200m, Time = DateTime.Now };
             return Async ? await test.Insert(_connectionOptions).Build().ExecuteAsync() : test.Insert(_connectionOptions).Build().Execute();
         }
 
@@ -83,7 +83,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
 
     public class Many_Insert : InsertBenchmark
     {
-        [Params(10, 100,1000)]
+        [Params(10, 100, 1000)]
         public int Rows { get; set; }
 
         [Benchmark]

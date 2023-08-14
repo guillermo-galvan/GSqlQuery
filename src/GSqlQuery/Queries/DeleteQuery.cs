@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// Delete query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public sealed class DeleteQuery<T> : Query<T> where T : class, new()
+    public class DeleteQuery<T> : Query<T> where T : class, new()
     {
         /// <summary>
         /// Initializes a new instance of the DeleteQuery class.
@@ -16,7 +16,7 @@ namespace GSqlQuery
         /// <param name="criteria">Query criteria</param>
         /// <param name="statements">Statements to use in the query</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal DeleteQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        internal DeleteQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         { }
     }

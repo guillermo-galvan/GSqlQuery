@@ -1,7 +1,7 @@
-﻿using GSqlQuery.SearchCriteria;
-using GSqlQuery.Test.Models;
+﻿using GSqlQuery.Queries;
+using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
-using GSqlQuery.Queries;
+using GSqlQuery.Test.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -82,10 +82,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
             var andOr = where.Equal(x => x.Id, 1);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -94,10 +94,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
             var andOr = where.Equal(x => x.Id, 1).AndEqual(x => x.IsTest, true);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -106,10 +106,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
             var andOr = where.Equal(x => x.Id, 1).OrEqual(x => x.IsTest, true);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Statements);
+            var result = andOr.BuildCriteria(_queryBuilder.Options);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

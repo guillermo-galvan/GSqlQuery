@@ -19,10 +19,10 @@ namespace GSqlQuery.Test.Extensions
         [Fact]
         public void Should_return_the_criteria()
         {
-            AndOrBase<Test1, SelectQuery<Test1>> where = new AndOrBase<Test1, SelectQuery<Test1>>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
             IEnumerable<CriteriaDetail> criterias = null;
             var andOr = where.Equal(x => x.Id, 1);
-            string result = andOr.GetCliteria(_queryBuilder.Statements, ref criterias);
+            string result = andOr.GetCliteria(_queryBuilder.Options, ref criterias);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

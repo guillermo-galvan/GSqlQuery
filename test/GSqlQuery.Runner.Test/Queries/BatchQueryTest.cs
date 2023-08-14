@@ -1,9 +1,9 @@
-﻿using GSqlQuery.SearchCriteria;
-using GSqlQuery.Runner.Test.Models;
-using System.Linq;
+﻿using GSqlQuery.Runner.Test.Models;
+using GSqlQuery.SearchCriteria;
 using System;
+using System.Data;
+using System.Linq;
 using Xunit;
-using System.Data.Common;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -14,8 +14,7 @@ namespace GSqlQuery.Runner.Test.Queries
         private readonly Equal<int> _equal;
         private readonly IStatements _statements;
         private readonly ClassOptions _classOptions;
-        private readonly Test1 _test1;
-        private readonly ConnectionOptions<DbConnection> _connectionOptions;
+        private readonly ConnectionOptions<IDbConnection> _connectionOptions;
 
         public BatchQueryTest()
         {
@@ -24,8 +23,7 @@ namespace GSqlQuery.Runner.Test.Queries
             _columnAttribute = _classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-            _test1 = new Test1();
-            _connectionOptions = new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock());
+            _connectionOptions = new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMock());
         }
 
         [Fact]
@@ -33,12 +31,12 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            InsertQuery<Test6, DbConnection> query = new InsertQuery<Test6, DbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
-               classOption.PropertyOptions.Select(x => x.ColumnAttribute),
+            InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])",
+               classOption.PropertyOptions,
                new CriteriaDetail[] { _equal.GetCriteria(_statements, classOption.PropertyOptions) },
                _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.IsAutoIncrementing));
 
-            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, new ColumnAttribute[] { _columnAttribute }, null));
+            Assert.Throws<ArgumentNullException>(() => new BatchQuery(null, _classOptions.PropertyOptions, null));
             Assert.Throws<ArgumentNullException>(() => new BatchQuery(query.Text, null, null));
         }
     }

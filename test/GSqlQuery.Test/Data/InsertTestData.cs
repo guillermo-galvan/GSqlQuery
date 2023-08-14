@@ -9,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"INSERT INTO TableName (TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param); "
+                new Statements(),"INSERT INTO Test3 (Test3.Name,Test3.Create,Test3.IsTests) VALUES (@Param,@Param,@Param); "
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"INSERT INTO [TableName] ([TableName].[Name],[TableName].[Create],[TableName].[IsTests]) VALUES (@Param,@Param,@Param); SELECT SCOPE_IDENTITY();"
+                new Models.Statements(),"INSERT INTO [Test3] ([Test3].[Name],[Test3].[Create],[Test3].[IsTests]) VALUES (@Param,@Param,@Param); SELECT SCOPE_IDENTITY();"
             };
         }
 

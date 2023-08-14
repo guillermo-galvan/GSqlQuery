@@ -1,8 +1,8 @@
-﻿using System;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Test.Models;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
-using GSqlQuery.Extensions;
-using GSqlQuery.Test.Models;
 using Xunit;
 
 namespace GSqlQuery.Test.Extensions

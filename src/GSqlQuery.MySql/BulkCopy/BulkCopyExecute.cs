@@ -21,8 +21,12 @@ namespace GSqlQuery.MySql.BulkCopy
         private uint _boolCount = 1;
         private bool _localInfileModify = false;
 
+        public IDatabaseManagement<MySqlDatabaseConnection> DatabaseManagement { get; }
+
+        IDatabaseManagement<MySqlConnection> IExecute<int, MySqlConnection>.DatabaseManagement => throw new NotImplementedException();
+
         public BulkCopyExecute(string connectionString) : this(connectionString, new MySqlStatements())
-        {}
+        { }
 
         public BulkCopyExecute(string connectionString, IStatements statements)
         {
@@ -44,6 +48,7 @@ namespace GSqlQuery.MySql.BulkCopy
             _connectionString = connectionString;
             _files = new Queue<FileBulkLoader>();
             _statements = statements ?? throw new ArgumentNullException(nameof(statements));
+            DatabaseManagement = new MySqlDatabaseManagement(_connectionString);
         }
 
         public IMySqlBulkCopyExecute Copy<T>(IEnumerable<T> values)
@@ -76,7 +81,7 @@ namespace GSqlQuery.MySql.BulkCopy
         public int Execute(MySqlConnection connection)
         {
             if (connection == null)
-            { 
+            {
                 throw new ArgumentNullException(nameof(connection));
             }
 
@@ -99,7 +104,7 @@ namespace GSqlQuery.MySql.BulkCopy
             return result;
         }
 
-        public async  Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
+        public async Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             int result = 0;
 
@@ -237,7 +242,7 @@ namespace GSqlQuery.MySql.BulkCopy
             }
         }
 
-        private MySqlBulkLoader GetMySqlBulkLoader(MySqlConnection mySqlConnection, FileBulkLoader fileBulkLoader) 
+        private MySqlBulkLoader GetMySqlBulkLoader(MySqlConnection mySqlConnection, FileBulkLoader fileBulkLoader)
         {
             MySqlBulkLoader loader = new MySqlBulkLoader(mySqlConnection)
             {

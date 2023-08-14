@@ -42,7 +42,14 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(statements.SelectWhereOrderBy);
             Assert.Equal("SELECT {0} FROM {1} WHERE {2} ORDER BY {3};", statements.SelectWhereOrderBy);
 
-            Assert.True(statements.IncrudeTableNameInQuery);
+            Assert.NotNull(statements.Join);
+            Assert.Equal("JOIN {0} ON {1}", statements.Join);
+
+            Assert.NotNull(statements.JoinSelect);
+            Assert.Equal("SELECT {0} FROM {1} {2};", statements.JoinSelect);
+
+            Assert.NotNull(statements.JoinSelectWhere);
+            Assert.Equal("SELECT {0} FROM {1} {2} WHERE {3};", statements.JoinSelectWhere);
         }
     }
 }

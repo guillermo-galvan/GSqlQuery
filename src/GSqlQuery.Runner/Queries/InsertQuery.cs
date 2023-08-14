@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Runner;
 using GSqlQuery.Runner.Extensions;
 using System;
 using System.Collections.Generic;
@@ -8,19 +7,22 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery
 {
-    public sealed class InsertQuery<T, TDbConnection> : Query<T, TDbConnection, T>, IQuery<T, TDbConnection, T>,
-        IExecuteDatabaseManagement<T, TDbConnection> where T : class, new()
+    public sealed class InsertQuery<T, TDbConnection> : InsertQuery<T>, IExecute<T, TDbConnection>, IQuery<T>
+        where T : class, new()
     {
         public object Entity { get; }
 
-        private PropertyOptions _propertyOptionsAutoIncrementing = null;
+        public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
-        internal InsertQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions,
-            object entity, PropertyOptions propertyOptionsAutoIncrementing) :
-            base(text, columns, criteria, connectionOptions)
+        private readonly PropertyOptions _propertyOptionsAutoIncrementing = null;
+
+        internal InsertQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria,
+            ConnectionOptions<TDbConnection> connectionOptions, object entity, PropertyOptions propertyOptionsAutoIncrementing)
+            : base(text, columns, criteria, connectionOptions.Statements, entity)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _propertyOptionsAutoIncrementing = propertyOptionsAutoIncrementing;
+            DatabaseManagement = connectionOptions.DatabaseManagement;
         }
 
         private async Task InsertAutoIncrementingAsync(bool isAsync, TDbConnection connection = default, CancellationToken cancellationToken = default)
@@ -42,7 +44,7 @@ namespace GSqlQuery
             _propertyOptionsAutoIncrementing.PropertyInfo.SetValue(Entity, idResult);
         }
 
-        public override T Execute()
+        public T Execute()
         {
             if (_propertyOptionsAutoIncrementing != null)
             {
@@ -56,7 +58,7 @@ namespace GSqlQuery
             return (T)Entity;
         }
 
-        public override T Execute(TDbConnection dbConnection)
+        public T Execute(TDbConnection dbConnection)
         {
             dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
 
@@ -72,7 +74,7 @@ namespace GSqlQuery
             return (T)Entity;
         }
 
-        public override async Task<T> ExecuteAsync(CancellationToken cancellationToken = default)
+        public async Task<T> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             if (_propertyOptionsAutoIncrementing != null)
             {
@@ -86,7 +88,7 @@ namespace GSqlQuery
             return (T)Entity;
         }
 
-        public override async Task<T> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
+        public async Task<T> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
             dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
 

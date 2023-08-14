@@ -1,9 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
-using GSqlQuery.SqliteTest.Data;
 using GSqlQuery.Runner;
-using System.Threading.Tasks;
+using GSqlQuery.SqliteTest.Data;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite.Benchmark.Query
 {
@@ -64,7 +64,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
             test.Money = 1263.36m;
             test.Time = DateTime.Now;
             test.IsBool = true;
-            var query = test.Update(_connectionOptions, x => x.Money).Where().In(x => x.Id, Enumerable.Range(1,1000).Select(x => (long)x)).Build();
+            var query = test.Update(_connectionOptions, x => x.Money).Where().In(x => x.Id, Enumerable.Range(1, 1000).Select(x => (long)x)).Build();
             return Async ? await query.ExecuteAsync() : query.Execute();
         }
 
@@ -75,7 +75,7 @@ namespace GSqlQuery.Sqlite.Benchmark.Query
             test.Money = 1263.36m;
             test.Time = DateTime.Now;
             test.IsBool = true;
-            var query = test.Update(_connectionOptions, x => x.Money).Where().Equal(x => x.Id,1).Build();
+            var query = test.Update(_connectionOptions, x => x.Money).Where().Equal(x => x.Id, 1).Build();
             return Async ? await query.ExecuteAsync() : query.Execute();
         }
     }

@@ -20,7 +20,7 @@ namespace GSqlQuery.Test.Queries
             DeleteQueryBuilder<Test1> queryBuilder = new DeleteQueryBuilder<Test1>(_statements);
 
             Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.Statements);
+            Assert.NotNull(queryBuilder.Options);
             Assert.NotNull(queryBuilder.Columns);
             Assert.NotEmpty(queryBuilder.Columns);
         }

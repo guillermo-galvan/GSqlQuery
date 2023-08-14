@@ -32,7 +32,7 @@ namespace GSqlQuery.Sqlite.Test
                     Assert.True(isExists);
                 }
             }
-            
+
         }
 
         [Fact]

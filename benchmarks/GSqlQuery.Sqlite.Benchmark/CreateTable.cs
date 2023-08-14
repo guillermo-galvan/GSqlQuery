@@ -12,14 +12,14 @@ namespace GSqlQuery.Sqlite.Benchmark
         internal const string ConnectionString = "Data Source=benchmark.db";
 
         internal static SqliteConnectionOptions GetConnectionOptions()
-        { 
+        {
             return new SqliteConnectionOptions(ConnectionString);
         }
 
         internal static void Create()
         {
             var tables = SqliteSchema.Select(GetConnectionOptions()).Build().Execute();
-            if(tables != null && !tables.Any()) 
+            if (tables != null && !tables.Any())
             {
                 using (var connection = new SqliteConnection(ConnectionString))
                 {
@@ -51,10 +51,10 @@ namespace GSqlQuery.Sqlite.Benchmark
                             ";
                         createCommand.ExecuteNonQuery();
                     }
-                        
+
                     connection.Close();
                 }
-                
+
             }
         }
 
@@ -77,7 +77,7 @@ namespace GSqlQuery.Sqlite.Benchmark
 
                     transaction.Commit();
                 }
-                
+
                 connection.Close();
             }
         }

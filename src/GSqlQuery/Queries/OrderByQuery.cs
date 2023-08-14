@@ -2,9 +2,9 @@
 
 namespace GSqlQuery
 {
-    public sealed class OrderByQuery<T> : Query<T> where T : class, new()
+    public class OrderByQuery<T> : Query<T> where T : class, new()
     {
-        internal OrderByQuery(string text, IEnumerable<ColumnAttribute> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        internal OrderByQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria, statements)
         {
         }

@@ -60,6 +60,41 @@
         /// </summary>
         string SelectOrderBy { get; }
 
-        bool IncrudeTableNameInQuery { get; }
+        /// <summary>
+        /// Instructions to format the JOIN, "JOIN {0} ON {1}"
+        /// </summary>
+        string Join { get; }
+
+        /// <summary>
+        /// Instructions to format the JOIN, "SELECT {0} FROM {1} {2};"
+        /// </summary>
+        string JoinSelect { get; }
+
+        /// <summary>
+        /// Instructions to format the join, example "SELECT {0} FROM {1} {2} WHERE {3};"
+        /// </summary>
+        string JoinSelectWhere { get; }
+
+        /// <summary>
+        /// Instructions to format the select, example "SELECT {0} FROM {1} {2} ORDER BY {3};"
+        /// </summary>
+        string JoinSelectOrderBy { get; }
+
+        // <summary>
+        /// Instructions to format the select, example "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};"
+        /// </summary>
+        string JoinSelectWhereOrderBy { get; }
+
+        string GetColumnName(string tableName, ColumnAttribute column, QueryType queryType);
+    }
+
+    public enum QueryType
+    {
+        Create,
+        Read,
+        Update, 
+        Delete,
+        Criteria,
+        Join,
     }
 }

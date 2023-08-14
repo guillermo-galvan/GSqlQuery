@@ -17,10 +17,11 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> NotLike<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, string value)
-            where T : class, new() where TReturn : IQuery
+            where T : class, new() where TReturn : IQuery<T>
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            andor.Add(new NotLike(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value));
+            var columnInfo = expression.GetColumnAttribute();
+            andor.Add(new NotLike(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, value));
             return andor;
         }
 
@@ -34,10 +35,11 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndNotLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            string value) where T : class, new() where TReturn : IQuery
+            string value) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
-            andOr.Add(new NotLike(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "AND"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new NotLike(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, value, "AND"));
             return andOr;
         }
 
@@ -51,10 +53,11 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrNotLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            string value) where T : class, new() where TReturn : IQuery
+            string value) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
-            andOr.Add(new NotLike(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), value, "OR"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new NotLike(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, value, "OR"));
             return andOr;
         }
     }

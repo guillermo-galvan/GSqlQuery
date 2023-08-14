@@ -22,7 +22,7 @@ namespace GSqlQuery.Test.Queries
                 _stantements);
 
             Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.Statements);
+            Assert.NotNull(queryBuilder.Options);
             Assert.NotNull(queryBuilder.Columns);
             Assert.NotEmpty(queryBuilder.Columns);
         }

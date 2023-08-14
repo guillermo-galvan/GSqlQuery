@@ -26,7 +26,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            SelectQuery<Test1> query = new SelectQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
+            SelectQuery<Test1> query = new SelectQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -42,8 +42,8 @@ namespace GSqlQuery.Test.Queries
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
             Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements));
-            Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>("query", new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null));
-            Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>(null, new ColumnAttribute[] { _columnAttribute }, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements));
+            Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null));
+            Assert.Throws<ArgumentNullException>(() => new SelectQuery<Test1>(null, _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements));
         }
     }
 }
