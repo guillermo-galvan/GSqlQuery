@@ -2,6 +2,7 @@
 using GSqlQuery.Runner.Test.Models;
 using System;
 using System.Data;
+using System.Data.Common;
 using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
@@ -49,6 +50,15 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotNull(query.DatabaseManagement);
             Assert.NotNull(query.Statements);
             Assert.Null(query.Criteria);
+        }
+
+        [Fact]
+        public void Should_return_an_implementation_of_the_IWhere_interface3()
+        {
+            IQueryBuilderWithWhere<DeleteQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = 
+                new DeleteQueryBuilder<Test1, IDbConnection>(_connectionOptions);
+            var where = queryBuilder.Where();
+            Assert.NotNull(where);
         }
     }
 }
