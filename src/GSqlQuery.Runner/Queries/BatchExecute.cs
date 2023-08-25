@@ -22,7 +22,7 @@ namespace GSqlQuery.Runner
 
         internal BatchExecute(ConnectionOptions<TDbConnection> connectionOptions)
         {
-            _connectionOptions = connectionOptions ?? throw new ArgumentNullException(nameof(connectionOptions));
+            _connectionOptions = connectionOptions;
             _queries = new Queue<IQuery>();
             _parameters = new Queue<IDataParameter>();
             _queryBuilder = new StringBuilder();

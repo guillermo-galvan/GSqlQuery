@@ -1,7 +1,6 @@
 ﻿using GSqlQuery.Queries;
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery
 {
@@ -163,7 +162,7 @@ namespace GSqlQuery
         }
 
         public static IJoinQueryBuilderWithWheree<T1, T2, T3, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>, TDbConnection>
-            GreaterThanOrEqua<T1, T2, T3, TProperties, TDbConnection>
+            GreaterThanOrEqual<T1, T2, T3, TProperties, TDbConnection>
             (this IComparisonOperators<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>, TDbConnection>, ConnectionOptions<TDbConnection>> comparisonOperators,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field2)

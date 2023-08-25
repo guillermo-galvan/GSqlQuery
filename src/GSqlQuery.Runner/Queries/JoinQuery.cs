@@ -19,27 +19,27 @@ namespace GSqlQuery
 
         public IEnumerable<T> Execute()
         {
-            return DatabaseManagement.ExecuteReader<T>(this, GetClassOptions().PropertyOptions,
+            return DatabaseManagement.ExecuteReader(this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagement));
         }
 
         public IEnumerable<T> Execute(TDbConnection dbConnection)
         {
             dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return DatabaseManagement.ExecuteReader<T>(dbConnection, this, GetClassOptions().PropertyOptions,
+            return DatabaseManagement.ExecuteReader(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagement));
         }
 
         public Task<IEnumerable<T>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            return DatabaseManagement.ExecuteReaderAsync<T>(this, GetClassOptions().PropertyOptions,
+            return DatabaseManagement.ExecuteReaderAsync(this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken);
         }
 
         public Task<IEnumerable<T>> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
         {
             dbConnection.NullValidate(ErrorMessages.ParameterNotNull, nameof(dbConnection));
-            return DatabaseManagement.ExecuteReaderAsync<T>(dbConnection, this, GetClassOptions().PropertyOptions,
+            return DatabaseManagement.ExecuteReaderAsync(dbConnection, this, GetClassOptions().PropertyOptions,
                 this.GetParameters<T, TDbConnection>(DatabaseManagement), cancellationToken);
         }
     }

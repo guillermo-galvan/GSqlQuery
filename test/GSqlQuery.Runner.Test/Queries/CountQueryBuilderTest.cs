@@ -1,8 +1,10 @@
 ﻿using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using Xunit;
 
@@ -65,6 +67,16 @@ namespace GSqlQuery.Runner.Test.Queries
                 _connectionOptions);
             var result = queryBuilder.Count();
             var where = result.Where();
+            Assert.NotNull(where);
+        }
+
+        [Fact]
+        public void Should_return_an_implementation_of_the_IWhere_interface3()
+        {
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+                _connectionOptions);
+            IQueryBuilderWithWhere<CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> result = queryBuilder.Count();
+            IWhere<CountQuery<Test1, IDbConnection>> where = result.Where();
             Assert.NotNull(where);
         }
     }

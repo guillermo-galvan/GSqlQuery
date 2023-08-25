@@ -26,7 +26,7 @@ namespace GSqlQuery
 
         public static DataTable FillTable<T>(IEnumerable<T> values)
         {
-            if (values == null && !values.Any())
+            if (values == null || !values.Any())
             {
                 throw new InvalidOperationException("Sequence contains no elements");
             }
