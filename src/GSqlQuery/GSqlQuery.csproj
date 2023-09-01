@@ -2,29 +2,26 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;net462;net6.0;net7.0</TargetFrameworks>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		
 		<Description>Create queries from a class</Description>
 		<SignAssembly>True</SignAssembly>
 		<DelaySign>False</DelaySign>
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\GsqlQuery_key.snk</AssemblyOriginatorKeyFile>
-		<EnablePackageValidation>true</EnablePackageValidation>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		
 		<EnablePackageValidation>true</EnablePackageValidation>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		
-		<Configurations>Debug;Release;</Configurations>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-		
   </PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="..\..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	  <Compile Include="..\CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<Compile Include="..\CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
 	</ItemGroup>
 
   <ItemGroup>

@@ -6,7 +6,7 @@
 	  <LangVersion>11</LangVersion>
 	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	  <PackageProjectUrl>https://github.com/guillermo-galvan/GSqlQuery</PackageProjectUrl>
-	  <Copyright>Copyright (c) Guillermo Galván, .NET Foundation, and contributors 2023-2023</Copyright>
+	  <Copyright>Copyright (c) Guillermo Galván</Copyright>
 	  <RepositoryUrl>https://github.com/guillermo-galvan/GSqlQuery</RepositoryUrl>
 	  <!--<PackageIcon></PackageIcon>-->
 	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
