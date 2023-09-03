@@ -1,4 +1,4 @@
-﻿using GSqlQuery.Models;
+﻿using System.Collections.Generic;
 
 namespace GSqlQuery.SearchCriteria
 {

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace GSqlQuery.Test.Data
 {
@@ -8,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create,TableName.IsTests FROM TableName;"
+                new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create,Test3.IsTests FROM Test3;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests] FROM [TableName];"
+                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create],[Test3].[IsTests] FROM [Test3];"
             };
         }
 
@@ -26,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName;"
+               new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName];"
+                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3];"
             };
         }
 
@@ -44,12 +45,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param;"
+                new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Id = @Param;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param;"
+                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Id] = @Param;"
             };
         }
 
@@ -62,7 +63,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
+                new Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
             };
 
             yield return new object[]
@@ -80,7 +81,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new GSqlQuery.Default.Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
+               new Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
             };
 
             yield return new object[]
@@ -98,7 +99,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
+                new Statements(),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
             };
 
             yield return new object[]

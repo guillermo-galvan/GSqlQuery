@@ -1,6 +1,9 @@
-﻿using GSqlQuery.Runner.Models;
-using GSqlQuery.Runner.Test.Models;
-using System.Data.Common;
+﻿using GSqlQuery.Runner.Test.Models;
+using System;
+using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test
 {
@@ -10,20 +13,20 @@ namespace GSqlQuery.Runner.Test
 
         public ExecuteTest()
         {
-            _statements = new GSqlQuery.Default.Statements();
+            _statements = new Statements();
         }
 
         [Fact]
         public void Should_create_instance_of_BatchExecute()
         {
-            var result = Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()));
+            var result = Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMock()));
             Assert.NotNull(result);
         }
 
         [Fact]
         public void Should_add_bacth()
         {
-            var result = Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()));
+            var result = Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMock()));
             Assert.NotNull(result);
             var result2 = result.Add((c) => Test6.Update(c, x => x.IsTests, true).Build());
             Assert.NotNull(result2);
@@ -32,7 +35,7 @@ namespace GSqlQuery.Runner.Test
         [Fact]
         public void Should_execution()
         {
-            var result = Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()))
+            var result = Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMock()))
                                 .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
                                 .Add((c) => Test3.Select(c).Build())
                                 .Execute();
@@ -42,25 +45,25 @@ namespace GSqlQuery.Runner.Test
         [Fact]
         public void Should_execution_with_Connection()
         {
-            var result = Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMock()))
+            var result = Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMock()))
                                 .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
                                 .Add((c) => Test3.Select(c).Build())
-                                .Execute(LoadFluentOptions.GetDbConnection());
+                                .Execute(LoadGSqlQueryOptions.GetIDbConnection());
             Assert.Equal(0, result);
         }
 
         [Fact]
         public void Throw_exception_if_parameter_is_null2()
         {
-            IDatabaseManagement<DbConnection> databaseManagement = null;
-            Assert.Throws<ArgumentNullException>(() => Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(null, LoadFluentOptions.GetDatabaseManagmentMock())));
-            Assert.Throws<ArgumentNullException>(() => Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, databaseManagement)));
+            IDatabaseManagement<IDbConnection> databaseManagement = null;
+            Assert.Throws<ArgumentNullException>(() => Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(null, LoadGSqlQueryOptions.GetDatabaseManagmentMock())));
+            Assert.Throws<ArgumentNullException>(() => Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(_statements, databaseManagement)));
         }
 
         [Fact]
         public async Task Should_executionAsync()
         {
-            var result = await Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync()))
+            var result = await Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMockAsync()))
                                 .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
                                 .Add((c) => Test3.Select(c).Build())
                                 .ExecuteAsync(CancellationToken.None);
@@ -70,10 +73,10 @@ namespace GSqlQuery.Runner.Test
         [Fact]
         public async Task Should_executionAsync_with_Connection()
         {
-            var result = await Execute.BatchExecuteFactory(new ConnectionOptions<DbConnection>(_statements, LoadFluentOptions.GetDatabaseManagmentMockAsync()))
+            var result = await Execute.BatchExecuteFactory(new ConnectionOptions<IDbConnection>(_statements, LoadGSqlQueryOptions.GetDatabaseManagmentMockAsync()))
                                 .Add((c) => Test6.Update(c, x => x.IsTests, true).Build())
                                 .Add((c) => Test3.Select(c).Build())
-                                .ExecuteAsync(LoadFluentOptions.GetDbConnection(), CancellationToken.None);
+                                .ExecuteAsync(LoadGSqlQueryOptions.GetIDbConnection(), CancellationToken.None);
             Assert.Equal(0, result);
         }
     }

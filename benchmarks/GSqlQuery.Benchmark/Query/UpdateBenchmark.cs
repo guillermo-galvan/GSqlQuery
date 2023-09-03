@@ -1,11 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.Benchmarks.Data;
-using GSqlQuery.Default;
-using GSqlQuery.SearchCriteria;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.Benchmarks.Query
 {
-    [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public abstract class UpdateBenchmark : CreateStaments
     {
         protected User _user;
@@ -56,17 +55,6 @@ namespace GSqlQuery.Benchmarks.Query
                        .Set(x => x.Email, "guigalmen@hotmail.com")
                        .Set(x => x.IsActive, true)
                        .Where().Between(x => x.Id, 1, 2).Build();
-        }
-
-        [Benchmark]
-        public IQuery GenerateGroupWhereQuery()
-        {
-            return User.Update(_statements, x => x.Id, 1)
-                       .Set(x => x.Name, "Test")
-                       .Set(x => x.LastName, "LastTest")
-                       .Set(x => x.Email, "guigalmen@hotmail.com")
-                       .Set(x => x.IsActive, true)
-                       .Where().BeginGroup().Equal(x => x.Id, 1).CloseGroup().Build();
         }
 
         [Benchmark]
@@ -132,17 +120,6 @@ namespace GSqlQuery.Benchmarks.Query
                        .Set(x => x.Email)
                        .Set(x => x.IsActive)
                        .Where().Between(x => x.Id, 1, 2).Build();
-        }
-
-        [Benchmark]
-        public IQuery GenerateGroupWhereQueryByEntity()
-        {
-            return _user.Update(_statements, x => x.Id)
-                       .Set(x => x.Name)
-                       .Set(x => x.LastName)
-                       .Set(x => x.Email)
-                       .Set(x => x.IsActive)
-                       .Where().BeginGroup().Equal(x => x.Id, 1).CloseGroup().Build();
         }
 
         [Benchmark]

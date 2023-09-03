@@ -1,8 +1,10 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Helpers;
+using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace GSqlQuery.SearchCriteria
+namespace GSqlQuery
 {
     public static class NotInExtension
     {
@@ -16,10 +18,11 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="values">Values</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> NotIn<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, IEnumerable<TProperties> values)
-            where T : class, new() where TReturn : IQuery
+            where T : class, new() where TReturn : IQuery<T>
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            andor.Add(new NotIn<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), values));
+            var columnInfo = expression.GetColumnAttribute();
+            andor.Add(new NotIn<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, values));
             return andor;
         }
 
@@ -33,10 +36,11 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndNotIn<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery
+            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
-            andOr.Add(new NotIn<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), values, "AND"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new NotIn<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, values, "AND"));
             return andOr;
         }
 
@@ -50,10 +54,11 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrNotIn<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery
+            IEnumerable<TProperties> values) where T : class, new() where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
-            andOr.Add(new NotIn<TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)).Table, expression.GetColumnAttribute(), values, "OR"));
+            var columnInfo = expression.GetColumnAttribute();
+            andOr.Add(new NotIn<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, values, "OR"));
             return andOr;
         }
     }

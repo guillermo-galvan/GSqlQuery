@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace GSqlQuery.Test.Data
 {
@@ -8,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id FROM TableName ORDER BY TableName.Name ASC,TableName.Create DESC;"
+                new Statements(),"SELECT Test3.Id FROM Test3 ORDER BY Test3.Name ASC,Test3.Create DESC;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [TableName].[Id] FROM [TableName] ORDER BY [TableName].[Name] ASC,[TableName].[Create] DESC;"
+                new Models.Statements(),"SELECT [Test3].[Id] FROM [Test3] ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
             };
         }
 
@@ -26,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName ORDER BY TableName.Name ASC,TableName.Create DESC;"
+               new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 ORDER BY Test3.Name ASC,Test3.Create DESC;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] ORDER BY [TableName].[Name] ASC,[TableName].[Create] DESC;"
+                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
             };
         }
 
@@ -44,12 +45,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"SELECT TableName.Id,TableName.Name,TableName.Create FROM TableName WHERE TableName.IsTests = @Param AND TableName.Id = @Param ORDER BY TableName.Name ASC,TableName.Create DESC;"
+                new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Id = @Param ORDER BY Test3.Name ASC,Test3.Create DESC;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [TableName].[Id],[TableName].[Name],[TableName].[Create] FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Id] = @Param ORDER BY [TableName].[Name] ASC,[TableName].[Create] DESC;"
+                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Id] = @Param ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
             };
         }
 

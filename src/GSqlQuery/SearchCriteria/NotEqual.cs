@@ -27,7 +27,7 @@
         /// <param name="columnAttribute">ColumnAttribute</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public NotEqual(TableAttribute table, ColumnAttribute columnAttribute, T value, string? logicalOperator) : base(table, columnAttribute, value, logicalOperator)
+        public NotEqual(TableAttribute table, ColumnAttribute columnAttribute, T value, string logicalOperator) : base(table, columnAttribute, value, logicalOperator)
         { }
     }
 }

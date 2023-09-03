@@ -1,10 +1,12 @@
-﻿namespace GSqlQuery
+﻿using System;
+
+namespace GSqlQuery
 {
     /// <summary>
     /// Defines how the property will be taken for the query
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class ColumnAttribute : Attribute
+    public sealed class ColumnAttribute : Attribute
     {
         /// <summary>
         /// Column name
@@ -33,6 +35,11 @@
         public ColumnAttribute(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
+        }
+
+        public override string ToString()
+        {
+            return $"Column Name: {Name}";
         }
     }
 }

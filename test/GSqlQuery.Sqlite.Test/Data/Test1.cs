@@ -1,7 +1,7 @@
 ﻿namespace GSqlQuery.Sqlite.Test.Data
 {
     [Table("test1")]
-    internal class Test1 : Runner.Entity<Test1>
+    internal class Test1 : EntityExecute<Test1>
     {
         [Column("idTest1")]
         public long Id { get; set; }
@@ -10,20 +10,20 @@
         public decimal? Money { get; set; }
 
         [Column("Nombre")]
-        public string? Nombre { get; set; }
+        public string Nombre { get; set; }
 
         [Column("GUID")]
-        public string? GUID { get; set; }
+        public string GUID { get; set; }
 
         [Column("URL")]
-        public string? URL { get; set; }
+        public string URL { get; set; }
 
         public Test1()
         {
 
         }
 
-        public Test1(long id, decimal? money, string? nombre, string? guid, string? url)
+        public Test1(long id, decimal? money, string nombre, string guid, string url)
         {
             Id = id;
             Money = money;

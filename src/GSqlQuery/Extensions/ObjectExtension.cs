@@ -1,8 +1,10 @@
-﻿namespace GSqlQuery.Extensions
+﻿using System;
+
+namespace GSqlQuery.Extensions
 {
-    public static class ObjectExtension
+    internal static class ObjectExtension
     {
-        public static void NullValidate(this object obj, string message, string paramName)
+        internal static void NullValidate(this object obj, string message, string paramName)
         {
             if (obj == null)
             {

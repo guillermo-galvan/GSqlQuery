@@ -1,9 +1,8 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
-using GSqlQuery.SearchCriteria;
-using GSqlQuery.Test.Data;
+﻿using GSqlQuery.Test.Data;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
+using System;
+using Xunit;
 
 namespace GSqlQuery.Test
 {
@@ -13,7 +12,7 @@ namespace GSqlQuery.Test
 
         public EntityTest()
         {
-            _stantements = new GSqlQuery.Default.Statements();
+            _stantements = new Statements();
         }
 
         [Fact]
@@ -38,7 +37,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Select_Test3_TestData))]
         public void Retrieve_all_properties_of_the_query(IStatements statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements);
+            IQueryBuilderWithWhere<SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements);
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);
@@ -48,7 +47,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Select_Test3_TestData2))]
         public void Retrieve_some_properties_from_the_query(IStatements statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilderWithWhere<SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);
@@ -78,7 +77,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test3_TestData))]
         public void Should_generate_the_insert_query_with_auto_incrementing(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Insert(statements).Build();
 
             Assert.NotNull(query);
@@ -99,7 +98,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_query(IStatements statements, string queryText)
         {
-            Test6 test = new(1, null, DateTime.Now, true);
+            Test6 test = new Test6(1, null, DateTime.Now, true);
             var query = test.Insert(statements).Build();
 
             Assert.NotNull(query);
@@ -120,7 +119,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test3_TestData))]
         public void Should_generate_the_insert_static_query_with_auto_incrementing(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = Test3.Insert(statements, test).Build();
 
             Assert.NotNull(query);
@@ -141,7 +140,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_static_query(IStatements statements, string queryText)
         {
-            Test6 test = new(1, null, DateTime.Now, true);
+            Test6 test = new Test6(1, null, DateTime.Now, true);
             var query = Test6.Insert(statements, test).Build();
 
             Assert.NotNull(query);
@@ -162,7 +161,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData))]
         public void Should_generate_the_update_query(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(statements, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests).Build();
 
             Assert.NotNull(query);
@@ -183,7 +182,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData2))]
         public void Should_generate_the_update_query_with_where(IStatements statements, string queryText)
         {
-            Test3 test = new(1, null, DateTime.Now, true);
+            Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(statements, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
 
@@ -280,8 +279,8 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Count_Test3_TestData))]
         public void Should_generate_the_count_query(IStatements statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements, x => x.Ids);
-            IQueryBuilderWithWhere<Test3, CountQuery<Test3>> countQuery = queryBuilder.Count();
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => x.Ids);
+            IQueryBuilderWithWhere<Test3, CountQuery<Test3>, IStatements> countQuery = queryBuilder.Count();
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -291,8 +290,8 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Count_Test3_TestData2))]
         public void Should_generate_some_properties_from_the_count_query(IStatements statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
-            IQueryBuilderWithWhere<Test3, CountQuery<Test3>> countQuery = queryBuilder.Count();
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilderWithWhere<Test3, CountQuery<Test3>, IStatements> countQuery = queryBuilder.Count();
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -302,8 +301,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Count_Test3_TestData3))]
         public void Should_return_the_count_query_with_where(IStatements statements, string queryText)
         {
-            var queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
-            var query = queryBuilder.Count().Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
+            var query = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates }).Count().Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
 
@@ -319,13 +317,12 @@ namespace GSqlQuery.Test
             Assert.Equal(queryText, result);
         }
 
-
         [Theory]
         [ClassData(typeof(OrderBy_Test3_TestData))]
         public void Should_generate_the_orderby_query(IStatements statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements, x => x.Ids);
-            IQueryBuilder<Test3, OrderByQuery<Test3>> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => x.Ids);
+            IQueryBuilder<OrderByQuery<Test3>, IStatements> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -335,8 +332,8 @@ namespace GSqlQuery.Test
         [ClassData(typeof(OrderBy_Test3_TestData2))]
         public void Should_generate_some_properties_from_the_orderby_query(IStatements statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
-            IQueryBuilder<Test3, OrderByQuery<Test3>> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilder<OrderByQuery<Test3>, IStatements> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -361,6 +358,377 @@ namespace GSqlQuery.Test
             }
 
             Assert.Equal(queryText, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_two_tables_TestData))]
+        public void Should_generate_the_inner_join_two_tables_query(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_two_tables_TestData2))]
+        public void Should_generate_the_inner_join_two_tables_query2(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements, x => new { x.Names, x.Ids })
+                              .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_two_tables_with_where_TestData))]
+        public void Should_generate_the_inner_join_two_tables_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Left_Join_two_tables_TestData))]
+        public void Should_generate_the_left_join_two_tables_query(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements)
+                              .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Left_Join_two_tables_TestData2))]
+        public void Should_generate_the_left_join_two_tables_query2(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements, x => new { x.Names, x.Ids })
+                              .LeftJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Left_Join_two_tables_with_where_TestData))]
+        public void Should_generate_the_left_join_two_tables_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Right_Join_two_tables_TestData))]
+        public void Should_generate_the_right_join_two_tables_query(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements)
+                              .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Right_Join_two_tables_TestData2))]
+        public void Should_generate_the_right_join_two_tables_query2(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements, x => new { x.Names, x.Ids })
+                              .RightJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Right_Join_two_tables_with_where_TestData))]
+        public void Should_generate_the_right_join_two_tables_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_three_tables_TestData))]
+        public void Should_generate_the_inner_join_three_tables_query(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .InnerJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_three_tables_with_where_TestData))]
+        public void Should_generate_the_inner_join_three_tables_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .InnerJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_three_tables_TestData2))]
+        public void Should_generate_the_inner_join_three_tables_query2(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements, x => new { x.Names, x.Ids })
+                              .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .InnerJoin<Test1>(x => new { x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Left_Join_three_tables_TestData))]
+        public void Should_generate_the_left_join_three_tables_query(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements)
+                              .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .LeftJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Left_Join_three_tables_with_where_TestData))]
+        public void Should_generate_the_left_join_three_tables_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .LeftJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Left_Join_three_tables_TestData2))]
+        public void Should_generate_the_left_join_three_tables_query2(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements, x => new { x.Names, x.Ids })
+                              .LeftJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .LeftJoin<Test1>(x => new { x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Right_Join_three_tables_TestData))]
+        public void Should_generate_the_right_join_three_tables_query(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements)
+                              .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Right_Join_three_tables_with_where_TestData))]
+        public void Should_generate_the_right_join_three_tables_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Right_Join_three_tables_TestData2))]
+        public void Should_generate_the_right_join_three_tables_query2(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements, x => new { x.Names, x.Ids })
+                              .RightJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .RightJoin<Test1>(x => new { x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_OrderBy_two_tables_TestData))]
+        public void Should_generate_the_inner_join_two_tables_orderBy_query(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .OrderBy(x => x.Table1.Creates, OrderBy.DESC)
+                              .OrderBy(x => x.Table2.Names, OrderBy.ASC)
+                              .Build();
+
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_OrderBy_two_tables_TestData2))]
+        public void Should_generate_the_inner_join_two_tables_orderBy_query2(IStatements statements, string query)
+        {
+            var result = Test3.Select(statements, x => new { x.Names, x.Ids })
+                              .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .OrderBy(x => new { x.Table1.Creates, x.Table2.Names }, OrderBy.DESC)
+                              .Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_OrderBy_two_tables_with_where_TestData))]
+        public void Should_generate_the_inner_join_two_tables_orderBy_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .OrderBy(x => new { x.Table1.Creates, x.Table2.Names }, OrderBy.DESC)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_OrderBy_three_tables_TestData))]
+        public void Should_generate_the_inner_join_three_tables_orderBy_query_with_where(IStatements statements, string query)
+        {
+            var queryResult = Test3.Select(statements)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true)
+                              .OrderBy(x => new { x.Table2.IsTests, x.Table1.Names, x.Table3.Id }, OrderBy.ASC)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
         }
 
     }

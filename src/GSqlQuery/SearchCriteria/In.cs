@@ -1,5 +1,7 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -35,7 +37,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="values">Equality value</param>
         /// <param name="logicalOperator">Logical operator </param>
         /// <exception cref="ArgumentNullException"></exception>
-        public In(TableAttribute table, ColumnAttribute columnAttribute, IEnumerable<T> values, string? logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public In(TableAttribute table, ColumnAttribute columnAttribute, IEnumerable<T> values, string logicalOperator) : base(table, columnAttribute, logicalOperator)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));
             if (!values.Any())
@@ -55,15 +57,15 @@ namespace GSqlQuery.SearchCriteria
             ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
             int count = 0;
             int index = 0;
-            long ticks = DateTime.Now.Ticks;
+            ulong ticks = Helpers.GetIdParam();
             var property = Column.GetPropertyOptions(propertyOptions);
 
             foreach (var item in Values)
             {
-                parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks++}", item, property);
+                parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks}", item, property);
             }
 
-            string criterion = $"{Column.GetColumnName(tableName, statements)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
+            string criterion = $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
             criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
             return new CriteriaDetail(this, criterion, parameters);
         }

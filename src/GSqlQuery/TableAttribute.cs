@@ -1,7 +1,9 @@
-﻿namespace GSqlQuery
+﻿using System;
+
+namespace GSqlQuery
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
-    public class TableAttribute : Attribute
+    public sealed class TableAttribute : Attribute
     {
         /// <summary>
         /// 
@@ -11,14 +13,14 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? Scheme { get; private set; } = null;
+        public string Scheme { get; private set; } = null;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="name"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public TableAttribute( string name) 
+        public TableAttribute(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -42,6 +44,11 @@
             }
 
             Scheme = scheme;
+        }
+
+        public override string ToString()
+        {
+            return string.IsNullOrWhiteSpace(Scheme) ? $"Table Name: {Name}" : $"Scheme Name: {Scheme}, Table Name: {Name}";
         }
     }
 }

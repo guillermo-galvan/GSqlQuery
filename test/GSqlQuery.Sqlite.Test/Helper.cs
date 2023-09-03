@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System.Threading;
 
 namespace GSqlQuery.Sqlite.Test
 {
@@ -6,8 +7,8 @@ namespace GSqlQuery.Sqlite.Test
     {
         internal const string ConnectionString = "Data Source=test;Mode=Memory;Cache=Shared";
 
-        private static SqliteConnection? connection;
-        private readonly static Mutex mut = new();
+        private static SqliteConnection connection;
+        private readonly static Mutex mut = new Mutex();
 
         internal static void CreateDatatable()
         {
@@ -44,17 +45,17 @@ namespace GSqlQuery.Sqlite.Test
 
                 createCommand.CommandText =
                     @"
-                       INSERT INTO ""test1"" (""idTest1"",""Money"",""Nombre"",""GUID"",""URL"") 
+                       INSERT INTO test1 (idTest1,Money,Nombre,GUID,URL) 
                                         VALUES (1,'120.32','Test desde la app','sdsadsa','test');
-                       INSERT INTO ""test1"" (""idTest1"",""Money"",""Nombre"",""GUID"",""URL"") 
+                       INSERT INTO test1 (idTest1,Money,Nombre,GUID,URL) 
                                         VALUES (2,'120.32','Test desde la app','sdsadsa','test');
-                       INSERT INTO ""test1"" (""idTest1"",""Money"",""Nombre"",""GUID"",""URL"") 
+                       INSERT INTO test1 (idTest1,Money,Nombre,GUID,URL) 
                                         VALUES (3,'120.32','Test desde la app','sdsadsa','test');
-                       INSERT INTO ""test1"" (""idTest1"",""Money"",""Nombre"",""GUID"",""URL"") 
+                       INSERT INTO test1 (idTest1,Money,Nombre,GUID,URL) 
                                         VALUES (4,'120.32','Test desde la app','sdsadsa','test');
-                       INSERT INTO ""test1"" (""idTest1"",""Money"",""Nombre"",""GUID"",""URL"") 
+                       INSERT INTO test1 (idTest1,Money,Nombre,GUID,URL) 
                                         VALUES (5,'120.32','Test desde la app','sdsadsa','test');
-                       INSERT INTO ""test1"" (""idTest1"",""Money"",""Nombre"",""GUID"",""URL"") 
+                       INSERT INTO test1 (idTest1,Money,Nombre,GUID,URL)
                                         VALUES (6,'120.32','Test desde la app','sdsadsa','test');
                     ";
                 createCommand.ExecuteNonQuery();

@@ -24,6 +24,19 @@
 
         public string SelectOrderBy => "SELECT {0} FROM {1} ORDER BY {2};";
 
-        public bool IncrudeTableNameInQuery => true;
+        public string Join => "JOIN {0} ON {1}";
+
+        public string JoinSelect => "SELECT {0} FROM {1} {2};";
+
+        public string JoinSelectWhere => "SELECT {0} FROM {1} {2} WHERE {3};";
+
+        public string JoinSelectOrderBy => "SELECT {0} FROM {1} {2} ORDER BY {3};";
+
+        public string JoinSelectWhereOrderBy => "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};";
+
+        public virtual string GetColumnName(string tableName, ColumnAttribute column, QueryType queryType)
+        {
+            return $"{tableName}.{string.Format(Format, column.Name)}";
+        }
     }
 }

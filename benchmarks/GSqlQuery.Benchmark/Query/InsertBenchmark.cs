@@ -3,7 +3,6 @@ using GSqlQuery.Benchmarks.Data;
 
 namespace GSqlQuery.Benchmarks.Query
 {
-    [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public class Insert : CreateStaments
     {
         protected User _user;

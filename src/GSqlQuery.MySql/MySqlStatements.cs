@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.MySql
+﻿namespace GSqlQuery.MySql
 {
     public class MySqlStatements : Statements
     {

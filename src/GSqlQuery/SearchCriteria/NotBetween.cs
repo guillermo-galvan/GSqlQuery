@@ -30,7 +30,7 @@
         /// <param name="initialValue">Initial value</param>
         /// <param name="finalValue">Final value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public NotBetween(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue, string? logicalOperator)
+        public NotBetween(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue, string logicalOperator)
             : base(table, columnAttribute, initialValue, finalValue, logicalOperator)
         {
         }

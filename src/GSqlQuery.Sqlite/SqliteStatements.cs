@@ -1,13 +1,14 @@
-﻿using GSqlQuery.Default;
-
-namespace GSqlQuery.Sqlite
+﻿namespace GSqlQuery.Sqlite
 {
-    public class SqliteStatements : Statements
+    public sealed class SqliteStatements : Statements
     {
         public override string Format => "\"{0}\"";
 
         public override string ValueAutoIncrementingQuery => "SELECT last_insert_rowid();";
 
-        public override bool IncrudeTableNameInQuery => false;
+        public override string GetColumnName(string tableName, ColumnAttribute column, QueryType queryType)
+        {
+            return queryType == QueryType.Read || queryType == QueryType.Join ? $"{tableName}.{string.Format(Format, column.Name)}" : $"{string.Format(Format, column.Name)}";
+        }
     }
 }

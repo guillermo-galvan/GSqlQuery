@@ -1,7 +1,8 @@
-﻿using GSqlQuery.Default;
-using GSqlQuery.Extensions;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
+using System.Collections.Generic;
+using Xunit;
 
 namespace GSqlQuery.Test.Extensions
 {
@@ -11,17 +12,17 @@ namespace GSqlQuery.Test.Extensions
 
         public IAndOrExtensionTest()
         {
-            _queryBuilder = new(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-               new GSqlQuery.Default.Statements());
+            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
+               new Statements());
         }
 
         [Fact]
         public void Should_return_the_criteria()
         {
-            SelectWhere<Test1> where = new(_queryBuilder);
-            IEnumerable<CriteriaDetail>? criterias = null;
+            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
+            IEnumerable<CriteriaDetail> criterias = null;
             var andOr = where.Equal(x => x.Id, 1);
-            string result = andOr.GetCliteria(_queryBuilder.Statements, ref criterias);
+            string result = andOr.GetCliteria(_queryBuilder.Options, ref criterias);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

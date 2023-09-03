@@ -27,7 +27,7 @@
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="value">Value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public GreaterThanOrEqual(TableAttribute table, ColumnAttribute columnAttribute, T value, string? logicalOperator) : base(table, columnAttribute, value, logicalOperator)
+        public GreaterThanOrEqual(TableAttribute table, ColumnAttribute columnAttribute, T value, string logicalOperator) : base(table, columnAttribute, value, logicalOperator)
         { }
     }
 }

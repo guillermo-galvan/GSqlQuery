@@ -1,11 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.Benchmarks.Data;
-using GSqlQuery.Default;
-using GSqlQuery.SearchCriteria;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.Benchmarks.Query
 {
-    [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public abstract class DeleteBenchmark : CreateStaments
     {
         public DeleteBenchmark() : base()
@@ -34,12 +33,6 @@ namespace GSqlQuery.Benchmarks.Query
         public IQuery GenerateBetweenWhereQuery()
         {
             return User.Delete(_statements).Where().Between(x => x.Id, 1, 2).Build();
-        }
-
-        [Benchmark]
-        public IQuery GenerateGroupWhereQuery()
-        {
-            return User.Delete(_statements).Where().BeginGroup().Equal(x => x.Id, 1).CloseGroup().Build();
         }
 
         [Benchmark]

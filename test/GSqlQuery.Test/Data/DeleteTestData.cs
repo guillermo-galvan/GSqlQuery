@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace GSqlQuery.Test.Data
 {
@@ -8,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"DELETE FROM TableName;"
+                new Statements(),"DELETE FROM Test3;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"DELETE FROM [TableName];"
+                new Models.Statements(),"DELETE FROM [Test3];"
             };
         }
 
@@ -26,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"DELETE FROM TableName WHERE TableName.IsTests = @Param AND TableName.Create IS NOT NULL;"
+                new Statements(),"DELETE FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Create IS NOT NULL;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"DELETE FROM [TableName] WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] IS NOT NULL;"
+                new Models.Statements(),"DELETE FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] IS NOT NULL;"
             };
         }
 

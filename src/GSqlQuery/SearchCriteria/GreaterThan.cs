@@ -1,6 +1,4 @@
-﻿using GSqlQuery;
-
-namespace GSqlQuery.SearchCriteria
+﻿namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria Greater Than (>)
@@ -29,7 +27,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="value">Value</param>
         /// <param name="logicalOperator">Logical operator</param>
-        public GreaterThan(TableAttribute table, ColumnAttribute columnAttribute, T value, string? logicalOperator) : base(table, columnAttribute, value, logicalOperator)
+        public GreaterThan(TableAttribute table, ColumnAttribute columnAttribute, T value, string logicalOperator) : base(table, columnAttribute, value, logicalOperator)
         { }
     }
 }

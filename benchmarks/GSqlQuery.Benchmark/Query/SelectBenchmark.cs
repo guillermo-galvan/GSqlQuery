@@ -1,14 +1,14 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using GSqlQuery.Benchmarks.Data;
-using GSqlQuery.Default;
-using GSqlQuery.SearchCriteria;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.Benchmarks.Query
 {
-    [MinColumn, MaxColumn, MeanColumn, MedianColumn]
-    public abstract class SelectBenchmark: CreateStaments
+    public abstract class SelectBenchmark : CreateStaments
     {
-        public SelectBenchmark():base()
+        public SelectBenchmark() : base()
         {
         }
 
@@ -27,7 +27,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateManyColumnsQuery()
         {
-            return User.Select(_statements,x => new { x.Name,x.LastName,x.IsActive}).Build();
+            return User.Select(_statements, x => new { x.Name, x.LastName, x.IsActive }).Build();
         }
 
         [Benchmark]
@@ -43,12 +43,6 @@ namespace GSqlQuery.Benchmarks.Query
         }
 
         [Benchmark]
-        public IQuery GenerateGroupWhereQuery()
-        {
-            return User.Select(_statements).Where().BeginGroup().Equal(x => x.Id, 1).CloseGroup().Build();
-        }
-
-        [Benchmark]
         public IQuery GenerateLikeWhereQuery()
         {
             return User.Select(_statements).Where().Like(x => x.Name, "23").Build();
@@ -61,17 +55,17 @@ namespace GSqlQuery.Benchmarks.Query
         }
     }
 
-    public class Select: SelectBenchmark
+    public class Select : SelectBenchmark
     {
         private readonly IEnumerable<int> _ids;
-        public Select() :base()
+        public Select() : base()
         {
             _ids = Enumerable.Range(0, 1);
         }
 
         [Benchmark]
         public IQuery GenerateInWhereQuery()
-        {   
+        {
             return User.Select(_statements).Where().In(x => x.Id, _ids).Build();
         }
 

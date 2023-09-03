@@ -1,4 +1,6 @@
 ﻿using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery
 {
@@ -20,7 +22,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get Search Criteria
         /// </summary>
-        public ISearchCriteria? SearchCriteria { get; }
+        public ISearchCriteria SearchCriteria { get; }
 
         /// <summary>
         /// Initializes a new instance of the CriteriaDetail class.

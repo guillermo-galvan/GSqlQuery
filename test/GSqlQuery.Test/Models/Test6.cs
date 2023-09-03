@@ -1,4 +1,6 @@
-﻿namespace GSqlQuery.Test.Models
+﻿using System;
+
+namespace GSqlQuery.Test.Models
 {
     [Table("TableName")]
     internal class Test6 : Entity<Test6>

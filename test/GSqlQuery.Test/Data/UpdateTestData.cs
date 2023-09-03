@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace GSqlQuery.Test.Data
 {
@@ -8,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param;"
+                new Statements(),"UPDATE Test3 SET Test3.Id=@Param,Test3.Name=@Param,Test3.Create=@Param,Test3.IsTests=@Param;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;"
+                new Models.Statements(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param;"
             };
         }
 
@@ -26,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new GSqlQuery.Default.Statements(),"UPDATE TableName SET TableName.Id=@Param,TableName.Name=@Param,TableName.Create=@Param,TableName.IsTests=@Param WHERE TableName.IsTests = @Param AND TableName.Create = @Param;"
+                new Statements(),"UPDATE Test3 SET Test3.Id=@Param,Test3.Name=@Param,Test3.Create=@Param,Test3.IsTests=@Param WHERE Test3.IsTests = @Param AND Test3.Create = @Param;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param WHERE [TableName].[IsTests] = @Param AND [TableName].[Create] = @Param;"
+                new Models.Statements(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] = @Param;"
             };
         }
 

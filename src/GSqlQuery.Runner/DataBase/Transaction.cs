@@ -1,14 +1,17 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace GSqlQuery.Runner.DataBase
+namespace GSqlQuery.Runner
 {
     public abstract class Transaction : ITransaction
     {
         protected bool _disposed;
         protected readonly DbTransaction _transaction;
         protected readonly IConnection _connection;
-        protected TransacctionDispose? _transacctionDispose;
+        protected TransacctionDispose _transacctionDispose;
 
         IConnection ITransaction.Connection => _connection;
 
@@ -34,7 +37,12 @@ namespace GSqlQuery.Runner.DataBase
         public Task CommitAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+#if NET5_0_OR_GREATER
             return _transaction.CommitAsync(cancellationToken);
+#else
+            _transaction.Commit();
+            return Task.CompletedTask;
+#endif
         }
 
         public void Rollback()
@@ -45,7 +53,13 @@ namespace GSqlQuery.Runner.DataBase
         public Task RollbackAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+#if NET5_0_OR_GREATER
             return _transaction.RollbackAsync(cancellationToken);
+#else
+            _transaction.Rollback();
+            return Task.CompletedTask;
+#endif
+
         }
 
         protected void Dispose(bool disposing)
@@ -55,7 +69,7 @@ namespace GSqlQuery.Runner.DataBase
                 if (disposing)
                 {
                     _transacctionDispose?.Invoke(this);
-                    _transacctionDispose -= _connection!.RemoveTransaction!;
+                    _transacctionDispose -= _connection.RemoveTransaction;
                     _transacctionDispose = null;
                     _transaction.Dispose();
 
