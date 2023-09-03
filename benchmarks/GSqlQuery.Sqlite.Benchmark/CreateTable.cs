@@ -1,9 +1,6 @@
-﻿using GSqlQuery.Runner;
-using GSqlQuery.Sqlite.Benchmark.Entities;
-using GSqlQuery.SqliteTest.Data;
+﻿using GSqlQuery.SqliteTest.Data;
 using Microsoft.Data.Sqlite;
 using System;
-using System.Linq;
 
 namespace GSqlQuery.Sqlite.Benchmark
 {
