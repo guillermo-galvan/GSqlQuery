@@ -1,9 +1,6 @@
-﻿using GSqlQuery.Runner;
-using GSqlQuery.Sqlite.Benchmark.Entities;
-using GSqlQuery.SqliteTest.Data;
+﻿using GSqlQuery.SqliteTest.Data;
 using Microsoft.Data.Sqlite;
 using System;
-using System.Linq;
 
 namespace GSqlQuery.Sqlite.Benchmark
 {
@@ -18,18 +15,15 @@ namespace GSqlQuery.Sqlite.Benchmark
 
         internal static void Create()
         {
-            var tables = SqliteSchema.Select(GetConnectionOptions()).Build().Execute();
-            if (tables != null && !tables.Any())
+            using (var connection = new SqliteConnection(ConnectionString))
             {
-                using (var connection = new SqliteConnection(ConnectionString))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (var createCommand = connection.CreateCommand())
-                    {
-                        createCommand.CommandText =
-                            @"
-                               CREATE TABLE ""test1"" (
+                using (var createCommand = connection.CreateCommand())
+                {
+                    createCommand.CommandText =
+                        @"
+                               CREATE TABLE IF NOT EXISTS ""test1"" (
 	                                ""idTest1""	NUMERIC NOT NULL,
 	                                ""Money""	TEXT,
 	                                ""Nombre""	TEXT,
@@ -37,11 +31,11 @@ namespace GSqlQuery.Sqlite.Benchmark
 	                                ""URL""	TEXT
                                 );
                             ";
-                        createCommand.ExecuteNonQuery();
+                    createCommand.ExecuteNonQuery();
 
-                        createCommand.CommandText =
-                            @"
-                               CREATE TABLE ""test2"" (
+                    createCommand.CommandText =
+                        @"
+                               CREATE TABLE IF NOT EXISTS ""test2"" (
 	                                ""Id""	INTEGER NOT NULL,
 	                                ""Money""	TEXT,
 	                                ""IsBool""	INTEGER,
@@ -49,12 +43,10 @@ namespace GSqlQuery.Sqlite.Benchmark
 	                                PRIMARY KEY(""Id"" AUTOINCREMENT)
                                 );
                             ";
-                        createCommand.ExecuteNonQuery();
-                    }
-
-                    connection.Close();
+                    createCommand.ExecuteNonQuery();
                 }
 
+                connection.Close();
             }
         }
 
