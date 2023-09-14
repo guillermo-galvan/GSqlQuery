@@ -8,17 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8F7DFF77-AB38-4EFE-AD8C-F1CF71009D20}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery", "src\GSqlQuery\GSqlQuery.csproj", "{397B5908-73C1-4043-947C-0C3F86E4D682}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Test", "test\GSqlQuery.Test\GSqlQuery.Test.csproj", "{41E7F04B-7D4C-49AF-AE02-4DF1E95DC7E8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Runner", "src\GSqlQuery.Runner\GSqlQuery.Runner.csproj", "{0145C1C6-A7DA-4527-B97D-912D3EB639B3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Runner.Test", "test\GSqlQuery.Runner.Test\GSqlQuery.Runner.Test.csproj", "{9934782D-7E6D-455D-96FF-8D90CB2EFE5C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmark", "Benchmark", "{AB1FA910-3AA7-4C0A-B570-D4A785E87000}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Benchmark", "benchmarks\GSqlQuery.Benchmark\GSqlQuery.Benchmark.csproj", "{923FF5FC-7C7D-401F-9E44-7922B62301C3}"
 EndProject
@@ -36,14 +28,6 @@ Global
 		{41E7F04B-7D4C-49AF-AE02-4DF1E95DC7E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41E7F04B-7D4C-49AF-AE02-4DF1E95DC7E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41E7F04B-7D4C-49AF-AE02-4DF1E95DC7E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0145C1C6-A7DA-4527-B97D-912D3EB639B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0145C1C6-A7DA-4527-B97D-912D3EB639B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0145C1C6-A7DA-4527-B97D-912D3EB639B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0145C1C6-A7DA-4527-B97D-912D3EB639B3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9934782D-7E6D-455D-96FF-8D90CB2EFE5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9934782D-7E6D-455D-96FF-8D90CB2EFE5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9934782D-7E6D-455D-96FF-8D90CB2EFE5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9934782D-7E6D-455D-96FF-8D90CB2EFE5C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{923FF5FC-7C7D-401F-9E44-7922B62301C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{923FF5FC-7C7D-401F-9E44-7922B62301C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{923FF5FC-7C7D-401F-9E44-7922B62301C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,11 +35,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{41E7F04B-7D4C-49AF-AE02-4DF1E95DC7E8} = {8F7DFF77-AB38-4EFE-AD8C-F1CF71009D20}
-		{9934782D-7E6D-455D-96FF-8D90CB2EFE5C} = {8F7DFF77-AB38-4EFE-AD8C-F1CF71009D20}
-		{923FF5FC-7C7D-401F-9E44-7922B62301C3} = {AB1FA910-3AA7-4C0A-B570-D4A785E87000}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D3D7192-9469-4D67-8805-449A56110CBA}
