@@ -7,7 +7,7 @@ namespace GSqlQuery
     /// Base class to generate the update query
     /// </summary>
     /// <typeparam name="T">The type of object from which the query is generated</typeparam>
-    public interface IUpdate<T> where T : class, new()
+    public interface IUpdate<T> where T : class
     {
         /// <summary>
         /// Generate the update query

@@ -4,7 +4,7 @@ using System.Linq;
 namespace GSqlQuery.Queries
 {
     internal abstract class CountQueryBuilder<T, TReturn, TOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : CountQuery<T>
         where TSelectQuery : SelectQuery<T>
     {
@@ -39,7 +39,7 @@ namespace GSqlQuery.Queries
         }
     }
 
-    internal class CountQueryBuilder<T> : CountQueryBuilder<T, CountQuery<T>, IStatements, SelectQuery<T>> where T : class, new()
+    internal class CountQueryBuilder<T> : CountQueryBuilder<T, CountQuery<T>, IStatements, SelectQuery<T>> where T : class
     {
         public CountQueryBuilder(IQueryBuilderWithWhere<SelectQuery<T>, IStatements> queryBuilder)
             : base(queryBuilder, queryBuilder.Options)

@@ -7,7 +7,7 @@ namespace GSqlQuery
     /// Insert Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class InsertQuery<T> : Query<T> where T : class, new()
+    public class InsertQuery<T> : Query<T> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the InsertQuery class.

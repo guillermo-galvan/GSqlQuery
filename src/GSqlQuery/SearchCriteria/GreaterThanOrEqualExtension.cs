@@ -17,7 +17,7 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> GreaterThanOrEqual<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class, new() where TReturn : IQuery<T>
+            TProperties value) where T : class where TReturn : IQuery<T>
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -35,7 +35,7 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndGreaterThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class, new() where TReturn : IQuery<T>
+            TProperties value) where T : class where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -53,7 +53,7 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrGreaterThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class, new() where TReturn : IQuery<T>
+            TProperties value) where T : class where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();

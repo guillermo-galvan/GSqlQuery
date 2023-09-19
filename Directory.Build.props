@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-	  <VersionPrefix>1.0.0-alpha</VersionPrefix>
+	  <VersionPrefix>1.0.0-alpha1</VersionPrefix>
 	  <VersionSuffix></VersionSuffix>
 	  <Authors>Guillermo Galván</Authors>
 	  <LangVersion>11</LangVersion>

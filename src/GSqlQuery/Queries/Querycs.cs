@@ -7,7 +7,7 @@ namespace GSqlQuery
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public abstract class Query<T> : QueryBase, IQuery<T> where T : class, new()
+    public abstract class Query<T> : QueryBase, IQuery<T> where T : class
     {
         private readonly ClassOptions _classOptions;
 

@@ -10,7 +10,7 @@ namespace GSqlQuery.Queries
     }
 
     internal abstract class OrderByQueryBuilder<T, TReturn, TOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn>, IOrderByQueryBuilder
-        where T : class, new()
+        where T : class
         where TReturn : OrderByQuery<T>
         where TSelectQuery : SelectQuery<T>
     {
@@ -75,7 +75,7 @@ namespace GSqlQuery.Queries
 
     internal class OrderByQueryBuilder<T> : OrderByQueryBuilder<T, OrderByQuery<T>, IStatements, SelectQuery<T>>,
         IQueryBuilder<OrderByQuery<T>, IStatements>
-        where T : class, new()
+        where T : class
     {
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
             IQueryBuilderWithWhere<T, SelectQuery<T>, IStatements> queryBuilder)

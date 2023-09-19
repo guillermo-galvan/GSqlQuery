@@ -83,9 +83,9 @@ namespace GSqlQuery.Queries
     internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions> : QueryBuilderWithCriteria<TJoin, TReturn>,
          IComparisonOperators<TJoin, TReturn, TOptions>,
          IAddJoinCriteria<JoinModel>
-         where T1 : class, new()
-         where T2 : class, new()
-         where TJoin : class, new()
+         where T1 : class
+         where T2 : class
+         where TJoin : class
          where TReturn : IQuery<TJoin>
     {
         protected readonly Queue<JoinInfo> _joinInfos;
@@ -134,10 +134,10 @@ namespace GSqlQuery.Queries
     internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, T3, TJoin, TReturn, TOptions> : JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions>,
         IComparisonOperators<TJoin, TReturn, TOptions>,
         IAddJoinCriteria<JoinModel>
-        where T1 : class, new()
-        where T2 : class, new()
-        where T3 : class, new()
-        where TJoin : class, new()
+        where T1 : class
+        where T2 : class
+        where T3 : class
+        where TJoin : class
         where TReturn : IQuery<TJoin>
     {
         public override IWhere<TJoin, TReturn> Where()

@@ -8,7 +8,7 @@ using System.Reflection;
 namespace GSqlQuery.Queries
 {
     internal abstract class UpdateQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : UpdateQuery<T>
     {
         private static ulong _idParam = 0;
@@ -135,7 +135,7 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
     internal class UpdateQueryBuilder<T> : UpdateQueryBuilder<T, UpdateQuery<T>>,
-        ISet<T, UpdateQuery<T>, IStatements> where T : class, new()
+        ISet<T, UpdateQuery<T>, IStatements> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the UpdateQueryBuilder class.

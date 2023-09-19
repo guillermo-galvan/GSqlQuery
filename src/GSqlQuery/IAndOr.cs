@@ -8,7 +8,7 @@ namespace GSqlQuery
     }
 
     public interface IAndOr<T, TReturn> : ISearchCriteriaBuilder<TReturn>, IBuilder<TReturn>, IAndOr<TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : IQuery<T>
     {
 

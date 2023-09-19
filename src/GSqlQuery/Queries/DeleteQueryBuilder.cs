@@ -3,7 +3,7 @@
 namespace GSqlQuery.Queries
 {
     internal abstract class DeleteQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : DeleteQuery<T>
     {
         public DeleteQueryBuilder(IStatements statements)
@@ -32,7 +32,7 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
     internal class DeleteQueryBuilder<T> : DeleteQueryBuilder<T, DeleteQuery<T>>
-        where T : class, new()
+        where T : class
     {
         /// <summary>
         /// Initializes a new instance of the DeleteQueryBuilder class.

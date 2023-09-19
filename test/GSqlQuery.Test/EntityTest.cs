@@ -98,7 +98,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_query(IStatements statements, string queryText)
         {
-            Test6 test = new Test6(1, null, DateTime.Now, true);
+            Test6 test = new Test6()
+            {
+                Ids = 1, Names = null, Creates = DateTime.Now, IsTests = true
+            };
             var query = test.Insert(statements).Build();
 
             Assert.NotNull(query);
@@ -140,7 +143,13 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_static_query(IStatements statements, string queryText)
         {
-            Test6 test = new Test6(1, null, DateTime.Now, true);
+            Test6 test = new Test6()
+            {
+                Ids = 1,
+                Names = null,
+                Creates = DateTime.Now,
+                IsTests = true
+            };
             var query = Test6.Insert(statements, test).Build();
 
             Assert.NotNull(query);

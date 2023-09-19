@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace GSqlQuery
 {
     public abstract class QueryBuilderBase<T, TReturn> : IBuilder<TReturn>, IQueryBuilder<TReturn, IStatements>
-        where T : class, new() where TReturn : IQuery<T>
+        where T : class where TReturn : IQuery<T>
     {
         private readonly IStatements _statements;
         protected readonly string _tableName;

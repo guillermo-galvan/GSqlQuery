@@ -22,7 +22,7 @@ namespace GSqlQuery.Test.Queries
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-            _test1 = new Test1();
+            _test1 = new Test1(1, "name", DateTime.Now, true);
         }
 
         [Fact]

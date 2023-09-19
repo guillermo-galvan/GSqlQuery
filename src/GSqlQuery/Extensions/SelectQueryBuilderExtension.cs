@@ -11,7 +11,7 @@ namespace GSqlQuery
     public static class SelectQueryBuilderExtension
     {
         public static IQueryBuilderWithWhere<T, CountQuery<T>, IStatements> Count<T>(this IQueryBuilderWithWhere<T, SelectQuery<T>, IStatements> queryBuilder)
-            where T : class, new()
+            where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             return new CountQueryBuilder<T>(queryBuilder);
@@ -19,7 +19,7 @@ namespace GSqlQuery
 
         public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
             (this IQueryBuilderWithWhere<T, SelectQuery<T>, IStatements> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
-            where T : class, new()
+            where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -29,7 +29,7 @@ namespace GSqlQuery
 
         public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
             (this IAndOr<T, SelectQuery<T>> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
-            where T : class, new()
+            where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -39,7 +39,7 @@ namespace GSqlQuery
 
         public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
             (this IQueryBuilder<OrderByQuery<T>, IStatements> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
-            where T : class, new()
+            where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -59,7 +59,7 @@ namespace GSqlQuery
 
         public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
             (this IQueryBuilderWithWhere<T, JoinQuery<T>, IStatements> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
-            where T : class, new()
+            where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -69,7 +69,7 @@ namespace GSqlQuery
 
         public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
             (this IAndOr<T, JoinQuery<T>> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
-            where T : class, new()
+            where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();

@@ -8,7 +8,7 @@ using System.Reflection;
 namespace GSqlQuery.Queries
 {
     internal abstract class SelectQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : SelectQuery<T>
     {
 
@@ -45,7 +45,7 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
     internal class SelectQueryBuilder<T> : SelectQueryBuilder<T, SelectQuery<T>>,
-        IJoinQueryBuilder<T, SelectQuery<T>, IStatements> where T : class, new()
+        IJoinQueryBuilder<T, SelectQuery<T>, IStatements> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the SelectQueryBuilder class.
@@ -67,23 +67,23 @@ namespace GSqlQuery.Queries
             return new SelectQuery<T>(CreateQuery(Options), Columns, _criteria, Options);
         }
 
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> InnerJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> InnerJoin<TJoin>() where TJoin : class
         {
             return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Inner, Options);
         }
 
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> LeftJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> LeftJoin<TJoin>() where TJoin : class
         {
             return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Left, Options);
         }
 
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> RightJoin<TJoin>() where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> RightJoin<TJoin>() where TJoin : class
         {
             return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Right, Options);
         }
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
-            where TJoin : class, new()
+            where TJoin : class
         {
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
             options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
@@ -93,17 +93,17 @@ namespace GSqlQuery.Queries
         }
 
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
-            where TJoin : class, new()
+            where TJoin : class
         {
             return Join(JoinType.Inner, expression);
         }
 
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
         {
             return Join(JoinType.Left, expression);
         }
 
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class, new()
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IStatements> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
         {
             return Join(JoinType.Right, expression);
         }

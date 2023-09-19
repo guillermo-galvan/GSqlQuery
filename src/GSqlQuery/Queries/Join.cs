@@ -1,6 +1,6 @@
 ﻿namespace GSqlQuery
 {
-    public class Join<T1, T2> where T1 : class, new() where T2 : class, new()
+    public class Join<T1, T2> where T1 : class where T2 : class
     {
         public T1 Table1 { get; set; }
 
@@ -17,7 +17,7 @@
     }
 
     public class Join<T1, T2, T3> : Join<T1, T2>
-        where T1 : class, new() where T2 : class, new() where T3 : class, new()
+        where T1 : class where T2 : class where T3 : class
     {
         public T3 Table3 { get; set; }
 

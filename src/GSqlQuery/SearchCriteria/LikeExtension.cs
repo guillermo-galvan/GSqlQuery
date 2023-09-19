@@ -17,7 +17,7 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> Like<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, string value)
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class where TReturn : IQuery<T>
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -35,7 +35,7 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, string value)
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -53,7 +53,7 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, string value)
-            where T : class, new() where TReturn : IQuery<T>
+            where T : class where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();

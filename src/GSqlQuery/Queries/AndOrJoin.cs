@@ -4,9 +4,9 @@ using System.Linq;
 namespace GSqlQuery.Queries
 {
     internal class AndOrJoin<T1, T2, TJoin, TReturn, TOptions> : AndOrBase<TJoin, TReturn, TOptions>
-        where T1 : class, new()
-        where T2 : class, new()
-        where TJoin : class, new()
+        where T1 : class
+        where T2 : class
+        where TJoin : class
         where TReturn : IQuery<TJoin>
     {
         public AndOrJoin(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere) :
@@ -28,10 +28,10 @@ namespace GSqlQuery.Queries
     }
 
     internal class AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions> : AndOrBase<TJoin, TReturn, TOptions>
-        where T1 : class, new()
-        where T2 : class, new()
-        where T3 : class, new()
-        where TJoin : class, new()
+        where T1 : class
+        where T2 : class
+        where T3 : class
+        where TJoin : class
         where TReturn : IQuery<TJoin>
     {
         public AndOrJoin(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere)

@@ -8,7 +8,7 @@ namespace GSqlQuery
 {
     public class AndOrBase<T, TReturn, TOptions> : WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
         where TReturn : IQuery<T>
-        where T : class, new()
+        where T : class
     {
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
         internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere;

@@ -2,7 +2,7 @@
 
 namespace GSqlQuery
 {
-    public class JoinQuery<T> : SelectQuery<T> where T : class, new()
+    public class JoinQuery<T> : SelectQuery<T> where T : class
     {
         internal JoinQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
             base(text, columns, criteria, statements)

@@ -5,7 +5,7 @@
     }
 
     public interface IWhere<T, TReturn> : IWhere<TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : IQuery<T>
     {
 

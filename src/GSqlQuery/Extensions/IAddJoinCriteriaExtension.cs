@@ -11,8 +11,8 @@ namespace GSqlQuery.Extensions
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             JoinCriteriaType joinCriteriaEnum,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
         {
 
             joinCriteria.AddColumns(new JoinModel
@@ -29,9 +29,9 @@ namespace GSqlQuery.Extensions
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             JoinCriteriaType joinCriteriaEnum,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
         {
 
             joinCriteria.AddColumns(new JoinModel

@@ -95,8 +95,8 @@ namespace GSqlQuery.Extensions
         }
 
         internal static JoinCriteriaPart GetJoinColumn<T1, T2, TProperties>(this Expression<Func<Join<T1, T2>, TProperties>> expression)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
             MemberInfo memberInfos = expression.GetMember();
@@ -112,9 +112,9 @@ namespace GSqlQuery.Extensions
         }
 
         internal static JoinCriteriaPart GetJoinColumn<T1, T2, T3, TProperties>(this Expression<Func<Join<T1, T2, T3>, TProperties>> expression)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
             MemberInfo memberInfos = expression.GetMember();

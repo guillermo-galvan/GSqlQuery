@@ -87,14 +87,4 @@
 
         string GetColumnName(string tableName, ColumnAttribute column, QueryType queryType);
     }
-
-    public enum QueryType
-    {
-        Create,
-        Read,
-        Update, 
-        Delete,
-        Criteria,
-        Join,
-    }
 }

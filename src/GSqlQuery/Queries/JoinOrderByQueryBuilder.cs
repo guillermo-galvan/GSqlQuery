@@ -11,7 +11,7 @@ namespace GSqlQuery.Queries
     }
 
     internal abstract class JoinOrderByQueryBuilder<T, TReturn, TOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn>, IJoinOrderByQueryBuilder
-        where T : class, new()
+        where T : class
         where TReturn : OrderByQuery<T>
         where TSelectQuery : JoinQuery<T>
     {
@@ -89,7 +89,7 @@ namespace GSqlQuery.Queries
     }
 
     internal class JoinOrderByQueryBuilder<T> : JoinOrderByQueryBuilder<T, OrderByQuery<T>, IStatements, JoinQuery<T>>
-        where T : class, new()
+        where T : class
     {
         public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
             IQueryBuilderWithWhere<T, JoinQuery<T>, IStatements> queryBuilder)

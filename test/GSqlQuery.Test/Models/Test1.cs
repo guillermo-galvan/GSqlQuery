@@ -12,9 +12,6 @@ namespace GSqlQuery.Test.Models
 
         public bool IsTest { get; set; }
 
-        public Test1()
-        { }
-
         public Test1(int id, string name, DateTime create, bool isTest)
         {
             Id = id;

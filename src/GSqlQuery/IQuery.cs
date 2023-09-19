@@ -25,7 +25,7 @@ namespace GSqlQuery
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public interface IQuery<T> : IQuery where T : class, new()
+    public interface IQuery<T> : IQuery where T : class
     {
         /// <summary>
         /// Options to use in the query

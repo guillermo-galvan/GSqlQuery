@@ -11,8 +11,8 @@ namespace GSqlQuery
         internal static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions>
             AddColumn<T1, T2, TReturn, TOptions, TProperties>(IComparisonOperators<Join<T1, T2>, TReturn, TOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
             if (joinQueryBuilderWith is IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinBuilder)
@@ -27,8 +27,8 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2>, TReturn, TOptions> comparisonOperators,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
             return AddColumn(comparisonOperators, field1, JoinCriteriaType.Equal, field2);
@@ -38,8 +38,8 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2>, TReturn, TOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.NotEqual, field2);
@@ -49,8 +49,8 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2>, TReturn, TOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.GreaterThan, field2);
@@ -60,8 +60,8 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2>, TReturn, TOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.LessThan, field2);
@@ -71,8 +71,8 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2>, TReturn, TOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.GreaterThanOrEqual, field2);
@@ -82,8 +82,8 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2>, TReturn, TOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
+            where T1 : class
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.LessThanOrEqual, field2);
@@ -95,9 +95,9 @@ namespace GSqlQuery
         internal static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions>
             AddColumn<T1, T2, T3, TReturn, TOptions, TProperties>(IComparisonOperators<Join<T1, T2, T3>, TReturn, TOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
             if (joinQueryBuilderWith is IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinBuilder)
@@ -112,9 +112,9 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2, T3>, TReturn, TOptions> joinQueryBuilderWith,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.Equal, field2);
@@ -124,9 +124,9 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2, T3>, TReturn, TOptions> joinQueryBuilderWith,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.NotEqual, field2);
@@ -136,9 +136,9 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2, T3>, TReturn, TOptions> joinQueryBuilderWith,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.GreaterThan, field2);
@@ -148,9 +148,9 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2, T3>, TReturn, TOptions> joinQueryBuilderWith,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.LessThan, field2);
@@ -160,9 +160,9 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2, T3>, TReturn, TOptions> joinQueryBuilderWith,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.GreaterThanOrEqual, field2);
@@ -172,9 +172,9 @@ namespace GSqlQuery
             (this IComparisonOperators<Join<T1, T2, T3>, TReturn, TOptions> joinQueryBuilderWith,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
              Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
-            where T1 : class, new()
-            where T2 : class, new()
-            where T3 : class, new()
+            where T1 : class
+            where T2 : class
+            where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
             return AddColumn(joinQueryBuilderWith, field1, JoinCriteriaType.LessThanOrEqual, field2);

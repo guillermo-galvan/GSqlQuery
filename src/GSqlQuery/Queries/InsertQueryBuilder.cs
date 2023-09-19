@@ -6,7 +6,7 @@ using System.Linq;
 namespace GSqlQuery.Queries
 {
     internal abstract class InsertQueryBuilder<T, TReturn> : QueryBuilderBase<T, TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : InsertQuery<T>
     {
         private static ulong _idParam = 0;
@@ -44,7 +44,7 @@ namespace GSqlQuery.Queries
     }
 
     internal class InsertQueryBuilder<T> : InsertQueryBuilder<T, InsertQuery<T>>
-        where T : class, new()
+        where T : class
     {
         public InsertQueryBuilder(IStatements statements, object entity)
              : base(statements, entity)

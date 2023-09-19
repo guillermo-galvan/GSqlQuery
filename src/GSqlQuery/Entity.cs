@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace GSqlQuery
 {
-    public abstract class Entity<T> : ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T> where T : class, new()
+    public abstract class Entity<T> : ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T> where T : class
     {
         public static IJoinQueryBuilder<T, SelectQuery<T>, IStatements> Select<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
         {

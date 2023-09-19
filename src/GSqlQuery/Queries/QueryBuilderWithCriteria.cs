@@ -5,7 +5,7 @@ namespace GSqlQuery
 {
     public abstract class QueryBuilderWithCriteria<T, TReturn> : QueryBuilderBase<T, TReturn>, IQueryBuilderWithWhere<TReturn, IStatements>,
         IQueryBuilderWithWhere<T, TReturn, IStatements>
-        where T : class, new()
+        where T : class
         where TReturn : IQuery<T>
     {
         protected IEnumerable<CriteriaDetail> _criteria = null;
