@@ -10,7 +10,7 @@ namespace GSqlQuery
 {
     public abstract class Entity<T> : ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T> where T : class
     {
-        public static IJoinQueryBuilder<T, SelectQuery<T>, IStatements> Select<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
+        public static IJoinQueryBuilder<T, SelectQuery<T>, IFormats> Select<TProperties>(IFormats statements, Expression<Func<T, TProperties>> expression)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -18,27 +18,27 @@ namespace GSqlQuery
             return new SelectQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), statements);
         }
 
-        public static IJoinQueryBuilder<T, SelectQuery<T>, IStatements> Select(IStatements statements)
+        public static IJoinQueryBuilder<T, SelectQuery<T>, IFormats> Select(IFormats statements)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             return new SelectQueryBuilder<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions.Select(x => x.PropertyInfo.Name), statements);
         }
 
 
-        public IQueryBuilder<InsertQuery<T>, IStatements> Insert(IStatements statements)
+        public IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats statements)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             return new InsertQueryBuilder<T>(statements, this);
         }
 
-        public static IQueryBuilder<InsertQuery<T>, IStatements> Insert(IStatements statements, T entity)
+        public static IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats statements, T entity)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             entity.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(entity));
             return new InsertQueryBuilder<T>(statements, entity);
         }
 
-        public static ISet<T, UpdateQuery<T>, IStatements> Update<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression, TProperties value)
+        public static ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats statements, Expression<Func<T, TProperties>> expression, TProperties value)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
@@ -53,7 +53,7 @@ namespace GSqlQuery
         /// <param name="key">The name of the statement collection</param>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T, UpdateQuery<T>, IStatements> Update<TProperties>(IStatements statements, Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats statements, Expression<Func<T, TProperties>> expression)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
@@ -61,7 +61,7 @@ namespace GSqlQuery
             return new UpdateQueryBuilder<T>(statements, this, options.MemberInfo.Select(x => x.Name));
         }
 
-        public static IQueryBuilderWithWhere<T, DeleteQuery<T>, IStatements> Delete(IStatements statements)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>, IFormats> Delete(IFormats statements)
         {
             statements.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(statements));
             return new DeleteQueryBuilder<T>(statements);

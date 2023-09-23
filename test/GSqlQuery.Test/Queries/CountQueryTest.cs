@@ -11,7 +11,7 @@ namespace GSqlQuery.Test.Queries
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
         private readonly Equal<int> _equal;
-        private readonly IStatements _statements;
+        private readonly IFormats _statements;
         private readonly ClassOptions _classOptions;
 
         public CountQueryTest()
@@ -20,7 +20,7 @@ namespace GSqlQuery.Test.Queries
             _columnAttribute = _classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
             _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-            _statements = new Statements();
+            _statements = new DefaultFormats();
         }
 
         [Fact]

@@ -10,13 +10,13 @@ namespace GSqlQuery.Queries
     {
         protected readonly IQueryBuilder<TSelectQuery, TOptions> _queryBuilder;
 
-        public CountQueryBuilder(IQueryBuilderWithWhere<TSelectQuery, TOptions> queryBuilder, IStatements statements) : base(statements)
+        public CountQueryBuilder(IQueryBuilderWithWhere<TSelectQuery, TOptions> queryBuilder, IFormats statements) : base(statements)
         {
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
         }
 
-        internal string CreateQuery(IStatements statements)
+        internal string CreateQuery(IFormats statements)
         {
             string result = string.Empty;
             var selectQuery = _queryBuilder.Build();
@@ -24,13 +24,13 @@ namespace GSqlQuery.Queries
 
             if (_andOr == null)
             {
-                result = string.Format(statements.Select,
+                result = string.Format(ConstFormat.SELECT,
                     $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read)))})",
                     _tableName);
             }
             else
             {
-                result = string.Format(statements.SelectWhere,
+                result = string.Format(ConstFormat.SELECTWHERE,
                     $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read)))})",
                     _tableName, GetCriteria());
             }
@@ -39,9 +39,9 @@ namespace GSqlQuery.Queries
         }
     }
 
-    internal class CountQueryBuilder<T> : CountQueryBuilder<T, CountQuery<T>, IStatements, SelectQuery<T>> where T : class
+    internal class CountQueryBuilder<T> : CountQueryBuilder<T, CountQuery<T>, IFormats, SelectQuery<T>> where T : class
     {
-        public CountQueryBuilder(IQueryBuilderWithWhere<SelectQuery<T>, IStatements> queryBuilder)
+        public CountQueryBuilder(IQueryBuilderWithWhere<SelectQuery<T>, IFormats> queryBuilder)
             : base(queryBuilder, queryBuilder.Options)
         { }
 

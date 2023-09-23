@@ -19,7 +19,7 @@ namespace GSqlQuery.Queries
         protected readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
 
         protected OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, TSelectQuery, TOptions> queryBuilder, IStatements statements) : base(statements)
+            IQueryBuilderWithWhere<T, TSelectQuery, TOptions> queryBuilder, IFormats statements) : base(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
@@ -29,7 +29,7 @@ namespace GSqlQuery.Queries
         }
 
         protected OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-           IAndOr<T, TSelectQuery> andOr, IStatements statements) : base(statements)
+           IAndOr<T, TSelectQuery> andOr, IFormats statements) : base(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
@@ -44,7 +44,7 @@ namespace GSqlQuery.Queries
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember), orderBy));
         }
 
-        internal string CreateQuery(IStatements statements, out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(IFormats statements, out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria)
         {
             TSelectQuery selectQuery = _queryBuilder == null ? _andorBuilder.Build() : _queryBuilder.Build();
             string columnsOrderby =
@@ -57,14 +57,14 @@ namespace GSqlQuery.Queries
 
             if (selectQuery.Criteria == null || !selectQuery.Criteria.Any())
             {
-                result = string.Format(statements.SelectOrderBy,
+                result = string.Format(ConstFormat.SELECTORDERBY,
                      string.Join(",", columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read))),
                      _tableName,
                      columnsOrderby);
             }
             else
             {
-                result = string.Format(statements.SelectWhereOrderBy,
+                result = string.Format(ConstFormat.SELECTWHEREORDERBY,
                      string.Join(",", columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Read))),
                      _tableName, string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)), columnsOrderby);
             }
@@ -73,17 +73,17 @@ namespace GSqlQuery.Queries
         }
     }
 
-    internal class OrderByQueryBuilder<T> : OrderByQueryBuilder<T, OrderByQuery<T>, IStatements, SelectQuery<T>>,
-        IQueryBuilder<OrderByQuery<T>, IStatements>
+    internal class OrderByQueryBuilder<T> : OrderByQueryBuilder<T, OrderByQuery<T>, IFormats, SelectQuery<T>>,
+        IQueryBuilder<OrderByQuery<T>, IFormats>
         where T : class
     {
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, SelectQuery<T>, IStatements> queryBuilder)
+            IQueryBuilderWithWhere<T, SelectQuery<T>, IFormats> queryBuilder)
             : base(selectMember, orderBy, queryBuilder, queryBuilder.Options)
         { }
 
         public OrderByQueryBuilder(IEnumerable<string> selectMember, OrderBy orderBy,
-           IAndOr<T, SelectQuery<T>> andOr, IStatements statements)
+           IAndOr<T, SelectQuery<T>> andOr, IFormats statements)
            : base(selectMember, orderBy, andOr, statements)
         { }
 

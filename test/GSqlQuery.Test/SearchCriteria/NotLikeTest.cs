@@ -12,13 +12,13 @@ namespace GSqlQuery.Test.SearchCriteria
     {
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
-        private readonly IStatements _statements;
+        private readonly IFormats _statements;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
 
         public NotLikeTest()
         {
-            _statements = new Statements();
+            _statements = new DefaultFormats();
             _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 _statements);
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
@@ -82,7 +82,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
             var andOr = where.NotLike(x => x.Id, "ds");
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Options);
@@ -94,7 +94,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
             var andOr = where.NotLike(x => x.Id, "1256").AndNotLike(x => x.IsTest, "1");
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Options);
@@ -106,7 +106,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
             var andOr = where.NotLike(x => x.Id, "1256").OrNotLike(x => x.IsTest, "45981");
             Assert.NotNull(andOr);
             var result = andOr.BuildCriteria(_queryBuilder.Options);

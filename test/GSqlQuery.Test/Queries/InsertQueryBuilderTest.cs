@@ -7,11 +7,11 @@ namespace GSqlQuery.Test.Queries
 {
     public class InsertQueryBuilderTest
     {
-        private readonly IStatements _statements;
+        private readonly IFormats _statements;
 
         public InsertQueryBuilderTest()
         {
-            _statements = new Statements();
+            _statements = new DefaultFormats();
         }
 
         [Fact]

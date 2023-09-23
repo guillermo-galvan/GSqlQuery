@@ -2,7 +2,7 @@
 {
     public static class TableAttributeExtension
     {
-        public static string GetTableName(this TableAttribute tableAttribute, IStatements statements)
+        public static string GetTableName(this TableAttribute tableAttribute, IFormats statements)
         {
             tableAttribute.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableAttribute));
             statements.NullValidate(ErrorMessages.ParameterNotNull, nameof(statements));

@@ -30,6 +30,6 @@ namespace GSqlQuery
         /// <summary>
         /// Options to use in the query
         /// </summary>
-        IStatements Statements { get; }
+        IFormats Statements { get; }
     }
 }

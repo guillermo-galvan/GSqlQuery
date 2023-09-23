@@ -1,6 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery
 {
@@ -21,7 +22,7 @@ namespace GSqlQuery
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));
             text.NullValidate("", nameof(text));
             _text = text;
-            _criteria = criteria;
+            _criteria = criteria ?? Enumerable.Empty<CriteriaDetail>();
         }
     }
 }

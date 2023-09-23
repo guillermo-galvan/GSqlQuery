@@ -9,11 +9,11 @@ namespace GSqlQuery.Test.Queries
 {
     public class CountQueryBuilderTest
     {
-        private readonly IStatements _stantements;
+        private readonly IFormats _stantements;
 
         public CountQueryBuilderTest()
         {
-            _stantements = new Statements();
+            _stantements = new DefaultFormats();
         }
 
         [Fact]
@@ -59,7 +59,8 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Statements);
-            Assert.Null(query.Criteria);
+            Assert.NotNull(query.Criteria);
+            Assert.Empty(query.Criteria);
         }
     }
 }

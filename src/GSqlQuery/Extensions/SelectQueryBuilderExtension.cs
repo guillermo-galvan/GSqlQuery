@@ -10,15 +10,15 @@ namespace GSqlQuery
 {
     public static class SelectQueryBuilderExtension
     {
-        public static IQueryBuilderWithWhere<T, CountQuery<T>, IStatements> Count<T>(this IQueryBuilderWithWhere<T, SelectQuery<T>, IStatements> queryBuilder)
+        public static IQueryBuilderWithWhere<T, CountQuery<T>, IFormats> Count<T>(this IQueryBuilderWithWhere<T, SelectQuery<T>, IFormats> queryBuilder)
             where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
             return new CountQueryBuilder<T>(queryBuilder);
         }
 
-        public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
-            (this IQueryBuilderWithWhere<T, SelectQuery<T>, IStatements> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
+        public static IQueryBuilder<OrderByQuery<T>, IFormats> OrderBy<T, TProperties>
+            (this IQueryBuilderWithWhere<T, SelectQuery<T>, IFormats> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
@@ -27,7 +27,7 @@ namespace GSqlQuery
             return new OrderByQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder);
         }
 
-        public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
+        public static IQueryBuilder<OrderByQuery<T>, IFormats> OrderBy<T, TProperties>
             (this IAndOr<T, SelectQuery<T>> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class
         {
@@ -37,8 +37,8 @@ namespace GSqlQuery
             return new OrderByQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), orderBy, queryBuilder, queryBuilder.Build().Statements);
         }
 
-        public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
-            (this IQueryBuilder<OrderByQuery<T>, IStatements> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
+        public static IQueryBuilder<OrderByQuery<T>, IFormats> OrderBy<T, TProperties>
+            (this IQueryBuilder<OrderByQuery<T>, IFormats> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
@@ -57,8 +57,8 @@ namespace GSqlQuery
             return queryBuilder;
         }
 
-        public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
-            (this IQueryBuilderWithWhere<T, JoinQuery<T>, IStatements> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
+        public static IQueryBuilder<OrderByQuery<T>, IFormats> OrderBy<T, TProperties>
+            (this IQueryBuilderWithWhere<T, JoinQuery<T>, IFormats> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class
         {
             queryBuilder.NullValidate(ErrorMessages.ParameterNotNull, nameof(queryBuilder));
@@ -67,7 +67,7 @@ namespace GSqlQuery
             return new JoinOrderByQueryBuilder<T>(options, orderBy, queryBuilder);
         }
 
-        public static IQueryBuilder<OrderByQuery<T>, IStatements> OrderBy<T, TProperties>
+        public static IQueryBuilder<OrderByQuery<T>, IFormats> OrderBy<T, TProperties>
             (this IAndOr<T, JoinQuery<T>> queryBuilder, Expression<Func<T, TProperties>> expression, OrderBy orderBy)
             where T : class
         {

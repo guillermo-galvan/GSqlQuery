@@ -9,7 +9,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"INSERT INTO Test3 (Test3.Name,Test3.Create,Test3.IsTests) VALUES (@Param,@Param,@Param); "
+                new DefaultFormats(),"INSERT INTO Test3 (Test3.Name,Test3.Create,Test3.IsTests) VALUES (@Param,@Param,@Param); "
             };
 
             yield return new object[]
@@ -27,7 +27,7 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);"
+                new DefaultFormats(),"INSERT INTO TableName (TableName.Id,TableName.Name,TableName.Create,TableName.IsTests) VALUES (@Param,@Param,@Param,@Param);"
             };
 
             yield return new object[]

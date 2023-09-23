@@ -9,12 +9,12 @@ namespace GSqlQuery.Test.Queries
     public class UpdateQueryBuilderTest
     {
         private readonly List<string> _columnsValue;
-        private readonly IStatements _statements;
+        private readonly IFormats _statements;
 
         public UpdateQueryBuilderTest()
         {
             _columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
-            _statements = new Statements();
+            _statements = new DefaultFormats();
         }
 
         [Fact]

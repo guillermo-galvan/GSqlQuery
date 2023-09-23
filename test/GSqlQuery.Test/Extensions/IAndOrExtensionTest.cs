@@ -13,13 +13,13 @@ namespace GSqlQuery.Test.Extensions
         public IAndOrExtensionTest()
         {
             _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-               new Statements());
+               new DefaultFormats());
         }
 
         [Fact]
         public void Should_return_the_criteria()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IStatements> where = new AndOrBase<Test1, SelectQuery<Test1>, IStatements>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
             IEnumerable<CriteriaDetail> criterias = null;
             var andOr = where.Equal(x => x.Id, 1);
             string result = andOr.GetCliteria(_queryBuilder.Options, ref criterias);

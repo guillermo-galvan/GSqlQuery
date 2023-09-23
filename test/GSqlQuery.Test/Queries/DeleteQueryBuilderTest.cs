@@ -7,11 +7,11 @@ namespace GSqlQuery.Test.Queries
 {
     public class DeleteQueryBuilderTest
     {
-        private readonly IStatements _statements;
+        private readonly IFormats _statements;
 
         public DeleteQueryBuilderTest()
         {
-            _statements = new Statements();
+            _statements = new DefaultFormats();
         }
 
         [Fact]
@@ -49,7 +49,8 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Statements);
-            Assert.Null(query.Criteria);
+            Assert.NotNull(query.Criteria);
+            Assert.Empty(query.Criteria);
         }
     }
 }

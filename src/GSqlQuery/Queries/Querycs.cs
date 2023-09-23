@@ -11,7 +11,7 @@ namespace GSqlQuery
     {
         private readonly ClassOptions _classOptions;
 
-        public IStatements Statements { get; }
+        public IFormats Statements { get; }
 
         protected virtual ClassOptions GetClassOptions()
         {
@@ -26,7 +26,7 @@ namespace GSqlQuery
         /// <param name="statements">Statements to use in the query</param>
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        public Query(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats statements) :
             base(text, columns, criteria)
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));

@@ -20,7 +20,7 @@ namespace GSqlQuery.Queries
         protected readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
 
         public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, TSelectQuery, TOptions> queryBuilder, IStatements statements)
+            IQueryBuilderWithWhere<T, TSelectQuery, TOptions> queryBuilder, IFormats statements)
             : base(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
@@ -31,7 +31,7 @@ namespace GSqlQuery.Queries
         }
 
         public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
-           IAndOr<T, TSelectQuery> andOr, IStatements statements)
+           IAndOr<T, TSelectQuery> andOr, IFormats statements)
            : base(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
@@ -41,7 +41,7 @@ namespace GSqlQuery.Queries
             Columns = Enumerable.Empty<PropertyOptions>();
         }
 
-        internal string CreateQuery(IStatements statements, out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(IFormats statements, out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria)
         {
             IAddJoinCriteria<JoinModel> addJoinCriteria = null;
 
@@ -70,11 +70,11 @@ namespace GSqlQuery.Queries
 
             if (_andorBuilder == null)
             {
-                result = string.Format(statements.JoinSelectOrderBy, string.Join(",", joinColumns), tableMain.ClassOptions.Table.GetTableName(statements), string.Join(" ", JoinQuerys), columnsOrderby);
+                result = string.Format(ConstFormat.JOINSELECTORDERBY, string.Join(",", joinColumns), tableMain.ClassOptions.Table.GetTableName(statements), string.Join(" ", JoinQuerys), columnsOrderby);
             }
             else
             {
-                result = string.Format(statements.JoinSelectWhereOrderBy, string.Join(",", joinColumns), tableMain.ClassOptions.Table.GetTableName(statements), string.Join(" ", JoinQuerys),
+                result = string.Format(ConstFormat.JOINSELECTWHEREORDERBY, string.Join(",", joinColumns), tableMain.ClassOptions.Table.GetTableName(statements), string.Join(" ", JoinQuerys),
                     string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart)), columnsOrderby);
             }
 
@@ -88,16 +88,16 @@ namespace GSqlQuery.Queries
         }
     }
 
-    internal class JoinOrderByQueryBuilder<T> : JoinOrderByQueryBuilder<T, OrderByQuery<T>, IStatements, JoinQuery<T>>
+    internal class JoinOrderByQueryBuilder<T> : JoinOrderByQueryBuilder<T, OrderByQuery<T>, IFormats, JoinQuery<T>>
         where T : class
     {
         public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, JoinQuery<T>, IStatements> queryBuilder)
+            IQueryBuilderWithWhere<T, JoinQuery<T>, IFormats> queryBuilder)
             : base(selectMember, orderBy, queryBuilder, queryBuilder.Options)
         { }
 
         public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
-           IAndOr<T, JoinQuery<T>> andOr, IStatements statements)
+           IAndOr<T, JoinQuery<T>> andOr, IFormats statements)
            : base(selectMember, orderBy, andOr, statements)
         { }
 

@@ -2,7 +2,7 @@
 
 namespace GSqlQuery.Test.Models
 {
-    internal class Test1
+    internal record Test1
     {
         public int Id { get; set; }
 

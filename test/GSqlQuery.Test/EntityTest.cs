@@ -8,11 +8,11 @@ namespace GSqlQuery.Test
 {
     public class EntityTest
     {
-        private readonly IStatements _stantements;
+        private readonly IFormats _stantements;
 
         public EntityTest()
         {
-            _stantements = new Statements();
+            _stantements = new DefaultFormats();
         }
 
         [Fact]
@@ -35,9 +35,9 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Select_Test3_TestData))]
-        public void Retrieve_all_properties_of_the_query(IStatements statements, string query)
+        public void Retrieve_all_properties_of_the_query(IFormats statements, string query)
         {
-            IQueryBuilderWithWhere<SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements);
+            IQueryBuilderWithWhere<SelectQuery<Test3>, IFormats> queryBuilder = Test3.Select(statements);
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);
@@ -45,9 +45,9 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Select_Test3_TestData2))]
-        public void Retrieve_some_properties_from_the_query(IStatements statements, string query)
+        public void Retrieve_some_properties_from_the_query(IFormats statements, string query)
         {
-            IQueryBuilderWithWhere<SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilderWithWhere<SelectQuery<Test3>, IFormats> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
             Assert.NotNull(queryBuilder);
             Assert.NotEmpty(queryBuilder.Build().Text);
             Assert.Equal(query, queryBuilder.Build().Text);
@@ -55,7 +55,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Select_Test3_TestData3))]
-        public void Should_return_the_query_with_where(IStatements statements, string queryText)
+        public void Should_return_the_query_with_where(IFormats statements, string queryText)
         {
             var query = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
             Assert.NotNull(query);
@@ -75,7 +75,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Insert_Test3_TestData))]
-        public void Should_generate_the_insert_query_with_auto_incrementing(IStatements statements, string queryText)
+        public void Should_generate_the_insert_query_with_auto_incrementing(IFormats statements, string queryText)
         {
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Insert(statements).Build();
@@ -96,7 +96,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Insert_Test6_TestData))]
-        public void Should_generate_the_insert_query(IStatements statements, string queryText)
+        public void Should_generate_the_insert_query(IFormats statements, string queryText)
         {
             Test6 test = new Test6()
             {
@@ -120,7 +120,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Insert_Test3_TestData))]
-        public void Should_generate_the_insert_static_query_with_auto_incrementing(IStatements statements, string queryText)
+        public void Should_generate_the_insert_static_query_with_auto_incrementing(IFormats statements, string queryText)
         {
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = Test3.Insert(statements, test).Build();
@@ -141,7 +141,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Insert_Test6_TestData))]
-        public void Should_generate_the_insert_static_query(IStatements statements, string queryText)
+        public void Should_generate_the_insert_static_query(IFormats statements, string queryText)
         {
             Test6 test = new Test6()
             {
@@ -168,7 +168,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Update_Test3_TestData))]
-        public void Should_generate_the_update_query(IStatements statements, string queryText)
+        public void Should_generate_the_update_query(IFormats statements, string queryText)
         {
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(statements, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests).Build();
@@ -189,7 +189,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Update_Test3_TestData2))]
-        public void Should_generate_the_update_query_with_where(IStatements statements, string queryText)
+        public void Should_generate_the_update_query_with_where(IFormats statements, string queryText)
         {
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(statements, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests)
@@ -211,7 +211,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Update_Test3_TestData))]
-        public void Should_generate_the_static_update_query(IStatements statements, string queryText)
+        public void Should_generate_the_static_update_query(IFormats statements, string queryText)
         {
             var query = Test3.Update(statements, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false).Build();
 
@@ -231,7 +231,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Update_Test3_TestData2))]
-        public void Should_generate_the_static_update_query_with_where(IStatements statements, string queryText)
+        public void Should_generate_the_static_update_query_with_where(IFormats statements, string queryText)
         {
             var query = Test3.Update(statements, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
@@ -252,7 +252,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Delete_Test3_TestData))]
-        public void Should_generate_the_delete_query(IStatements statements, string queryText)
+        public void Should_generate_the_delete_query(IFormats statements, string queryText)
         {
             var query = Test3.Delete(statements).Build();
 
@@ -263,7 +263,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Delete_Test3_TestData2))]
-        public void Should_generate_the_delete_where_query(IStatements statements, string queryText)
+        public void Should_generate_the_delete_where_query(IFormats statements, string queryText)
         {
             var query = Test3.Delete(statements).Where().Equal(x => x.IsTests, true).AndIsNotNull(x => x.Creates).Build();
 
@@ -286,10 +286,10 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Count_Test3_TestData))]
-        public void Should_generate_the_count_query(IStatements statements, string query)
+        public void Should_generate_the_count_query(IFormats statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => x.Ids);
-            IQueryBuilderWithWhere<Test3, CountQuery<Test3>, IStatements> countQuery = queryBuilder.Count();
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IFormats> queryBuilder = Test3.Select(statements, x => x.Ids);
+            IQueryBuilderWithWhere<Test3, CountQuery<Test3>, IFormats> countQuery = queryBuilder.Count();
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -297,10 +297,10 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Count_Test3_TestData2))]
-        public void Should_generate_some_properties_from_the_count_query(IStatements statements, string query)
+        public void Should_generate_some_properties_from_the_count_query(IFormats statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
-            IQueryBuilderWithWhere<Test3, CountQuery<Test3>, IStatements> countQuery = queryBuilder.Count();
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IFormats> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilderWithWhere<Test3, CountQuery<Test3>, IFormats> countQuery = queryBuilder.Count();
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -308,7 +308,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Count_Test3_TestData3))]
-        public void Should_return_the_count_query_with_where(IStatements statements, string queryText)
+        public void Should_return_the_count_query_with_where(IFormats statements, string queryText)
         {
             var query = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates }).Count().Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
             Assert.NotNull(query);
@@ -328,10 +328,10 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(OrderBy_Test3_TestData))]
-        public void Should_generate_the_orderby_query(IStatements statements, string query)
+        public void Should_generate_the_orderby_query(IFormats statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => x.Ids);
-            IQueryBuilder<OrderByQuery<Test3>, IStatements> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IFormats> queryBuilder = Test3.Select(statements, x => x.Ids);
+            IQueryBuilder<OrderByQuery<Test3>, IFormats> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -339,10 +339,10 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(OrderBy_Test3_TestData2))]
-        public void Should_generate_some_properties_from_the_orderby_query(IStatements statements, string query)
+        public void Should_generate_some_properties_from_the_orderby_query(IFormats statements, string query)
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IStatements> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
-            IQueryBuilder<OrderByQuery<Test3>, IStatements> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, IFormats> queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates });
+            IQueryBuilder<OrderByQuery<Test3>, IFormats> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -350,7 +350,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(OrderBy_Test3_TestData3))]
-        public void Should_return_the_orderby_query_with_where(IStatements statements, string queryText)
+        public void Should_return_the_orderby_query_with_where(IFormats statements, string queryText)
         {
             var queryBuilder = Test3.Select(statements, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12);
             var query = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC).Build();
@@ -371,7 +371,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_two_tables_TestData))]
-        public void Should_generate_the_inner_join_two_tables_query(IStatements statements, string query)
+        public void Should_generate_the_inner_join_two_tables_query(IFormats statements, string query)
         {
             var result = Test3.Select(statements)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -382,7 +382,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_two_tables_TestData2))]
-        public void Should_generate_the_inner_join_two_tables_query2(IStatements statements, string query)
+        public void Should_generate_the_inner_join_two_tables_query2(IFormats statements, string query)
         {
             var result = Test3.Select(statements, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -393,7 +393,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_two_tables_with_where_TestData))]
-        public void Should_generate_the_inner_join_two_tables_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_inner_join_two_tables_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -418,7 +418,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Left_Join_two_tables_TestData))]
-        public void Should_generate_the_left_join_two_tables_query(IStatements statements, string query)
+        public void Should_generate_the_left_join_two_tables_query(IFormats statements, string query)
         {
             var result = Test3.Select(statements)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -429,7 +429,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Left_Join_two_tables_TestData2))]
-        public void Should_generate_the_left_join_two_tables_query2(IStatements statements, string query)
+        public void Should_generate_the_left_join_two_tables_query2(IFormats statements, string query)
         {
             var result = Test3.Select(statements, x => new { x.Names, x.Ids })
                               .LeftJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -440,7 +440,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Left_Join_two_tables_with_where_TestData))]
-        public void Should_generate_the_left_join_two_tables_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_left_join_two_tables_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -465,7 +465,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Right_Join_two_tables_TestData))]
-        public void Should_generate_the_right_join_two_tables_query(IStatements statements, string query)
+        public void Should_generate_the_right_join_two_tables_query(IFormats statements, string query)
         {
             var result = Test3.Select(statements)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -476,7 +476,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Right_Join_two_tables_TestData2))]
-        public void Should_generate_the_right_join_two_tables_query2(IStatements statements, string query)
+        public void Should_generate_the_right_join_two_tables_query2(IFormats statements, string query)
         {
             var result = Test3.Select(statements, x => new { x.Names, x.Ids })
                               .RightJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -487,7 +487,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Right_Join_two_tables_with_where_TestData))]
-        public void Should_generate_the_right_join_two_tables_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_right_join_two_tables_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -512,7 +512,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_three_tables_TestData))]
-        public void Should_generate_the_inner_join_three_tables_query(IStatements statements, string query)
+        public void Should_generate_the_inner_join_three_tables_query(IFormats statements, string query)
         {
             var result = Test3.Select(statements)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -524,7 +524,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_three_tables_with_where_TestData))]
-        public void Should_generate_the_inner_join_three_tables_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_inner_join_three_tables_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -550,7 +550,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_three_tables_TestData2))]
-        public void Should_generate_the_inner_join_three_tables_query2(IStatements statements, string query)
+        public void Should_generate_the_inner_join_three_tables_query2(IFormats statements, string query)
         {
             var result = Test3.Select(statements, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -562,7 +562,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Left_Join_three_tables_TestData))]
-        public void Should_generate_the_left_join_three_tables_query(IStatements statements, string query)
+        public void Should_generate_the_left_join_three_tables_query(IFormats statements, string query)
         {
             var result = Test3.Select(statements)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -574,7 +574,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Left_Join_three_tables_with_where_TestData))]
-        public void Should_generate_the_left_join_three_tables_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_left_join_three_tables_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -600,7 +600,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Left_Join_three_tables_TestData2))]
-        public void Should_generate_the_left_join_three_tables_query2(IStatements statements, string query)
+        public void Should_generate_the_left_join_three_tables_query2(IFormats statements, string query)
         {
             var result = Test3.Select(statements, x => new { x.Names, x.Ids })
                               .LeftJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -612,7 +612,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Right_Join_three_tables_TestData))]
-        public void Should_generate_the_right_join_three_tables_query(IStatements statements, string query)
+        public void Should_generate_the_right_join_three_tables_query(IFormats statements, string query)
         {
             var result = Test3.Select(statements)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -624,7 +624,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Right_Join_three_tables_with_where_TestData))]
-        public void Should_generate_the_right_join_three_tables_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_right_join_three_tables_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -650,7 +650,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Right_Join_three_tables_TestData2))]
-        public void Should_generate_the_right_join_three_tables_query2(IStatements statements, string query)
+        public void Should_generate_the_right_join_three_tables_query2(IFormats statements, string query)
         {
             var result = Test3.Select(statements, x => new { x.Names, x.Ids })
                               .RightJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -663,7 +663,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_OrderBy_two_tables_TestData))]
-        public void Should_generate_the_inner_join_two_tables_orderBy_query(IStatements statements, string query)
+        public void Should_generate_the_inner_join_two_tables_orderBy_query(IFormats statements, string query)
         {
             var result = Test3.Select(statements)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -677,7 +677,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_OrderBy_two_tables_TestData2))]
-        public void Should_generate_the_inner_join_two_tables_orderBy_query2(IStatements statements, string query)
+        public void Should_generate_the_inner_join_two_tables_orderBy_query2(IFormats statements, string query)
         {
             var result = Test3.Select(statements, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -689,7 +689,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_OrderBy_two_tables_with_where_TestData))]
-        public void Should_generate_the_inner_join_two_tables_orderBy_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_inner_join_two_tables_orderBy_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -715,7 +715,7 @@ namespace GSqlQuery.Test
 
         [Theory]
         [ClassData(typeof(Inner_Join_OrderBy_three_tables_TestData))]
-        public void Should_generate_the_inner_join_three_tables_orderBy_query_with_where(IStatements statements, string query)
+        public void Should_generate_the_inner_join_three_tables_orderBy_query_with_where(IFormats statements, string query)
         {
             var queryResult = Test3.Select(statements)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)

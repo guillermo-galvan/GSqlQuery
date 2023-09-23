@@ -14,7 +14,7 @@ namespace GSqlQuery.Queries
         {
         }
 
-        public override IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
+        public override IEnumerable<CriteriaDetail> BuildCriteria(IFormats statements)
         {
             ClassOptions[] classOptions = new ClassOptions[]
             {
@@ -39,7 +39,7 @@ namespace GSqlQuery.Queries
         {
         }
 
-        public override IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
+        public override IEnumerable<CriteriaDetail> BuildCriteria(IFormats statements)
         {
             ClassOptions[] classOptions = new ClassOptions[]
             {

@@ -6,22 +6,22 @@ namespace GSqlQuery.Queries
         where T : class
         where TReturn : DeleteQuery<T>
     {
-        public DeleteQueryBuilder(IStatements statements)
+        public DeleteQueryBuilder(IFormats statements)
             : base(statements)
         {
         }
 
-        internal string CreateQuery(IStatements statements)
+        internal string CreateQuery(IFormats statements)
         {
             string result;
 
             if (_andOr == null)
             {
-                result = string.Format(statements.Delete, _tableName);
+                result = string.Format(ConstFormat.DELETE, _tableName);
             }
             else
             {
-                result = string.Format(statements.DeleteWhere, _tableName, GetCriteria());
+                result = string.Format(ConstFormat.DELETEWHERE, _tableName, GetCriteria());
             }
 
             return result;
@@ -40,7 +40,7 @@ namespace GSqlQuery.Queries
         /// <param name="options">Detail of the class to transform</param>
         /// <param name="statements">Statements to build the query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DeleteQueryBuilder(IStatements statements)
+        public DeleteQueryBuilder(IFormats statements)
             : base(statements)
         {
         }

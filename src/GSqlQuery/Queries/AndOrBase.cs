@@ -27,7 +27,7 @@ namespace GSqlQuery
             _searchCriterias.Enqueue(criteria);
         }
 
-        public virtual IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements)
+        public virtual IEnumerable<CriteriaDetail> BuildCriteria(IFormats statements)
         {
             return _searchCriterias.Select(x => x.GetCriteria(statements, Columns)).ToArray();
         }

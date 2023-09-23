@@ -9,35 +9,30 @@ namespace GSqlQuery.Queries
         where T : class
         where TReturn : InsertQuery<T>
     {
-        private static ulong _idParam = 0;
         protected readonly object _entity;
 
-        public InsertQueryBuilder(IStatements statements, object entity)
+        public InsertQueryBuilder(IFormats statements, object entity)
              : base(statements)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
-            if (_idParam > ulong.MaxValue - 2100)
-            {
-                _idParam = 0;
-            }
         }
 
-        internal string CreateQuery(IStatements statements, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(IFormats statements, out IEnumerable<CriteriaDetail> criteria)
         {
             AutoIncrementingClass autoIncrementingClass = GetValues(statements);
             CriteriaDetail criteriaDetail = new CriteriaDetail(string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail.Name)), autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail));
             criteria = new CriteriaDetail[] { criteriaDetail };
             string text = autoIncrementingClass.WithAutoIncrementing ?
-                $"{string.Format(statements.Insert, _tableName, string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName)), criteriaDetail.QueryPart)} {statements.ValueAutoIncrementingQuery}"
-                : string.Format(statements.Insert, _tableName, string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName)), criteriaDetail.QueryPart);
+                $"{string.Format(ConstFormat.INSERT, _tableName, string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName)), criteriaDetail.QueryPart)} {statements.ValueAutoIncrementingQuery}"
+                : string.Format(ConstFormat.INSERT, _tableName, string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName)), criteriaDetail.QueryPart);
 
             return text;
         }
 
-        internal AutoIncrementingClass GetValues(IStatements statements)
+        internal AutoIncrementingClass GetValues(IFormats statements)
         {
             var columnsParameters = Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
-                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Create), new ParameterDetail($"@PI{_idParam++}", x.GetValue(_entity), x)))
+                          .Select(x => new ColumnParameterDetail(x.ColumnAttribute.GetColumnName(_tableName, statements, QueryType.Create), new ParameterDetail($"@PI{Helpers.GetIdParam()}", x.GetValue(_entity), x)))
                           .ToArray();
             return new AutoIncrementingClass(Columns.Any(x => x.ColumnAttribute.IsAutoIncrementing), columnsParameters);
         }
@@ -46,7 +41,7 @@ namespace GSqlQuery.Queries
     internal class InsertQueryBuilder<T> : InsertQueryBuilder<T, InsertQuery<T>>
         where T : class
     {
-        public InsertQueryBuilder(IStatements statements, object entity)
+        public InsertQueryBuilder(IFormats statements, object entity)
              : base(statements, entity)
         {
 

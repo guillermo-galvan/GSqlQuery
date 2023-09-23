@@ -11,12 +11,12 @@ namespace GSqlQuery.Queries
             return joinInfos.First(x => x.IsMain);
         }
 
-        internal static IEnumerable<string> GetColumns(IEnumerable<JoinInfo> joinInfos, IStatements statements)
+        internal static IEnumerable<string> GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats statements)
         {
             return joinInfos.SelectMany(c => c.Columns.Select(x => x.ColumnAttribute.GetColumnNameJoin(c, statements)));
         }
 
-        internal static IEnumerable<string> CreateJoinQuery(IEnumerable<JoinInfo> joinInfos, IStatements statements)
+        internal static IEnumerable<string> CreateJoinQuery(IEnumerable<JoinInfo> joinInfos, IFormats statements)
         {
             Queue<string> joinQuerys = new Queue<string>();
 
@@ -24,7 +24,7 @@ namespace GSqlQuery.Queries
             {
                 var a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(statements, x)));
 
-                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(statements.Join, item.ClassOptions.Table.GetTableName(statements), a)}");
+                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, item.ClassOptions.Table.GetTableName(statements), a)}");
             }
 
             return joinQuerys;
@@ -46,7 +46,7 @@ namespace GSqlQuery.Queries
             }
         }
 
-        internal static string CreateJoinQueryPart(IStatements statements, JoinModel joinModel)
+        internal static string CreateJoinQueryPart(IFormats statements, JoinModel joinModel)
         {
             string partRight = joinModel.JoinModel1.Column.GetColumnName(joinModel.JoinModel1.Table.GetTableName(statements), statements, QueryType.Join);
             string partLeft = joinModel.JoinModel2.Column.GetColumnName(joinModel.JoinModel2.Table.GetTableName(statements), statements, QueryType.Join);
@@ -93,7 +93,7 @@ namespace GSqlQuery.Queries
 
         public IEnumerable<JoinInfo> JoinInfos => _joinInfos;
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, IStatements statements) : base(statements)
+        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, IFormats statements) : base(statements)
         {
             _joinInfos = joinInfos ?? new Queue<JoinInfo>();
         }
@@ -109,7 +109,7 @@ namespace GSqlQuery.Queries
             _joinInfo.Joins.Enqueue(joinModel);
         }
 
-        internal string CreateQuery(IStatements statements)
+        internal string CreateQuery(IFormats statements)
         {
             var columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, statements);
             var tableMain = JoinQueryBuilderWithWhereBase.GetTableMain(_joinInfos);
@@ -120,11 +120,11 @@ namespace GSqlQuery.Queries
 
             if (_andOr == null)
             {
-                result = string.Format(statements.JoinSelect, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys));
+                result = string.Format(ConstFormat.JOINSELECT, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys));
             }
             else
             {
-                result = string.Format(statements.JoinSelectWhere, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys), GetCriteria());
+                result = string.Format(ConstFormat.JOINSELECTWHERE, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys), GetCriteria());
             }
 
             return result;
@@ -146,7 +146,7 @@ namespace GSqlQuery.Queries
             return (IWhere<TJoin, TReturn>)_andOr;
         }
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinEnum, IStatements statements, IEnumerable<PropertyOptions> columnsT3 = null)
+        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinEnum, IFormats statements, IEnumerable<PropertyOptions> columnsT3 = null)
             : base(joinInfos, statements)
         {
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));

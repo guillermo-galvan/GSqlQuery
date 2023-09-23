@@ -14,7 +14,7 @@ namespace GSqlQuery.Extensions
         /// <param name="statements">IStatements</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static string GetColumnName(this ColumnAttribute column, string tableName, IStatements statements, QueryType queryType)
+        internal static string GetColumnName(this ColumnAttribute column, string tableName, IFormats statements, QueryType queryType)
         {
             column.NullValidate(ErrorMessages.ParameterNotNull, nameof(column));
             tableName.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableName));
@@ -28,14 +28,14 @@ namespace GSqlQuery.Extensions
             return propertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
         }
 
-        internal static string GetColumnNameJoin(this ColumnAttribute column, JoinInfo joinInfo, IStatements statements)
+        internal static string GetColumnNameJoin(this ColumnAttribute column, JoinInfo joinInfo, IFormats statements)
         {
             string alias = GetAliasJoinFormat(statements, joinInfo.ClassOptions.Type.Name, column.Name);
             string columnName = statements.GetColumnName(joinInfo.ClassOptions.Table.GetTableName(statements), column, QueryType.Join);
             return $"{columnName} as {alias}";
         }
 
-        internal static string GetAliasJoinFormat(IStatements statements, string tableName, string columnName)
+        internal static string GetAliasJoinFormat(IFormats statements, string tableName, string columnName)
         {
             return string.Format(statements.Format, $"{tableName}_{columnName}");
         }

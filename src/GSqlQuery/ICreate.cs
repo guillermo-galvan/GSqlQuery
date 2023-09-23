@@ -11,6 +11,6 @@
         /// </summary>
         /// <param name="key">The name of the statement collection</param>
         /// <returns>Instance of IQuery</returns>
-        IQueryBuilder<InsertQuery<T>, IStatements> Insert(IStatements statements);
+        IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats statements);
     }
 }

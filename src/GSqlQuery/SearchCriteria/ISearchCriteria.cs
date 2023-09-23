@@ -22,6 +22,6 @@ namespace GSqlQuery.SearchCriteria
         /// </summary>
         /// <param name="statements">Statements</param>
         /// <returns>Details of the criteria</returns>
-        CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions);
+        CriteriaDetail GetCriteria(IFormats statements, IEnumerable<PropertyOptions> propertyOptions);
     }
 }

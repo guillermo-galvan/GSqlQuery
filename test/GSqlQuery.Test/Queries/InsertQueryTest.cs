@@ -11,13 +11,13 @@ namespace GSqlQuery.Test.Queries
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
         private readonly Equal<int> _equal;
-        private readonly IStatements _statements;
+        private readonly IFormats _statements;
         private readonly ClassOptions _classOptions;
         private readonly Test1 _test1;
 
         public InsertQueryTest()
         {
-            _statements = new Statements();
+            _statements = new DefaultFormats();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;

@@ -17,6 +17,6 @@ namespace GSqlQuery.SearchCriteria
         /// Build the criteria
         /// </summary>
         /// <returns>Criteria detail enumerable</returns>
-        IEnumerable<CriteriaDetail> BuildCriteria(IStatements statements);
+        IEnumerable<CriteriaDetail> BuildCriteria(IFormats statements);
     }
 }

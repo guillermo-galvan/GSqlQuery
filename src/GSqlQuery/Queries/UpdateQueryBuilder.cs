@@ -11,21 +11,15 @@ namespace GSqlQuery.Queries
         where T : class
         where TReturn : UpdateQuery<T>
     {
-        private static ulong _idParam = 0;
         private readonly IDictionary<ColumnAttribute, object> _columnValues;
         protected readonly object _entity;
 
         public IDictionary<ColumnAttribute, object> ColumnValues => _columnValues;
 
-        private UpdateQueryBuilder(IStatements statements) : base(statements)
-        {
-            if (_idParam > ulong.MaxValue - 2100)
-            {
-                _idParam = 0;
-            }
-        }
+        private UpdateQueryBuilder(IFormats statements) : base(statements)
+        { }
 
-        public UpdateQueryBuilder(IStatements statements, IEnumerable<string> selectMember, object value) :
+        public UpdateQueryBuilder(IFormats statements, IEnumerable<string> selectMember, object value) :
             this(statements)
         {
             _columnValues = new Dictionary<ColumnAttribute, object>();
@@ -36,7 +30,7 @@ namespace GSqlQuery.Queries
             };
         }
 
-        public UpdateQueryBuilder(IStatements statements, object entity, IEnumerable<string> selectMember) :
+        public UpdateQueryBuilder(IFormats statements, object entity, IEnumerable<string> selectMember) :
            this(statements)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
@@ -50,7 +44,7 @@ namespace GSqlQuery.Queries
             };
         }
 
-        internal string CreateQuery(IStatements statements)
+        internal string CreateQuery(IFormats statements)
         {
             if (_columnValues == null)
             {
@@ -62,11 +56,11 @@ namespace GSqlQuery.Queries
 
             if (_andOr == null)
             {
-                query = string.Format(statements.Update, _tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)));
+                query = string.Format(ConstFormat.UPDATE, _tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)));
             }
             else
             {
-                query = string.Format(statements.UpdateWhere, _tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)), GetCriteria());
+                query = string.Format(ConstFormat.UPDATEWHERE, _tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)), GetCriteria());
                 foreach (var item in _criteria)
                 {
                     tmpCriteria.Enqueue(item);
@@ -76,13 +70,13 @@ namespace GSqlQuery.Queries
             return query;
         }
 
-        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, IStatements statements, IEnumerable<PropertyOptions> columns, string tableName)
+        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, IFormats statements, IEnumerable<PropertyOptions> columns, string tableName)
         {
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
             foreach (var item in columnValues)
             {
                 PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = $"@PU{_idParam++}";
+                string paramName = $"@PU{Helpers.GetIdParam()}";
                 criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, statements, QueryType.Criteria)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
@@ -135,7 +129,7 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
     internal class UpdateQueryBuilder<T> : UpdateQueryBuilder<T, UpdateQuery<T>>,
-        ISet<T, UpdateQuery<T>, IStatements> where T : class
+        ISet<T, UpdateQuery<T>, IFormats> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the UpdateQueryBuilder class.
@@ -144,11 +138,11 @@ namespace GSqlQuery.Queries
         /// <param name="statements">Statements to build the query</param>
         /// <param name="columnValues">Column values</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(IStatements statements, IEnumerable<string> selectMember, object value) :
+        public UpdateQueryBuilder(IFormats statements, IEnumerable<string> selectMember, object value) :
             base(statements, selectMember, value)
         { }
 
-        public UpdateQueryBuilder(IStatements statements, object entity, IEnumerable<string> selectMember) :
+        public UpdateQueryBuilder(IFormats statements, object entity, IEnumerable<string> selectMember) :
            base(statements, entity, selectMember)
         { }
 
@@ -157,13 +151,13 @@ namespace GSqlQuery.Queries
             return new UpdateQuery<T>(CreateQuery(Options), Columns, _criteria, Options);
         }
 
-        public ISet<T, UpdateQuery<T>, IStatements> Set<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
+        public ISet<T, UpdateQuery<T>, IFormats> Set<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
             AddSet(expression, value);
             return this;
         }
 
-        public ISet<T, UpdateQuery<T>, IStatements> Set<TProperties>(Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>, IFormats> Set<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             AddSet(_entity, expression);
             return this;
