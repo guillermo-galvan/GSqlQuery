@@ -1,27 +1,26 @@
 # IFormats
 
-Con esta interfaz se puede modificar el formato del nombre de la tablas o columnas.
+With this interface you can modify the format of the name of the tables or columns.
 
-### Propiedades
+### Properties
 
-|                               |                                                                                            |
-|-------------------------------|--------------------------------------------------------------------------------------------|
-| Format                        | Da el formato al nombre de la columna y tabla                                              |
-| ValueAutoIncrementingQuery    | Instrucción para obtener el id de una columna que se encuentre como incremento automático  |
+|                               |                                                                                   |
+|-------------------------------|-----------------------------------------------------------------------------------|
+| Format                        | Formats the column and table name.                                                |
+| ValueAutoIncrementingQuery    | Instruction to obtain the id of a column that is found as an automatic increment  |
 
-
-### Métodos 
+### Methods 
 
 |                       |                                 |
 |-----------------------|---------------------------------|
-| GetColumnName         | Obtiene el nombre de la columna |
+| GetColumnName         | Gets the column name            |
 
-La interfaz ya se encuentra implementada en la clase DefaultFormats.
+The interface is already implemented in the DefaultFormats class.
 
 > **Note**
-> Si usted desea extender de la clase `DefaultFormats` lo puede realizar nada más tome en cuenta que la propiedad format debe de tener el formato `{0}`.
+> If you want to extend the `DefaultFormats` class you can do so just taking into account that the format property must have the format `{0}`.
 
-### Ejemplo
+### Example
 
 ```csharp
 using GSqlQuery;

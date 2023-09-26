@@ -32,7 +32,7 @@ Console.WriteLine("{0}", query.Text);
 
 GSqlQuery es mantenido activamente por [Guillermo Galván](https://github.com/guillermo-galvan). Las contribuciones son bienvenidas y se pueden enviar mediante pull request.
 
-## License
+## Licencia
 Copyright (c) Guillermo Galván. All rights reserved.
 
 Licensed under the [Apache-2.0 license](./LICENSE).

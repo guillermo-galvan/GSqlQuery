@@ -1,13 +1,13 @@
 # Count
 
-Este método genera la consulta `Count`.
+This method generates the `Count` query.
 
 > **Note**
->Todas las consultas implementan la interfaz [IQuery](IQuery.md).
+>All queries implement the [IQuery](IQuery.md) interface.
 
-La consulta `Count` se puede realizar de las siguientes maneras:
+The `Count` query can be performed in the following ways:
 
-## Todas las columnas
+## All columns
 
 ```csharp
 using GSqlQuery;
@@ -19,7 +19,7 @@ Console.WriteLine("{0}", query.Text);
 // output: SELECT COUNT(sakila.city.city_id,sakila.city.city,sakila.city.country_id,sakila.city.last_update) FROM sakila.city;
 ```
 
-## Columnas específicas
+## Specific columns
 ```csharp
 using GSqlQuery;
 
@@ -31,4 +31,4 @@ Console.WriteLine("{0}", query.Text);
 ```
 
 > **Note**
->Esta consulta se puede utilizar el método [Where](Where.md).
+>This query can use the [Where](Where.md) method.

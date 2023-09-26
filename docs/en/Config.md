@@ -1,14 +1,14 @@
-# Configuración
+# Setting
 
-En esta sección encontrará una explicación de como poder utilizar el paquete.
+In this section you will find an explanation of how to use the package.
 
-## Formatos
+## Formats
 
-El paquete tiene una interfaz [IFormats](IFormats.md) con la cual puede editar el formato del nombre de la tablas o columnas.
+The package has an interface [IFormats](IFormats.md) with which you can edit the name format of tables or columns.
 
-## Nombre de tablas y columnas
-Por default el nombre de la tabla se toma del nombre de la clase y el nombre de las columnas se toma del nombre de las propiedades.
+## Name of tables and columns
 
+By default the name of the table is taken from the name of the class and the name of the columns is taken from the name of the properties.
 
 ```csharp
 using GSqlQuery;
@@ -31,7 +31,7 @@ Console.WriteLine("{0}", query.Text);
 // output: SELECT City.CityId,City.Name,City.CountryId,City.LastUpdate FROM City;
 ```
 
-Este funcionamiento lo podemos cambiar con los atributos [TableAttribute](TableAttribute.md) y [ColumnAttribute](ColumnAttribute.md).
+We can change this behavior with the attributes [TableAttribute](TableAttribute.md) and [ColumnAttribute](ColumnAttribute.md).
 
 ```csharp
 using GSqlQuery;
@@ -59,10 +59,9 @@ Console.WriteLine("{0}", query.Text);
 // output: SELECT sakila.city.city_id,sakila.city.city,sakila.city.country_id,sakila.city.last_update FROM sakila.city;
 ```
 
-## Clase Entity
+## Entity Class
 
-Para poder simplificar un poco la escritura del código usted puede utilizar la clase [Entity](Entity.md).
-
+To simplify writing the code a little you can use the [Entity](Entity.md) class.
 
 ```csharp
 using GSqlQuery;
@@ -90,12 +89,12 @@ Console.WriteLine("{0}", query.Text);
 // output: SELECT sakila.city.city_id,sakila.city.city,sakila.city.country_id,sakila.city.last_update FROM sakila.city;
 ```
 
-# Consultas
+# Queries
 
-Una vez que tengamos configurado nuestros modelos o clases ya podremos generar las consultas:
+Once we have configured our modules or classes we can generate the queries:
 
 > **Note**
->Todas las consultas implementan la interfaz [IQuery](IQuery.md).
+>All queries implement the [IQuery](IQuery.md) interface.
 
 - [Insert](Insert.md)
 - [Update](Update.md)
@@ -198,4 +197,4 @@ Console.WriteLine("{0}", query.Text);
 // output: SELECT sakila.city.city_id as City_city_id,sakila.city.city as City_city,sakila.city.country_id as City_country_id,sakila.city.last_update as City_last_update,sakila.country.country_id as Country_country_id,sakila.country.country as Country_country,sakila.country.last_update as Country_last_update FROM sakila.city INNER JOIN sakila.country ON sakila.city.country_id = sakila.country.country_id WHERE sakila.city.city_id = @PE4;
 ```
 > **Note**
->La consulta `Join` solo puede hacerlo con 3 tablas, si necesita realizar un `Join` con más tablas se recomienda utilizar una vista.
+>The `Join` query can only be performed with 3 tables, if you need to perform a `Join` with more tables it is recommended to use a view.

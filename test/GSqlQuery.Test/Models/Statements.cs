@@ -1,6 +1,6 @@
 ﻿namespace GSqlQuery.Test.Models
 {
-    internal class Statements : IFormats
+    internal class Formats : IFormats
     {
         public string Format => "[{0}]";
 

@@ -14,7 +14,7 @@ namespace GSqlQuery.Test.Data
 
             yield return new object[]
             {
-                new Models.Statements(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param;"
+                new Models.Formats(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param;"
             };
         }
 
@@ -32,7 +32,7 @@ namespace GSqlQuery.Test.Data
 
             yield return new object[]
             {
-                new Models.Statements(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] = @Param;"
+                new Models.Formats(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] = @Param;"
             };
         }
 
