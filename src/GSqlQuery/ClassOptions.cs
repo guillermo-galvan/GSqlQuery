@@ -5,18 +5,42 @@ using System.Reflection;
 
 namespace GSqlQuery
 {
+    /// <summary>
+    /// Class Options
+    /// </summary>
     public sealed class ClassOptions
     {
+        /// <summary>
+        /// Get Type
+        /// </summary>
         public Type Type { get; private set; }
 
+        /// <summary>
+        /// Get properties
+        /// </summary>
         public IEnumerable<PropertyOptions> PropertyOptions { get; private set; }
 
+        /// <summary>
+        /// Get default construtor
+        /// </summary>
         public ConstructorInfo ConstructorInfo { get; private set; }
 
+        /// <summary>
+        /// Is Constructor By Param
+        /// </summary>
         public bool IsConstructorByParam { get; private set; }
 
+        /// <summary>
+        /// Get table
+        /// </summary>
         public TableAttribute Table { get; private set; }
 
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        /// <param name="type">Type</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="Exception"></exception>
         public ClassOptions(Type type)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));

@@ -12,15 +12,15 @@ namespace GSqlQuery.Test.SearchCriteria
     {
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
-        private readonly IFormats _statements;
+        private readonly IFormats _formats;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
 
         public NotLikeTest()
         {
-            _statements = new DefaultFormats();
+            _formats = new DefaultFormats();
             _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                _statements);
+                _formats);
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -60,7 +60,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, string value, string querypart)
         {
             NotLike test = new NotLike(_tableAttribute, _columnAttribute, value, logicalOperator);
-            var result = test.GetCriteria(_statements, _classOptions.PropertyOptions);
+            var result = test.GetCriteria(_formats, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

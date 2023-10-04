@@ -37,8 +37,8 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get Criteria detail
         /// </summary>
-        /// <param name="statements">Statements</param>
+        /// <param name="formats">Formats</param>
         /// <returns>Details of the criteria</returns>
-        public abstract CriteriaDetail GetCriteria(IFormats statements, IEnumerable<PropertyOptions> propertyOptions);
+        public abstract CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions);
     }
 }

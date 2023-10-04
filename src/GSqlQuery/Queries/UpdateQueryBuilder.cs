@@ -7,6 +7,11 @@ using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
+    /// <summary>
+    ///  Update Query Builder
+    /// </summary>
+    /// <typeparam name="T">Type to create the query</typeparam>
+    /// <typeparam name="TReturn">Query</typeparam>
     internal abstract class UpdateQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
         where T : class
         where TReturn : UpdateQuery<T>
@@ -16,11 +21,21 @@ namespace GSqlQuery.Queries
 
         public IDictionary<ColumnAttribute, object> ColumnValues => _columnValues;
 
-        private UpdateQueryBuilder(IFormats statements) : base(statements)
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        /// <param name="formats">Formats</param>
+        private UpdateQueryBuilder(IFormats formats) : base(formats)
         { }
 
-        public UpdateQueryBuilder(IFormats statements, IEnumerable<string> selectMember, object value) :
-            this(statements)
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        /// <param name="formats">Formats</param>
+        /// <param name="selectMember">Name of properties to search</param>
+        /// <param name="value">Value for update</param>
+        public UpdateQueryBuilder(IFormats formats, IEnumerable<string> selectMember, object value) :
+            this(formats)
         {
             _columnValues = new Dictionary<ColumnAttribute, object>();
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
@@ -30,8 +45,15 @@ namespace GSqlQuery.Queries
             };
         }
 
-        public UpdateQueryBuilder(IFormats statements, object entity, IEnumerable<string> selectMember) :
-           this(statements)
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        /// <param name="formats">Formats</param>
+        /// <param name="entity">Entity</param>
+        /// <param name="selectMember">Name of properties to search</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public UpdateQueryBuilder(IFormats formats, object entity, IEnumerable<string> selectMember) :
+           this(formats)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
@@ -44,14 +66,19 @@ namespace GSqlQuery.Queries
             };
         }
 
-        internal string CreateQuery(IFormats statements)
+        /// <summary>
+        /// Create query
+        /// </summary>
+        /// <returns>Query Text</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        internal string CreateQuery()
         {
             if (_columnValues == null)
             {
                 throw new InvalidOperationException("Column values not found");
             }
 
-            Queue<CriteriaDetail> tmpCriteria = GetUpdateCliterias(_columnValues, statements, Columns, _tableName);
+            Queue<CriteriaDetail> tmpCriteria = GetUpdateCliterias(_columnValues, Columns, _tableName);
             string query = string.Empty;
 
             if (_andOr == null)
@@ -70,19 +97,26 @@ namespace GSqlQuery.Queries
             return query;
         }
 
-        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, IFormats statements, IEnumerable<PropertyOptions> columns, string tableName)
+        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues,IEnumerable<PropertyOptions> columns, string tableName)
         {
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
             foreach (var item in columnValues)
             {
                 PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
                 string paramName = $"@PU{Helpers.GetIdParam()}";
-                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, statements, QueryType.Criteria)}={paramName}",
+                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, Options, QueryType.Criteria)}={paramName}",
                     new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
             }
             return criteriaDetails;
         }
 
+        /// <summary>
+        /// add to query update another column with value
+        /// </summary>
+        /// <typeparam name="TProperties">The property or properties for the query</typeparam>
+        /// <param name="expression">The expression representing the property</param>
+        /// <param name="value"></param>
+        /// <returns>Instance of ISet</returns>
         internal void AddSet<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
@@ -98,6 +132,12 @@ namespace GSqlQuery.Queries
 #endif
         }
 
+        /// <summary>
+        /// add to query update another column
+        /// </summary>
+        /// <typeparam name="TProperties">The property or properties for the query</typeparam>
+        /// <param name="expression">The expression representing the property or properties</param>
+        /// <returns>Instance of ISet</returns>
         internal void AddSet<TProperties>(object entity, Expression<Func<T, TProperties>> expression)
         {
             if (entity == null)
@@ -134,29 +174,48 @@ namespace GSqlQuery.Queries
         /// <summary>
         /// Initializes a new instance of the UpdateQueryBuilder class.
         /// </summary>
-        /// <param name="options">The Query</param>        
-        /// <param name="statements">Statements to build the query</param>
-        /// <param name="columnValues">Column values</param>
+        /// <param name="selectMember">Name of properties to search</param>        
+        /// <param name="formats">Formats</param>
+        /// <param name="value">Value for update</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(IFormats statements, IEnumerable<string> selectMember, object value) :
-            base(statements, selectMember, value)
+        public UpdateQueryBuilder(IFormats formats, IEnumerable<string> selectMember, object value) :
+            base(formats, selectMember, value)
         { }
 
-        public UpdateQueryBuilder(IFormats statements, object entity, IEnumerable<string> selectMember) :
-           base(statements, entity, selectMember)
+        /// <summary>
+        /// Initializes a new instance of the UpdateQueryBuilder class.
+        /// </summary>
+        /// <param name="formats">Formats</param>
+        /// <param name="entity">Entity</param>
+        /// <param name="selectMember">Name of properties to search</param>
+        public UpdateQueryBuilder(IFormats formats, object entity, IEnumerable<string> selectMember) :
+           base(formats, entity, selectMember)
         { }
 
         public override UpdateQuery<T> Build()
         {
-            return new UpdateQuery<T>(CreateQuery(Options), Columns, _criteria, Options);
+            return new UpdateQuery<T>(CreateQuery(), Columns, _criteria, Options);
         }
 
+        /// <summary>
+        /// add to query update another column with value
+        /// </summary>
+        /// <typeparam name="TProperties">The property or properties for the query</typeparam>
+        /// <param name="expression">The expression representing the property</param>
+        /// <param name="value"></param>
+        /// <returns>Instance of ISet</returns>
         public ISet<T, UpdateQuery<T>, IFormats> Set<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
             AddSet(expression, value);
             return this;
         }
 
+        /// <summary>
+        /// add to query update another column
+        /// </summary>
+        /// <typeparam name="TProperties">The property or properties for the query</typeparam>
+        /// <param name="expression">The expression representing the property or properties</param>
+        /// <returns>Instance of ISet</returns>
         public ISet<T, UpdateQuery<T>, IFormats> Set<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             AddSet(_entity, expression);

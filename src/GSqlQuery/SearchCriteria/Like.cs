@@ -42,15 +42,15 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get Criteria detail
         /// </summary>
-        /// <param name="statements">Statements</param>
+        /// <param name="formats">Formats</param>
         /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IFormats statements, IEnumerable<PropertyOptions> propertyOptions)
+        public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
         {
-            string tableName = Table.GetTableName(statements);
+            string tableName = Table.GetTableName(formats);
             string parameterName = $"@{ParameterPrefix}{Helpers.GetIdParam()}";
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')";
+                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')";
 
             return new CriteriaDetail(this, criterion, new ParameterDetail[] { new ParameterDetail(parameterName, Value, Column.GetPropertyOptions(propertyOptions)) });
         }

@@ -11,7 +11,7 @@ namespace GSqlQuery
         /// Adds the criteria not like to the query
         /// </summary>
         /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="where">Instance of IWhere</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
@@ -29,7 +29,7 @@ namespace GSqlQuery
         /// Adds the criteria not like to the query with the logical operator AND
         /// </summary>
         /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="andOr">Instance of IAndOr</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
@@ -47,7 +47,7 @@ namespace GSqlQuery
         /// Adds the criteria not like to the query with the logical operator OR
         /// </summary>
         /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="andOr">Instance of IAndOr</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>

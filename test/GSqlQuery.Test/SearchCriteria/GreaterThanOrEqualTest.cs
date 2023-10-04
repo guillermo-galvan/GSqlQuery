@@ -12,13 +12,13 @@ namespace GSqlQuery.Test.SearchCriteria
     {
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
-        private readonly IFormats _statements;
+        private readonly IFormats _formats;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
 
         public GreaterThanOrEqualTest()
         {
-            _statements = new DefaultFormats();
+            _formats = new DefaultFormats();
             _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                 new DefaultFormats());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
@@ -60,7 +60,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int value, string querypart)
         {
             GreaterThanOrEqual<int> equal = new GreaterThanOrEqual<int>(_tableAttribute, _columnAttribute, value, logicalOperator);
-            var result = equal.GetCriteria(_statements, _classOptions.PropertyOptions);
+            var result = equal.GetCriteria(_formats, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

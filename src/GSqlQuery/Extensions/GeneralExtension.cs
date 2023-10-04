@@ -7,8 +7,18 @@ using System.Reflection;
 
 namespace GSqlQuery.Extensions
 {
+    /// <summary>
+    /// General Expression
+    /// </summary>
     internal static class GeneralExtension
     {
+        /// <summary>
+        /// Gets the property options
+        /// </summary>
+        /// <param name="options">Contains the class information</param>
+        /// <param name="selectMember">Name of properties to search</param>
+        /// <returns>Properties that match selectMember</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         internal static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptions options, IEnumerable<string> selectMember)
         {
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
@@ -17,6 +27,12 @@ namespace GSqlQuery.Extensions
                     select prop).ToArray();
         }
 
+        /// <summary>
+        /// Gets the property options
+        /// </summary>
+        /// <param name="optionsTupla">Class that contains the ClassOptions and selectMember information</param>
+        /// <returns>Properties that match selectMember</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         internal static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptionsTupla<IEnumerable<MemberInfo>> optionsTupla)
         {
             optionsTupla.NullValidate(ErrorMessages.ParameterNotNull, nameof(optionsTupla));
@@ -48,6 +64,12 @@ namespace GSqlQuery.Extensions
             return properties;
         }
 
+        /// <summary>
+        /// Gets the ColumnAttribute
+        /// </summary>
+        /// <param name="options">Contains the class information</param>
+        /// <param name="selectMember">Name of properties to search</param>
+        /// <returns>ColumnAttribute that match selectMember</returns>
         internal static IEnumerable<ColumnAttribute> GetColumnsQuery(this ClassOptions options, IEnumerable<string> selectMember)
         {
             return (from prop in options.PropertyOptions
@@ -55,6 +77,14 @@ namespace GSqlQuery.Extensions
                     select prop.ColumnAttribute).ToArray();
         }
 
+        /// <summary>
+        /// Gets the ClassOptionsTupla
+        /// </summary>
+        /// <typeparam name="T">Type of class</typeparam>
+        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>ClassOptionsTupla that match expression</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
@@ -65,6 +95,14 @@ namespace GSqlQuery.Extensions
             return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
         }
 
+        /// <summary>
+        /// Gets the ClassOptionsTupla
+        /// </summary>
+        /// <typeparam name="T">Type of class</typeparam>
+        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>ClassOptionsTupla that match expression</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         internal static ClassOptionsTupla<MemberInfo> GetOptionsAndMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
@@ -75,6 +113,12 @@ namespace GSqlQuery.Extensions
             return new ClassOptionsTupla<MemberInfo>(options, memberInfos);
         }
 
+        /// <summary>
+        /// Valid that the memberInfos are not empty
+        /// </summary>
+        /// <param name="memberInfos">MemberInfo list</param>
+        /// <param name="message">Message in case of error</param>
+        /// <exception cref="InvalidOperationException"></exception>
         internal static void ValidateMemberInfos(this IEnumerable<MemberInfo> memberInfos, string message)
         {
             if (!memberInfos.Any())
@@ -83,17 +127,39 @@ namespace GSqlQuery.Extensions
             }
         }
 
+        /// <summary>
+        /// Gets the property option
+        /// </summary>
+        /// <param name="memberInfo">MemberInfo</param>
+        /// <param name="options">Contains the class information</param>
+        /// <returns>PropertyOptions</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         internal static PropertyOptions ValidateMemberInfo(this MemberInfo memberInfo, ClassOptions options)
         {
             PropertyOptions result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
             return result ?? throw new InvalidOperationException($"Could not find property {memberInfo.Name} on type {options.Type.Name}");
         }
 
+        /// <summary>
+        /// Gets the value of the entity
+        /// </summary>
+        /// <param name="options">PropertyOptions</param>
+        /// <param name="entity">Entity</param>
+        /// <returns>property value</returns>
         internal static object GetValue(this PropertyOptions options, object entity)
         {
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
         }
 
+        /// <summary>
+        /// Gets the JoinCriteriaPart
+        /// </summary>
+        /// <typeparam name="T1">Table type</typeparam>
+        /// <typeparam name="T2">Table type</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>JoinCriteriaPart</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         internal static JoinCriteriaPart GetJoinColumn<T1, T2, TProperties>(this Expression<Func<Join<T1, T2>, TProperties>> expression)
             where T1 : class
             where T2 : class
@@ -111,6 +177,16 @@ namespace GSqlQuery.Extensions
             };
         }
 
+        /// <summary>
+        /// Gets the JoinCriteriaPart
+        /// </summary>
+        /// <typeparam name="T1">Table type</typeparam>
+        /// <typeparam name="T2">Table type</typeparam>
+        /// <typeparam name="T3">Table type</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>JoinCriteriaPart</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         internal static JoinCriteriaPart GetJoinColumn<T1, T2, T3, TProperties>(this Expression<Func<Join<T1, T2, T3>, TProperties>> expression)
             where T1 : class
             where T2 : class

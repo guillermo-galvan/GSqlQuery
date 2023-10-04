@@ -49,11 +49,11 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get Criteria detail
         /// </summary>
-        /// <param name="statements">Statements</param>
+        /// <param name="formats">Formats</param>
         /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IFormats statements, IEnumerable<PropertyOptions> propertyOptions)
+        public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
         {
-            string tableName = Table.GetTableName(statements);
+            string tableName = Table.GetTableName(formats);
             ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
             int count = 0;
             int index = 0;
@@ -65,7 +65,7 @@ namespace GSqlQuery.SearchCriteria
                 parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks}", item, property);
             }
 
-            string criterion = $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
+            string criterion = $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
             criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
             return new CriteriaDetail(this, criterion, parameters);
         }

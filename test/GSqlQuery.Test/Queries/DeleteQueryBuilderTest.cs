@@ -7,17 +7,17 @@ namespace GSqlQuery.Test.Queries
 {
     public class DeleteQueryBuilderTest
     {
-        private readonly IFormats _statements;
+        private readonly IFormats _formats;
 
         public DeleteQueryBuilderTest()
         {
-            _statements = new DefaultFormats();
+            _formats = new DefaultFormats();
         }
 
         [Fact]
         public void Properties_cannot_be_null()
         {
-            DeleteQueryBuilder<Test1> queryBuilder = new DeleteQueryBuilder<Test1>(_statements);
+            DeleteQueryBuilder<Test1> queryBuilder = new DeleteQueryBuilder<Test1>(_formats);
 
             Assert.NotNull(queryBuilder);
             Assert.NotNull(queryBuilder.Options);
@@ -34,7 +34,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            DeleteQueryBuilder<Test1> queryBuilder = new DeleteQueryBuilder<Test1>(_statements);
+            DeleteQueryBuilder<Test1> queryBuilder = new DeleteQueryBuilder<Test1>(_formats);
             IWhere<Test1, DeleteQuery<Test1>> where = queryBuilder.Where();
             Assert.NotNull(where);
         }
@@ -42,13 +42,13 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_delete_query()
         {
-            DeleteQueryBuilder<Test1> queryBuilder = new DeleteQueryBuilder<Test1>(_statements);
+            DeleteQueryBuilder<Test1> queryBuilder = new DeleteQueryBuilder<Test1>(_formats);
             IQuery<Test1> query = queryBuilder.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Statements);
+            Assert.NotNull(query.Formats);
             Assert.NotNull(query.Criteria);
             Assert.Empty(query.Criteria);
         }

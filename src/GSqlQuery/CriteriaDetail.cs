@@ -39,7 +39,6 @@ namespace GSqlQuery
         /// <summary>
         /// Initializes a new instance of the CriteriaDetail class.
         /// </summary>
-        /// <param name="searchCriteria">Search Criteria</param>
         /// <param name="queryPart">Query part</param>
         /// <param name="parameterDetails">Parameter Details</param>
         /// <exception cref="ArgumentNullException"></exception>

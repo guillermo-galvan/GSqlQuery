@@ -6,7 +6,7 @@ namespace GSqlQuery
     public interface IQuery
     {
         /// <summary>
-        /// The Query
+        /// Query Text
         /// </summary>
         string Text { get; set; }
 
@@ -28,8 +28,8 @@ namespace GSqlQuery
     public interface IQuery<T> : IQuery where T : class
     {
         /// <summary>
-        /// Options to use in the query
+        /// Formats
         /// </summary>
-        IFormats Statements { get; }
+        IFormats Formats { get; }
     }
 }

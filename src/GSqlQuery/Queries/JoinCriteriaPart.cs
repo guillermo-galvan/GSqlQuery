@@ -2,6 +2,9 @@
 
 namespace GSqlQuery.Queries
 {
+    /// <summary>
+    /// Join Criteria Part
+    /// </summary>
     internal class JoinCriteriaPart
     {
         public ColumnAttribute Column { get; set; }

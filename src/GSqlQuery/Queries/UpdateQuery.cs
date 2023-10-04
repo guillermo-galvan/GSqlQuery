@@ -14,10 +14,10 @@ namespace GSqlQuery
         /// <param name="text">The Query</param>
         /// <param name="columns">Columns of the query</param>
         /// <param name="criteria">Query criteria</param>
-        /// <param name="statements">Statements to use in the query</param>        
+        /// <param name="formats">Formats</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal UpdateQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats statements) :
-            base(text, columns, criteria, statements)
+        internal UpdateQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
+            base(text, columns, criteria, formats)
         { }
     }
 }

@@ -1,5 +1,8 @@
 ﻿namespace GSqlQuery.Queries
 {
+    /// <summary>
+    /// Format for sentences
+    /// </summary>
     internal class ConstFormat
     {
         internal const string SELECT = "SELECT {0} FROM {1};";

@@ -49,7 +49,7 @@ namespace GSqlQuery.Test.Queries
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Statements);
+            Assert.NotNull(query.Formats);
             Assert.NotNull(query.Criteria);
             Assert.Empty(query.Criteria);
         }
@@ -65,7 +65,7 @@ namespace GSqlQuery.Test.Queries
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Statements);
+            Assert.NotNull(query.Formats);
             Assert.NotNull(query.Criteria);
         }
     }

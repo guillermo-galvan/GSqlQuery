@@ -14,37 +14,37 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IWhere<User, DeleteQuery<User>> GenerateWhereQuery()
         {
-            return User.Delete(_statements).Where();
+            return User.Delete(_formats).Where();
         }
 
         [Benchmark]
         public IQuery GenerateQuery()
         {
-            return User.Delete(_statements).Build();
+            return User.Delete(_formats).Build();
         }
 
         [Benchmark]
         public IQuery GenerateEqualWhereQuery()
         {
-            return User.Delete(_statements).Where().Equal(x => x.Id, 1).Build();
+            return User.Delete(_formats).Where().Equal(x => x.Id, 1).Build();
         }
 
         [Benchmark]
         public IQuery GenerateBetweenWhereQuery()
         {
-            return User.Delete(_statements).Where().Between(x => x.Id, 1, 2).Build();
+            return User.Delete(_formats).Where().Between(x => x.Id, 1, 2).Build();
         }
 
         [Benchmark]
         public IQuery GenerateLikeWhereQuery()
         {
-            return User.Delete(_statements).Where().Like(x => x.Name, "23").Build();
+            return User.Delete(_formats).Where().Like(x => x.Name, "23").Build();
         }
 
         [Benchmark]
         public IQuery GenerateIsNullWhereQuery()
         {
-            return User.Delete(_statements).Where().IsNull(x => x.Name).Build();
+            return User.Delete(_formats).Where().IsNull(x => x.Name).Build();
         }
     }
 
@@ -59,13 +59,13 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateInWhereQuery()
         {
-            return User.Delete(_statements).Where().In(x => x.Id, _ids).Build();
+            return User.Delete(_formats).Where().In(x => x.Id, _ids).Build();
         }
 
         [Benchmark]
         public IQuery GenerateFiveWhereQuery()
         {
-            return User.Delete(_statements).Where()
+            return User.Delete(_formats).Where()
                        .In(x => x.Id, _ids)
                        .AndEqual(x => x.Name, "nombre")
                        .OrBetween(x => x.Id, 1, 10)

@@ -9,8 +9,7 @@
         /// <summary>
         /// Generate the insert query
         /// </summary>
-        /// <param name="key">The name of the statement collection</param>
         /// <returns>Instance of IQuery</returns>
-        IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats statements);
+        IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats formats);
     }
 }

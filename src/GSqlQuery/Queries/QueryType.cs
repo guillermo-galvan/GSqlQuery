@@ -1,5 +1,8 @@
 ﻿namespace GSqlQuery
 {
+    /// <summary>
+    /// Query Type
+    /// </summary>
     public enum QueryType
     {
         Create,

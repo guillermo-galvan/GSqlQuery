@@ -3,8 +3,21 @@ using System.Linq.Expressions;
 
 namespace GSqlQuery.Extensions
 {
+    /// <summary>
+    /// GSqlQuery Extension
+    /// </summary>
     public static class GSqlQueryExtension
     {
+        /// <summary>
+        /// Instance of IAndOr
+        /// </summary>
+        /// <typeparam name="T">The type to query</typeparam>
+        /// <typeparam name="TReturn">Query</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
+        /// <param name="where">Instance of IWhere</param>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>Instance of IAndOr</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IAndOr<T, TReturn> GetAndOr<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression)
            where T : class where TReturn : IQuery<T>
         {
@@ -20,11 +33,12 @@ namespace GSqlQuery.Extensions
         }
 
         /// <summary>
-        /// 
+        /// Instance of IAndOr
         /// </summary>
-        /// <typeparam name="T">Type of class</typeparam>        
-        /// <param name="where">IWhere</param>        
-        /// <returns>IAndOr</returns>
+        /// <typeparam name="T">The type to query</typeparam>
+        /// <typeparam name="TReturn">Query</typeparam>
+        /// <param name="where">Instance of IWhere</param>
+        /// <returns>Instance of IAndOr</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static IAndOr<T, TReturn> GetAndOr<T, TReturn>(this IWhere<T, TReturn> where)
             where T : class where TReturn : IQuery<T>
@@ -41,13 +55,13 @@ namespace GSqlQuery.Extensions
         }
 
         /// <summary>
-        /// Validate if andor and expression are not null
+        /// Instance of IAndOr
         /// </summary>
-        /// <typeparam name="T">Type of class</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
-        /// <param name="andOr">IAndOr</param>
+        /// <typeparam name="T">The type to query</typeparam>
+        /// <typeparam name="TReturn">Query</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
+        /// <param name="andOr">Instance of IAndOr</param>
         /// <param name="expression">Expression to evaluate</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public static void Validate<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression)
             where T : class where TReturn : IQuery<T>
         {

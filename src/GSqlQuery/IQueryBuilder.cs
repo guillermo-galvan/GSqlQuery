@@ -5,13 +5,17 @@ namespace GSqlQuery
     /// <summary>
     /// Query Builder
     /// </summary>
-    /// <typeparam name="T">The type to query</typeparam>
+    /// <typeparam name="TReturn">Query</typeparam>
+    /// <typeparam name="TOptions">Options type</typeparam>
     public interface IQueryBuilder<TReturn, TOptions> : IBuilder<TReturn> where TReturn : IQuery
     {
+        /// <summary>
+        /// Get columns
+        /// </summary>
         IEnumerable<PropertyOptions> Columns { get; }
 
         /// <summary>
-        /// Statements to use in the query
+        /// Get Options
         /// </summary>
         TOptions Options { get; }
     }

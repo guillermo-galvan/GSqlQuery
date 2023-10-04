@@ -13,9 +13,10 @@ namespace GSqlQuery
         /// Generate the update query
         /// </summary>
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
-        /// <param name="key">The name of the statement collection</param>
+        /// <param name="formats">Formats</param>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats statements, Expression<Func<T, TProperties>> expression);
+
+        ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression);
     }
 }

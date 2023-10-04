@@ -6,19 +6,19 @@ namespace GSqlQuery
     public sealed class TableAttribute : Attribute
     {
         /// <summary>
-        /// 
+        /// Get table name
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// 
+        /// Get scheme 
         /// </summary>
         public string Scheme { get; private set; } = null;
 
         /// <summary>
-        /// 
+        /// Class constructor
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Table name</param>
         /// <exception cref="ArgumentNullException"></exception>
         public TableAttribute(string name)
         {
@@ -31,10 +31,10 @@ namespace GSqlQuery
         }
 
         /// <summary>
-        /// 
+        /// Class constructor
         /// </summary>
-        /// <param name="scheme"></param>
-        /// <param name="name"></param>
+        /// <param name="scheme">Scheme</param>
+        /// <param name="name">Table name</param>
         /// <exception cref="ArgumentNullException"></exception>
         public TableAttribute(string scheme, string name) : this(name)
         {
