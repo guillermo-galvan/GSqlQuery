@@ -1,5 +1,8 @@
 ﻿namespace GSqlQuery.Queries
 {
+    /// <summary>
+    /// Join Model
+    /// </summary>
     internal class JoinModel
     {
         public JoinCriteriaPart JoinModel1 { get; set; }

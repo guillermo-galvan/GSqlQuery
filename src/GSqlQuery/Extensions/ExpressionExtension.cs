@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace GSqlQuery.Extensions
 {
+    /// <summary>
+    /// Expression Extension
+    /// </summary>
     internal static class ExpressionExtension
     {
         /// <summary>

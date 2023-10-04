@@ -4,6 +4,9 @@ using System.Linq.Expressions;
 
 namespace GSqlQuery
 {
+    /// <summary>
+    /// Set 
+    /// </summary>
     public interface ISet
     {
         /// <summary>
@@ -13,11 +16,11 @@ namespace GSqlQuery
     }
 
     /// <summary>
-    /// Base class to generate the set query
+    /// Generate the set query
     /// </summary>
-    /// <typeparam name="T">The type of object from which the query is generated</typeparam>
+    /// <typeparam name="T">The type to query</typeparam>
     public interface ISet<T, TReturn, TOptions> : IBuilder<TReturn>, ISet, IQueryBuilderWithWhere<TReturn, TOptions>, IQueryBuilderWithWhere<T, TReturn, TOptions>
-        where T : class, new()
+        where T : class
         where TReturn : IQuery<T>
     {
         /// <summary>

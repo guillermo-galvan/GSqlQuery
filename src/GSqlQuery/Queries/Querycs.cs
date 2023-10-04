@@ -7,12 +7,19 @@ namespace GSqlQuery
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public abstract class Query<T> : QueryBase, IQuery<T> where T : class, new()
+    public abstract class Query<T> : QueryBase, IQuery<T> where T : class
     {
         private readonly ClassOptions _classOptions;
 
-        public IStatements Statements { get; }
+        /// <summary>
+        /// Get Formats
+        /// </summary>
+        public IFormats Formats { get; }
 
+        /// <summary>
+        /// Get class options
+        /// </summary>
+        /// <returns>class options</returns>
         protected virtual ClassOptions GetClassOptions()
         {
             return _classOptions;
@@ -23,14 +30,14 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="columns">Columns of the query</param>
         /// <param name="criteria">Query criteria</param>
-        /// <param name="statements">Statements to use in the query</param>
+        /// <param name="formats">Formats</param>
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IStatements statements) :
+        public Query(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
             base(text, columns, criteria)
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
-            Statements = statements ?? throw new ArgumentNullException(nameof(statements));
+            Formats = formats ?? throw new ArgumentNullException(nameof(formats));
         }
     }
 }

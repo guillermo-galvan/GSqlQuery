@@ -29,6 +29,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="table">Table Attribute</param>
         /// <param name="columnAttribute">Column Attribute</param>
         /// <param name="initialValue">Initial value</param>
+        /// <param name="finalValue">Logical operator</param>
         public Between(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue) : this(table, columnAttribute, initialValue, finalValue, null)
         {
 
@@ -49,20 +50,20 @@ namespace GSqlQuery.SearchCriteria
         }
 
         /// <summary>
-        /// Get Criteria detail
+        /// Get Criteria
         /// </summary>
-        /// <param name="statements">Statements</param>
+        /// <param name="formats">formats</param>
         /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions)
+        public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
         {
-            string tableName = Table.GetTableName(statements);
+            string tableName = Table.GetTableName(formats);
             ulong tiks = Helpers.GetIdParam();
             string parameterName1 = $"@{ParameterPrefix}1{tiks}";
             string parameterName2 = $"@{ParameterPrefix}2{tiks}";
 
             string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, statements, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}";
+                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
+                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}";
 
             var property = Column.GetPropertyOptions(propertyOptions);
 

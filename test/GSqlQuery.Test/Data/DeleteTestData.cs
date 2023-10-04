@@ -9,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"DELETE FROM Test3;"
+                new DefaultFormats(),"DELETE FROM Test3;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"DELETE FROM [Test3];"
+                new Models.Formats(),"DELETE FROM [Test3];"
             };
         }
 
@@ -27,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"DELETE FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Create IS NOT NULL;"
+                new DefaultFormats(),"DELETE FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Create IS NOT NULL;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"DELETE FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] IS NOT NULL;"
+                new Models.Formats(),"DELETE FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] IS NOT NULL;"
             };
         }
 

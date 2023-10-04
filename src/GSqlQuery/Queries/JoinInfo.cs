@@ -2,6 +2,9 @@
 
 namespace GSqlQuery.Queries
 {
+    /// <summary>
+    /// Join Info
+    /// </summary>
     internal class JoinInfo
     {
         public IEnumerable<PropertyOptions> Columns { get; set; }

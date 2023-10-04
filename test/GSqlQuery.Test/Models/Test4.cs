@@ -15,15 +15,5 @@ namespace GSqlQuery.Test.Models
         public DateTime Creates { get; set; }
 
         public bool IsTests { get; set; }
-
-        public Test4()
-        { }
-
-        public Test4(int ids, string names, DateTime creates)
-        {
-            Ids = ids;
-            Names = names;
-            Creates = creates;
-        }
     }
 }

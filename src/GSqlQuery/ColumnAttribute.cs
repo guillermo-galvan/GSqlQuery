@@ -29,7 +29,7 @@ namespace GSqlQuery
         public bool IsAutoIncrementing { get; set; }
 
         /// <summary>
-        /// 
+        /// Class constructor
         /// </summary>
         /// <param name="name">Column name</param>
         public ColumnAttribute(string name)

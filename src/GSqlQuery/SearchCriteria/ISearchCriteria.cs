@@ -3,7 +3,7 @@
 namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
-    /// 
+    /// Search criteria
     /// </summary>
     public interface ISearchCriteria
     {
@@ -20,8 +20,8 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get Criteria detail
         /// </summary>
-        /// <param name="statements">Statements</param>
+        /// <param name="formats">formats</param>
         /// <returns>Details of the criteria</returns>
-        CriteriaDetail GetCriteria(IStatements statements, IEnumerable<PropertyOptions> propertyOptions);
+        CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions);
     }
 }

@@ -8,11 +8,11 @@ namespace GSqlQuery.Test.Queries
 {
     public class SelectQueryBuilderTest
     {
-        private readonly IStatements _stantements;
+        private readonly IFormats _stantements;
 
         public SelectQueryBuilderTest()
         {
-            _stantements = new Statements();
+            _stantements = new DefaultFormats();
         }
 
         [Fact]
@@ -53,8 +53,9 @@ namespace GSqlQuery.Test.Queries
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Statements);
-            Assert.Null(query.Criteria);
+            Assert.NotNull(query.Formats);
+            Assert.NotNull(query.Criteria);
+            Assert.Empty(query.Criteria);
         }
     }
 }

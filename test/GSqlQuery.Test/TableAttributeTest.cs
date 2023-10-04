@@ -42,7 +42,7 @@ namespace GSqlQuery.Test
         public void Should_get_the_table_name(string scheme, string name)
         {
             TableAttribute table = new TableAttribute(scheme, name);
-            var result = table.GetTableName(new Statements());
+            var result = table.GetTableName(new DefaultFormats());
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal($"{scheme}.{name}", result);
@@ -58,7 +58,7 @@ namespace GSqlQuery.Test
             TableAttribute table = new TableAttribute("Test");
             Assert.Throws<ArgumentNullException>(() => table.GetTableName(null));
             table = null;
-            Assert.Throws<ArgumentNullException>(() => table.GetTableName(new Statements()));
+            Assert.Throws<ArgumentNullException>(() => table.GetTableName(new DefaultFormats()));
         }
     }
 }

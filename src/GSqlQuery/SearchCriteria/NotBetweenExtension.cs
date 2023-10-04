@@ -11,14 +11,14 @@ namespace GSqlQuery
         /// Adds the criteria not between to the query
         /// </summary>
         /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="where">Instance of IWhere</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> NotBetween<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -30,14 +30,14 @@ namespace GSqlQuery
         /// Adds the criteria not between to the query with the logical operator AND
         /// </summary>
         /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="where">Instance of IWhere</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> AndNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
@@ -49,14 +49,14 @@ namespace GSqlQuery
         /// Adds the criteria not between to the query with the logical operator OR
         /// </summary>
         /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="where">Instance of IWhere</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="initial">Initial value </param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn> OrNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class, new() where TReturn : IQuery<T>
+            TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();

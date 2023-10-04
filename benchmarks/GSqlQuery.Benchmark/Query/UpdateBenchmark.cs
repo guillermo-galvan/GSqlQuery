@@ -17,7 +17,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IWhere<User, UpdateQuery<User>> GenerateWhereQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -28,7 +28,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -38,7 +38,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateEqualWhereQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -49,7 +49,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateBetweenWhereQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -60,7 +60,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateLikeWhereQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -71,7 +71,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateIsNullWhereQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -82,7 +82,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IWhere<User, UpdateQuery<User>> GenerateWhereQueryByEntity()
         {
-            return _user.Update(_statements, x => x.Id)
+            return _user.Update(_formats, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)
@@ -93,7 +93,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateQueryByEntity()
         {
-            return _user.Update(_statements, x => x.Id)
+            return _user.Update(_formats, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)
@@ -103,7 +103,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateEqualWhereQueryByEntity()
         {
-            return _user.Update(_statements, x => x.Id)
+            return _user.Update(_formats, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)
@@ -114,7 +114,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateBetweenWhereQueryByEntity()
         {
-            return _user.Update(_statements, x => x.Id)
+            return _user.Update(_formats, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)
@@ -125,7 +125,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateLikeWhereQueryByEntity()
         {
-            return _user.Update(_statements, x => x.Id)
+            return _user.Update(_formats, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)
@@ -136,7 +136,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateIsNullWhereQueryByEntity()
         {
-            return _user.Update(_statements, x => x.Id)
+            return _user.Update(_formats, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)
@@ -156,7 +156,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateInWhereQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -169,7 +169,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateFiveWhereQuery()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -187,7 +187,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateInWhereQueryByEntity()
         {
-            return User.Update(_statements, x => x.Id, 1)
+            return User.Update(_formats, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -198,7 +198,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateFiveWhereQueryByEntity()
         {
-            return _user.Update(_statements, x => x.Id)
+            return _user.Update(_formats, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)

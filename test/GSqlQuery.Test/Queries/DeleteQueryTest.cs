@@ -11,12 +11,12 @@ namespace GSqlQuery.Test.Queries
         private readonly ColumnAttribute _columnAttribute;
         private readonly TableAttribute _tableAttribute;
         private readonly Equal<int> _equal;
-        private readonly IStatements _statements;
+        private readonly IFormats _formats;
         private readonly ClassOptions _classOptions;
 
         public DeleteQueryTest()
         {
-            _statements = new Statements();
+            _formats = new DefaultFormats();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             _tableAttribute = _classOptions.Table;
@@ -26,7 +26,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            DeleteQuery<Test1> query = new DeleteQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements);
+            DeleteQuery<Test1> query = new DeleteQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _formats);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -35,15 +35,15 @@ namespace GSqlQuery.Test.Queries
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
-            Assert.NotNull(query.Statements);
+            Assert.NotNull(query.Formats);
         }
 
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements));
-            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, null));
-            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>(null, _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_statements, _classOptions.PropertyOptions) }, _statements));
+            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _formats));
+            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, null));
+            Assert.Throws<ArgumentNullException>(() => new DeleteQuery<Test1>(null, _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _formats));
         }
     }
 }

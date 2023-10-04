@@ -2,55 +2,68 @@
 
 namespace GSqlQuery.Queries
 {
+    /// <summary>
+    /// Delete Query Builder
+    /// </summary>
+    /// <typeparam name="T">Type to create the query</typeparam>
+    /// <typeparam name="TReturn">Query</typeparam>
     internal abstract class DeleteQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
-        where T : class, new()
+        where T : class
         where TReturn : DeleteQuery<T>
     {
-        public DeleteQueryBuilder(IStatements statements)
-            : base(statements)
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        /// <param name="formats">Formats</param>
+        public DeleteQueryBuilder(IFormats formats)
+            : base(formats)
         {
         }
 
-        internal string CreateQuery(IStatements statements)
+        /// <summary>
+        /// Create query
+        /// </summary>
+        /// <returns>Query text</returns>
+        internal string CreateQuery()
         {
             string result;
 
             if (_andOr == null)
             {
-                result = string.Format(statements.Delete, _tableName);
+                result = string.Format(ConstFormat.DELETE, _tableName);
             }
             else
             {
-                result = string.Format(statements.DeleteWhere, _tableName, GetCriteria());
+                result = string.Format(ConstFormat.DELETEWHERE, _tableName, GetCriteria());
             }
 
             return result;
         }
     }
+
     /// <summary>
-    /// Delete query builder
+    /// Delete Query Builder
     /// </summary>
-    /// <typeparam name="T">The type to query</typeparam>
+    /// <typeparam name="T">Type to create the query</typeparam>
     internal class DeleteQueryBuilder<T> : DeleteQueryBuilder<T, DeleteQuery<T>>
-        where T : class, new()
+        where T : class
     {
         /// <summary>
-        /// Initializes a new instance of the DeleteQueryBuilder class.
+        /// Class constructor
         /// </summary>
-        /// <param name="options">Detail of the class to transform</param>
-        /// <param name="statements">Statements to build the query</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public DeleteQueryBuilder(IStatements statements)
-            : base(statements)
+        /// <param name="formats">Formats</param>
+        public DeleteQueryBuilder(IFormats formats)
+            : base(formats)
         {
         }
 
         /// <summary>
-        /// Build delete query
+        /// Build the query
         /// </summary>
+        /// <returns>Count Query</returns>
         public override DeleteQuery<T> Build()
         {
-            return new DeleteQuery<T>(CreateQuery(Options), Columns, _criteria, Options);
+            return new DeleteQuery<T>(CreateQuery(), Columns, _criteria, Options);
         }
     }
 }

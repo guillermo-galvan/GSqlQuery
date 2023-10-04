@@ -9,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create,Test3.IsTests FROM Test3;"
+                new DefaultFormats(),"SELECT Test3.Id,Test3.Name,Test3.Create,Test3.IsTests FROM Test3;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create],[Test3].[IsTests] FROM [Test3];"
+                new Models.Formats(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create],[Test3].[IsTests] FROM [Test3];"
             };
         }
 
@@ -27,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3;"
+               new DefaultFormats(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3];"
+                new Models.Formats(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3];"
             };
         }
 
@@ -45,12 +45,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Id = @Param;"
+                new DefaultFormats(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Id = @Param;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Id] = @Param;"
+                new Models.Formats(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Id] = @Param;"
             };
         }
 
@@ -63,12 +63,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
+                new DefaultFormats(),"SELECT Test1.Id,Test1.Name,Test1.Create,Test1.IsTest FROM Test1;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];"
+                new Models.Formats(),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];"
             };
         }
 
@@ -81,12 +81,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new Statements(),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
+               new DefaultFormats(),"SELECT Test1.Id,Test1.Name,Test1.Create FROM Test1;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create] FROM [Test1];"
+                new Models.Formats(),"SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create] FROM [Test1];"
             };
         }
 
@@ -99,12 +99,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new Statements(),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
+                new DefaultFormats(),"SELECT Scheme.TableName.Id,Scheme.TableName.Name,Scheme.TableName.Create,Scheme.TableName.IsTests FROM Scheme.TableName;"
             };
 
             yield return new object[]
             {
-                new Models.Statements(),"SELECT [Scheme].[TableName].[Id],[Scheme].[TableName].[Name],[Scheme].[TableName].[Create],[Scheme].[TableName].[IsTests] FROM [Scheme].[TableName];"
+                new Models.Formats(),"SELECT [Scheme].[TableName].[Id],[Scheme].[TableName].[Name],[Scheme].[TableName].[Create],[Scheme].[TableName].[IsTests] FROM [Scheme].[TableName];"
             };
         }
 
