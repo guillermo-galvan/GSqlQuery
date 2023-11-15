@@ -2,7 +2,7 @@
 
 It is an attribute with which you can name the table, to generate queries.
 
-### Propiedades
+### Properties
 
 |         |                                          |
 |---------|------------------------------------------|
