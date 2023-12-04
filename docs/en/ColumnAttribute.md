@@ -2,7 +2,7 @@
 
 It is an attribute with which a column of a database can be represented.
 
-### Propiedades
+### Properties
 
 |                       |                                                              |
 |-----------------------|--------------------------------------------------------------|

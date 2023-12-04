@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA8518E7-BE87-474F-BDF2-8E5D068C530B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery", "src\GSqlQuery\GSqlQuery.csproj", "{397B5908-73C1-4043-947C-0C3F86E4D682}"
@@ -13,6 +14,42 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Test", "test\GSqlQuery.Test\GSqlQuery.Test.csproj", "{41E7F04B-7D4C-49AF-AE02-4DF1E95DC7E8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Benchmark", "benchmarks\GSqlQuery.Benchmark\GSqlQuery.Benchmark.csproj", "{923FF5FC-7C7D-401F-9E44-7922B62301C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D1C3C9AC-0E04-408E-A0DA-B5621081D74A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "en", "en", "{AD7D6D45-BDB4-40CC-AA29-D2702198A0C5}"
+	ProjectSection(SolutionItems) = preProject
+		docs\en\ColumnAttribute.md = docs\en\ColumnAttribute.md
+		docs\en\Config.md = docs\en\Config.md
+		docs\en\Count.md = docs\en\Count.md
+		docs\en\Delete.md = docs\en\Delete.md
+		docs\en\Entity.md = docs\en\Entity.md
+		docs\en\IFormats.md = docs\en\IFormats.md
+		docs\en\Insert.md = docs\en\Insert.md
+		docs\en\IQuery.md = docs\en\IQuery.md
+		docs\en\Join.md = docs\en\Join.md
+		docs\en\Select.md = docs\en\Select.md
+		docs\en\TableAttribute.md = docs\en\TableAttribute.md
+		docs\en\Update.md = docs\en\Update.md
+		docs\en\Where.md = docs\en\Where.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "es", "es", "{A94F8E93-1A3C-46C7-B667-D47B78125F1F}"
+	ProjectSection(SolutionItems) = preProject
+		docs\es\ColumnAttribute.md = docs\es\ColumnAttribute.md
+		docs\es\Config.md = docs\es\Config.md
+		docs\es\Count.md = docs\es\Count.md
+		docs\es\Delete.md = docs\es\Delete.md
+		docs\es\Entity.md = docs\es\Entity.md
+		docs\es\IFormats.md = docs\es\IFormats.md
+		docs\es\Insert.md = docs\es\Insert.md
+		docs\es\IQuery.md = docs\es\IQuery.md
+		docs\es\Join.md = docs\es\Join.md
+		docs\es\Select.md = docs\es\Select.md
+		docs\es\TableAttribute.md = docs\es\TableAttribute.md
+		docs\es\Update.md = docs\es\Update.md
+		docs\es\Where.md = docs\es\Where.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +72,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D1C3C9AC-0E04-408E-A0DA-B5621081D74A} = {BA8518E7-BE87-474F-BDF2-8E5D068C530B}
+		{AD7D6D45-BDB4-40CC-AA29-D2702198A0C5} = {D1C3C9AC-0E04-408E-A0DA-B5621081D74A}
+		{A94F8E93-1A3C-46C7-B667-D47B78125F1F} = {D1C3C9AC-0E04-408E-A0DA-B5621081D74A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D3D7192-9469-4D67-8805-449A56110CBA}
