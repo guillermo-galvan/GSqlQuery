@@ -35,6 +35,7 @@ namespace GSqlQuery.Test
             Assert.False(column.IsAutoIncrementing);
             Assert.Equal(size, column.Size);
             Assert.Equal(name, column.Name);
+            Assert.Equal($"Column Name: {name}", column.ToString());
         }
 
         [Theory]
@@ -50,6 +51,7 @@ namespace GSqlQuery.Test
             Assert.Equal(isPrimaryKey, column.IsPrimaryKey);
             Assert.Equal(size, column.Size);
             Assert.Equal(name, column.Name);
+            Assert.Equal($"Column Name: {name}", column.ToString());
         }
 
         [Theory]
@@ -65,6 +67,7 @@ namespace GSqlQuery.Test
             Assert.Equal(isPrimaryKey, column.IsPrimaryKey);
             Assert.Equal(size, column.Size);
             Assert.Equal(name, column.Name);
+            Assert.Equal($"Column Name: {name}", column.ToString());
         }
 
         [Fact]
@@ -75,6 +78,7 @@ namespace GSqlQuery.Test
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal("Test.Test", result);
+            Assert.Equal($"Column Name: Test", column.ToString());
         }
 
         [Fact]
@@ -102,6 +106,12 @@ namespace GSqlQuery.Test
                 var tmp = item.ColumnAttribute.GetPropertyOptions(classOptions.PropertyOptions);
                 Assert.Equal(item.ColumnAttribute, tmp.ColumnAttribute);
             }
+        }
+        
+        [Fact]
+        public void Throw_exception_if_name_is_null()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ColumnAttribute(null));
         }
     }
 }

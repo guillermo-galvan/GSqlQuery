@@ -2,7 +2,7 @@
 
 This interface represents the query.
 
-### Propiedades
+### Properties
 
 |            |                                       |
 |------------|---------------------------------------|
