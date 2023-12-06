@@ -20,6 +20,7 @@ namespace GSqlQuery.Test
             Assert.NotNull(table.Scheme);
             Assert.NotEmpty(table.Scheme);
             Assert.Equal(scheme, table.Scheme);
+            Assert.NotEmpty(table.ToString());
         }
 
         [Theory]
@@ -34,6 +35,7 @@ namespace GSqlQuery.Test
             Assert.NotEmpty(table.Name);
             Assert.Equal(name, table.Name);
             Assert.Null(table.Scheme);
+            Assert.NotEmpty(table.ToString());
         }
 
         [Theory]
@@ -46,6 +48,7 @@ namespace GSqlQuery.Test
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal($"{scheme}.{name}", result);
+            Assert.NotEmpty(table.ToString());
         }
 
         [Fact]
