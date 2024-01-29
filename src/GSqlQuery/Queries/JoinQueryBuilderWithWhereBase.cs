@@ -143,7 +143,7 @@ namespace GSqlQuery.Queries
         /// <returns>IWhere&lt;<typeparamref name="TJoin"/>, <typeparamref name="TReturn"/>&gt;</returns>
         public override IWhere<TJoin, TReturn> Where()
         {
-            _andOr = new AndOrJoin<T1, T2, TJoin, TReturn, TOptions>((IQueryBuilderWithWhere<TReturn, TOptions>)this);
+            _andOr = new AndOrJoin<T1, T2, TJoin, TReturn, TOptions>((IQueryBuilderWithWhere<TReturn, TOptions>)this, Options);
             return (IWhere<TJoin, TReturn>)_andOr;
         }
 
@@ -207,7 +207,7 @@ namespace GSqlQuery.Queries
         /// <returns>IWhere&lt;<typeparamref name="TJoin"/>, <typeparamref name="TReturn"/>&gt;</returns>
         public override IWhere<TJoin, TReturn> Where()
         {
-            _andOr = new AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions>((IQueryBuilderWithWhere<TReturn, TOptions>)this);
+            _andOr = new AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions>((IQueryBuilderWithWhere<TReturn, TOptions>)this, Options);
             return (IWhere<TJoin, TReturn>)_andOr;
         }
 

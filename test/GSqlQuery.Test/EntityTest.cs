@@ -740,5 +740,33 @@ namespace GSqlQuery.Test
             Assert.Equal(query, result);
         }
 
+
+        [Theory]
+        [ClassData(typeof(Inner_Join_OrderBy_three_tables_Where_In_TestData))]
+        public void Should_generate_the_inner_join_three_tables_orderBy_query_with_where_in(IFormats formats, string query)
+        {
+            var queryResult = Test3.Select(formats)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Where()
+                              .In(x => x.Table1.Ids, new int[] { 1,2,3 })
+                              .AndNotIn(x => x.Table2.Ids, new int[] { 1, 2, 3 })
+                              .OrderBy(x => new { x.Table2.IsTests, x.Table1.Names, x.Table3.Id }, OrderBy.ASC)
+                              .Build();
+
+            string result = queryResult.Text;
+            if (queryResult.Criteria != null)
+            {
+                foreach (var item in queryResult.Criteria)
+                {
+                    result = item.ParameterDetails.ParameterReplace(result);
+                }
+            }
+
+            Assert.NotNull(queryResult);
+            Assert.NotEmpty(queryResult.Text);
+            Assert.Equal(query, result);
+        }
+
     }
 }

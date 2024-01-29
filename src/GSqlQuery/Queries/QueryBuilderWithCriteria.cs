@@ -29,7 +29,7 @@ namespace GSqlQuery
         /// <returns>IWhere&lt;<typeparamref name="T"/>, <typeparamref name="TReturn"/>&gt;</returns>
         public virtual IWhere<T, TReturn> Where()
         {
-            _andOr = new AndOrBase<T, TReturn, IFormats>(this);
+            _andOr = new AndOrBase<T, TReturn, IFormats>(this, Options);
             return (IWhere<T, TReturn>)_andOr;
         }
 

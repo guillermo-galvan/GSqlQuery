@@ -12,26 +12,20 @@ namespace GSqlQuery
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TOptions">Options type</typeparam>
-    public class AndOrBase<T, TReturn, TOptions> : WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
+    /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
+    /// <param name="formats">Formats</param>
+    /// <param name="isColumns">Determines whether to take the columns from <typeparamref name="T"/></param>
+    /// <exception cref="ArgumentException"></exception>
+    public class AndOrBase<T, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats, bool isColumns = true) : WhereBase<TReturn>(), IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
         where TReturn : IQuery<T>
         where T : class
     {
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
-        internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere;
+        internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentException(nameof(queryBuilderWithWhere));
 
-        protected IEnumerable<PropertyOptions> Columns { get; set; }
+        protected IEnumerable<PropertyOptions> Columns { get; set; } = isColumns ? ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions : Enumerable.Empty<PropertyOptions>();
 
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
-        /// <param name="isColumns">Determines whether to take the columns from <typeparamref name="T"/></param>
-        /// <exception cref="ArgumentException"></exception>
-        public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, bool isColumns = true) : base()
-        {
-            _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentException(nameof(queryBuilderWithWhere));
-            Columns = isColumns ? ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions : Enumerable.Empty<PropertyOptions>();
-        }
+        public IFormats Formats { get; } = formats ?? throw new ArgumentException(nameof(formats));
 
         /// <summary>
         /// Add search criteria

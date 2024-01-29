@@ -57,7 +57,7 @@ namespace GSqlQuery.SearchCriteria
         public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
         {
             string tableName = Table.GetTableName(formats);
-            ulong tiks = Helpers.GetIdParam();
+            int tiks = Helpers.GetIdParam();
             string parameterName1 = $"@{ParameterPrefix}1{tiks}";
             string parameterName2 = $"@{ParameterPrefix}2{tiks}";
 

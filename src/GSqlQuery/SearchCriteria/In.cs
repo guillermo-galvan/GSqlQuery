@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -9,11 +10,13 @@ namespace GSqlQuery.SearchCriteria
     /// Represents the search criteria in(IN)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class In<T> : Criteria, ISearchCriteria
+    internal class In<T> : Criteria, ISearchCriteria
     {
         protected virtual string RelationalOperator => "IN";
 
         protected virtual string ParameterPrefix => "PI";
+
+        private readonly Task<CriteriaDetails> _task;
 
         /// <summary>
         /// Get Values
@@ -23,27 +26,49 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Initializes a new instance of the In class.
         /// </summary>
-        /// <param name="table">Table Attribute</param>
-        /// <param name="columnAttribute">Column Attribute</param>
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+        /// <param name="formats">Formats</param>
         /// <param name="values">Equality value</param>
-        public In(TableAttribute table, ColumnAttribute columnAttribute, IEnumerable<T> values) : this(table, columnAttribute, values, null)
+        public In(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values) : this(classOptionsTupla, formats, values, null)
         { }
 
         /// <summary>
         /// Initializes a new instance of the In class.
         /// </summary>
-        /// <param name="table">Table Attribute</param>
-        /// <param name="columnAttribute">Column Attribute</param>
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+        /// <param name="formats">Formats</param>
         /// <param name="values">Equality value</param>
         /// <param name="logicalOperator">Logical operator </param>
         /// <exception cref="ArgumentNullException"></exception>
-        public In(TableAttribute table, ColumnAttribute columnAttribute, IEnumerable<T> values, string logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public In(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator) 
+            : base(classOptionsTupla.ClassOptions.Table, classOptionsTupla.MemberInfo, logicalOperator)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));
             if (!values.Any())
             {
                 throw new IndexOutOfRangeException(nameof(values));
             }
+
+            _task = Task.Factory.StartNew(() =>
+            {
+
+                string tableName = Table.GetTableName(formats);
+                ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
+                int count = 0;
+                int index = 0;
+                int ticks = Helpers.GetIdParam();
+                var property = Column.GetPropertyOptions(classOptionsTupla.ClassOptions.PropertyOptions);
+
+                foreach (var item in Values)
+                {
+                    parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks}", item, property);
+                }
+
+                string criterion = $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
+                criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
+
+                return new CriteriaDetails(parameters, criterion);
+            });
         }
 
         /// <summary>
@@ -53,21 +78,9 @@ namespace GSqlQuery.SearchCriteria
         /// <returns>Details of the criteria</returns>
         public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
         {
-            string tableName = Table.GetTableName(formats);
-            ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
-            int count = 0;
-            int index = 0;
-            ulong ticks = Helpers.GetIdParam();
-            var property = Column.GetPropertyOptions(propertyOptions);
-
-            foreach (var item in Values)
-            {
-                parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks}", item, property);
-            }
-
-            string criterion = $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
-            criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
-            return new CriteriaDetail(this, criterion, parameters);
+            _task.Wait();
+            var result = _task.Result;
+            return new CriteriaDetail(this, result.Criterion, result.Parameters);
         }
     }
 }

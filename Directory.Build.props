@@ -10,7 +10,7 @@
 	  <RepositoryUrl>https://github.com/guillermo-galvan/GSqlQuery</RepositoryUrl>
 	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 	  <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-	  <!--<PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>-->
+	  <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>
   </PropertyGroup>
   
 </Project>

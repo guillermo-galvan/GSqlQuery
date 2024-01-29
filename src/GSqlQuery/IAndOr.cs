@@ -20,6 +20,9 @@ namespace GSqlQuery
         where T : class
         where TReturn : IQuery<T>
     {
-
+        /// <summary>
+        /// Formats
+        /// </summary>
+        IFormats Formats { get; }
     }
 }
