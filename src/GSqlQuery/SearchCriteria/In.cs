@@ -16,8 +16,6 @@ namespace GSqlQuery.SearchCriteria
 
         protected virtual string ParameterPrefix => "PI";
 
-        private readonly Task<CriteriaDetails> _task;
-
         /// <summary>
         /// Get Values
         /// </summary>
@@ -41,7 +39,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="logicalOperator">Logical operator </param>
         /// <exception cref="ArgumentNullException"></exception>
         public In(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator) 
-            : base(classOptionsTupla.ClassOptions.Table, classOptionsTupla.MemberInfo, logicalOperator)
+            : base(classOptionsTupla, formats, logicalOperator)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));
             if (!values.Any())
@@ -67,20 +65,8 @@ namespace GSqlQuery.SearchCriteria
                 string criterion = $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
                 criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
 
-                return new CriteriaDetails(parameters, criterion);
+                return new CriteriaDetails(criterion, parameters);
             });
-        }
-
-        /// <summary>
-        /// Get Criteria detail
-        /// </summary>
-        /// <param name="formats">Formats</param>
-        /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
-        {
-            _task.Wait();
-            var result = _task.Result;
-            return new CriteriaDetail(this, result.Criterion, result.Parameters);
         }
     }
 }

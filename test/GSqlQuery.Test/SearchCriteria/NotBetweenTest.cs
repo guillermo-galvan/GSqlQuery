@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
@@ -11,10 +12,10 @@ namespace GSqlQuery.Test.SearchCriteria
     public class NotBetweenTest
     {
         private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
         private readonly IFormats _formats;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
+        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
 
         public NotBetweenTest()
         {
@@ -23,13 +24,13 @@ namespace GSqlQuery.Test.SearchCriteria
                 _formats);
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
+            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
         }
 
         [Fact]
         public void Should_create_an_instance()
         {
-            NotBetween<int> equal = new NotBetween<int>(_tableAttribute, _columnAttribute, 1, 2);
+            NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), 1, 2);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -44,7 +45,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5, 8)]
         public void Should_create_an_instance_1(string logicalOperator, int initValue, int finalValue)
         {
-            NotBetween<int> equal = new NotBetween<int>(_tableAttribute, _columnAttribute, initValue, finalValue, logicalOperator);
+            NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), initValue, finalValue, logicalOperator);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -61,7 +62,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5, 7, "OR Test1.Id NOT BETWEEN @Param AND @Param")]
         public void Should_get_criteria_detail(string logicalOperator, int inicialValue, int finalValue, string querypart)
         {
-            NotBetween<int> equal = new NotBetween<int>(_tableAttribute, _columnAttribute, inicialValue, finalValue, logicalOperator);
+            NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), inicialValue, finalValue, logicalOperator);
             var result = equal.GetCriteria(_formats, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);

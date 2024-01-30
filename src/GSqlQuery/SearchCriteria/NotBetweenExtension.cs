@@ -22,7 +22,7 @@ namespace GSqlQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new NotBetween<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final));
+            andor.Add(new NotBetween<TProperties>(columnInfo, where.Formats, initial, final));
             return andor;
         }
 
@@ -41,7 +41,7 @@ namespace GSqlQuery
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new NotBetween<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final, "AND"));
+            andOr.Add(new NotBetween<TProperties>(columnInfo, andOr.Formats, initial, final, "AND"));
             return andOr;
         }
 
@@ -60,7 +60,7 @@ namespace GSqlQuery
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new NotBetween<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final, "OR"));
+            andOr.Add(new NotBetween<TProperties>(columnInfo, andOr.Formats, initial, final, "OR"));
             return andOr;
         }
     }

@@ -4,6 +4,7 @@ using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries
@@ -15,7 +16,10 @@ namespace GSqlQuery.Test.Queries
 
         public SelectWhereTest()
         {
-            _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
+            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            var columnAttribute = classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, columnAttribute);
+            _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
             _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
                new DefaultFormats());
         }

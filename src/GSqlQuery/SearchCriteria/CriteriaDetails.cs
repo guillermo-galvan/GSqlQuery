@@ -1,6 +1,6 @@
 ﻿namespace GSqlQuery.SearchCriteria
 {
-    internal readonly struct CriteriaDetails(ParameterDetail[] parameters, string criterion)
+    internal readonly struct CriteriaDetails(string criterion, ParameterDetail[] parameters)
     {
         public ParameterDetail[] Parameters { get; } = parameters;
 

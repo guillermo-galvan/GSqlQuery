@@ -13,10 +13,13 @@ namespace GSqlQuery.Test.Queries
         private readonly Equal<int> _equal;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly CountQueryBuilder<Test1> _countQueryBuilder;
+        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
 
         public CountWhereTest()
         {
-            _equal = new Equal<int>(new TableAttribute("Test1"), new ColumnAttribute("Id"), 1);
+            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, new ColumnAttribute("Id"));
+            _equal = new Equal<int>(_classOptionsTupla, new DefaultFormats(), 1);
             _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, new DefaultFormats());
             _countQueryBuilder = new CountQueryBuilder<Test1>(_queryBuilder);
         }

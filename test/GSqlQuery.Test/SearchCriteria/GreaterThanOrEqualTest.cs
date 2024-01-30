@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
@@ -11,10 +12,10 @@ namespace GSqlQuery.Test.SearchCriteria
     public class GreaterThanOrEqualTest
     {
         private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
         private readonly IFormats _formats;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
+        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
 
         public GreaterThanOrEqualTest()
         {
@@ -23,13 +24,13 @@ namespace GSqlQuery.Test.SearchCriteria
                 new DefaultFormats());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
+            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
         }
 
         [Fact]
         public void Should_create_an_instance()
         {
-            GreaterThanOrEqual<int> equal = new GreaterThanOrEqual<int>(_tableAttribute, _columnAttribute, 1);
+            GreaterThanOrEqual<int> equal = new GreaterThanOrEqual<int>(_classOptionsTupla, new DefaultFormats(), 1);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -43,7 +44,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5)]
         public void Should_create_an_instance_1(string logicalOperator, int value)
         {
-            GreaterThanOrEqual<int> equal = new GreaterThanOrEqual<int>(_tableAttribute, _columnAttribute, value, logicalOperator);
+            GreaterThanOrEqual<int> equal = new GreaterThanOrEqual<int>(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -59,7 +60,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5, "OR Test1.Id >= @Param")]
         public void Should_get_criteria_detail(string logicalOperator, int value, string querypart)
         {
-            GreaterThanOrEqual<int> equal = new GreaterThanOrEqual<int>(_tableAttribute, _columnAttribute, value, logicalOperator);
+            GreaterThanOrEqual<int> equal = new GreaterThanOrEqual<int>(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
             var result = equal.GetCriteria(_formats, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);

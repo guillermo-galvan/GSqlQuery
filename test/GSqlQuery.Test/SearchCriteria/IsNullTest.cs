@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System.Collections.Generic;
@@ -10,10 +11,10 @@ namespace GSqlQuery.Test.SearchCriteria
     public class IsNullTest
     {
         private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
         private readonly IFormats _formats;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
+        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
 
         public IsNullTest()
         {
@@ -22,13 +23,13 @@ namespace GSqlQuery.Test.SearchCriteria
                 new DefaultFormats());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
+            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
         }
 
         [Fact]
         public void Should_create_an_instance()
         {
-            IsNull test = new IsNull(_tableAttribute, _columnAttribute);
+            IsNull test = new IsNull(_classOptionsTupla, new DefaultFormats());
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -41,7 +42,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR")]
         public void Should_create_an_instance_1(string logicalOperator)
         {
-            IsNull test = new IsNull(_tableAttribute, _columnAttribute, logicalOperator);
+            IsNull test = new IsNull(_classOptionsTupla, new DefaultFormats(), logicalOperator);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -56,7 +57,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", "OR Test1.Id IS NULL")]
         public void Should_get_criteria_detail(string logicalOperator, string querypart)
         {
-            IsNull test = new IsNull(_tableAttribute, _columnAttribute, logicalOperator);
+            IsNull test = new IsNull(_classOptionsTupla, new DefaultFormats(), logicalOperator);
             var result = test.GetCriteria(_formats, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);

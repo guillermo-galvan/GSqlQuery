@@ -24,7 +24,7 @@ namespace GSqlQuery
         {
             IAndOr<T, TReturn> andor = where.GetAndOr(expression);
             var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new Equal<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, value));
+            andor.Add(new Equal<TProperties>(columnInfo, where.Formats, value));
             return andor;
         }
 
@@ -43,7 +43,7 @@ namespace GSqlQuery
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new Equal<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, value, "AND"));
+            andOr.Add(new Equal<TProperties>(columnInfo, andOr.Formats, value, "AND"));
             return andOr;
         }
 
@@ -62,7 +62,7 @@ namespace GSqlQuery
         {
             andOr.Validate(expression);
             var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new Equal<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, value, "OR"));
+            andOr.Add(new Equal<TProperties>(columnInfo, andOr.Formats, value, "OR"));
             return andOr;
         }
     }

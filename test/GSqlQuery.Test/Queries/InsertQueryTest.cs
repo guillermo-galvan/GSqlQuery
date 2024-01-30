@@ -1,4 +1,5 @@
-﻿using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System;
 using System.Linq;
@@ -9,20 +10,17 @@ namespace GSqlQuery.Test.Queries
     public class InsertQueryTest
     {
         private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
         private readonly Equal<int> _equal;
         private readonly IFormats _formats;
         private readonly ClassOptions _classOptions;
-        private readonly Test1 _test1;
 
         public InsertQueryTest()
         {
             _formats = new DefaultFormats();
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
-            _equal = new Equal<int>(_tableAttribute, _columnAttribute, 1);
-            _test1 = new Test1(1, "name", DateTime.Now, true);
+            var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
+            _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
         }
 
         [Fact]
