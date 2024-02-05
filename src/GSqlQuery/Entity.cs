@@ -141,5 +141,25 @@ namespace GSqlQuery
             }
             return new DeleteQueryBuilder<T>(formats);
         }
+
+        /// <summary>
+        /// Delete query
+        /// </summary>
+        /// <param name="formats">Formats</param>
+        /// <param name="entity">Entity</param>
+        /// <returns>Bulder</returns>
+        public static IQueryBuilder<DeleteQuery<T>, IFormats> Delete(IFormats formats, T entity)
+        {
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), ErrorMessages.ParameterNotNull);
+            }
+
+            return new DeleteQueryBuilder<T>(entity,formats);
+        }
     }
 }

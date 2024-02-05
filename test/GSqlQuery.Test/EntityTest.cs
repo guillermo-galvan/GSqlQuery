@@ -20,7 +20,7 @@ namespace GSqlQuery.Test
         {
             Test3 _entity = new Test3(1, "Name", DateTime.Now, true);
             var defautl = new DefaultFormats();
-            var queryBuilder = _entity.Insert(defautl);
+            var queryBuilder = Test3.Delete(defautl);
             //var count = queryBuilder.OrderBy(x => x.Ids, OrderBy.DESC);
             //var where = count.Where();
             //var criterias = where.In(x => x.Ids, [1,2,3,4,5]);
@@ -778,6 +778,30 @@ namespace GSqlQuery.Test
             Assert.NotNull(queryResult);
             Assert.NotEmpty(queryResult.Text);
             Assert.Equal(query, result);
+        }
+
+        [Theory]
+        [ClassData(typeof(Delete_Test3_TestData3))]
+        public void Should_generate_the_delete_query_with_entity(IFormats formats, string queryText)
+        {
+            Test3 test3 = new Test3(1, "Names", DateTime.Now, true);
+            var query = Test3.Delete(formats, test3).Build();
+
+            Assert.NotNull(query);
+            Assert.NotNull(query.Text);
+            Assert.NotEmpty(query.Text);
+            Assert.NotNull(query.Columns);
+            Assert.NotEmpty(query.Columns);
+            Assert.NotNull(query.Formats);
+            Assert.NotNull(query.Criteria);
+            Assert.NotEmpty(query.Criteria);
+
+            string result = query.Text;
+            foreach (var item in query.Criteria)
+            {
+                result = item.ParameterDetails.ParameterReplace(result);
+            }
+            Assert.Equal(queryText, result);
         }
 
     }

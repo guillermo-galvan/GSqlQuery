@@ -1,20 +1,14 @@
 ﻿using BenchmarkDotNet.Attributes;
 using GSqlQuery.Benchmarks.Data;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GSqlQuery.Benchmarks.Query
 {
-    public abstract class DeleteBenchmark : CreateStaments
+    public class Delete : CreateStaments
     {
-        public DeleteBenchmark() : base()
+        private User _user;
+        public Delete() : base()
         {
-        }
-
-        [Benchmark]
-        public IWhere<User, DeleteQuery<User>> GenerateWhereQuery()
-        {
-            return User.Delete(_formats).Where();
+            _user = new User(1, "name", "lastName", "test@gmail.com", true);
         }
 
         [Benchmark]
@@ -30,48 +24,9 @@ namespace GSqlQuery.Benchmarks.Query
         }
 
         [Benchmark]
-        public IQuery GenerateBetweenWhereQuery()
+        public IQuery GenerateQuery_withEntity()
         {
-            return User.Delete(_formats).Where().Between(x => x.Id, 1, 2).Build();
-        }
-
-        [Benchmark]
-        public IQuery GenerateLikeWhereQuery()
-        {
-            return User.Delete(_formats).Where().Like(x => x.Name, "23").Build();
-        }
-
-        [Benchmark]
-        public IQuery GenerateIsNullWhereQuery()
-        {
-            return User.Delete(_formats).Where().IsNull(x => x.Name).Build();
-        }
-    }
-
-    public class Delete : DeleteBenchmark
-    {
-        private readonly IEnumerable<int> _ids;
-        public Delete() : base()
-        {
-            _ids = Enumerable.Range(0, 1);
-        }
-
-        [Benchmark]
-        public IQuery GenerateInWhereQuery()
-        {
-            return User.Delete(_formats).Where().In(x => x.Id, _ids).Build();
-        }
-
-        [Benchmark]
-        public IQuery GenerateFiveWhereQuery()
-        {
-            return User.Delete(_formats).Where()
-                       .In(x => x.Id, _ids)
-                       .AndEqual(x => x.Name, "nombre")
-                       .OrBetween(x => x.Id, 1, 10)
-                       .AndIsNull(x => x.LastName)
-                       .AndNotLike(x => x.Email, ".gob")
-                       .Build();
+            return User.Delete(_formats, _user).Build();
         }
     }
 }

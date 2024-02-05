@@ -16,16 +16,11 @@ namespace GSqlQuery.Extensions
         /// <param name="formats"></param>
         /// <param name="criterias"></param>
         /// <returns></returns>
-        internal static string GetCliteria<TReturn>(IAndOr<TReturn> andOr, IFormats formats, ref IEnumerable<CriteriaDetail> criterias) where TReturn : IQuery
+        internal static string GetCliteria<TReturn>(IAndOr<TReturn> andOr, ref IEnumerable<CriteriaDetail> criterias) where TReturn : IQuery
         {
-            if (andOr != null)
-            {
-                criterias ??= andOr.BuildCriteria();
-                var queryParts = criterias.Select(x => x.QueryPart);
-                return string.Join(" ", queryParts);
-            }
-
-            return string.Empty;
+            criterias ??= andOr.BuildCriteria();
+            var queryParts = criterias.Select(x => x.QueryPart);
+            return string.Join(" ", queryParts);
         }
     }
 }

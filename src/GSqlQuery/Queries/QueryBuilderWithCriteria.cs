@@ -39,7 +39,7 @@ namespace GSqlQuery
         /// <returns></returns>
         protected string GetCriteria()
         {
-            return IAndOrExtension.GetCliteria(_andOr,Options, ref _criteria);
+            return IAndOrExtension.GetCliteria(_andOr,ref _criteria);
         }
 
         /// <summary>
