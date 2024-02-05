@@ -76,7 +76,7 @@ namespace GSqlQuery.Test.Extensions
             Expression<Func<Test1, object>> expression = x => x.Name;
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             var propertyOptions = options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
-            var result = propertyOptions.GetValue(model);
+            var result = GeneralExtension.GetValue(propertyOptions,model);
             Assert.NotNull(result);
             Assert.NotEmpty(result.ToString());
         }

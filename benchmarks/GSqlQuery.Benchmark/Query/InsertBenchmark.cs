@@ -17,5 +17,12 @@ namespace GSqlQuery.Benchmarks.Query
         {
             return _user.Insert(_formats).Build();
         }
+
+
+        [Benchmark]
+        public IQuery GenerateQuery_Entity()
+        {
+            return User.Insert(_formats, _user).Build();
+        }
     }
 }

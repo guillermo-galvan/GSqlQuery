@@ -157,7 +157,7 @@ namespace GSqlQuery.Extensions
         /// <param name="options">PropertyOptions</param>
         /// <param name="entity">Entity</param>
         /// <returns>property value</returns>
-        internal static object GetValue(this PropertyOptions options, object entity)
+        internal static object GetValue(PropertyOptions options, object entity)
         {
             return options.PropertyInfo.GetValue(entity, null) ?? DBNull.Value;
         }

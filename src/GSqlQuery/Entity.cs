@@ -78,6 +78,11 @@ namespace GSqlQuery
         /// <returns>Bulder</returns>
         public static IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats formats, T entity)
         {
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
+
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity), ErrorMessages.ParameterNotNullEmpty);
@@ -95,6 +100,11 @@ namespace GSqlQuery
         /// <returns>Instance of ISet</returns>
         public static ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression, TProperties value)
         {
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
+
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
             return new UpdateQueryBuilder<T>(formats, new string[] { options.MemberInfo.Name }, value);
@@ -109,6 +119,10 @@ namespace GSqlQuery
         /// <returns>Instance of ISet</returns>
         public ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression)
         {
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
             GeneralExtension.ValidateMemberInfos(QueryType.Update, options);
             return new UpdateQueryBuilder<T>(formats, this, options.MemberInfo.Select(x => x.Name));
@@ -121,6 +135,10 @@ namespace GSqlQuery
         /// <returns>Bulder</returns>
         public static IQueryBuilderWithWhere<T, DeleteQuery<T>, IFormats> Delete(IFormats formats)
         {
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
             return new DeleteQueryBuilder<T>(formats);
         }
     }

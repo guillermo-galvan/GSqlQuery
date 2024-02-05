@@ -28,19 +28,20 @@ namespace GSqlQuery.Queries
         {
             AutoIncrementingClass autoIncrementingClass = GetValues();
 
-            string querypart = string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail.Name));
             IEnumerable<ParameterDetail> parameters = autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail);
+            string querypart = string.Join(",", parameters.Select(x => x.Name));
+            
 
             CriteriaDetail criteriaDetail = new CriteriaDetail(querypart, parameters);
             criteria =[criteriaDetail];
-
-            string columnNames = string.Join(",", autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName));
+            IEnumerable<string> columnsName = autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName);
+            string columnNames = string.Join(",", columnsName);
 
             string text = ConstFormat.INSERT.Replace("{0}", _tableName).Replace("{1}", columnNames).Replace("{2}", criteriaDetail.QueryPart);
 
             if (autoIncrementingClass.WithAutoIncrementing)
             {
-                text += " " + Options.ValueAutoIncrementingQuery;
+                 return text + " " + Options.ValueAutoIncrementingQuery;
             }
 
             return text;
@@ -52,10 +53,22 @@ namespace GSqlQuery.Queries
         /// <returns>AutoIncrementingClass</returns>
         internal AutoIncrementingClass GetValues()
         {
-            ColumnParameterDetail[] columnsParameters = Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing)
-                          .Select(x => new ColumnParameterDetail(Options.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Create), new ParameterDetail($"@PI{Helpers.GetIdParam()}", x.GetValue(_entity), x)))
-                          .ToArray();
-            bool isAutoIncrement = Columns.Any(x => x.ColumnAttribute.IsAutoIncrementing);
+            IEnumerable<PropertyOptions> propertyOptions = Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing);
+            Queue<ColumnParameterDetail> tmpColumnsParameters = new Queue<ColumnParameterDetail>();
+
+            foreach (PropertyOptions x in propertyOptions)
+            {
+                string columnName = Options.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Create);
+                object value = GeneralExtension.GetValue(x,_entity);
+                string parameterName = "@PI" + Helpers.GetIdParam();
+                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value, x);
+                ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, parameterDetail);
+                tmpColumnsParameters.Enqueue(columnParameterDetail);
+            }
+
+            ColumnParameterDetail[] columnsParameters = [.. tmpColumnsParameters];
+
+            bool isAutoIncrement = Columns.Count() != columnsParameters.Length;
             return new AutoIncrementingClass(isAutoIncrement, columnsParameters);
         }
     }

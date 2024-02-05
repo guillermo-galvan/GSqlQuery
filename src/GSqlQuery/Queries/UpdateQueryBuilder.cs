@@ -156,7 +156,7 @@ namespace GSqlQuery.Queries
 
                 if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
                 {
-                    _columnValues.Add(propertyOptions.ColumnAttribute, propertyOptions.GetValue(entity));
+                    _columnValues.Add(propertyOptions.ColumnAttribute, GeneralExtension.GetValue(propertyOptions,entity));
                 }
             }
         }
