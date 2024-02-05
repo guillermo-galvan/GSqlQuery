@@ -22,9 +22,10 @@ namespace GSqlQuery
             where T : class
             where TReturn : IQuery<T>
         {
-            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new Equal<TProperties>(columnInfo, where.Formats, value));
+            IAndOr<T, TReturn> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            Equal<TProperties> equal = new Equal<TProperties>(columnInfo, where.Formats, value);
+            andor.Add(equal);
             return andor;
         }
 
@@ -41,9 +42,19 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> AndEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, TProperties value)
             where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new Equal<TProperties>(columnInfo, andOr.Formats, value, "AND"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if(expression == null) 
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            Equal<TProperties> equal = new Equal<TProperties>(columnInfo, andOr.Formats, value, "AND");
+            andOr.Add(equal);
             return andOr;
         }
 
@@ -60,9 +71,19 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> OrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression, TProperties value)
             where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new Equal<TProperties>(columnInfo, andOr.Formats, value, "OR"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            Equal<TProperties> equal = new Equal<TProperties>(columnInfo, andOr.Formats, value, "OR");
+            andOr.Add(equal);
             return andOr;
         }
     }

@@ -36,11 +36,10 @@ namespace GSqlQuery
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criterias</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public QueryBase(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria)
+        public QueryBase(ref string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria)
         {
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));
-            text.NullValidate("", nameof(text));
-            _text = text;
+            _text = text ?? throw new ArgumentNullException(text); 
             _criteria = criteria ?? Enumerable.Empty<CriteriaDetail>();
         }
     }

@@ -1,24 +1,15 @@
-﻿using System.Linq;
-
-namespace GSqlQuery.Queries
+﻿namespace GSqlQuery.Queries
 {
     /// <summary>
     /// Delete Query Builder
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    internal abstract class DeleteQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
+    /// <param name="formats">Formats</param>
+    internal abstract class DeleteQueryBuilder<T, TReturn>(IFormats formats) : QueryBuilderWithCriteria<T, TReturn>(formats)
         where T : class
         where TReturn : DeleteQuery<T>
     {
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="formats">Formats</param>
-        public DeleteQueryBuilder(IFormats formats)
-            : base(formats)
-        {
-        }
 
         /// <summary>
         /// Create query
@@ -26,18 +17,15 @@ namespace GSqlQuery.Queries
         /// <returns>Query text</returns>
         internal string CreateQuery()
         {
-            string result;
-
             if (_andOr == null)
             {
-                result = string.Format(ConstFormat.DELETE, _tableName);
+               return ConstFormat.DELETE.Replace("{0}", _tableName);
             }
             else
             {
-                result = string.Format(ConstFormat.DELETEWHERE, _tableName, GetCriteria());
+                string criteria = GetCriteria();
+                return ConstFormat.DELETEWHERE.Replace("{0}", _tableName).Replace("{1}", criteria);
             }
-
-            return result;
         }
     }
 
@@ -45,17 +33,10 @@ namespace GSqlQuery.Queries
     /// Delete Query Builder
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
-    internal class DeleteQueryBuilder<T> : DeleteQueryBuilder<T, DeleteQuery<T>>
+    /// <param name="formats">Formats</param>
+    internal class DeleteQueryBuilder<T>(IFormats formats) : DeleteQueryBuilder<T, DeleteQuery<T>>(formats)
         where T : class
     {
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="formats">Formats</param>
-        public DeleteQueryBuilder(IFormats formats)
-            : base(formats)
-        {
-        }
 
         /// <summary>
         /// Build the query
@@ -63,7 +44,8 @@ namespace GSqlQuery.Queries
         /// <returns>Count Query</returns>
         public override DeleteQuery<T> Build()
         {
-            return new DeleteQuery<T>(CreateQuery(), Columns, _criteria, Options);
+            string text = CreateQuery();
+            return new DeleteQuery<T>(text, Columns, _criteria, Options);
         }
     }
 }

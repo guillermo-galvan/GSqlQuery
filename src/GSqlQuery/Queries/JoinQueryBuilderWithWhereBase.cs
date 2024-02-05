@@ -1,5 +1,6 @@
 ﻿using GSqlQuery.Extensions;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -42,9 +43,9 @@ namespace GSqlQuery.Queries
 
             foreach (var item in joinInfos.Where(x => !x.IsMain))
             {
-                var a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(formats, x)));
+                string a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(formats, x)));
 
-                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, item.ClassOptions.Table.GetTableName(formats), a)}");
+                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, TableAttributeExtension.GetTableName(item.ClassOptions.Table, formats), a)}");
             }
 
             return joinQuerys;
@@ -74,8 +75,8 @@ namespace GSqlQuery.Queries
         /// <returns></returns>
         internal static string CreateJoinQueryPart(IFormats formats, JoinModel joinModel)
         {
-            string partRight = joinModel.JoinModel1.Column.GetColumnName(joinModel.JoinModel1.Table.GetTableName(formats), formats, QueryType.Join);
-            string partLeft = joinModel.JoinModel2.Column.GetColumnName(joinModel.JoinModel2.Table.GetTableName(formats), formats, QueryType.Join);
+            string partRight = formats.GetColumnName(TableAttributeExtension.GetTableName(joinModel.JoinModel1.Table, formats), joinModel.JoinModel1.Column, QueryType.Join);
+            string partLeft = formats.GetColumnName(TableAttributeExtension.GetTableName(joinModel.JoinModel2.Table, formats), joinModel.JoinModel2.Column, QueryType.Join);
 
             string joinCriteria = string.Empty;
 
@@ -114,7 +115,12 @@ namespace GSqlQuery.Queries
     /// <typeparam name="TJoin">Type for third table</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TOptions">Options query</typeparam>
-    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions> : QueryBuilderWithCriteria<TJoin, TReturn>,
+    /// <remarks>
+    /// Class constructor
+    /// </remarks>
+    /// <param name="joinInfos">joinInfos</param>
+    /// <param name="formats">Formats</param>
+    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions>(Queue<JoinInfo> joinInfos, IFormats formats) : QueryBuilderWithCriteria<TJoin, TReturn>(formats),
          IComparisonOperators<TJoin, TReturn, TOptions>,
          IAddJoinCriteria<JoinModel>
          where T1 : class
@@ -122,20 +128,10 @@ namespace GSqlQuery.Queries
          where TJoin : class
          where TReturn : IQuery<TJoin>
     {
-        protected readonly Queue<JoinInfo> _joinInfos;
+        protected readonly Queue<JoinInfo> _joinInfos = joinInfos ?? new Queue<JoinInfo>();
         protected JoinInfo _joinInfo;
 
         public IEnumerable<JoinInfo> JoinInfos => _joinInfos;
-
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="joinInfos">joinInfos</param>
-        /// <param name="formats">Formats</param>
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, IFormats formats) : base(formats)
-        {
-            _joinInfos = joinInfos ?? new Queue<JoinInfo>();
-        }
 
         /// <summary>
         /// Method to add the Where statement
@@ -162,23 +158,23 @@ namespace GSqlQuery.Queries
         /// <returns>Query text</returns>
         internal string CreateQuery()
         {
-            var columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, Options);
-            var tableMain = JoinQueryBuilderWithWhereBase.GetTableMain(_joinInfos);
-            IEnumerable<string> JoinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, Options);
+            IEnumerable<string> columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, Options);
+            JoinInfo tableMain = JoinQueryBuilderWithWhereBase.GetTableMain(_joinInfos);
+            IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, Options);
 
-            string result;
-            string tableName = tableMain.ClassOptions.Table.GetTableName(Options);
+            string tableName = TableAttributeExtension.GetTableName(tableMain.ClassOptions.Table, Options);
+            string resultColumns = string.Join(",", columns);
+            string resultJoinQuerys = string.Join(" ", joinQuerys);
 
             if (_andOr == null)
             {
-                result = string.Format(ConstFormat.JOINSELECT, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys));
+                return ConstFormat.JOINSELECT.Replace("{0}", resultColumns).Replace("{1}", tableName).Replace("{2}", resultJoinQuerys);
             }
             else
             {
-                result = string.Format(ConstFormat.JOINSELECTWHERE, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys), GetCriteria());
+                string criteria = GetCriteria();
+                return ConstFormat.JOINSELECTWHERE.Replace("{0}", resultColumns).Replace("{1}", tableName).Replace("{2}", resultJoinQuerys).Replace("{3}", criteria);
             }
-
-            return result;
         }
     }
 
@@ -225,7 +221,7 @@ namespace GSqlQuery.Queries
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
             _joinInfo = new JoinInfo
             {
-                Columns = columnsT3 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
+                Columns = columnsT3 ?? GeneralExtension.GetPropertyQuery(tmp,tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
                 JoinEnum = joinType,
                 ClassOptions = tmp,
             };

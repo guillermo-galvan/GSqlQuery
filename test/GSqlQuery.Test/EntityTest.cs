@@ -16,6 +16,17 @@ namespace GSqlQuery.Test
         }
 
         [Fact]
+        public void borrar_desepues()
+        {
+            var defautl = new DefaultFormats();
+            var queryBuilder = Test3.Select(defautl);
+            var count = queryBuilder.OrderBy(x => x.Ids, OrderBy.DESC);
+            //var where = count.Where();
+            //var criterias = where.In(x => x.Ids, [1,2,3,4,5]);
+            var result = count.Build();
+        }
+
+        [Fact]
         public void Throw_an_exception_if_null_key_is_passed()
         {
             Assert.Throws<ArgumentNullException>(() => Test3.Select(null));

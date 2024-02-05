@@ -49,19 +49,28 @@ namespace GSqlQuery.SearchCriteria
         {
             Initial = initialValue;
             Final = finalValue;
+            _task = CreteData();
+        }
 
-            string tableName = Table.GetTableName(formats);
-            int tiks = Helpers.GetIdParam();
-            string parameterName1 = $"@{ParameterPrefix}1{tiks}";
-            string parameterName2 = $"@{ParameterPrefix}2{tiks}";
+        private Task<CriteriaDetails> CreteData()
+        {
+            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string tiks = Helpers.GetIdParam().ToString();
+            string parameterName1 = "@{0}1".Replace("{0}", ParameterPrefix) + tiks;
+            string parameterName2 = "@{0}2".Replace("{0}", ParameterPrefix) + tiks;
+            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
 
-            string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}";
+            string criterion = "{0} {1} {2} AND {3}".Replace("{0}", columName).Replace("{1}", RelationalOperator)
+                                                    .Replace("{2}", parameterName1).Replace("{3}", parameterName2);
 
-            var property = Column.GetPropertyOptions(classOptionsTupla.ClassOptions.PropertyOptions);
+            if (!string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                criterion = "{0} {1}".Replace("{0}",LogicalOperator).Replace("{1}",criterion);
+            }
 
-            _task = Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName1, Initial, property), new ParameterDetail(parameterName2, Final, property)]));
+            PropertyOptions property = ColumnAttributeExtension.GetPropertyOptions(Column,_classOptionsTupla.ClassOptions.PropertyOptions);
+
+            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName1, Initial, property), new ParameterDetail(parameterName2, Final, property)]));
         }
     }
 }

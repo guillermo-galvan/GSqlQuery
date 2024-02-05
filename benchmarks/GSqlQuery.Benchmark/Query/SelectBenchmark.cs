@@ -81,5 +81,52 @@ namespace GSqlQuery.Benchmarks.Query
                        .Build();
         }
 
+        [Benchmark]
+        public IQuery GenerateCountOneColumn()
+        {
+            return User.Select(_formats,x=> new {x.Id}).Count().Where().In(x => x.Id, _ids).Build();
+        }
+
+        [Benchmark]
+        public IQuery GenerateCountAllColumns()
+        {
+            return User.Select(_formats).Count().Where().In(x => x.Id, _ids).Build();
+        }
+
+        [Benchmark]
+        public IQuery GenerateOrderBy()
+        {
+            return User.Select(_formats).OrderBy(x => x.Id, OrderBy.ASC).Build();
+        }
+
+        [Benchmark]
+        public IQuery GenerateOrderByWithWhere()
+        {
+            return User.Select(_formats).Where().Equal(x => x.Id, 1).OrderBy(x => x.Id , OrderBy.ASC).Build();
+        }
+
+        [Benchmark]
+        public IQuery GenerateOrderByMany()
+        {
+            return User.Select(_formats).OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => x.Name, OrderBy.DESC).Build();
+        }
+
+        [Benchmark]
+        public IQuery GenerateOrderBy_new()
+        {
+            return User.Select(_formats).OrderBy(x => new { x.Id , x.Name}, OrderBy.ASC).Build();
+        }
+
+        [Benchmark]
+        public IQuery GenerateOrderByWithWhere_new()
+        {
+            return User.Select(_formats).Where().Equal(x => x.Id, 1).OrderBy(x => x.Id, OrderBy.ASC).Build();
+        }
+
+        [Benchmark]
+        public IQuery GenerateOrderByMany_new()
+        {
+            return User.Select(_formats).OrderBy(x => new { x.Id }, OrderBy.ASC).OrderBy(x => new { x.Name }, OrderBy.DESC).Build();
+        }
     }
 }

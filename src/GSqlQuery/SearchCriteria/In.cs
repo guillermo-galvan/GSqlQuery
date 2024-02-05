@@ -1,6 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,26 +48,33 @@ namespace GSqlQuery.SearchCriteria
                 throw new IndexOutOfRangeException(nameof(values));
             }
 
-            _task = Task.Factory.StartNew(() =>
+            _task = Task.Run(CreteData);
+        }
+
+        private Task<CriteriaDetails> CreteData()
+        {
+            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
+            int count = 0;
+            int index = 0;
+            string ticks = Helpers.GetIdParam().ToString();
+            PropertyOptions property = ColumnAttributeExtension.GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
+            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+
+            foreach (T item in Values)
             {
+                string parameterName = ParameterPrefix + count++.ToString() + ticks;
+                parameters[index++] = new ParameterDetail(parameterName, item, property);
+            }
+            string columnNames = string.Join(",", parameters.Select(x => x.Name));
+            string criterion = "{0} {1} ({2})".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", columnNames);
 
-                string tableName = Table.GetTableName(formats);
-                ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
-                int count = 0;
-                int index = 0;
-                int ticks = Helpers.GetIdParam();
-                var property = Column.GetPropertyOptions(classOptionsTupla.ClassOptions.PropertyOptions);
+            if (!string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
+            }
 
-                foreach (var item in Values)
-                {
-                    parameters[index++] = new ParameterDetail($"@{ParameterPrefix}{count++}{ticks}", item, property);
-                }
-
-                string criterion = $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} ({string.Join(",", parameters.Select(x => x.Name))})";
-                criterion = string.IsNullOrWhiteSpace(LogicalOperator) ? criterion : $"{LogicalOperator} {criterion}";
-
-                return new CriteriaDetails(criterion, parameters);
-            });
+            return Task.FromResult(new CriteriaDetails(criterion, parameters));
         }
     }
 }

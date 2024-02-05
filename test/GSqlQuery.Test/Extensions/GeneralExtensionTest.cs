@@ -29,7 +29,7 @@ namespace GSqlQuery.Test.Extensions
         public void Should_return_the_classoption_and_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
             Assert.NotNull(options.ClassOptions);
             Assert.NotNull(options.MemberInfo);
         }
@@ -47,11 +47,11 @@ namespace GSqlQuery.Test.Extensions
         public void Should_vallidate_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
 
             try
             {
-                options.MemberInfo.ValidateMemberInfos("test");
+                GeneralExtension.ValidateMemberInfos(QueryType.Delete, options);
                 Assert.True(true);
             }
             catch (Exception)
@@ -85,7 +85,7 @@ namespace GSqlQuery.Test.Extensions
         public void Should_return_the_property_options()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test3));
-            var result = classOptions.GetPropertyQuery(new string[] { nameof(Test3.Ids), nameof(Test3.IsTests), nameof(Test3.Creates) });
+            var result = GeneralExtension.GetPropertyQuery(classOptions,new string[] { nameof(Test3.Ids), nameof(Test3.IsTests), nameof(Test3.Creates) });
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

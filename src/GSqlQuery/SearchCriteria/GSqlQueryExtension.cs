@@ -18,18 +18,20 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>Instance of IAndOr</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IAndOr<T, TReturn> GetAndOr<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression)
+        public static IAndOr<T, TReturn> GetAndOr<T, TReturn, TProperties>(IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression)
            where T : class where TReturn : IQuery<T>
         {
-            IAndOr<T, TReturn> result = null;
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
 
             if (where is IAndOr<T, TReturn> andor)
             {
-                result = andor;
+                return andor;
             }
 
-            result.Validate(expression);
-            return result;
+            throw new ArgumentNullException(nameof(where));
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace GSqlQuery.Extensions
         /// <param name="where">Instance of IWhere</param>
         /// <returns>Instance of IAndOr</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IAndOr<T, TReturn> GetAndOr<T, TReturn>(this IWhere<T, TReturn> where)
+        public static IAndOr<T, TReturn> GetAndOr<T, TReturn>(IWhere<T, TReturn> where)
             where T : class where TReturn : IQuery<T>
         {
             IAndOr<T, TReturn> result = null;

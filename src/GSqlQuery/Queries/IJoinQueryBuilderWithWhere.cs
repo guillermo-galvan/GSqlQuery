@@ -69,7 +69,8 @@ namespace GSqlQuery
     /// <typeparam name="T3">Type for third table</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TOptions">Options type</typeparam>
-    public interface IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> : IQueryBuilderWithWhere<TReturn, TOptions>
+    public interface IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> : IQueryBuilderWithWhere<TReturn, TOptions>, 
+        IQueryBuilderWithWhere<Join<T1, T2, T3>, TReturn, TOptions>
         where T1 : class
         where T2 : class
         where T3 : class

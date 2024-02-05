@@ -41,13 +41,25 @@ namespace GSqlQuery.SearchCriteria
         {
             Value = value;
 
-            string tableName = Table.GetTableName(formats);
-            string parameterName = $"@{ParameterPrefix}{Helpers.GetIdParam()}";
-            string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')";
+            _task = CreteData();
+        }
 
-            _task = Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName, Value, Column.GetPropertyOptions(classOptionsTupla.ClassOptions.PropertyOptions))]));
+        private Task<CriteriaDetails> CreteData()
+        {
+            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string parameterName = $"@{ParameterPrefix}{Helpers.GetIdParam()}";
+            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+
+            string criterion = "{0} {1} CONCAT('%', {2}, '%')".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", parameterName);
+
+            if (!string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
+            }
+
+            PropertyOptions property = ColumnAttributeExtension.GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
+            ParameterDetail parameterDetail = new ParameterDetail(parameterName, Value, property);
+            return Task.FromResult(new CriteriaDetails(criterion, [parameterDetail]));
         }
     }
 }

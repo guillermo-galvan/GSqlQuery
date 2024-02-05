@@ -46,33 +46,18 @@ namespace GSqlQuery
             Type = type ?? throw new ArgumentNullException(nameof(type));
             Table = GetTableAttribute();
             PropertyOptions = GetProperties();
-            if (!PropertyOptions.Any())
-            {
-                throw new Exception($"{Type.Name} has no properties");
-            }
             ConstructorInfo = GetConstructor() ?? throw new Exception("No constructor found");
         }
 
         private Queue<PropertyOptions> GetProperties()
         {
-            Queue<PropertyOptions> properties = new Queue<PropertyOptions>();
-
-            foreach (PropertyInfo property in Type.GetProperties())
+            PropertyInfo[] properties = Type.GetProperties();
+            if(properties.Length == 0)
             {
-                Attribute[] arrayAttribute = Attribute.GetCustomAttributes(property);
-#if NET5_0_OR_GREATER
-                if (arrayAttribute.FirstOrDefault(x => x is ColumnAttribute) is not ColumnAttribute tmp)
-                {
-                    tmp = new ColumnAttribute(property.Name);
-                }
-#else
-                ColumnAttribute tmp = (arrayAttribute.FirstOrDefault(x => x is ColumnAttribute) as ColumnAttribute) ?? new ColumnAttribute(property.Name);
-#endif
-
-                properties.Enqueue(new PropertyOptions(0, property, tmp, Table));
+                throw new Exception($"{Type.Name} has no properties");
             }
-
-            return properties;
+            IEnumerable<PropertyOptions> result = properties.Select(x => new PropertyOptions(0, x, (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute, Table));
+            return new Queue<PropertyOptions>(result);
         }
 
         private ConstructorInfo GetConstructor()
@@ -86,17 +71,23 @@ namespace GSqlQuery
             {
                 ParameterInfo[] parameters = item.GetParameters();
 
-                if (parameters.Length > 0 && parameters.Length == PropertyOptions.Count())
+                if (parameters.Length == 0)
+                {
+                    ConstructorInfoDefault = item;
+                }
+                else if (parameters.Length > 0 && parameters.Length == PropertyOptions.Count())
                 {
                     bool find = true;
                     byte position = 0;
+                    var tmp = parameters.Select(param => new { Name = param.Name?.ToUpper(), param.ParameterType }).ToArray();
+
                     for (int i = 0; i < parameters.Length; i++)
                     {
-                        ParameterInfo param = parameters[i];
-                        PropertyOptions typeparam = PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name.ToUpper() == param.Name?.ToUpper() &&
+                        var param = tmp[i];
+                        PropertyOptions typeparam = PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name.Equals(param.Name, StringComparison.CurrentCultureIgnoreCase) &&
                                                                                          x.PropertyInfo.PropertyType == param.ParameterType);
 
-                        if (typeparam == null || param.ParameterType != typeparam.PropertyInfo.PropertyType)
+                        if (typeparam == null)
                         {
                             find = false;
                             break;
@@ -109,10 +100,6 @@ namespace GSqlQuery
 
                     result = find ? item : result;
                 }
-                else if (parameters.Length == 0)
-                {
-                    ConstructorInfoDefault = item;
-                }
             }
 
             IsConstructorByParam = result != null;
@@ -122,16 +109,7 @@ namespace GSqlQuery
 
         private TableAttribute GetTableAttribute()
         {
-            Attribute[] arrayAttributeClass = Attribute.GetCustomAttributes(Type);
-
-            if (arrayAttributeClass.Any(x => x is TableAttribute))
-            {
-                return arrayAttributeClass.First(x => x is TableAttribute) as TableAttribute;
-            }
-            else
-            {
-                return new TableAttribute(Type.Name);
-            }
+            return (Attribute.GetCustomAttribute(Type, typeof(TableAttribute)) ?? new TableAttribute(Type.Name)) as TableAttribute;
         }
     }
 }

@@ -20,9 +20,10 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> NotBetween<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
             TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
         {
-            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new NotBetween<TProperties>(columnInfo, where.Formats, initial, final));
+            IAndOr<T, TReturn> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            NotBetween<TProperties> notBetween = new NotBetween<TProperties>(columnInfo, where.Formats, initial, final);
+            andor.Add(notBetween);
             return andor;
         }
 
@@ -39,9 +40,18 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> AndNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
             TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new NotBetween<TProperties>(columnInfo, andOr.Formats, initial, final, "AND"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            NotBetween<TProperties> notBetween = new NotBetween<TProperties>(columnInfo, andOr.Formats, initial, final, "AND");
+            andOr.Add(notBetween);
             return andOr;
         }
 
@@ -58,9 +68,18 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> OrNotBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
             TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new NotBetween<TProperties>(columnInfo, andOr.Formats, initial, final, "OR"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            NotBetween<TProperties> notBetween = new NotBetween<TProperties>(columnInfo, andOr.Formats, initial, final, "OR");
+            andOr.Add(notBetween);
             return andOr;
         }
     }

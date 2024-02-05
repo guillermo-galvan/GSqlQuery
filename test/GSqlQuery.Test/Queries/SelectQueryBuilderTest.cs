@@ -28,9 +28,22 @@ namespace GSqlQuery.Test.Queries
         }
 
         [Fact]
+        public void Properties_cannot_be_null_with_properties()
+        {
+            var propertyOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1)).PropertyOptions;
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(propertyOptions, _stantements);
+
+            Assert.NotNull(queryBuilder);
+            Assert.NotNull(queryBuilder.Options);
+            Assert.NotNull(queryBuilder.Columns);
+            Assert.NotEmpty(queryBuilder.Columns);
+        }
+
+        [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(null, _stantements));
+            string[] ddsds = null;
+            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(ddsds, _stantements));
             Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) }, null));
         }
 

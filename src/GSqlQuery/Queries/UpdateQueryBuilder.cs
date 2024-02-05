@@ -79,33 +79,39 @@ namespace GSqlQuery.Queries
             }
 
             Queue<CriteriaDetail> tmpCriteria = GetUpdateCliterias(_columnValues, Columns, _tableName);
-            string query = string.Empty;
-
+            IEnumerable<string> queryParts = tmpCriteria.Select(x => x.QueryPart);
+            string setParts = string.Join(",", queryParts);
             if (_andOr == null)
             {
-                query = string.Format(ConstFormat.UPDATE, _tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)));
+                _criteria = tmpCriteria;
+                return ConstFormat.UPDATE.Replace("{0}", _tableName).Replace("{1}", setParts);
             }
             else
             {
-                query = string.Format(ConstFormat.UPDATEWHERE, _tableName, string.Join(",", tmpCriteria.Select(x => x.QueryPart)), GetCriteria());
-                foreach (var item in _criteria)
+                string criterias = GetCriteria();
+                
+                foreach (CriteriaDetail item in _criteria)
                 {
                     tmpCriteria.Enqueue(item);
                 }
+
+                _criteria = tmpCriteria;
+                return ConstFormat.UPDATEWHERE.Replace("{0}", _tableName).Replace("{1}", setParts).Replace("{2}", criterias);
             }
-            _criteria = tmpCriteria;
-            return query;
         }
 
         private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues,IEnumerable<PropertyOptions> columns, string tableName)
         {
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
-            foreach (var item in columnValues)
+            foreach (KeyValuePair<ColumnAttribute, object> item in columnValues)
             {
                 PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = $"@PU{Helpers.GetIdParam()}";
-                criteriaDetails.Enqueue(new CriteriaDetail($"{item.Key.GetColumnName(tableName, Options, QueryType.Criteria)}={paramName}",
-                    new ParameterDetail[] { new ParameterDetail(paramName, item.Value ?? DBNull.Value, options) }));
+                string paramName = "@PU" + Helpers.GetIdParam().ToString();
+                string columName = Options.GetColumnName(tableName, item.Key, QueryType.Criteria);
+                string partQuery = columName + "=" + paramName;
+                ParameterDetail parameterDetail = new ParameterDetail(paramName, item.Value ?? DBNull.Value, options);
+                CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
+                criteriaDetails.Enqueue(criteriaDetail);
             }
             return criteriaDetails;
         }
@@ -120,16 +126,12 @@ namespace GSqlQuery.Queries
         internal void AddSet<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
-            var column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
+            ColumnAttribute column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
 
-#if NET5_0_OR_GREATER
-            _columnValues.TryAdd(column, value);
-#else
             if (!_columnValues.ContainsKey(column))
             {
                 _columnValues.Add(column, value);
             }
-#endif
         }
 
         /// <summary>
@@ -145,21 +147,17 @@ namespace GSqlQuery.Queries
                 throw new InvalidOperationException(ErrorMessages.EntityNotFound);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
+            GeneralExtension.ValidateMemberInfos(QueryType.Update, options);
 
-            foreach (var item in options.MemberInfo)
+            foreach (MemberInfo item in options.MemberInfo)
             {
-                var propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
+                PropertyOptions propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
 
-#if NET5_0_OR_GREATER
-                _columnValues.TryAdd(propertyOptions.ColumnAttribute, propertyOptions.GetValue(entity));
-#else
                 if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
                 {
                     _columnValues.Add(propertyOptions.ColumnAttribute, propertyOptions.GetValue(entity));
                 }
-#endif
             }
         }
     }
@@ -194,7 +192,8 @@ namespace GSqlQuery.Queries
 
         public override UpdateQuery<T> Build()
         {
-            return new UpdateQuery<T>(CreateQuery(), Columns, _criteria, Options);
+            string text = CreateQuery();
+            return new UpdateQuery<T>(text, Columns, _criteria, Options);
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace GSqlQuery
         /// <param name="formats">Formats</param>        
         /// <exception cref="ArgumentNullException"></exception>
         internal OrderByQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
-            base(text, columns, criteria, formats)
+            base(ref text, columns, criteria, formats)
         {
         }
     }

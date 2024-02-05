@@ -1,4 +1,4 @@
-﻿using GSqlQuery.Extensions;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -34,24 +34,20 @@ namespace GSqlQuery.Queries
         /// <returns>Query text</returns>
         internal string CreateQuery()
         {
-            string result = string.Empty;
-            var selectQuery = _queryBuilder.Build();
-            Columns = _queryBuilder.Columns;
+            SelectQuery<T> selectQuery = _queryBuilder.Build();
+            IEnumerable<string> columnsName = selectQuery.Columns.Select(x => Options.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            string columns = string.Join(",", columnsName);
+            columns = "COUNT({0})".Replace("{0}", columns);
 
             if (_andOr == null)
             {
-                result = string.Format(ConstFormat.SELECT,
-                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, Options, QueryType.Read)))})",
-                    _tableName);
+                return ConstFormat.SELECT.Replace("{0}", columns).Replace("{1}", _tableName);
             }
             else
             {
-                result = string.Format(ConstFormat.SELECTWHERE,
-                    $"COUNT({string.Join(",", selectQuery.Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, Options, QueryType.Read)))})",
-                    _tableName, GetCriteria());
+                string criteria = GetCriteria();
+                return ConstFormat.SELECTWHERE.Replace("{0}", columns).Replace("{1}", _tableName).Replace("{2}", criteria);
             }
-
-            return result;
         }
     }
 
@@ -59,23 +55,17 @@ namespace GSqlQuery.Queries
     /// Count Query Builder
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
-    internal class CountQueryBuilder<T> : CountQueryBuilder<T, CountQuery<T>, IFormats, SelectQuery<T>> where T : class
+    /// <param name="queryBuilder"></param>
+    internal class CountQueryBuilder<T>(IQueryBuilderWithWhere<SelectQuery<T>, IFormats> queryBuilder) : 
+        CountQueryBuilder<T, CountQuery<T>, IFormats, SelectQuery<T>>(queryBuilder, queryBuilder.Options) where T : class
     {
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="queryBuilder"></param>
-        public CountQueryBuilder(IQueryBuilderWithWhere<SelectQuery<T>, IFormats> queryBuilder)
-            : base(queryBuilder, queryBuilder.Options)
-        { }
-
         /// <summary>
         /// Build the query
         /// </summary>
         /// <returns>Count Query</returns>
         public override CountQuery<T> Build()
         {
-            var query = CreateQuery();
+            string query = CreateQuery();
             return new CountQuery<T>(query, Columns, _criteria, _queryBuilder.Options);
         }
     }

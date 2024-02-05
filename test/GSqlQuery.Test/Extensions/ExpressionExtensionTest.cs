@@ -13,7 +13,7 @@ namespace GSqlQuery.Test.Extensions
         public void Should_extract_the_members_from_the_expression()
         {
             Expression<Func<Test1, string>> expression = x => x.Name;
-            var result = expression.GetMembers();
+            var result = ExpressionExtension.GetMembers(expression);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(nameof(Test1.Name), result.First().Name);
@@ -23,7 +23,7 @@ namespace GSqlQuery.Test.Extensions
         public void Should_extract_the_members_from_the_expression_1()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            var result = expression.GetMembers();
+            var result = ExpressionExtension.GetMembers(expression);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(3, result.Count());
@@ -55,7 +55,7 @@ namespace GSqlQuery.Test.Extensions
         public void Should_extract_the_ColumnAttribute_from_the_expression()
         {
             Expression<Func<Test1, string>> expression = x => x.Name;
-            var result = expression.GetColumnAttribute();
+            var result = ExpressionExtension.GetColumnAttribute(expression);
             Assert.NotNull(result);
         }
 
@@ -63,7 +63,7 @@ namespace GSqlQuery.Test.Extensions
         public void Throw_exception_if_no_ColumnAttribute_found_in_expression()
         {
             Expression<Func<Test1, Test1>> expression = x => x;
-            Assert.Throws<InvalidOperationException>(() => expression.GetColumnAttribute());
+            Assert.Throws<InvalidOperationException>(() => ExpressionExtension.GetColumnAttribute(expression));
         }
     }
 }

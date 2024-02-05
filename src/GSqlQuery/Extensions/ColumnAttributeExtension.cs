@@ -10,24 +10,6 @@ namespace GSqlQuery.Extensions
     internal static class ColumnAttributeExtension
     {
         /// <summary>
-        /// Get the column name with format
-        /// </summary>
-        /// <param name="column">Contains the property information</param>
-        /// <param name="tableName">Table name</param>
-        /// <param name="formats">Formats for the column.</param>
-        /// <param name="queryType">Query type</param>
-        /// <returns>Column name</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        internal static string GetColumnName(this ColumnAttribute column, string tableName, IFormats formats, QueryType queryType)
-        {
-            column.NullValidate(ErrorMessages.ParameterNotNull, nameof(column));
-            tableName.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableName));
-            formats.NullValidate(ErrorMessages.ParameterNotNull, nameof(formats));
-
-            return formats.GetColumnName(tableName, column, queryType);
-        }
-
-        /// <summary>
         /// Find the properties that receive in the column parameter.
         /// </summary>
         /// <param name="column">Contains the property information</param>
@@ -48,7 +30,7 @@ namespace GSqlQuery.Extensions
         internal static string GetColumnNameJoin(this ColumnAttribute column, JoinInfo joinInfo, IFormats formats)
         {
             string alias = string.Format(formats.Format, $"{joinInfo.ClassOptions.Type.Name}_{column.Name}");
-            string columnName = formats.GetColumnName(joinInfo.ClassOptions.Table.GetTableName(formats), column, QueryType.Join);
+            string columnName = formats.GetColumnName(TableAttributeExtension.GetTableName(joinInfo.ClassOptions.Table,formats), column, QueryType.Join);
             return $"{columnName} as {alias}";
         }
     }

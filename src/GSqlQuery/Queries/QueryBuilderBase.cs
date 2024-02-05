@@ -36,7 +36,7 @@ namespace GSqlQuery
             _formats = formats ?? throw new ArgumentNullException(nameof(formats));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
             Columns = _classOptions.PropertyOptions;
-            _tableName = _classOptions.Table.GetTableName(formats);
+            _tableName = TableAttributeExtension.GetTableName(_classOptions.Table,formats);
         }
 
         /// <summary>

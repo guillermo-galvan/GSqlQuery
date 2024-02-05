@@ -19,9 +19,10 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> GreaterThanOrEqual<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
             TProperties value) where T : class where TReturn : IQuery<T>
         {
-            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new GreaterThanOrEqual<TProperties>(columnInfo, where.Formats, value));
+            IAndOr<T, TReturn> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            GreaterThanOrEqual<TProperties> greaterThanOrEqual = new GreaterThanOrEqual<TProperties>(columnInfo, where.Formats, value);
+            andor.Add(greaterThanOrEqual);
             return andor;
         }
 
@@ -37,9 +38,18 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> AndGreaterThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
             TProperties value) where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new GreaterThanOrEqual<TProperties>(columnInfo, andOr.Formats, value, "AND"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            GreaterThanOrEqual<TProperties> greaterThanOrEqual = new GreaterThanOrEqual<TProperties>(columnInfo, andOr.Formats, value, "AND");
+            andOr.Add(greaterThanOrEqual);
             return andOr;
         }
 
@@ -55,9 +65,18 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> OrGreaterThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
             TProperties value) where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new GreaterThanOrEqual<TProperties>(columnInfo, andOr.Formats, value, "OR"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            GreaterThanOrEqual<TProperties> greaterThanOrEqual = new GreaterThanOrEqual<TProperties>(columnInfo, andOr.Formats, value, "OR");
+            andOr.Add(greaterThanOrEqual);
             return andOr;
         }
     }

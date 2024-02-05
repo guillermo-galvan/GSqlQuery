@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace GSqlQuery.Queries
 {
@@ -25,9 +26,16 @@ namespace GSqlQuery.Queries
         public SelectQueryBuilder(IEnumerable<string> selectMember, IFormats formats)
            : base(formats)
         {
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            Columns = ClassOptionsFactory.GetClassOptions(typeof(T)).GetPropertyQuery(selectMember);
+            Columns = GeneralExtension.GetPropertyQuery(_classOptions,selectMember);
         }
+
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        /// <param name="formats">Formats</param>
+        public SelectQueryBuilder(IFormats formats)
+           : base(formats)
+        { }
 
         /// <summary>
         /// Create query
@@ -35,22 +43,18 @@ namespace GSqlQuery.Queries
         /// <returns>Query Text</returns>
         internal string CreateQuery()
         {
-            string result = string.Empty;
+            IEnumerable<string> columnsName = Columns.Select(x => Options.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            string columns = string.Join(",", columnsName);
 
             if (_andOr == null)
             {
-                result = string.Format(ConstFormat.SELECT,
-                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, Options, QueryType.Read))),
-                    _tableName);
+                return ConstFormat.SELECT.Replace("{0}", columns).Replace("{1}", _tableName);
             }
             else
             {
-                result = string.Format(ConstFormat.SELECTWHERE,
-                    string.Join(",", Columns.Select(x => x.ColumnAttribute.GetColumnName(_tableName, Options, QueryType.Read))),
-                    _tableName, GetCriteria());
+                string criteria = GetCriteria();
+                return ConstFormat.SELECTWHERE.Replace("{0}", columns).Replace("{1}", _tableName).Replace("{2}", criteria);
             }
-
-            return result;
         }
     }
 
@@ -72,12 +76,25 @@ namespace GSqlQuery.Queries
         { }
 
         /// <summary>
+        /// Initializes a new instance of the SelectQueryBuilder class.
+        /// </summary>
+        /// <param name="propertyOptions">PropertyOptionst</param>
+        /// <param name="formats">formats</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public SelectQueryBuilder(IEnumerable<PropertyOptions> propertyOptions, IFormats formats)
+            : base(formats)
+        {
+            Columns = propertyOptions;
+        }
+
+        /// <summary>
         /// Build select query
         /// </summary>
         /// <returns>SelectQuery</returns>
         public override SelectQuery<T> Build()
         {
-            return new SelectQuery<T>(CreateQuery(), Columns, _criteria, Options);
+            string text = CreateQuery();
+            return new SelectQuery<T>(text, Columns, _criteria, Options);
         }
 
         /// <summary>
@@ -113,11 +130,11 @@ namespace GSqlQuery.Queries
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class
         {
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
-            var selectMember = options.MemberInfo.Select(x => x.Name);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
+            GeneralExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            IEnumerable<string> selectMember = options.MemberInfo.Select(x => x.Name);
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, joinEnum, Options, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
+            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, joinEnum, Options, GeneralExtension.GetPropertyQuery(ClassOptionsFactory.GetClassOptions(typeof(TJoin)), selectMember));
         }
 
         /// <summary>

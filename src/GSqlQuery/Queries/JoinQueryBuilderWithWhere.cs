@@ -39,7 +39,7 @@ namespace GSqlQuery.Queries
             _joinInfo = new JoinInfo
             {
                 ClassOptions = tmp,
-                Columns = columnsT2 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
+                Columns = columnsT2 ?? GeneralExtension.GetPropertyQuery(tmp,tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
                 JoinEnum = joinType,
             };
 
@@ -54,7 +54,7 @@ namespace GSqlQuery.Queries
         /// <returns>Join Query</returns>
         public override JoinQuery<Join<T1, T2>> Build()
         {
-            var query = CreateQuery();
+            string query = CreateQuery();
             return new JoinQuery<Join<T1, T2>>(query, Columns, _criteria, Options);
         }
 
@@ -91,11 +91,11 @@ namespace GSqlQuery.Queries
         private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class
         {
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression.");
-            var selectMember = options.MemberInfo.Select(x => x.Name);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
+            GeneralExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            IEnumerable<string> selectMember = options.MemberInfo.Select(x => x.Name);
             selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, Options, ClassOptionsFactory.GetClassOptions(typeof(TJoin)).GetPropertyQuery(selectMember));
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, Options, GeneralExtension.GetPropertyQuery(ClassOptionsFactory.GetClassOptions(typeof(TJoin)),selectMember));
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace GSqlQuery.Queries
         /// <returns>Order by Query</returns>
         public override JoinQuery<Join<T1, T2, T3>> Build()
         {
-            var query = CreateQuery();
+            string query = CreateQuery();
             return new JoinQuery<Join<T1, T2, T3>>(query, Columns, _criteria, Options);
         }
     }

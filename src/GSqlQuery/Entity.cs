@@ -21,12 +21,23 @@ namespace GSqlQuery
         /// <param name="formats">Formats</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>Bulder</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IJoinQueryBuilder<T, SelectQuery<T>, IFormats> Select<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Select(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Select(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new SelectQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), formats);
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
+            GeneralExtension.ValidateMemberInfos(QueryType.Read, options);
+            IEnumerable<string> selectMembers = options.MemberInfo.Select(x => x.Name);
+            return new SelectQueryBuilder<T>(selectMembers, formats);
         }
 
         /// <summary>
@@ -36,8 +47,12 @@ namespace GSqlQuery
         /// <returns>Bulder</returns>
         public static IJoinQueryBuilder<T, SelectQuery<T>, IFormats> Select(IFormats formats)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            return new SelectQueryBuilder<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions.Select(x => x.PropertyInfo.Name), formats);
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
+            IEnumerable<PropertyOptions> propertyOptions = ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions;
+            return new SelectQueryBuilder<T>(propertyOptions, formats);
         }
 
         /// <summary>
@@ -47,7 +62,11 @@ namespace GSqlQuery
         /// <returns>Bulder</returns>
         public IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats formats)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
+            if (formats == null)
+            {
+                throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
+            }
+
             return new InsertQueryBuilder<T>(formats, this);
         }
 
@@ -59,8 +78,10 @@ namespace GSqlQuery
         /// <returns>Bulder</returns>
         public static IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats formats, T entity)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            entity.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(entity));
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), ErrorMessages.ParameterNotNullEmpty);
+            }
             return new InsertQueryBuilder<T>(formats, entity);
         }
 
@@ -74,7 +95,6 @@ namespace GSqlQuery
         /// <returns>Instance of ISet</returns>
         public static ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
             ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
             options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
             return new UpdateQueryBuilder<T>(formats, new string[] { options.MemberInfo.Name }, value);
@@ -89,9 +109,8 @@ namespace GSqlQuery
         /// <returns>Instance of ISet</returns>
         public ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
+            GeneralExtension.ValidateMemberInfos(QueryType.Update, options);
             return new UpdateQueryBuilder<T>(formats, this, options.MemberInfo.Select(x => x.Name));
         }
 
@@ -102,7 +121,6 @@ namespace GSqlQuery
         /// <returns>Bulder</returns>
         public static IQueryBuilderWithWhere<T, DeleteQuery<T>, IFormats> Delete(IFormats formats)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
             return new DeleteQueryBuilder<T>(formats);
         }
     }

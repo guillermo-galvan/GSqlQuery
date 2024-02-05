@@ -19,9 +19,8 @@ namespace GSqlQuery.Extensions
         /// <param name="selectMember">Name of properties to search</param>
         /// <returns>Properties that match selectMember</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptions options, IEnumerable<string> selectMember)
+        internal static IEnumerable<PropertyOptions> GetPropertyQuery(ClassOptions options, IEnumerable<string> selectMember)
         {
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             return (from prop in options.PropertyOptions
                     join sel in selectMember on prop.PropertyInfo.Name equals sel
                     select prop).ToArray();
@@ -37,7 +36,7 @@ namespace GSqlQuery.Extensions
         {
             optionsTupla.NullValidate(ErrorMessages.ParameterNotNull, nameof(optionsTupla));
 
-            List<PropertyOptions> properties = new List<PropertyOptions>();
+            List<PropertyOptions> properties = [];
             var listName = optionsTupla.MemberInfo.Select(x => x.Name);
 
             if (optionsTupla.MemberInfo.Any(x => x.DeclaringType.IsGenericType))
@@ -85,13 +84,10 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ClassOptionsTupla that match expression</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
-
-            IEnumerable<MemberInfo> memberInfos = expression.GetMembers();
+            IEnumerable<MemberInfo> memberInfos = ExpressionExtension.GetMembers(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-
             return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
         }
 
@@ -119,10 +115,25 @@ namespace GSqlQuery.Extensions
         /// <param name="memberInfos">MemberInfo list</param>
         /// <param name="message">Message in case of error</param>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static void ValidateMemberInfos(this IEnumerable<MemberInfo> memberInfos, string message)
+        internal static void ValidateMemberInfos(QueryType queryType, ClassOptionsTupla<IEnumerable<MemberInfo>> options)
         {
-            if (!memberInfos.Any())
+            if (!options.MemberInfo.Any())
             {
+                string message = $"Could not infer property name for expression.";
+
+                switch (queryType)
+                {
+                    case QueryType.Read:
+                        message = $"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Select(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Select(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})";
+                        break;
+                    case QueryType.Update:
+                        message = $"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})";
+                        break;
+                    case QueryType.Join:
+                        message = $"Could not infer property name for expression.";
+                        break;
+                }
+
                 throw new InvalidOperationException(message);
             }
         }

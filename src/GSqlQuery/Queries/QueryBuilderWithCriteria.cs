@@ -29,7 +29,7 @@ namespace GSqlQuery
         /// <returns>IWhere&lt;<typeparamref name="T"/>, <typeparamref name="TReturn"/>&gt;</returns>
         public virtual IWhere<T, TReturn> Where()
         {
-            _andOr = new AndOrBase<T, TReturn, IFormats>(this, Options);
+            _andOr = new AndOrBase<T, TReturn, IFormats>(this, Options, _classOptions);
             return (IWhere<T, TReturn>)_andOr;
         }
 
@@ -39,7 +39,7 @@ namespace GSqlQuery
         /// <returns></returns>
         protected string GetCriteria()
         {
-            return _andOr.GetCliteria(Options, ref _criteria);
+            return IAndOrExtension.GetCliteria(_andOr,Options, ref _criteria);
         }
 
         /// <summary>

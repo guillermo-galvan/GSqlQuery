@@ -31,13 +31,21 @@ namespace GSqlQuery.SearchCriteria
         public IsNull(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string logicalOperator) :
             base(classOptionsTupla, formats, logicalOperator)
         {
-            string tableName = Table.GetTableName(formats);
+            _task = CreteData();
+        }
 
-            string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator}";
+        private Task<CriteriaDetails> CreteData()
+        {
+            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+            string criterion = "{0} {1}".Replace("{0}", columName).Replace("{1}", RelationalOperator);
 
-            _task =  Task.FromResult(new CriteriaDetails(criterion, []));
+            if (!string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
+            }
+
+            return Task.FromResult(new CriteriaDetails(criterion, []));
         }
     }
 }

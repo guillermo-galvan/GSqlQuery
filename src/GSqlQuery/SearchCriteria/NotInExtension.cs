@@ -20,9 +20,10 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> NotIn<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, IEnumerable<TProperties> values)
             where T : class where TReturn : IQuery<T>
         {
-            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new NotIn<TProperties>(columnInfo, where.Formats, values));
+            IAndOr<T, TReturn> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            NotIn<TProperties> notIn = new NotIn<TProperties>(columnInfo, where.Formats, values);
+            andor.Add(notIn);
             return andor;
         }
 
@@ -38,9 +39,18 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> AndNotIn<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
             IEnumerable<TProperties> values) where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new NotIn<TProperties>(columnInfo, andOr.Formats, values, "AND"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            NotIn<TProperties> notIn = new NotIn<TProperties>(columnInfo, andOr.Formats, values, "AND");
+            andOr.Add(notIn);
             return andOr;
         }
 
@@ -56,9 +66,18 @@ namespace GSqlQuery
         public static IAndOr<T, TReturn> OrNotIn<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
             IEnumerable<TProperties> values) where T : class where TReturn : IQuery<T>
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new NotIn<TProperties>(columnInfo, andOr.Formats, values, "OR"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            NotIn<TProperties> notIn = new NotIn<TProperties>(columnInfo, andOr.Formats, values, "OR");
+            andOr.Add(notIn);
             return andOr;
         }
     }

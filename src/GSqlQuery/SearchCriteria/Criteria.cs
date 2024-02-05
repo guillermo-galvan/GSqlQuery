@@ -14,7 +14,7 @@ namespace GSqlQuery.SearchCriteria
     /// <exception cref="ArgumentNullException"></exception>
     internal abstract class Criteria(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string logicalOperator) : ISearchCriteria
     {
-        protected readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla = classOptionsTupla ?? throw new ArgumentNullException(nameof(classOptionsTupla));
+        protected readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla = classOptionsTupla;
 
         protected Task<CriteriaDetails> _task;
 
@@ -33,7 +33,7 @@ namespace GSqlQuery.SearchCriteria
         /// </summary>
         public string LogicalOperator { get; } = logicalOperator;
 
-        public IFormats Formats { get; } = formats ?? throw new ArgumentNullException(nameof(formats));
+        public IFormats Formats { get; } = formats;
 
         /// <summary>
         /// Get Criteria detail
@@ -43,8 +43,7 @@ namespace GSqlQuery.SearchCriteria
         public virtual CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
         {
             _task.Wait();
-            var result = _task.Result;
-            return new CriteriaDetail(this, result.Criterion, result.Parameters);
+            return new CriteriaDetail(this, _task.Result.Criterion, _task.Result.Parameters);
         }
     }
 }

@@ -16,16 +16,31 @@ namespace GSqlQuery
     /// <param name="formats">Formats</param>
     /// <param name="isColumns">Determines whether to take the columns from <typeparamref name="T"/></param>
     /// <exception cref="ArgumentException"></exception>
-    public class AndOrBase<T, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats, bool isColumns = true) : WhereBase<TReturn>(), IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
+    public class AndOrBase<T, TReturn, TOptions> : 
+        WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
         where TReturn : IQuery<T>
         where T : class
     {
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
-        internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentException(nameof(queryBuilderWithWhere));
+        internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere;
 
-        protected IEnumerable<PropertyOptions> Columns { get; set; } = isColumns ? ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions : Enumerable.Empty<PropertyOptions>();
+        protected IEnumerable<PropertyOptions> Columns { get; set; }
 
-        public IFormats Formats { get; } = formats ?? throw new ArgumentException(nameof(formats));
+        public IFormats Formats { get; }
+
+        public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : base()
+        {
+            _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentNullException(nameof(queryBuilderWithWhere));
+            Columns = Enumerable.Empty<PropertyOptions>();
+            Formats = formats ?? throw new ArgumentNullException(nameof(formats));
+        }
+
+        public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats, ClassOptions classOptions) : base()
+        {
+            _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentNullException(nameof(queryBuilderWithWhere));
+            Columns = classOptions?.PropertyOptions ?? throw new ArgumentNullException(nameof(classOptions));
+            Formats = formats ?? throw new ArgumentNullException(nameof(formats));
+        }
 
         /// <summary>
         /// Add search criteria
@@ -33,8 +48,7 @@ namespace GSqlQuery
         /// <param name="criteria"></param>
         public void Add(ISearchCriteria criteria)
         {
-            criteria.NullValidate(ErrorMessages.ParameterNotNull, nameof(criteria));
-            _searchCriterias.Enqueue(criteria);
+            _searchCriterias.Enqueue(criteria ?? throw new ArgumentNullException(nameof(criteria), ErrorMessages.ParameterNotNull));
         }
 
         /// <summary>
@@ -42,9 +56,17 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public virtual IEnumerable<CriteriaDetail> BuildCriteria(IFormats formats)
+        public virtual IEnumerable<CriteriaDetail> BuildCriteria()
         {
-            return _searchCriterias.Select(x => x.GetCriteria(formats, Columns)).ToArray();
+            CriteriaDetail[] result = new CriteriaDetail[_searchCriterias.Count];
+            int count = 0;
+
+            foreach (ISearchCriteria item in _searchCriterias)
+            {
+                result[count++] = item.GetCriteria(Formats, Columns);
+            }
+
+            return result;
         }
         /// <summary>
         /// Build the query

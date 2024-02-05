@@ -17,25 +17,20 @@ namespace GSqlQuery.Extensions
         /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>IEnumerable of MemberInfo</returns>
-		internal static IEnumerable<MemberInfo> GetMembers<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+		internal static IEnumerable<MemberInfo> GetMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            Expression withoutUnary = RemoveUnary(expression.Body);
-
-            Queue<MemberInfo> result = new Queue<MemberInfo>();
+            Expression withoutUnary = expression.Body is UnaryExpression unaryExpression ? unaryExpression.Operand : expression.Body;
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
-                result.Enqueue(memberExpression.Member);
+                return [memberExpression.Member];
             }
             else if (withoutUnary.NodeType == ExpressionType.New && withoutUnary is NewExpression newExpression && newExpression.Members != null)
             {
-                foreach (var item in newExpression.Members)
-                {
-                    result.Enqueue(item);
-                }
+                return newExpression.Members;
             }
 
-            return result;
+            return []; 
         }
 
         /// <summary>
@@ -67,11 +62,12 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ColumnAttribute</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static ClassOptionsTupla<ColumnAttribute> GetColumnAttribute<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<ColumnAttribute> GetColumnAttribute<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            MemberInfo memberInfo = expression.GetMember();
+            MemberInfo memberInfo = GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfo.DeclaringType);
-            return new ClassOptionsTupla<ColumnAttribute>(options, memberInfo.ValidateMemberInfo(options).ColumnAttribute);
+            PropertyOptions propertyOptions = GeneralExtension.ValidateMemberInfo(memberInfo, options);
+            return new ClassOptionsTupla<ColumnAttribute>(options, propertyOptions.ColumnAttribute);
         }
 
         private static Expression RemoveUnary(Expression toUnwrap)

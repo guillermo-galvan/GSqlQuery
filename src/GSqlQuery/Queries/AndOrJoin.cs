@@ -14,7 +14,7 @@ namespace GSqlQuery.Queries
     /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
     /// <param name="formats">Formats</param>
     /// <exception cref="ArgumentException"></exception>
-    internal class AndOrJoin<T1, T2, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere, formats, false)
+    internal class AndOrJoin<T1, T2, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere, formats)
         where T1 : class
         where T2 : class
         where TJoin : class
@@ -26,7 +26,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria(IFormats formats)
+        public override IEnumerable<CriteriaDetail> BuildCriteria()
         {
             ClassOptions[] classOptions =
             [
@@ -34,7 +34,7 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2))
             ];
 
-            return _searchCriterias.Select(x => x.GetCriteria(formats,
+            return _searchCriterias.Select(x => x.GetCriteria(Formats,
                 classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions)).ToArray();
         }
     }
@@ -51,7 +51,7 @@ namespace GSqlQuery.Queries
     /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
     /// <param name="formats">Formats</param>
     /// <exception cref="ArgumentException"></exception>
-    internal class AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere,formats, false)
+    internal class AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere,formats)
         where T1 : class
         where T2 : class
         where T3 : class
@@ -64,7 +64,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria(IFormats formats)
+        public override IEnumerable<CriteriaDetail> BuildCriteria()
         {
             ClassOptions[] classOptions =
             [
@@ -74,7 +74,7 @@ namespace GSqlQuery.Queries
             ];
 
             return _searchCriterias.Select(x =>
-                x.GetCriteria(formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions)).ToArray();
+                x.GetCriteria(Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions)).ToArray();
         }
     }
 

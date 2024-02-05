@@ -22,7 +22,7 @@ namespace GSqlQuery.Test.Extensions
             AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
             IEnumerable<CriteriaDetail> criterias = null;
             var andOr = where.Equal(x => x.Id, 1);
-            string result = andOr.GetCliteria(_queryBuilder.Options, ref criterias);
+            string result = IAndOrExtension.GetCliteria(andOr,_queryBuilder.Options, ref criterias);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
