@@ -69,11 +69,11 @@ namespace GSqlQuery.Extensions
         /// <param name="options">Contains the class information</param>
         /// <param name="selectMember">Name of properties to search</param>
         /// <returns>ColumnAttribute that match selectMember</returns>
-        internal static IEnumerable<ColumnAttribute> GetColumnsQuery(this ClassOptions options, IEnumerable<string> selectMember)
+        internal static IEnumerable<ColumnAttribute> GetColumnsQuery(ClassOptions options, IEnumerable<string> selectMember)
         {
-            return (from prop in options.PropertyOptions
+            return from prop in options.PropertyOptions
                     join sel in selectMember on prop.PropertyInfo.Name equals sel
-                    select prop.ColumnAttribute).ToArray();
+                    select prop.ColumnAttribute;
         }
 
         /// <summary>
@@ -98,12 +98,23 @@ namespace GSqlQuery.Extensions
         /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ClassOptionsTupla that match expression</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        internal static ClassOptionsTupla<MemberInfo> GetOptionsAndMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression, ClassOptions options)
         {
-            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
+            IEnumerable<MemberInfo> memberInfos = ExpressionExtension.GetMembers(expression);
+            return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
+        }
 
-            MemberInfo memberInfos = expression.GetMember();
+        /// <summary>
+        /// Gets the ClassOptionsTupla
+        /// </summary>
+        /// <typeparam name="T">Type of class</typeparam>
+        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>ClassOptionsTupla that match expression</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        internal static ClassOptionsTupla<MemberInfo> GetOptionsAndMember<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        {
+            MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
 
             return new ClassOptionsTupla<MemberInfo>(options, memberInfos);
@@ -145,7 +156,7 @@ namespace GSqlQuery.Extensions
         /// <param name="options">Contains the class information</param>
         /// <returns>PropertyOptions</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static PropertyOptions ValidateMemberInfo(this MemberInfo memberInfo, ClassOptions options)
+        internal static PropertyOptions ValidateMemberInfo(MemberInfo memberInfo, ClassOptions options)
         {
             PropertyOptions result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
             return result ?? throw new InvalidOperationException($"Could not find property {memberInfo.Name} on type {options.Type.Name}");
@@ -176,7 +187,7 @@ namespace GSqlQuery.Extensions
             where T2 : class
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
-            MemberInfo memberInfos = expression.GetMember();
+            MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
             ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
 
@@ -204,7 +215,7 @@ namespace GSqlQuery.Extensions
             where T3 : class
         {
             expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
-            MemberInfo memberInfos = expression.GetMember();
+            MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
             ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
 

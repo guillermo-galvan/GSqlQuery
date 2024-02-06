@@ -38,11 +38,11 @@ namespace GSqlQuery.Queries
             this(formats)
         {
             _columnValues = new Dictionary<ColumnAttribute, object>();
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            foreach (ColumnAttribute item in ClassOptionsFactory.GetClassOptions(typeof(T)).GetColumnsQuery(selectMember))
+            IEnumerable<ColumnAttribute> columnAttributes = GeneralExtension.GetColumnsQuery(_classOptions, selectMember);
+            foreach (ColumnAttribute item in columnAttributes)
             {
                 _columnValues.Add(item, value);
-            };
+            }
         }
 
         /// <summary>
@@ -55,12 +55,13 @@ namespace GSqlQuery.Queries
         public UpdateQueryBuilder(IFormats formats, object entity, IEnumerable<string> selectMember) :
            this(formats)
         {
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _columnValues = new Dictionary<ColumnAttribute, object>();
-            foreach (var item in from prop in ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions
-                                 join sel in selectMember on prop.PropertyInfo.Name equals sel
-                                 select new { prop.ColumnAttribute, prop.PropertyInfo })
+            IEnumerable<PropertyOptions> properties = from prop in _classOptions.PropertyOptions
+                                                      join sel in selectMember on prop.PropertyInfo.Name equals sel
+                                                      select prop;
+
+            foreach (PropertyOptions item in properties)
             {
                 _columnValues.Add(item.ColumnAttribute, item.PropertyInfo.GetValue(entity));
             };
@@ -122,15 +123,21 @@ namespace GSqlQuery.Queries
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property</param>
         /// <param name="value"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns>Instance of ISet</returns>
         internal void AddSet<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
-            ColumnAttribute column = options.MemberInfo.ValidateMemberInfo(options.ClassOptions).ColumnAttribute;
-
-            if (!_columnValues.ContainsKey(column))
+            if (expression == null)
             {
-                _columnValues.Add(column, value);
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<MemberInfo> options = GeneralExtension.GetOptionsAndMember(expression);
+            PropertyOptions propertyOptions = GeneralExtension.ValidateMemberInfo(options.MemberInfo, options.ClassOptions);
+
+            if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
+            {
+                _columnValues.Add(propertyOptions.ColumnAttribute, value);
             }
         }
 
@@ -142,21 +149,27 @@ namespace GSqlQuery.Queries
         /// <returns>Instance of ISet</returns>
         internal void AddSet<TProperties>(object entity, Expression<Func<T, TProperties>> expression)
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+
             if (entity == null)
             {
                 throw new InvalidOperationException(ErrorMessages.EntityNotFound);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression, _classOptions);
             GeneralExtension.ValidateMemberInfos(QueryType.Update, options);
 
             foreach (MemberInfo item in options.MemberInfo)
             {
-                PropertyOptions propertyOptions = item.ValidateMemberInfo(options.ClassOptions);
+                PropertyOptions propertyOptions = GeneralExtension.ValidateMemberInfo(item, options.ClassOptions);
 
                 if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
                 {
-                    _columnValues.Add(propertyOptions.ColumnAttribute, GeneralExtension.GetValue(propertyOptions,entity));
+                    object value = GeneralExtension.GetValue(propertyOptions, entity);
+                    _columnValues.Add(propertyOptions.ColumnAttribute, value);
                 }
             }
         }

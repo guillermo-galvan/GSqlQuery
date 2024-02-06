@@ -41,17 +41,16 @@ namespace GSqlQuery.Extensions
         /// <param name="expression"></param>
         /// <returns>MemberInfo</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static MemberInfo GetMember<T, TProperties>(this Expression<Func<T, TProperties>> expression)
+        internal static MemberInfo GetMember<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            Expression withoutUnary = RemoveUnary(expression.Body);
-            MemberInfo result = null;
+            Expression withoutUnary = expression.Body is UnaryExpression unaryExpression ? unaryExpression.Operand : expression.Body;
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
-                result = memberExpression.Member;
+                return memberExpression.Member;
             }
 
-            return result ?? throw new InvalidOperationException($"Could not infer property name for expression.");
+            throw new InvalidOperationException($"Could not infer property name for expression.");
         }
 
         /// <summary>
@@ -68,11 +67,6 @@ namespace GSqlQuery.Extensions
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfo.DeclaringType);
             PropertyOptions propertyOptions = GeneralExtension.ValidateMemberInfo(memberInfo, options);
             return new ClassOptionsTupla<ColumnAttribute>(options, propertyOptions.ColumnAttribute);
-        }
-
-        private static Expression RemoveUnary(Expression toUnwrap)
-        {
-            return toUnwrap is UnaryExpression expression ? expression.Operand : toUnwrap;
         }
     }
 }

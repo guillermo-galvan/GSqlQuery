@@ -18,13 +18,14 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_desepues()
         {
-            Test3 _entity = new Test3(1, "Name", DateTime.Now, true);
-            var defautl = new DefaultFormats();
-            var queryBuilder = Test3.Delete(defautl);
-            //var count = queryBuilder.OrderBy(x => x.Ids, OrderBy.DESC);
-            //var where = count.Where();
-            //var criterias = where.In(x => x.Ids, [1,2,3,4,5]);
-            var result = queryBuilder.Build();
+            Test3 test3 = new Test3(1, "names", DateTime.Now, true);
+            var set = test3.Update(_stantements, x => x.Ids);
+            set = set.Set(x => x.Names);
+            set = set.Set(x => x.Creates);
+            set = set.Set(x => x.IsTests);
+
+            var result = set.Build();
+
         }
 
         [Fact]

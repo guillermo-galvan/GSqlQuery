@@ -105,9 +105,13 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
-            options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
-            return new UpdateQueryBuilder<T>(formats, new string[] { options.MemberInfo.Name }, value);
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<MemberInfo> options = GeneralExtension.GetOptionsAndMember(expression);
+            return new UpdateQueryBuilder<T>(formats, [options.MemberInfo.Name], value);
         }
 
         /// <summary>
@@ -123,9 +127,15 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(formats), ErrorMessages.ParameterNotNull);
             }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
             GeneralExtension.ValidateMemberInfos(QueryType.Update, options);
-            return new UpdateQueryBuilder<T>(formats, this, options.MemberInfo.Select(x => x.Name));
+            IEnumerable<string> selectMembers = options.MemberInfo.Select(x => x.Name);
+            return new UpdateQueryBuilder<T>(formats, this, selectMembers);
         }
 
         /// <summary>

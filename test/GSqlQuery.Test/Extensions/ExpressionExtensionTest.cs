@@ -38,7 +38,7 @@ namespace GSqlQuery.Test.Extensions
         public void Should_extract_the_member_from_the_expression()
         {
             Expression<Func<Test1, string>> expression = x => x.Name;
-            var result = expression.GetMember();
+            var result = ExpressionExtension.GetMember(expression);
             Assert.NotNull(result);
             Assert.Equal(nameof(Test1.Name), result.Name);
 
@@ -48,7 +48,7 @@ namespace GSqlQuery.Test.Extensions
         public void Throw_exception_if_no_member_found_in_expression()
         {
             Expression<Func<Test1, Test1>> expression = x => x;
-            Assert.Throws<InvalidOperationException>(() => expression.GetMember());
+            Assert.Throws<InvalidOperationException>(() => ExpressionExtension.GetMember(expression));
         }
 
         [Fact]
