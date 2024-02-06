@@ -45,15 +45,12 @@ namespace GSqlQuery.Extensions
         public static IAndOr<T, TReturn> GetAndOr<T, TReturn>(IWhere<T, TReturn> where)
             where T : class where TReturn : IQuery<T>
         {
-            IAndOr<T, TReturn> result = null;
-
             if (where is IAndOr<T, TReturn> andor)
             {
-                result = andor;
+                return andor;
             }
 
-            ObjectExtension.NullValidate(result, ErrorMessages.ParameterNotNull, nameof(where));
-            return result;
+            throw new ArgumentNullException(nameof(where), ErrorMessages.ParameterNotNull);
         }
 
         /// <summary>
@@ -67,8 +64,15 @@ namespace GSqlQuery.Extensions
         public static void Validate<T, TReturn, TProperties>( IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression)
             where T : class where TReturn : IQuery<T>
         {
-            ObjectExtension.NullValidate(andOr, ErrorMessages.ParameterNotNull, nameof(andOr));
-            ObjectExtension.NullValidate(expression, ErrorMessages.ParameterNotNull, nameof(expression));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr));
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
         }
     }
 }

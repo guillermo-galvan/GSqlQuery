@@ -1,4 +1,5 @@
 ﻿using GSqlQuery.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -120,7 +121,10 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         public void AddOrderBy(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy)
         {
-            ObjectExtension.NullValidate(selectMember,ErrorMessages.ParameterNotNull, nameof(selectMember));
+            if (selectMember == null)
+            {
+                throw new ArgumentNullException(nameof(selectMember));
+            }
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GeneralExtension.GetPropertyQuery(selectMember), orderBy));
         }
     }
