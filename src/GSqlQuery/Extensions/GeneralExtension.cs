@@ -182,21 +182,15 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>JoinCriteriaPart</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static JoinCriteriaPart GetJoinColumn<T1, T2, TProperties>(this Expression<Func<Join<T1, T2>, TProperties>> expression)
+        internal static JoinCriteriaPart GetJoinColumn<T1, T2, TProperties>(Expression<Func<Join<T1, T2>, TProperties>> expression)
             where T1 : class
             where T2 : class
         {
-            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
             MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
             ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
 
-            return new JoinCriteriaPart()
-            {
-                Column = columnAttribute,
-                Table = options.Table,
-                MemberInfo = memberInfos,
-            };
+            return new JoinCriteriaPart(columnAttribute, options.Table, memberInfos);;
         }
 
         /// <summary>
@@ -209,22 +203,16 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>JoinCriteriaPart</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static JoinCriteriaPart GetJoinColumn<T1, T2, T3, TProperties>(this Expression<Func<Join<T1, T2, T3>, TProperties>> expression)
+        internal static JoinCriteriaPart GetJoinColumn<T1, T2, T3, TProperties>(Expression<Func<Join<T1, T2, T3>, TProperties>> expression)
             where T1 : class
             where T2 : class
             where T3 : class
         {
-            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
             MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
             ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
 
-            return new JoinCriteriaPart()
-            {
-                Column = columnAttribute,
-                Table = options.Table,
-                MemberInfo = memberInfos,
-            };
+            return new JoinCriteriaPart(columnAttribute, options.Table, memberInfos);
         }
     }
 }

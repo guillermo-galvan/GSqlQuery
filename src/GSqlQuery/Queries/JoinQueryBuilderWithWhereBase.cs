@@ -219,12 +219,9 @@ namespace GSqlQuery.Queries
             : base(joinInfos, formats)
         {
             var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
-            _joinInfo = new JoinInfo
-            {
-                Columns = columnsT3 ?? GeneralExtension.GetPropertyQuery(tmp,tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
-                JoinEnum = joinType,
-                ClassOptions = tmp,
-            };
+            columnsT3 ??= tmp.PropertyOptions;
+
+            _joinInfo = new JoinInfo(columnsT3, tmp, joinType);
 
             _joinInfos.Enqueue(_joinInfo);
             Columns = _joinInfos.SelectMany(x => x.Columns);

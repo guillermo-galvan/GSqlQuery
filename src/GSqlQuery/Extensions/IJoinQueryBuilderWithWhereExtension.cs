@@ -35,7 +35,7 @@ namespace GSqlQuery
         {
             if (joinQueryBuilderWith is IAddJoinCriteria<JoinModel> joinCriteria)
             {
-                joinCriteria.AddColumnJoin(logicalOperador, field1, criteriaEnum, field2);
+                IAddJoinCriteriaExtension.AddColumnJoin(joinCriteria,logicalOperador, field1, criteriaEnum, field2);
                 return joinQueryBuilderWith;
             }
 
@@ -382,7 +382,7 @@ namespace GSqlQuery
         {
             if (joinQueryBuilderWith is IAddJoinCriteria<JoinModel> joinCriteria)
             {
-                joinCriteria.AddColumnJoin(logicalOperador, field1, criteriaEnum, field2);
+                IAddJoinCriteriaExtension.AddColumnJoin(joinCriteria, logicalOperador, field1, criteriaEnum, field2);
                 return joinQueryBuilderWith;
             }
 

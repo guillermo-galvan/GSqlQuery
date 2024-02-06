@@ -104,7 +104,7 @@ namespace GSqlQuery.Queries
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> InnerJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Inner, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Inner, Options);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace GSqlQuery.Queries
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> LeftJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Left, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Left, Options);
         }
 
         /// <summary>
@@ -124,17 +124,21 @@ namespace GSqlQuery.Queries
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> RightJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, JoinType.Right, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Right, Options);
         }
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
             GeneralExtension.ValidateMemberInfos(QueryType.Criteria, options);
             IEnumerable<string> selectMember = options.MemberInfo.Select(x => x.Name);
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            return new JoinQueryBuilderWithWhere<T, TJoin>(_tableName, Columns, joinEnum, Options, GeneralExtension.GetPropertyQuery(ClassOptionsFactory.GetClassOptions(typeof(TJoin)), selectMember));
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, Options, GeneralExtension.GetPropertyQuery(ClassOptionsFactory.GetClassOptions(typeof(TJoin)), selectMember));
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.SearchCriteria;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -34,8 +35,15 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2))
             ];
 
-            return _searchCriterias.Select(x => x.GetCriteria(Formats,
-                classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions)).ToArray();
+            Queue<CriteriaDetail> result = new Queue<CriteriaDetail>();
+
+            foreach (ISearchCriteria x in _searchCriterias)
+            {
+                CriteriaDetail criteria = x.GetCriteria(Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
+                result.Enqueue(criteria);
+            }
+
+            return result;
         }
     }
 
@@ -72,9 +80,15 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2)),
                 ClassOptionsFactory.GetClassOptions(typeof(T3)),
             ];
+            Queue<CriteriaDetail> result = new Queue<CriteriaDetail>();
 
-            return _searchCriterias.Select(x =>
-                x.GetCriteria(Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions)).ToArray();
+            foreach (ISearchCriteria x in _searchCriterias)
+            {
+                CriteriaDetail criteria = x.GetCriteria(Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
+                result.Enqueue(criteria);
+            }
+
+            return result;
         }
     }
 

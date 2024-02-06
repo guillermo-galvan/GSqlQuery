@@ -21,21 +21,17 @@ namespace GSqlQuery.Extensions
         /// <param name="joinCriteriaEnum">Join Criteria Type</param>
         /// <param name="field2">Expression for field 2</param>
         internal static void AddColumnJoin<T1, T2, TProperties>(
-            this IAddJoinCriteria<JoinModel> joinCriteria, string logicalOperador,
+            IAddJoinCriteria<JoinModel> joinCriteria, string logicalOperador,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             JoinCriteriaType joinCriteriaEnum,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
         {
-
-            joinCriteria.AddColumns(new JoinModel
-            {
-                LogicalOperator = logicalOperador,
-                JoinModel1 = field1.GetJoinColumn(),
-                JoinCriteria = joinCriteriaEnum,
-                JoinModel2 = field2.GetJoinColumn(),
-            });
+            JoinCriteriaPart joinCriteria1 = GeneralExtension.GetJoinColumn(field1);
+            JoinCriteriaPart joinCriteria2 = GeneralExtension.GetJoinColumn(field2);
+            JoinModel joinModel = new JoinModel(logicalOperador, joinCriteria1, joinCriteriaEnum, joinCriteria2);
+            joinCriteria.AddColumns(joinModel);
         }
 
         /// <summary>
@@ -51,7 +47,7 @@ namespace GSqlQuery.Extensions
         /// <param name="joinCriteriaEnum">Join Criteria Type</param>
         /// <param name="field2">Expression for field 2</param>
         internal static void AddColumnJoin<T1, T2, T3, TProperties>(
-            this IAddJoinCriteria<JoinModel> joinCriteria, string logicalOperador,
+            IAddJoinCriteria<JoinModel> joinCriteria, string logicalOperador,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             JoinCriteriaType joinCriteriaEnum,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
@@ -59,14 +55,11 @@ namespace GSqlQuery.Extensions
             where T2 : class
             where T3 : class
         {
+            JoinCriteriaPart joinCriteria1 = GeneralExtension.GetJoinColumn(field1);
+            JoinCriteriaPart joinCriteria2 = GeneralExtension.GetJoinColumn(field2);
+            JoinModel joinModel = new JoinModel(logicalOperador, joinCriteria1, joinCriteriaEnum, joinCriteria2);
 
-            joinCriteria.AddColumns(new JoinModel
-            {
-                LogicalOperator = logicalOperador,
-                JoinModel1 = field1.GetJoinColumn(),
-                JoinCriteria = joinCriteriaEnum,
-                JoinModel2 = field2.GetJoinColumn(),
-            });
+            joinCriteria.AddColumns(joinModel);
         }
     }
 }

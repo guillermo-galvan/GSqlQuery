@@ -25,23 +25,18 @@ namespace GSqlQuery.Queries
         /// <param name="joinType"> Join Type</param>
         /// <param name="formats">Formats</param>
         /// <param name="columnsT2">Columns second table</param>
-        public JoinQueryBuilderWithWhere(string tableName, IEnumerable<PropertyOptions> columns, JoinType joinType, IFormats formats,
+        public JoinQueryBuilderWithWhere(IEnumerable<PropertyOptions> columns, JoinType joinType, IFormats formats,
             IEnumerable<PropertyOptions> columnsT2 = null) : base(null, formats)
         {
-            _joinInfos.Enqueue(new JoinInfo
-            {
-                ClassOptions = ClassOptionsFactory.GetClassOptions(typeof(T1)),
-                Columns = columns,
-                IsMain = true,
-            });
+            ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(typeof(T1));
+            JoinInfo joinInfo = new JoinInfo(columns, classOptions, true);
+            _joinInfos.Enqueue(joinInfo);
 
-            var tmp = ClassOptionsFactory.GetClassOptions(typeof(T2));
-            _joinInfo = new JoinInfo
-            {
-                ClassOptions = tmp,
-                Columns = columnsT2 ?? GeneralExtension.GetPropertyQuery(tmp,tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
-                JoinEnum = joinType,
-            };
+            ClassOptions classOptions2 = ClassOptionsFactory.GetClassOptions(typeof(T2));
+
+            columnsT2 ??= classOptions2.PropertyOptions;
+
+            _joinInfo = new JoinInfo(columnsT2, classOptions2,  joinType);
 
             _joinInfos.Enqueue(_joinInfo);
 

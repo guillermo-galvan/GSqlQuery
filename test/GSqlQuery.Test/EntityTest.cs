@@ -18,14 +18,14 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_desepues()
         {
-            Test3 test3 = new Test3(1, "names", DateTime.Now, true);
-            var set = test3.Update(_stantements, x => x.Ids);
-            set = set.Set(x => x.Names);
-            set = set.Set(x => x.Creates);
-            set = set.Set(x => x.IsTests);
-
-            var result = set.Build();
-
+            var select = Test3.Select(_stantements);
+            var join = select.InnerJoin<Test3>(x => new {x.Ids, x.Names});
+            var joinEqual = join.Equal(x => x.Table1.Ids, x => x.Table2.Ids);
+            var join1 = joinEqual.InnerJoin<Test3>(x => new { x.Ids, x.Names });
+            var joinEqual1 = join1.Equal(x => x.Table2.Ids, x => x.Table3.Ids);
+            var where = joinEqual1.Where();
+            var criteri = where.Equal(x => x.Table1.Ids, 1);
+            var result = criteri.Build();
         }
 
         [Fact]
