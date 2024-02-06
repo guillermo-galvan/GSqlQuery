@@ -32,29 +32,32 @@ namespace GSqlQuery.Extensions
         /// <param name="optionsTupla">Class that contains the ClassOptions and selectMember information</param>
         /// <returns>Properties that match selectMember</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static IEnumerable<PropertyOptions> GetPropertyQuery(this ClassOptionsTupla<IEnumerable<MemberInfo>> optionsTupla)
+        internal static IEnumerable<PropertyOptions> GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> optionsTupla)
         {
-            optionsTupla.NullValidate(ErrorMessages.ParameterNotNull, nameof(optionsTupla));
+            if (optionsTupla == null)
+            {
+                throw new ArgumentNullException(nameof(optionsTupla), ErrorMessages.ParameterNotNull);
+            }
 
             List<PropertyOptions> properties = [];
             var listName = optionsTupla.MemberInfo.Select(x => x.Name);
 
             if (optionsTupla.MemberInfo.Any(x => x.DeclaringType.IsGenericType))
             {
-                foreach (var item in optionsTupla.ClassOptions.PropertyOptions.Where(x => x.PropertyInfo.PropertyType.IsClass))
+                foreach (PropertyOptions item in optionsTupla.ClassOptions.PropertyOptions.Where(x => x.PropertyInfo.PropertyType.IsClass))
                 {
-                    var classOptions = ClassOptionsFactory.GetClassOptions(item.PropertyInfo.PropertyType);
-                    var a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
+                    ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.PropertyInfo.PropertyType);
+                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
 
                     properties.AddRange(a);
                 }
             }
             else
             {
-                foreach (var item in optionsTupla.MemberInfo)
+                foreach (MemberInfo item in optionsTupla.MemberInfo)
                 {
-                    var classOptions = ClassOptionsFactory.GetClassOptions(item.DeclaringType);
-                    var a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
+                    ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.DeclaringType);
+                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
 
                     properties.AddRange(a);
                 }

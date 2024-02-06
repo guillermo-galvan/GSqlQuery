@@ -28,7 +28,7 @@ namespace GSqlQuery.Queries
         /// <returns></returns>
         internal static IEnumerable<string> GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats formats)
         {
-            return joinInfos.SelectMany(c => c.Columns.Select(x => x.ColumnAttribute.GetColumnNameJoin(c, formats)));
+            return joinInfos.SelectMany(c => c.Columns.Select(x => ColumnAttributeExtension.GetColumnNameJoin(x.ColumnAttribute, c, formats)));
         }
 
         /// <summary>

@@ -52,7 +52,7 @@ namespace GSqlQuery.Extensions
                 result = andor;
             }
 
-            result.NullValidate(ErrorMessages.ParameterNotNull, nameof(where));
+            ObjectExtension.NullValidate(result, ErrorMessages.ParameterNotNull, nameof(where));
             return result;
         }
 
@@ -64,11 +64,11 @@ namespace GSqlQuery.Extensions
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="andOr">Instance of IAndOr</param>
         /// <param name="expression">Expression to evaluate</param>
-        public static void Validate<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression)
+        public static void Validate<T, TReturn, TProperties>( IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression)
             where T : class where TReturn : IQuery<T>
         {
-            andOr.NullValidate(ErrorMessages.ParameterNotNull, nameof(andOr));
-            expression.NullValidate(ErrorMessages.ParameterNotNull, nameof(expression));
+            ObjectExtension.NullValidate(andOr, ErrorMessages.ParameterNotNull, nameof(andOr));
+            ObjectExtension.NullValidate(expression, ErrorMessages.ParameterNotNull, nameof(expression));
         }
     }
 }

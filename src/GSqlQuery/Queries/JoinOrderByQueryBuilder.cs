@@ -33,7 +33,7 @@ namespace GSqlQuery.Queries
             : base(formats)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.GetPropertyQuery(), orderBy));
+            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GeneralExtension.GetPropertyQuery(selectMember), orderBy));
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
         }
@@ -50,7 +50,7 @@ namespace GSqlQuery.Queries
            : base(formats)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.GetPropertyQuery(), orderBy));
+            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GeneralExtension.GetPropertyQuery(selectMember), orderBy));
             _andorBuilder = andOr;
             Columns = Enumerable.Empty<PropertyOptions>();
         }
@@ -120,8 +120,8 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         public void AddOrderBy(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy)
         {
-            selectMember.NullValidate(ErrorMessages.ParameterNotNull, nameof(selectMember));
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.GetPropertyQuery(), orderBy));
+            ObjectExtension.NullValidate(selectMember,ErrorMessages.ParameterNotNull, nameof(selectMember));
+            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GeneralExtension.GetPropertyQuery(selectMember), orderBy));
         }
     }
 

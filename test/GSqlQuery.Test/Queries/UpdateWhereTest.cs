@@ -75,7 +75,7 @@ namespace GSqlQuery.Test.Queries
             IAndOr<Test1, UpdateQuery<Test1>> andOr = new AndOrBase<Test1, UpdateQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
             try
             {
-                andOr.Validate(x => x.IsTest);
+                GSqlQueryExtension.Validate(andOr, x => x.IsTest);
                 Assert.True(true);
             }
             catch (Exception)
@@ -88,7 +88,7 @@ namespace GSqlQuery.Test.Queries
         public void Throw_exception_if_expression_is_null_in_IAndOr_UpdateQuery()
         {
             IAndOr<Test1, UpdateQuery<Test1>> where = null;
-            Assert.Throws<ArgumentNullException>(() => where.Validate(x => x.Id));
+            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.Validate(where, x => x.Id));
         }
 
         [Fact]

@@ -15,7 +15,7 @@ namespace GSqlQuery.Extensions
         /// <param name="column">Contains the property information</param>
         /// <param name="propertyOptions">List of property options</param>
         /// <returns>Property options</returns>
-        internal static PropertyOptions GetPropertyOptions(this ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
+        internal static PropertyOptions GetPropertyOptions(ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
         {
             return propertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
         }
@@ -27,11 +27,12 @@ namespace GSqlQuery.Extensions
         /// <param name="joinInfo">Contains the information for the join query</param>
         /// <param name="formats">Formats for the column.</param>
         /// <returns>Column name for join query</returns>
-        internal static string GetColumnNameJoin(this ColumnAttribute column, JoinInfo joinInfo, IFormats formats)
+        internal static string GetColumnNameJoin(ColumnAttribute column, JoinInfo joinInfo, IFormats formats)
         {
-            string alias = string.Format(formats.Format, $"{joinInfo.ClassOptions.Type.Name}_{column.Name}");
-            string columnName = formats.GetColumnName(TableAttributeExtension.GetTableName(joinInfo.ClassOptions.Table,formats), column, QueryType.Join);
-            return $"{columnName} as {alias}";
+            string alias = formats.Format.Replace("{0}", $"{joinInfo.ClassOptions.Type.Name}_{column.Name}");
+            string tableName = TableAttributeExtension.GetTableName(joinInfo.ClassOptions.Table, formats);
+            string columnName = formats.GetColumnName(tableName, column, QueryType.Join);
+            return "{0} as {1}".Replace("{0}", columnName).Replace("{1}", alias);
         }
     }
 }

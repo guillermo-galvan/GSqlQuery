@@ -92,7 +92,7 @@ namespace GSqlQuery.Test
 
             foreach (var item in classOptions.PropertyOptions)
             {
-                var tmp = item.ColumnAttribute.GetPropertyOptions(classOptions.PropertyOptions);
+                var tmp = ColumnAttributeExtension.GetPropertyOptions(item.ColumnAttribute, classOptions.PropertyOptions);
                 Assert.Equal(item.ColumnAttribute, tmp.ColumnAttribute);
             }
         }

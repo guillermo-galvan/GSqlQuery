@@ -14,7 +14,7 @@ namespace GSqlQuery.Extensions
         /// <param name="message">Error message</param>
         /// <param name="paramName">Parameter name</param>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static void NullValidate(this object obj, string message, string paramName)
+        internal static void NullValidate(object obj, string message, string paramName)
         {
             if (obj == null)
             {
