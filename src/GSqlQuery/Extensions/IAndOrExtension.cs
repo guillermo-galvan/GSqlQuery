@@ -19,7 +19,7 @@ namespace GSqlQuery.Extensions
         internal static string GetCliteria<TReturn>(IAndOr<TReturn> andOr, ref IEnumerable<CriteriaDetail> criterias) where TReturn : IQuery
         {
             criterias ??= andOr.BuildCriteria();
-            var queryParts = criterias.Select(x => x.QueryPart);
+            IEnumerable<string> queryParts = criterias.Select(x => x.QueryPart);
             return string.Join(" ", queryParts);
         }
     }

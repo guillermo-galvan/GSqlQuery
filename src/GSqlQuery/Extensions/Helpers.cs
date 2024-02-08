@@ -15,7 +15,7 @@ namespace GSqlQuery.Extensions
         /// <returns>Parameter Id</returns>
         internal static int GetIdParam()
         {
-            var result = Interlocked.Increment(ref _idParam);
+            int result = Interlocked.Increment(ref _idParam);
 
             if (result > int.MaxValue - 3000)
             {

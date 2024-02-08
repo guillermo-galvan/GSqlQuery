@@ -40,8 +40,8 @@ namespace GSqlQuery.Queries
         internal static IEnumerable<string> CreateJoinQuery(IEnumerable<JoinInfo> joinInfos, IFormats formats)
         {
             Queue<string> joinQuerys = new Queue<string>();
-
-            foreach (var item in joinInfos.Where(x => !x.IsMain))
+            IEnumerable<JoinInfo> joins = joinInfos.Where(x => !x.IsMain);
+            foreach (JoinInfo item in joins)
             {
                 string a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(formats, x)));
 
@@ -218,7 +218,7 @@ namespace GSqlQuery.Queries
         public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, IFormats formats, IEnumerable<PropertyOptions> columnsT3 = null)
             : base(joinInfos, formats)
         {
-            var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
+            ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
             columnsT3 ??= tmp.PropertyOptions;
 
             _joinInfo = new JoinInfo(columnsT3, tmp, joinType);

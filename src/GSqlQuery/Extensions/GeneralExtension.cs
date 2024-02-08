@@ -40,7 +40,7 @@ namespace GSqlQuery.Extensions
             }
 
             List<PropertyOptions> properties = [];
-            var listName = optionsTupla.MemberInfo.Select(x => x.Name);
+            IEnumerable<string> listName = optionsTupla.MemberInfo.Select(x => x.Name);
 
             if (optionsTupla.MemberInfo.Any(x => x.DeclaringType.IsGenericType))
             {
