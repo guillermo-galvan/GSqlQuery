@@ -138,7 +138,7 @@ namespace GSqlQuery.Queries
             ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
             GeneralExtension.ValidateMemberInfos(QueryType.Criteria, options);
             IEnumerable<string> selectMember = options.MemberInfo.Select(x => x.Name);
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, Options, GeneralExtension.GetPropertyQuery(ClassOptionsFactory.GetClassOptions(typeof(TJoin)), selectMember));
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, Options, GeneralExtension.GetPropertyQuery(options.ClassOptions, selectMember));
         }
 
         /// <summary>

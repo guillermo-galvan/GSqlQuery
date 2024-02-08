@@ -33,6 +33,16 @@ namespace GSqlQuery
             where T2 : class
             where TReturn : IQuery<Join<T1, T2>>
         {
+            if (field1 == null)
+            {
+                throw new ArgumentNullException(nameof(field1), ErrorMessages.ParameterNotNull);
+            }
+
+            if (field2 == null)
+            {
+                throw new ArgumentNullException(nameof(field2), ErrorMessages.ParameterNotNull);
+            }
+
             if (joinQueryBuilderWith is IAddJoinCriteria<JoinModel> joinCriteria)
             {
                 IAddJoinCriteriaExtension.AddColumnJoin(joinCriteria,logicalOperador, field1, criteriaEnum, field2);
@@ -380,6 +390,16 @@ namespace GSqlQuery
             where T3 : class
             where TReturn : IQuery<Join<T1, T2, T3>>
         {
+            if (field1 == null)
+            {
+                throw new ArgumentNullException(nameof(field1), ErrorMessages.ParameterNotNull);
+            }
+
+            if (field2 == null)
+            {
+                throw new ArgumentNullException(nameof(field2), ErrorMessages.ParameterNotNull);
+            }
+
             if (joinQueryBuilderWith is IAddJoinCriteria<JoinModel> joinCriteria)
             {
                 IAddJoinCriteriaExtension.AddColumnJoin(joinCriteria, logicalOperador, field1, criteriaEnum, field2);
