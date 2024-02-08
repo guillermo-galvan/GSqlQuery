@@ -74,6 +74,7 @@ namespace GSqlQuery.Test.SearchCriteria
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);
             Assert.NotNull(parameter.PropertyOptions);
+            Assert.Contains("@", parameter.Name);
             Assert.Equal(_columnAttribute.Name, parameter.PropertyOptions.ColumnAttribute.Name);
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);

@@ -46,7 +46,7 @@ namespace GSqlQuery.SearchCriteria
         private Task<CriteriaDetails> CreteData()
         {
             string tableName = TableAttributeExtension.GetTableName(Table, Formats);
-            string parameterName = ParameterPrefix + Helpers.GetIdParam();
+            string parameterName = "@" + ParameterPrefix + Helpers.GetIdParam();
             string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
             
             string criterion = "{0} {1} {2}".Replace("{0}", columName).Replace("{1}",RelationalOperator).Replace("{2}",parameterName);

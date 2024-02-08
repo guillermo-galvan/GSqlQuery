@@ -63,7 +63,7 @@ namespace GSqlQuery.SearchCriteria
 
             foreach (T item in Values)
             {
-                string parameterName = ParameterPrefix + count++.ToString() + ticks;
+                string parameterName = "@" + ParameterPrefix + count++.ToString() + ticks;
                 parameters[index++] = new ParameterDetail(parameterName, item, property);
             }
             string columnNames = string.Join(",", parameters.Select(x => x.Name));
