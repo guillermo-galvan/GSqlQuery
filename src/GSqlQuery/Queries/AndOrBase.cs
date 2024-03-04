@@ -17,7 +17,7 @@ namespace GSqlQuery
     /// <param name="isColumns">Determines whether to take the columns from <typeparamref name="T"/></param>
     /// <exception cref="ArgumentException"></exception>
     public class AndOrBase<T, TReturn, TOptions> : 
-        WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
+        WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>, IOptions<TOptions>
         where TReturn : IQuery<T>
         where T : class
     {
@@ -27,6 +27,8 @@ namespace GSqlQuery
         protected IEnumerable<PropertyOptions> Columns { get; set; }
 
         public IFormats Formats { get; }
+
+        public TOptions Options => _queryBuilderWithWhere.Options;
 
         public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : base()
         {

@@ -15,7 +15,8 @@ namespace GSqlQuery.Queries
     /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
     /// <param name="formats">Formats</param>
     /// <exception cref="ArgumentException"></exception>
-    internal class AndOrJoin<T1, T2, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere, formats)
+    internal class AndOrJoin<T1, T2, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : 
+        AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere, formats)
         where T1 : class
         where T2 : class
         where TJoin : class
