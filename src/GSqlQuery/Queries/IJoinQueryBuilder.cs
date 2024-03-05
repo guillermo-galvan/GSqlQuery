@@ -9,7 +9,7 @@ namespace GSqlQuery
     /// <typeparam name="T">Type for first table</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TOptions">Options type</typeparam>
-    public interface IJoinQueryBuilder<T, TReturn, TOptions> : IQueryBuilderWithWhere<TReturn, TOptions>, IQueryBuilderWithWhere<T, TReturn, TOptions>
+    public interface IJoinQueryBuilder<T, TReturn, TOptions> : IQueryBuilderWithWhere<TReturn, TOptions>, IQueryBuilderWithWhere<T, TReturn, TOptions>, IOptions<TOptions>
         where T : class
         where TReturn : IQuery<T>
     {

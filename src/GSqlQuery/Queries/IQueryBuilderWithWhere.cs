@@ -6,7 +6,7 @@
     /// <typeparam name="T">The type to query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TOptions">Options Type</typeparam>
-    public interface IQueryBuilderWithWhere<T, TReturn, TOptions> : IQueryBuilderWithWhere<TReturn, TOptions>
+    public interface IQueryBuilderWithWhere<T, TReturn, TOptions> : IQueryBuilderWithWhere<TReturn, TOptions>, IOptions<TOptions>
         where T : class
         where TReturn : IQuery<T>
     {

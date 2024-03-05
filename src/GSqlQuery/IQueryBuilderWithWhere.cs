@@ -1,6 +1,6 @@
 ﻿namespace GSqlQuery
 {
-    public interface IQueryBuilderWithWhere<TReturn, TOptions> : IQueryBuilder<TReturn, TOptions>, IBuilder<TReturn>
+    public interface IQueryBuilderWithWhere<TReturn, TOptions> : IQueryBuilder<TReturn, TOptions>, IBuilder<TReturn>, IOptions<TOptions>
         where TReturn : IQuery
     {
         /// <summary>

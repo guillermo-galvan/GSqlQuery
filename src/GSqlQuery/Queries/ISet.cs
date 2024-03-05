@@ -19,7 +19,7 @@ namespace GSqlQuery
     /// Generate the set query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public interface ISet<T, TReturn, TOptions> : IBuilder<TReturn>, ISet, IQueryBuilderWithWhere<TReturn, TOptions>, IQueryBuilderWithWhere<T, TReturn, TOptions>
+    public interface ISet<T, TReturn, TOptions> : IBuilder<TReturn>, ISet, IQueryBuilderWithWhere<TReturn, TOptions>, IQueryBuilderWithWhere<T, TReturn, TOptions>, IOptions<TOptions>
         where T : class
         where TReturn : IQuery<T>
     {

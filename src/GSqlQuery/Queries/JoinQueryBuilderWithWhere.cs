@@ -26,7 +26,7 @@ namespace GSqlQuery.Queries
         /// <param name="formats">Formats</param>
         /// <param name="columnsT2">Columns second table</param>
         public JoinQueryBuilderWithWhere(IEnumerable<PropertyOptions> columns, JoinType joinType, IFormats formats,
-            IEnumerable<PropertyOptions> columnsT2 = null) : base(null, formats)
+            IEnumerable<PropertyOptions> columnsT2 = null) : base(null, formats, formats)
         {
             ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(typeof(T1));
             JoinInfo joinInfo = new JoinInfo(columns, classOptions, true);
@@ -148,7 +148,7 @@ namespace GSqlQuery.Queries
         /// <param name="formats">Formats</param>
         /// <param name="columnsT3">Columns third table</param>
         public JoinQueryBuilderWithWhere(Queue<JoinInfo> joinInfos, JoinType joinType, IFormats formats, IEnumerable<PropertyOptions> columnsT3 = null) :
-            base(joinInfos, joinType, formats, columnsT3)
+            base(joinInfos, joinType, formats, formats, columnsT3)
         { }
 
         /// <summary>

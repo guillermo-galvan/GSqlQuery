@@ -120,7 +120,8 @@ namespace GSqlQuery.Queries
     /// </remarks>
     /// <param name="joinInfos">joinInfos</param>
     /// <param name="formats">Formats</param>
-    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions>(Queue<JoinInfo> joinInfos, IFormats formats) : QueryBuilderWithCriteria<TJoin, TReturn>(formats),
+    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions>(Queue<JoinInfo> joinInfos, IFormats formats, TOptions options) :
+        QueryBuilderWithCriteria<TJoin, TReturn>(formats),
          IComparisonOperators<TJoin, TReturn, TOptions>,
          IAddJoinCriteria<JoinModel>
          where T1 : class
@@ -132,6 +133,8 @@ namespace GSqlQuery.Queries
         protected JoinInfo _joinInfo;
 
         public IEnumerable<JoinInfo> JoinInfos => _joinInfos;
+
+        TOptions IOptions<TOptions>.Options { get; } = options;
 
         /// <summary>
         /// Method to add the Where statement
@@ -215,8 +218,8 @@ namespace GSqlQuery.Queries
         /// <param name="formats">formats</param>
         /// <param name="columnsT3">Columns third table</param>
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, IFormats formats, IEnumerable<PropertyOptions> columnsT3 = null)
-            : base(joinInfos, formats)
+        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, IFormats formats, TOptions options, IEnumerable<PropertyOptions> columnsT3 = null)
+            : base(joinInfos, formats, options)
         {
             ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
             columnsT3 ??= tmp.PropertyOptions;
