@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
@@ -65,12 +64,10 @@ namespace GSqlQuery.SearchCriteria
 
             if (!string.IsNullOrWhiteSpace(LogicalOperator))
             {
-                criterion = "{0} {1}".Replace("{0}",LogicalOperator).Replace("{1}",criterion);
+                criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
 
-            PropertyOptions property = ColumnAttributeExtension.GetPropertyOptions(Column,_classOptionsTupla.ClassOptions.PropertyOptions);
-
-            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName1, Initial, property), new ParameterDetail(parameterName2, Final, property)]));
+            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName1, Initial), new ParameterDetail(parameterName2, Final)]));
         }
     }
 }

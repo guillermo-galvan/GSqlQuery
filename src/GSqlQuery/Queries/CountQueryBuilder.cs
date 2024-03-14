@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -10,10 +11,11 @@ namespace GSqlQuery.Queries
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TOptions">Options type</typeparam>
     /// <typeparam name="TSelectQuery">Select Query</typeparam>
-    internal abstract class CountQueryBuilder<T, TReturn, TOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn>
+    internal abstract class CountQueryBuilder<T, TReturn, TOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn, TOptions>
         where T : class
-        where TReturn : CountQuery<T>
-        where TSelectQuery : SelectQuery<T>
+        where TReturn : IQuery<T, TOptions>
+        where TSelectQuery : IQuery<T, TOptions>
+        where TOptions : QueryOptions
     {
         protected readonly IQueryBuilder<TSelectQuery, TOptions> _queryBuilder;
 
@@ -22,7 +24,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
         /// <param name="formats">Formats</param>
-        public CountQueryBuilder(IQueryBuilderWithWhere<TSelectQuery, TOptions> queryBuilder, IFormats formats) : base(formats)
+        public CountQueryBuilder(IQueryBuilderWithWhere<TSelectQuery, TOptions> queryBuilder, TOptions queryOptions) : base(queryOptions)
         {
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
@@ -34,8 +36,8 @@ namespace GSqlQuery.Queries
         /// <returns>Query text</returns>
         internal string CreateQuery()
         {
-            SelectQuery<T> selectQuery = _queryBuilder.Build();
-            IEnumerable<string> columnsName = selectQuery.Columns.Select(x => Options.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            IQuery<T, TOptions> selectQuery = _queryBuilder.Build();
+            IEnumerable<string> columnsName = selectQuery.Columns.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
             string columns = string.Join(",", columnsName);
             columns = "COUNT({0})".Replace("{0}", columns);
 
@@ -56,8 +58,8 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <param name="queryBuilder"></param>
-    internal class CountQueryBuilder<T>(IQueryBuilderWithWhere<SelectQuery<T>, IFormats> queryBuilder) : 
-        CountQueryBuilder<T, CountQuery<T>, IFormats, SelectQuery<T>>(queryBuilder, queryBuilder.Options) where T : class
+    internal class CountQueryBuilder<T>(IQueryBuilderWithWhere<SelectQuery<T>, QueryOptions> queryBuilder) :
+        CountQueryBuilder<T, CountQuery<T>, QueryOptions, SelectQuery<T>>(queryBuilder, queryBuilder.QueryOptions) where T : class
     {
         /// <summary>
         /// Build the query
@@ -66,7 +68,7 @@ namespace GSqlQuery.Queries
         public override CountQuery<T> Build()
         {
             string query = CreateQuery();
-            return new CountQuery<T>(query, Columns, _criteria, _queryBuilder.Options);
+            return new CountQuery<T>(query, Columns, _criteria, _queryBuilder.QueryOptions);
         }
     }
 }

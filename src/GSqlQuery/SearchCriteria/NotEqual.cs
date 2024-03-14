@@ -30,7 +30,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public NotEqual(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value, string logicalOperator) : 
+        public NotEqual(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value, string logicalOperator) :
             base(classOptionsTupla, formats, value, logicalOperator)
         { }
     }

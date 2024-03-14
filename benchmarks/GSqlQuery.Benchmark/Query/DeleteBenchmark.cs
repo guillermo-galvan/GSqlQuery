@@ -14,19 +14,19 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateQuery()
         {
-            return User.Delete(_formats).Build();
+            return User.Delete(_queryOptions).Build();
         }
 
         [Benchmark]
         public IQuery GenerateEqualWhereQuery()
         {
-            return User.Delete(_formats).Where().Equal(x => x.Id, 1).Build();
+            return User.Delete(_queryOptions).Where().Equal(x => x.Id, 1).Build();
         }
 
         [Benchmark]
         public IQuery GenerateQuery_withEntity()
         {
-            return User.Delete(_formats, _user).Build();
+            return User.Delete(_queryOptions, _user).Build();
         }
     }
 }

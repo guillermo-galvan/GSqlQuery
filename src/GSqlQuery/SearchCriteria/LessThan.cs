@@ -18,7 +18,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
         /// <param name="value">Value</param>
-        public LessThan(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value) : 
+        public LessThan(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value) :
             base(classOptionsTupla, formats, value)
         {
         }

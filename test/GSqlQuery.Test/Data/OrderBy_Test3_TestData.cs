@@ -9,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new DefaultFormats(),"SELECT Test3.Id FROM Test3 ORDER BY Test3.Name ASC,Test3.Create DESC;"
+                new QueryOptions (new DefaultFormats()),"SELECT Test3.Id FROM Test3 ORDER BY Test3.Name ASC,Test3.Create DESC;"
             };
 
             yield return new object[]
             {
-                new Models.Formats(),"SELECT [Test3].[Id] FROM [Test3] ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
+                new QueryOptions (new Models.Formats()),"SELECT [Test3].[Id] FROM [Test3] ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
             };
         }
 
@@ -27,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-               new DefaultFormats(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 ORDER BY Test3.Name ASC,Test3.Create DESC;"
+               new QueryOptions (new DefaultFormats()),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 ORDER BY Test3.Name ASC,Test3.Create DESC;"
             };
 
             yield return new object[]
             {
-                new Models.Formats(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
+                new QueryOptions (new Models.Formats()),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
             };
         }
 
@@ -45,12 +45,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new DefaultFormats(),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Id = @Param ORDER BY Test3.Name ASC,Test3.Create DESC;"
+                new QueryOptions (new DefaultFormats()),"SELECT Test3.Id,Test3.Name,Test3.Create FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Id = @Param ORDER BY Test3.Name ASC,Test3.Create DESC;"
             };
 
             yield return new object[]
             {
-                new Models.Formats(),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Id] = @Param ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
+                new QueryOptions (new Models.Formats()),"SELECT [Test3].[Id],[Test3].[Name],[Test3].[Create] FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Id] = @Param ORDER BY [Test3].[Name] ASC,[Test3].[Create] DESC;"
             };
         }
 

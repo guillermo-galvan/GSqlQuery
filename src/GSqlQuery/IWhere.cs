@@ -4,13 +4,11 @@
     {
     }
 
-    public interface IWhere<T, TReturn> : IWhere<TReturn>
+    public interface IWhere<T, TReturn, TQueryOptions> : IWhere<TReturn>, IQueryOptions<TQueryOptions>
         where T : class
-        where TReturn : IQuery<T>
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
-        /// <summary>
-        /// Formats
-        /// </summary>
-        IFormats Formats { get; }
+        
     }
 }

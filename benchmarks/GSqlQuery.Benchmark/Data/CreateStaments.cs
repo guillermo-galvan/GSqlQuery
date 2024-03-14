@@ -9,11 +9,11 @@ namespace GSqlQuery.Benchmarks.Data
     [MinColumn, MaxColumn, MeanColumn, MedianColumn]
     public abstract class CreateStaments
     {
-        protected readonly IFormats _formats;
+        protected readonly QueryOptions _queryOptions;
 
         public CreateStaments()
         {
-            _formats = new DefaultFormats();
+            _queryOptions = new QueryOptions(new DefaultFormats());
         }
     }
 

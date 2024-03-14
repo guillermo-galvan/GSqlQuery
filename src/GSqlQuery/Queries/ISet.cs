@@ -19,9 +19,10 @@ namespace GSqlQuery
     /// Generate the set query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public interface ISet<T, TReturn, TOptions> : IBuilder<TReturn>, ISet, IQueryBuilderWithWhere<TReturn, TOptions>, IQueryBuilderWithWhere<T, TReturn, TOptions>, IOptions<TOptions>
+    public interface ISet<T, TReturn, TQueryOptions> : IBuilder<TReturn>, ISet, IQueryBuilderWithWhere<TReturn, TQueryOptions>, IQueryBuilderWithWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>
         where T : class
-        where TReturn : IQuery<T>
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
         /// <summary>
         /// add to query update another column with value
@@ -30,7 +31,7 @@ namespace GSqlQuery
         /// <param name="expression">The expression representing the property</param>
         /// <param name="value"></param>
         /// <returns>Instance of ISet</returns>
-        ISet<T, TReturn, TOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value);
+        ISet<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value);
 
         /// <summary>
         /// add to query update another column
@@ -38,6 +39,6 @@ namespace GSqlQuery
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        ISet<T, TReturn, TOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression);
+        ISet<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression);
     }
 }

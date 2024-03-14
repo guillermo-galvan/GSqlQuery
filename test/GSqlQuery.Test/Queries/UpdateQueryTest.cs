@@ -11,7 +11,7 @@ namespace GSqlQuery.Test.Queries
     {
         private readonly ColumnAttribute _columnAttribute;
         private readonly Equal<int> _equal;
-        private readonly IFormats _formats;
+        private readonly QueryOptions _queryOptions;
         private readonly ClassOptions _classOptions;
 
         public UpdateQueryTest()
@@ -20,13 +20,13 @@ namespace GSqlQuery.Test.Queries
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id))?.ColumnAttribute;
             var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
-            _formats = new DefaultFormats();
+            _queryOptions = new QueryOptions(new DefaultFormats());
         }
 
         [Fact]
         public void Properties_cannot_be_null()
         {
-            UpdateQuery<Test1> query = new UpdateQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _formats);
+            UpdateQuery<Test1> query = new UpdateQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions) }, _queryOptions);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -35,15 +35,15 @@ namespace GSqlQuery.Test.Queries
             Assert.NotEmpty(query.Columns);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
-            Assert.NotNull(query.Formats);
+            Assert.NotNull(query.QueryOptions.Formats);
         }
 
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _formats));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, null));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>(null, _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _formats));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", null, new CriteriaDetail[] { _equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions) }, _queryOptions));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions) }, null));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>(null, _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions) }, _queryOptions));
         }
     }
 }

@@ -1,66 +1,70 @@
 ﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System;
-using System.Collections.Generic;
 using Xunit;
+using GSqlQuery.Extensions;
+using System.Reflection;
 
 namespace GSqlQuery.Test.Queries
 {
     public class UpdateQueryBuilderTest
     {
-        private readonly List<string> _columnsValue;
-        private readonly IFormats _formats;
+        private readonly QueryOptions _queryOptions;
 
         public UpdateQueryBuilderTest()
         {
-            _columnsValue = new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) };
-            _formats = new DefaultFormats();
+            _queryOptions = new QueryOptions(new DefaultFormats());
         }
 
         [Fact]
         public void Properties_cannot_be_null()
         {
-            UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_formats, _columnsValue, string.Empty);
+            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
+            UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_queryOptions, columnsValue, string.Empty);
 
             Assert.NotNull(queryBuilder);
-            Assert.NotNull(queryBuilder.Options);
+            Assert.NotNull(queryBuilder.QueryOptions);
             Assert.NotNull(queryBuilder.Columns);
             Assert.NotEmpty(queryBuilder.Columns);
             Assert.NotNull(queryBuilder.ColumnValues);
             Assert.NotEmpty(queryBuilder.ColumnValues);
-            Assert.Equal(3, queryBuilder.ColumnValues.Count);
+            Assert.Single(queryBuilder.ColumnValues);
         }
 
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
             object entity = null;
-            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(null, _columnsValue, string.Empty));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(_formats, null, string.Empty));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(_formats, entity, _columnsValue));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(null, entity, _columnsValue));
+            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
+            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
+            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(null, columnsValue, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(_queryOptions, null, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(_queryOptions, entity, columsn));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(null, entity, columsn));
         }
 
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_formats, _columnsValue, string.Empty);
-            IWhere<Test1, UpdateQuery<Test1>> where = queryBuilder.Where();
+            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
+            UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_queryOptions, columnsValue, string.Empty);
+            IWhere<Test1, UpdateQuery<Test1>, QueryOptions> where = queryBuilder.Where();
             Assert.NotNull(where);
         }
 
         [Fact]
         public void Should_return_an_update_query()
         {
-            UpdateQueryBuilder<Test3> queryBuilder = new UpdateQueryBuilder<Test3>(_formats, new List<string> { nameof(Test3.Ids), nameof(Test3.Names), nameof(Test3.Creates) },
-                string.Empty);
+            Test1 model = new Test1(1, null, DateTime.Now, true);
+            var columns = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
+            UpdateQueryBuilder<Test3> queryBuilder = new UpdateQueryBuilder<Test3>(_queryOptions, model, columns);
             UpdateQuery<Test3> query = queryBuilder.Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Formats);
+            Assert.NotNull(query.QueryOptions.Formats);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
         }
@@ -68,7 +72,9 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_add_a_new_column_value_with_set_value()
         {
-            UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_formats, new List<string> { nameof(Test1.Name) }, string.Empty);
+            Test1 model = new Test1(1, null, DateTime.Now, true);
+            var columns = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
+            UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_queryOptions, model, columns);
 
             queryBuilder.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now);
 
@@ -81,7 +87,8 @@ namespace GSqlQuery.Test.Queries
         public void Should_add_a_new_column_value_with_property()
         {
             Test1 model = new Test1(1, null, DateTime.Now, true);
-            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_formats, model, new List<string> { nameof(Test1.Name) });
+            var columns = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
+            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_queryOptions, model, columns);
 
             test.Set(x => x.Id).Set(x => x.Create);
 
@@ -94,14 +101,15 @@ namespace GSqlQuery.Test.Queries
         public void Should_generate_the_query()
         {
             Test1 model = new Test1(1, null, DateTime.Now, true);
-            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_formats, model, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) });
+            var columns = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
+            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_queryOptions, model, columns);
             var query = test.Set(x => x.Id).Set(x => x.Create).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Formats);
+            Assert.NotNull(query.QueryOptions.Formats);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
         }
@@ -110,14 +118,16 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_generate_the_query2()
         {
-            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_formats, new List<string> { nameof(Test1.Name) }, string.Empty);
+            Test1 model = new Test1(1, null, DateTime.Now, true);
+            var columns = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
+            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_queryOptions, model, columns);
             var query = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.Formats);
+            Assert.NotNull(query.QueryOptions.Formats);
             Assert.NotNull(query.Criteria);
             Assert.NotEmpty(query.Criteria);
         }
@@ -126,7 +136,8 @@ namespace GSqlQuery.Test.Queries
         public void Should_get_the_where_query()
         {
             Test1 model = new Test1(1, null, DateTime.Now, true);
-            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_formats, model, new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) });
+            var columns = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
+            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_queryOptions, model, columns);
             var where = test.Set(x => x.Id).Set(x => x.Create).Where();
             Assert.NotNull(where);
         }
@@ -134,7 +145,8 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_get_the_where_query2()
         {
-            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_formats, new List<string> { nameof(Test1.Name) }, string.Empty);
+            var column = ExpressionExtension.GetOptionsAndMember<Test1, object>((x) =>  x.Id);
+            UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_queryOptions, column, string.Empty);
             var where = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Where();
             Assert.NotNull(where);
         }

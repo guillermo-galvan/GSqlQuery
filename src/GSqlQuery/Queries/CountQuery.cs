@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// Count query
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
-    public class CountQuery<T> : Query<T> where T : class
+    public class CountQuery<T> : Query<T, QueryOptions> where T : class
     {
         /// <summary>
         /// Class constructor
@@ -14,10 +14,10 @@ namespace GSqlQuery
         /// <param name="text">Query</param>
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criteria</param>
-        /// <param name="formats">Formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <exception cref="ArgumentNullException"></exception>
-        internal CountQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
-            base(ref text, columns, criteria, formats)
+        internal CountQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+            base(ref text, columns, criteria, queryOptions)
         {
         }
     }

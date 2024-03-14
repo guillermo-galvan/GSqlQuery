@@ -8,11 +8,6 @@ namespace GSqlQuery
     public sealed class ParameterDetail
     {
         /// <summary>
-        /// Get Column
-        /// </summary>
-        public PropertyOptions PropertyOptions { get; }
-
-        /// <summary>
         /// Get Name
         /// </summary>
         public string Name { get; }
@@ -28,11 +23,10 @@ namespace GSqlQuery
         /// <param name="name">Name parameter</param>
         /// <param name="value">Value parameter</param>
         /// <exception cref="ArgumentNullException">Name must not be null or empty</exception>
-        public ParameterDetail(string name, object value, PropertyOptions propertyOptions)
+        public ParameterDetail(string name, object value)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Value = value;
-            PropertyOptions = propertyOptions;
         }
     }
 }

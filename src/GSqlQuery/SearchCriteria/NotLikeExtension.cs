@@ -16,12 +16,14 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> NotLike<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, string value)
-            where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> NotLike<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> expression, string value)
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            IAndOr<T, TReturn> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            NotLike notLike = new NotLike(columnInfo, where.Formats, value);
+            NotLike notLike = new NotLike(columnInfo, where.QueryOptions.Formats, value);
             andor.Add(notLike);
             return andor;
         }
@@ -35,8 +37,10 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> AndNotLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            string value) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> AndNotLike<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression, string value) 
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (andOr == null)
             {
@@ -48,7 +52,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            NotLike notLike = new NotLike(columnInfo, andOr.Formats, value, "AND");
+            NotLike notLike = new NotLike(columnInfo, andOr.QueryOptions.Formats, value, "AND");
             andOr.Add(notLike);
             return andOr;
         }
@@ -62,8 +66,10 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> OrNotLike<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            string value) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> OrNotLike<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression, string value) 
+            where T : class
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (andOr == null)
             {
@@ -75,7 +81,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            NotLike notLike = new NotLike(columnInfo, andOr.Formats, value, "OR");
+            NotLike notLike = new NotLike(columnInfo, andOr.QueryOptions.Formats, value, "OR");
             andOr.Add(notLike);
             return andOr;
         }

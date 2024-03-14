@@ -80,22 +80,6 @@ namespace GSqlQuery.Test
             Assert.Equal("Test.Test", result);
             Assert.Equal($"Column Name: Test", column.ToString());
         }
-
-        [Theory]
-        [InlineData(typeof(Test1))]
-        [InlineData(typeof(Test3))]
-        [InlineData(typeof(Test4))]
-        [InlineData(typeof(Test6))]
-        public void Should_get_property_options(Type type)
-        {
-            ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(type);
-
-            foreach (var item in classOptions.PropertyOptions)
-            {
-                var tmp = ColumnAttributeExtension.GetPropertyOptions(item.ColumnAttribute, classOptions.PropertyOptions);
-                Assert.Equal(item.ColumnAttribute, tmp.ColumnAttribute);
-            }
-        }
         
         [Fact]
         public void Throw_exception_if_name_is_null()

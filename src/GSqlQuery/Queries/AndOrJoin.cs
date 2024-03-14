@@ -11,16 +11,17 @@ namespace GSqlQuery.Queries
     /// <typeparam name="T2">Type of class</typeparam>
     /// <typeparam name="TJoin">Type of class</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    /// <typeparam name="TOptions">Options type</typeparam>
+    /// <typeparam name="TQueryOptions">Options type</typeparam>
     /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
     /// <param name="formats">Formats</param>
     /// <exception cref="ArgumentException"></exception>
-    internal class AndOrJoin<T1, T2, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : 
-        AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere, formats)
+    internal class AndOrJoin<T1, T2, TJoin, TReturn, TQueryOptions>(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions) :
+        AndOrBase<TJoin, TReturn, TQueryOptions>(queryBuilderWithWhere, queryOptions)
         where T1 : class
         where T2 : class
         where TJoin : class
-        where TReturn : IQuery<TJoin>
+        where TReturn : IQuery<TJoin, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace GSqlQuery.Queries
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria(Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
+                CriteriaDetail criteria = x.GetCriteria(QueryOptions.Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
                 result.Enqueue(criteria);
             }
 
@@ -56,16 +57,17 @@ namespace GSqlQuery.Queries
     /// <typeparam name="T3">Type of class</typeparam>
     /// <typeparam name="TJoin">Type of class</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    /// <typeparam name="TOptions">Options type</typeparam>
+    /// <typeparam name="TQueryOptions">Options type</typeparam>
     /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
     /// <param name="formats">Formats</param>
     /// <exception cref="ArgumentException"></exception>
-    internal class AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions>(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : AndOrBase<TJoin, TReturn, TOptions>(queryBuilderWithWhere,formats)
+    internal class AndOrJoin<T1, T2, T3, TJoin, TReturn, TQueryOptions>(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions) : AndOrBase<TJoin, TReturn, TQueryOptions>(queryBuilderWithWhere, queryOptions)
         where T1 : class
         where T2 : class
         where T3 : class
         where TJoin : class
-        where TReturn : IQuery<TJoin>
+        where TReturn : IQuery<TJoin, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace GSqlQuery.Queries
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria(Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
+                CriteriaDetail criteria = x.GetCriteria(QueryOptions.Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
                 result.Enqueue(criteria);
             }
 

@@ -17,7 +17,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateQuery()
         {
-            return User.Update(_formats, x => x.Id, 1)
+            return User.Update(_queryOptions, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -28,7 +28,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateEqualWhereQuery()
         {
-            return User.Update(_formats, x => x.Id, 1)
+            return User.Update(_queryOptions, x => x.Id, 1)
                        .Set(x => x.Name, "Test")
                        .Set(x => x.LastName, "LastTest")
                        .Set(x => x.Email, "guigalmen@hotmail.com")
@@ -41,7 +41,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateQueryByEntity()
         {
-            return _user.Update(_formats, x => x.Id)
+            return _user.Update(_queryOptions, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)
@@ -52,7 +52,7 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateEqualWhereQueryByEntity()
         {
-            return _user.Update(_formats, x => x.Id)
+            return _user.Update(_queryOptions, x => x.Id)
                        .Set(x => x.Name)
                        .Set(x => x.LastName)
                        .Set(x => x.Email)

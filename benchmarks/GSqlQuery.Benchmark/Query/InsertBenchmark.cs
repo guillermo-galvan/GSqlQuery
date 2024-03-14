@@ -15,14 +15,14 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateQuery()
         {
-            return _user.Insert(_formats).Build();
+            return _user.Insert(_queryOptions).Build();
         }
 
 
         [Benchmark]
         public IQuery GenerateQuery_Entity()
         {
-            return User.Insert(_formats, _user).Build();
+            return User.Insert(_queryOptions, _user).Build();
         }
     }
 }

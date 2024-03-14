@@ -12,8 +12,9 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T1">Type for first table</typeparam>
     /// <typeparam name="T2">Type for second table</typeparam>
-    internal class JoinQueryBuilderWithWhere<T1, T2> : JoinQueryBuilderWithWhereBase<T1, T2, Join<T1, T2>, JoinQuery<Join<T1, T2>>, IFormats>,
-        IJoinQueryBuilderWithWhere<T1, T2, JoinQuery<Join<T1, T2>>, IFormats>
+    internal class JoinQueryBuilderWithWhere<T1, T2> : JoinQueryBuilderWithWhereBase<T1, T2, Join<T1, T2>, IQuery<Join<T1, T2>, QueryOptions>, QueryOptions>,
+        IJoinQueryBuilderWithWhere<T1, T2, IQuery<Join<T1, T2>, QueryOptions>, QueryOptions>,
+        IComparisonOperators<Join<T1, T2>, IQuery<Join<T1, T2>, QueryOptions>, QueryOptions>
         where T1 : class
         where T2 : class
     {
@@ -25,8 +26,8 @@ namespace GSqlQuery.Queries
         /// <param name="joinType"> Join Type</param>
         /// <param name="formats">Formats</param>
         /// <param name="columnsT2">Columns second table</param>
-        public JoinQueryBuilderWithWhere(IEnumerable<PropertyOptions> columns, JoinType joinType, IFormats formats,
-            IEnumerable<PropertyOptions> columnsT2 = null) : base(null, formats, formats)
+        public JoinQueryBuilderWithWhere(IEnumerable<PropertyOptions> columns, JoinType joinType, QueryOptions queryOptions,
+            IEnumerable<PropertyOptions> columnsT2 = null) : base(null, queryOptions)
         {
             ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(typeof(T1));
             JoinInfo joinInfo = new JoinInfo(columns, classOptions, true);
@@ -36,7 +37,7 @@ namespace GSqlQuery.Queries
 
             columnsT2 ??= classOptions2.PropertyOptions;
 
-            _joinInfo = new JoinInfo(columnsT2, classOptions2,  joinType);
+            _joinInfo = new JoinInfo(columnsT2, classOptions2, joinType);
 
             _joinInfos.Enqueue(_joinInfo);
 
@@ -47,10 +48,10 @@ namespace GSqlQuery.Queries
         /// Build the query
         /// </summary>
         /// <returns>Join Query</returns>
-        public override JoinQuery<Join<T1, T2>> Build()
+        public override IQuery<Join<T1, T2>, QueryOptions> Build()
         {
             string query = CreateQuery();
-            return new JoinQuery<Join<T1, T2>>(query, Columns, _criteria, Options);
+            return new JoinQuery<Join<T1, T2>>(query, Columns, _criteria, QueryOptions);
         }
 
         /// <summary>
@@ -58,9 +59,9 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,IFormats&gt;</returns>
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> InnerJoin<TJoin>() where TJoin : class
+        public IComparisonOperators<Join<T1, T2, TJoin>, IQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> InnerJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinType.Inner, Options);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinType.Inner, QueryOptions);
         }
 
         /// <summary>
@@ -68,9 +69,9 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,IFormats&gt;</returns>
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> LeftJoin<TJoin>() where TJoin : class
+        public IComparisonOperators<Join<T1, T2, TJoin>, IQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> LeftJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinType.Left, Options);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinType.Left, QueryOptions);
         }
 
         /// <summary>
@@ -78,22 +79,22 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,IFormats&gt;</returns>
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> RightJoin<TJoin>() where TJoin : class
+        public IComparisonOperators<Join<T1, T2, TJoin>, IQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> RightJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinType.Right, Options);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, JoinType.Right, QueryOptions);
         }
 
-        private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
+        private IComparisonOperators<Join<T1, T2, TJoin>, IQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class
         {
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
-            GeneralExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
             IEnumerable<string> selectMember = options.MemberInfo.Select(x => x.Name);
             if (selectMember == null)
             {
                 throw new ArgumentNullException(nameof(selectMember));
             }
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, Options, GeneralExtension.GetPropertyQuery(ClassOptionsFactory.GetClassOptions(typeof(TJoin)),selectMember));
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, QueryOptions, ExpressionExtension.GetPropertyQuery(options));
         }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,IFormats&gt;</returns>
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
+        public IComparisonOperators<Join<T1, T2, TJoin>, IQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
             where TJoin : class
         {
             return Join(JoinType.Inner, expression);
@@ -112,7 +113,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,IFormats&gt;</returns>
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
+        public IComparisonOperators<Join<T1, T2, TJoin>, IQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
         {
             return Join(JoinType.Left, expression);
         }
@@ -122,7 +123,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,IFormats&gt;</returns>
-        public IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>>, IFormats> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
+        public IComparisonOperators<Join<T1, T2, TJoin>, IQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
         {
             return Join(JoinType.Right, expression);
         }
@@ -134,8 +135,9 @@ namespace GSqlQuery.Queries
     /// <typeparam name="T1">Type for first table</typeparam>
     /// <typeparam name="T2">Type for second table</typeparam>
     /// <typeparam name="T3">Type for third table</typeparam>
-    internal class JoinQueryBuilderWithWhere<T1, T2, T3> : JoinQueryBuilderWithWhereBase<T1, T2, T3, Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>>, IFormats>,
-        IJoinQueryBuilderWithWhere<T1, T2, T3, JoinQuery<Join<T1, T2, T3>>, IFormats>
+    internal class JoinQueryBuilderWithWhere<T1, T2, T3> : JoinQueryBuilderWithWhereBase<T1, T2, T3, Join<T1, T2, T3>, IQuery<Join<T1, T2, T3>, QueryOptions>, QueryOptions>,
+        IJoinQueryBuilderWithWhere<T1, T2, T3, IQuery<Join<T1, T2, T3>, QueryOptions>, QueryOptions>,
+        IComparisonOperators<Join<T1, T2, T3>, IQuery<Join<T1, T2, T3>, QueryOptions>, QueryOptions>
         where T1 : class
         where T2 : class
         where T3 : class
@@ -147,18 +149,18 @@ namespace GSqlQuery.Queries
         /// <param name="joinType">Join Type</param>
         /// <param name="formats">Formats</param>
         /// <param name="columnsT3">Columns third table</param>
-        public JoinQueryBuilderWithWhere(Queue<JoinInfo> joinInfos, JoinType joinType, IFormats formats, IEnumerable<PropertyOptions> columnsT3 = null) :
-            base(joinInfos, joinType, formats, formats, columnsT3)
+        public JoinQueryBuilderWithWhere(Queue<JoinInfo> joinInfos, JoinType joinType, QueryOptions queryOptions, IEnumerable<PropertyOptions> columnsT3 = null) :
+            base(joinInfos, joinType, queryOptions, columnsT3)
         { }
 
         /// <summary>
         /// Build the query
         /// </summary>
         /// <returns>Order by Query</returns>
-        public override JoinQuery<Join<T1, T2, T3>> Build()
+        public override IQuery<Join<T1, T2, T3>, QueryOptions> Build()
         {
             string query = CreateQuery();
-            return new JoinQuery<Join<T1, T2, T3>>(query, Columns, _criteria, Options);
+            return new JoinQuery<Join<T1, T2, T3>>(query, Columns, _criteria, QueryOptions);
         }
     }
 

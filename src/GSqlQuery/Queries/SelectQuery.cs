@@ -6,7 +6,8 @@ namespace GSqlQuery
     /// Select query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class SelectQuery<T> : Query<T> where T : class
+    public class SelectQuery<T> : Query<T, QueryOptions> 
+        where T : class
     {
         /// <summary>
         /// Initializes a new instance of the select query class.
@@ -16,8 +17,8 @@ namespace GSqlQuery
         /// <param name="criteria">Criteria</param>
         /// <param name="formats">Formats</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal SelectQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
-            base(ref text, columns, criteria, formats)
+        internal SelectQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+            base(ref text, columns, criteria, queryOptions)
         { }
     }
 }

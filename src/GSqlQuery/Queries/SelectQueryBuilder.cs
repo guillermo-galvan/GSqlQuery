@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace GSqlQuery.Queries
 {
@@ -13,9 +12,10 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    internal abstract class SelectQueryBuilder<T, TReturn> : QueryBuilderWithCriteria<T, TReturn>
+    internal abstract class SelectQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>
         where T : class
-        where TReturn : SelectQuery<T>
+        where TReturn : IQuery<T,TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
 
         /// <summary>
@@ -23,18 +23,18 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="formats">Formats</param>
-        public SelectQueryBuilder(IEnumerable<string> selectMember, IFormats formats)
-           : base(formats)
+        public SelectQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, TQueryOptions queryOptions)
+           : base(queryOptions)
         {
-            Columns = GeneralExtension.GetPropertyQuery(_classOptions,selectMember);
+            Columns = ExpressionExtension.GetPropertyQuery(classOptionsTupla ?? throw new ArgumentNullException(nameof(classOptionsTupla)));
         }
 
         /// <summary>
         /// Class constructor
         /// </summary>
         /// <param name="formats">Formats</param>
-        public SelectQueryBuilder(IFormats formats)
-           : base(formats)
+        public SelectQueryBuilder(TQueryOptions queryOptions)
+           : base(queryOptions)
         { }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace GSqlQuery.Queries
         /// <returns>Query Text</returns>
         internal string CreateQuery()
         {
-            IEnumerable<string> columnsName = Columns.Select(x => Options.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            IEnumerable<string> columnsName = Columns.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
             string columns = string.Join(",", columnsName);
 
             if (_andOr == null)
@@ -62,8 +62,8 @@ namespace GSqlQuery.Queries
     /// Select Query Builder
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class SelectQueryBuilder<T> : SelectQueryBuilder<T, SelectQuery<T>>,
-        IJoinQueryBuilder<T, SelectQuery<T>, IFormats> where T : class
+    internal class SelectQueryBuilder<T> : SelectQueryBuilder<T, SelectQuery<T>, QueryOptions>,
+        IJoinQueryBuilder<T, SelectQuery<T>, QueryOptions> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the SelectQueryBuilder class.
@@ -71,8 +71,8 @@ namespace GSqlQuery.Queries
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="formats">formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQueryBuilder(IEnumerable<string> selectMember, IFormats formats)
-            : base(selectMember, formats)
+        public SelectQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, QueryOptions queryOptions)
+            : base(classOptionsTupla, queryOptions)
         { }
 
         /// <summary>
@@ -81,10 +81,10 @@ namespace GSqlQuery.Queries
         /// <param name="propertyOptions">PropertyOptionst</param>
         /// <param name="formats">formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQueryBuilder(IEnumerable<PropertyOptions> propertyOptions, IFormats formats)
-            : base(formats)
+        public SelectQueryBuilder(QueryOptions queryOptions)
+            : base(queryOptions)
         {
-            Columns = propertyOptions;
+            Columns = _classOptions.PropertyOptions;
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace GSqlQuery.Queries
         public override SelectQuery<T> Build()
         {
             string text = CreateQuery();
-            return new SelectQuery<T>(text, Columns, _criteria, Options);
+            return new SelectQuery<T>(text, Columns, _criteria, QueryOptions);
         }
 
         /// <summary>
@@ -102,9 +102,9 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> InnerJoin<TJoin>() where TJoin : class
+        public IComparisonOperators<Join<T, TJoin>, IQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> InnerJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Inner, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Inner, QueryOptions);
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> LeftJoin<TJoin>() where TJoin : class
+        public IComparisonOperators<Join<T, TJoin>, IQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> LeftJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Left, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Left, QueryOptions);
         }
 
         /// <summary>
@@ -122,12 +122,12 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> RightJoin<TJoin>() where TJoin : class
+        public IComparisonOperators<Join<T, TJoin>, IQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> RightJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Right, Options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Right, QueryOptions);
         }
 
-        private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
+        private IComparisonOperators<Join<T, TJoin>, IQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class
         {
             if (expression == null)
@@ -135,10 +135,9 @@ namespace GSqlQuery.Queries
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = GeneralExtension.GetOptionsAndMembers(expression);
-            GeneralExtension.ValidateMemberInfos(QueryType.Criteria, options);
-            IEnumerable<string> selectMember = options.MemberInfo.Select(x => x.Name);
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, Options, GeneralExtension.GetPropertyQuery(options.ClassOptions, selectMember));
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, ExpressionExtension.GetPropertyQuery(options));
         }
 
         /// <summary>
@@ -146,7 +145,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
+        public IComparisonOperators<Join<T, TJoin>, IQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
             where TJoin : class
         {
             return Join(JoinType.Inner, expression);
@@ -157,7 +156,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
+        public IComparisonOperators<Join<T, TJoin>, IQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
         {
             return Join(JoinType.Left, expression);
         }
@@ -167,7 +166,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>>, IFormats> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
+        public IComparisonOperators<Join<T, TJoin>, IQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
         {
             return Join(JoinType.Right, expression);
         }

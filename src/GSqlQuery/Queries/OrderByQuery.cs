@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// Order by Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class OrderByQuery<T> : Query<T> where T : class
+    public class OrderByQuery<T> : Query<T, QueryOptions> where T : class
     {
 
         /// <summary>
@@ -15,10 +15,10 @@ namespace GSqlQuery
         /// <param name="text">Query</param>
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criteria</param>
-        /// <param name="formats">Formats</param>        
+        /// <param name="queryOptions">QueryOptions</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal OrderByQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
-            base(ref text, columns, criteria, formats)
+        internal OrderByQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+            base(ref text, columns, criteria, queryOptions)
         {
         }
     }

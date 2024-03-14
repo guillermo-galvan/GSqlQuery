@@ -39,7 +39,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="values">Equality value</param>
         /// <param name="logicalOperator">Logical operator </param>
         /// <exception cref="ArgumentNullException"></exception>
-        public In(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator) 
+        public In(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator)
             : base(classOptionsTupla, formats, logicalOperator)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));
@@ -58,13 +58,12 @@ namespace GSqlQuery.SearchCriteria
             int count = 0;
             int index = 0;
             string ticks = Helpers.GetIdParam().ToString();
-            PropertyOptions property = ColumnAttributeExtension.GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
             string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
 
             foreach (T item in Values)
             {
                 string parameterName = "@" + ParameterPrefix + count++.ToString() + ticks;
-                parameters[index++] = new ParameterDetail(parameterName, item, property);
+                parameters[index++] = new ParameterDetail(parameterName, item);
             }
             string columnNames = string.Join(",", parameters.Select(x => x.Name));
             string criterion = "{0} {1} ({2})".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", columnNames);

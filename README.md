@@ -7,7 +7,7 @@ A library for generating SQL queries for .NET from models or classes that repres
 GSqlQuery can be installed using the [Nuget packages manager](https://www.nuget.org/packages/GSqlQuery) or the `dotnet` CLI.
 
 ```shell
-dotnet add package GSqlQuery --version 1.1.0-beta4
+dotnet add package GSqlQuery --version 2.0.0-beta
 ```
 
 [Check our documentation](./docs/en/Config.md) for instructions on how to use the package.

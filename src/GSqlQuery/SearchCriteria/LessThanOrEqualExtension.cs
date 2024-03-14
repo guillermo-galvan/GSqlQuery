@@ -16,12 +16,14 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value for equality</param>
         /// <returns></returns>
-        public static IAndOr<T, TReturn> LessThanOrEqual<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> LessThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> expression,
+            TProperties value) where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            IAndOr<T, TReturn> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            LessThanOrEqual<TProperties> lessThanOrEqual = new LessThanOrEqual<TProperties>(columnInfo, where.Formats, value);
+            LessThanOrEqual<TProperties> lessThanOrEqual = new LessThanOrEqual<TProperties>(columnInfo, where.QueryOptions.Formats, value);
             andor.Add(lessThanOrEqual);
             return andor;
         }
@@ -35,8 +37,11 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value for equality</param>
         /// <returns>IAndOr</returns>
-        public static IAndOr<T, TReturn> AndLessThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> AndLessThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression,
+            TProperties value) 
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (andOr == null)
             {
@@ -48,7 +53,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            LessThanOrEqual<TProperties> lessThanOrEqual = new LessThanOrEqual<TProperties>(columnInfo, andOr.Formats, value, "AND");
+            LessThanOrEqual<TProperties> lessThanOrEqual = new LessThanOrEqual<TProperties>(columnInfo, andOr.QueryOptions.Formats, value, "AND");
             andOr.Add(lessThanOrEqual);
             return andOr;
         }
@@ -62,8 +67,11 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value for equality</param>
         /// <returns>IAndOr</returns>
-        public static IAndOr<T, TReturn> OrLessThanOrEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> OrLessThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression,
+            TProperties value) 
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (andOr == null)
             {
@@ -75,7 +83,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            LessThanOrEqual<TProperties> lessThanOrEqual = new LessThanOrEqual<TProperties>(columnInfo, andOr.Formats, value, "OR");
+            LessThanOrEqual<TProperties> lessThanOrEqual = new LessThanOrEqual<TProperties>(columnInfo, andOr.QueryOptions.Formats, value, "OR");
             andOr.Add(lessThanOrEqual);
             return andOr;
         }

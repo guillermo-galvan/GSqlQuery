@@ -13,9 +13,10 @@ namespace GSqlQuery.Queries
     /// <param name="formats">Formats</param>
     /// <param name="entity">Entity</param>
     /// <exception cref="ArgumentNullException"></exception>
-    internal abstract class InsertQueryBuilder<T, TReturn>(IFormats formats, object entity) : QueryBuilderBase<T, TReturn>(formats)
+    internal abstract class InsertQueryBuilder<T, TReturn, TQueryOptions>(TQueryOptions queryOptions, object entity) : QueryBuilderBase<T, TReturn, TQueryOptions>(queryOptions)
         where T : class
-        where TReturn : InsertQuery<T>
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
         protected readonly object _entity = entity ?? throw new ArgumentNullException(nameof(entity));
 
@@ -30,10 +31,10 @@ namespace GSqlQuery.Queries
 
             IEnumerable<ParameterDetail> parameters = autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail);
             string querypart = string.Join(",", parameters.Select(x => x.Name));
-            
+
 
             CriteriaDetail criteriaDetail = new CriteriaDetail(querypart, parameters);
-            criteria =[criteriaDetail];
+            criteria = [criteriaDetail];
             IEnumerable<string> columnsName = autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName);
             string columnNames = string.Join(",", columnsName);
 
@@ -41,7 +42,7 @@ namespace GSqlQuery.Queries
 
             if (autoIncrementingClass.WithAutoIncrementing)
             {
-                 return text + " " + Options.ValueAutoIncrementingQuery;
+                return text + " " + QueryOptions.Formats.ValueAutoIncrementingQuery;
             }
 
             return text;
@@ -58,10 +59,10 @@ namespace GSqlQuery.Queries
 
             foreach (PropertyOptions x in propertyOptions)
             {
-                string columnName = Options.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Create);
-                object value = GeneralExtension.GetValue(x,_entity);
+                string columnName = QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Create);
+                object value = ExpressionExtension.GetValue(x, _entity);
                 string parameterName = "@PI" + Helpers.GetIdParam();
-                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value, x);
+                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value);
                 ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, parameterDetail);
                 tmpColumnsParameters.Enqueue(columnParameterDetail);
             }
@@ -79,7 +80,7 @@ namespace GSqlQuery.Queries
     /// <typeparam name="T">The type to query</typeparam>
     /// <param name="formats">Formats</param>
     /// <param name="entity">Entity</param>
-    internal class InsertQueryBuilder<T>(IFormats formats, object entity) : InsertQueryBuilder<T, InsertQuery<T>>(formats, entity)
+    internal class InsertQueryBuilder<T>(QueryOptions queryOptions, object entity) : InsertQueryBuilder<T, InsertQuery<T>, QueryOptions>(queryOptions, entity)
         where T : class
     {
 
@@ -90,7 +91,7 @@ namespace GSqlQuery.Queries
         public override InsertQuery<T> Build()
         {
             string query = CreateQuery(out IEnumerable<CriteriaDetail> criteria);
-            return new InsertQuery<T>(query, Columns, criteria, Options);
+            return new InsertQuery<T>(query, Columns, criteria, QueryOptions);
         }
     }
 }

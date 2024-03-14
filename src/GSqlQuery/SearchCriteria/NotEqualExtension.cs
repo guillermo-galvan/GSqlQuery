@@ -16,12 +16,14 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value for equality</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> NotEqual<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression, TProperties value)
-            where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> NotEqual<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> expression, TProperties value)
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            IAndOr<T, TReturn> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            NotEqual<TProperties> notEqual = new NotEqual<TProperties>(columnInfo, where.Formats, value);
+            NotEqual<TProperties> notEqual = new NotEqual<TProperties>(columnInfo, where.QueryOptions.Formats, value);
             andor.Add(notEqual);
             return andor;
         }
@@ -35,8 +37,10 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value for equality</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> AndNotEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> AndNotEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression, TProperties value) 
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (andOr == null)
             {
@@ -48,7 +52,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            NotEqual<TProperties> notEqual = new NotEqual<TProperties>(columnInfo, andOr.Formats, value, "AND");
+            NotEqual<TProperties> notEqual = new NotEqual<TProperties>(columnInfo, andOr.QueryOptions.Formats, value, "AND");
             andOr.Add(notEqual);
             return andOr;
         }
@@ -62,8 +66,10 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value for equality/param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> OrNotEqual<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties value) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> OrNotEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression, TProperties value) 
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (andOr == null)
             {
@@ -75,7 +81,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
             ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
-            NotEqual<TProperties> notEqual = new NotEqual<TProperties>(columnInfo, andOr.Formats, value, "OR");
+            NotEqual<TProperties> notEqual = new NotEqual<TProperties>(columnInfo, andOr.QueryOptions.Formats, value, "OR");
             andOr.Add(notEqual);
             return andOr;
         }

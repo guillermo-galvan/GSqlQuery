@@ -17,21 +17,22 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="logicalOperador">logicalOperador</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="criteriaEnum">Join Criteria Type</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions>
-            AddColumn<T1, T2, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith, string logicalOperador,
+        internal static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions>
+            AddColumn<T1, T2, TReturn, TQueryOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith, string logicalOperador,
             Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (field1 == null)
             {
@@ -45,7 +46,7 @@ namespace GSqlQuery
 
             if (joinQueryBuilderWith is IAddJoinCriteria<JoinModel> joinCriteria)
             {
-                IAddJoinCriteriaExtension.AddColumnJoin(joinCriteria,logicalOperador, field1, criteriaEnum, field2);
+                IAddJoinCriteriaExtension.AddColumnJoin(joinCriteria, logicalOperador, field1, criteriaEnum, field2);
                 return joinQueryBuilderWith;
             }
 
@@ -58,20 +59,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="criteriaEnum">Join Criteria Type</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions>
-            AddColumn<T1, T2, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        internal static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions>
+            AddColumn<T1, T2, TReturn, TQueryOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, null, field1, criteriaEnum, field2);
         }
@@ -82,20 +84,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> AndEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.Equal, field2);
         }
@@ -106,20 +109,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> OrEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.Equal, field2);
         }
@@ -130,20 +134,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndNotEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> AndNotEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.NotEqual, field2);
         }
@@ -154,20 +159,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrNotEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> OrNotEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.NotEqual, field2);
         }
@@ -178,20 +184,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndGreaterThan<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> AndGreaterThan<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThan, field2);
         }
@@ -202,20 +209,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrGreaterThan<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> OrGreaterThan<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThan, field2);
         }
@@ -226,20 +234,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndLessThan<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> AndLessThan<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThan, field2);
         }
@@ -250,20 +259,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrLessThan<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> OrLessThan<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThan, field2);
         }
@@ -274,20 +284,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndGreaterThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> AndGreaterThanOrEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
@@ -298,20 +309,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrGreaterThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> OrGreaterThanOrEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
@@ -322,20 +334,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> AndLessThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> AndLessThanOrEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
@@ -346,20 +359,21 @@ namespace GSqlQuery
         /// <typeparam name="T1">Table type</typeparam>
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> OrLessThanOrEqual<T1, T2, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> OrLessThanOrEqual<T1, T2, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
-            where TReturn : IQuery<Join<T1, T2>>
+            where TReturn : IQuery<Join<T1, T2>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
@@ -373,22 +387,23 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="logicalOperador">logicalOperador</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="criteriaEnum">Join Criteria Type</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions>
-            AddColumn<T1, T2, T3, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith, string logicalOperador,
+        internal static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions>
+            AddColumn<T1, T2, T3, TReturn, TQueryOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith, string logicalOperador,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             if (field1 == null)
             {
@@ -416,21 +431,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="criteriaEnum">Join Criteria Type</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions>
-            AddColumn<T1, T2, T3, TReturn, TOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        internal static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions>
+            AddColumn<T1, T2, T3, TReturn, TQueryOptions, TProperties>(IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1, JoinCriteriaType criteriaEnum, Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, null, field1, criteriaEnum, field2);
         }
@@ -442,21 +458,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> AndEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.Equal, field2);
         }
@@ -468,21 +485,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> OrEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.Equal, field2);
         }
@@ -494,21 +512,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndNotEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> AndNotEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.NotEqual, field2);
         }
@@ -520,21 +539,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrNotEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> OrNotEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.NotEqual, field2);
         }
@@ -546,21 +566,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndGreaterThan<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> AndGreaterThan<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThan, field2);
         }
@@ -572,21 +593,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrGreaterThan<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> OrGreaterThan<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThan, field2);
         }
@@ -598,21 +620,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndLessThan<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> AndLessThan<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThan, field2);
         }
@@ -624,21 +647,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrLessThan<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> OrLessThan<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThan, field2);
         }
@@ -650,21 +674,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndGreaterThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> AndGreaterThanOrEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
@@ -676,21 +701,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrGreaterThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> OrGreaterThanOrEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.GreaterThanOrEqual, field2);
         }
@@ -702,21 +728,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> AndLessThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> AndLessThanOrEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
@@ -728,21 +755,22 @@ namespace GSqlQuery
         /// <typeparam name="T2">Table type</typeparam>
         /// <typeparam name="T3">Table type</typeparam>
         /// <typeparam name="TReturn">Join Query</typeparam>
-        /// <typeparam name="TOptions">Options type</typeparam>
+        /// <typeparam name="TQueryOptions">Options type</typeparam>
         /// <typeparam name="TProperties">Property type</typeparam>
         /// <param name="joinQueryBuilderWith">Implementation of the IJoinQueryBuilderWithWhere interface</param>
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
-        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TOptions"/>&gt;</returns>
+        /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="T3"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> OrLessThanOrEqual<T1, T2, T3, TReturn, TOptions, TProperties>(
-            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TOptions> joinQueryBuilderWith,
+        public static IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> OrLessThanOrEqual<T1, T2, T3, TReturn, TQueryOptions, TProperties>(
+            this IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TQueryOptions> joinQueryBuilderWith,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field1,
             Expression<Func<Join<T1, T2, T3>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where T3 : class
-            where TReturn : IQuery<Join<T1, T2, T3>>
+            where TReturn : IQuery<Join<T1, T2, T3>, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }

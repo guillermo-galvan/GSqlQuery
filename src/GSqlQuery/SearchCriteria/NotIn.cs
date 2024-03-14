@@ -15,7 +15,7 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="values">Equality value</param>
     /// <param name="logicalOperator">Logical operator </param>
     /// <exception cref="ArgumentNullException"></exception>
-    internal class NotIn<T>(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator) 
+    internal class NotIn<T>(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator)
         : In<T>(classOptionsTupla, formats, values, logicalOperator)
     {
         protected override string RelationalOperator => "NOT IN";

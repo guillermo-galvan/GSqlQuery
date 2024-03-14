@@ -36,7 +36,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public Like(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string value, string logicalOperator) : 
+        public Like(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string value, string logicalOperator) :
             base(classOptionsTupla, formats, logicalOperator)
         {
             Value = value;
@@ -57,8 +57,7 @@ namespace GSqlQuery.SearchCriteria
                 criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
 
-            PropertyOptions property = ColumnAttributeExtension.GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
-            ParameterDetail parameterDetail = new ParameterDetail(parameterName, Value, property);
+            ParameterDetail parameterDetail = new ParameterDetail(parameterName, Value);
             return Task.FromResult(new CriteriaDetails(criterion, [parameterDetail]));
         }
     }

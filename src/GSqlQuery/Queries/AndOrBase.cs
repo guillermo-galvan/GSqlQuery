@@ -11,37 +11,33 @@ namespace GSqlQuery
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    /// <typeparam name="TOptions">Options type</typeparam>
-    /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
-    /// <param name="formats">Formats</param>
-    /// <param name="isColumns">Determines whether to take the columns from <typeparamref name="T"/></param>
+    /// <typeparam name="TQueryOptions">Options type</typeparam>
     /// <exception cref="ArgumentException"></exception>
-    public class AndOrBase<T, TReturn, TOptions> : 
-        WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>, IOptions<TOptions>
-        where TReturn : IQuery<T>
+    public class AndOrBase<T, TReturn, TQueryOptions> : IWhere<TReturn>,
+        IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn, TQueryOptions>, IWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>
+        where TReturn : IQuery<T, TQueryOptions>
         where T : class
+        where TQueryOptions : QueryOptions
     {
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
-        internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere;
+        internal readonly IQueryBuilderWithWhere<TReturn, TQueryOptions> _queryBuilderWithWhere;
 
         protected IEnumerable<PropertyOptions> Columns { get; set; }
 
-        public IFormats Formats { get; }
+        public TQueryOptions QueryOptions { get; }
 
-        public TOptions Options => _queryBuilderWithWhere.Options;
-
-        public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats) : base()
+        public AndOrBase(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions) : base()
         {
             _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentNullException(nameof(queryBuilderWithWhere));
-            Columns = Enumerable.Empty<PropertyOptions>();
-            Formats = formats ?? throw new ArgumentNullException(nameof(formats));
+            QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
+            Columns = [];
         }
 
-        public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, IFormats formats, ClassOptions classOptions) : base()
+        public AndOrBase(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions, ClassOptions classOptions) : base()
         {
             _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentNullException(nameof(queryBuilderWithWhere));
+            QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
             Columns = classOptions?.PropertyOptions ?? throw new ArgumentNullException(nameof(classOptions));
-            Formats = formats ?? throw new ArgumentNullException(nameof(formats));
         }
 
         /// <summary>
@@ -65,7 +61,7 @@ namespace GSqlQuery
 
             foreach (ISearchCriteria item in _searchCriterias)
             {
-                result[count++] = item.GetCriteria(Formats, Columns);
+                result[count++] = item.GetCriteria(QueryOptions.Formats, Columns);
             }
 
             return result;

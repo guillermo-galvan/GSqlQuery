@@ -9,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new DefaultFormats(),"UPDATE Test3 SET Test3.Id=@Param,Test3.Name=@Param,Test3.Create=@Param,Test3.IsTests=@Param;"
+                new QueryOptions (new DefaultFormats()),"UPDATE Test3 SET Test3.Id=@Param,Test3.Name=@Param,Test3.Create=@Param,Test3.IsTests=@Param;"
             };
 
             yield return new object[]
             {
-                new Models.Formats(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param;"
+                new QueryOptions (new Models.Formats()),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param;"
             };
         }
 
@@ -27,12 +27,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new DefaultFormats(),"UPDATE Test3 SET Test3.Id=@Param,Test3.Name=@Param,Test3.Create=@Param,Test3.IsTests=@Param WHERE Test3.IsTests = @Param AND Test3.Create = @Param;"
+                new QueryOptions (new DefaultFormats()),"UPDATE Test3 SET Test3.Id=@Param,Test3.Name=@Param,Test3.Create=@Param,Test3.IsTests=@Param WHERE Test3.IsTests = @Param AND Test3.Create = @Param;"
             };
 
             yield return new object[]
             {
-                new Models.Formats(),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] = @Param;"
+                new QueryOptions (new Models.Formats()),"UPDATE [Test3] SET [Test3].[Id]=@Param,[Test3].[Name]=@Param,[Test3].[Create]=@Param,[Test3].[IsTests]=@Param WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] = @Param;"
             };
         }
 

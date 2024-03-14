@@ -11,14 +11,16 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    /// <param name="formats">Formats</param>
-    internal abstract class DeleteQueryBuilder<T, TReturn>(IFormats formats) : QueryBuilderWithCriteria<T, TReturn>(formats)
+    /// <typeparam name="TQueryOptions">QueryOptions</typeparam>
+    /// <param name="queryOptions">TQueryOptions</param>
+    internal abstract class DeleteQueryBuilder<T, TReturn, TQueryOptions>(TQueryOptions queryOptions) : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>(queryOptions)
         where T : class
-        where TReturn : DeleteQuery<T>
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
         protected readonly object _entity;
 
-        public DeleteQueryBuilder(object entity, IFormats formats) : this(formats)
+        public DeleteQueryBuilder(object entity, TQueryOptions queryOptions) : this(queryOptions)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
@@ -31,7 +33,7 @@ namespace GSqlQuery.Queries
         {
             if (_andOr == null)
             {
-               return ConstFormat.DELETE.Replace("{0}", _tableName);
+                return ConstFormat.DELETE.Replace("{0}", _tableName);
             }
             else
             {
@@ -62,11 +64,11 @@ namespace GSqlQuery.Queries
 
             foreach (PropertyOptions item in Columns)
             {
-                object value = GeneralExtension.GetValue(item, _entity);
+                object value = ExpressionExtension.GetValue(item, _entity);
                 string paramName = "@PD" + Helpers.GetIdParam().ToString();
-                string columName = Options.GetColumnName(_tableName, item.ColumnAttribute, QueryType.Criteria);
+                string columName = QueryOptions.Formats.GetColumnName(_tableName, item.ColumnAttribute, QueryType.Criteria);
                 string partQuery = (count++ == 0 ? string.Empty : "AND ") + columName + "=" + paramName;
-                ParameterDetail parameterDetail = new ParameterDetail(paramName, value, item);
+                ParameterDetail parameterDetail = new ParameterDetail(paramName, value);
                 CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
                 criteriaDetails.Enqueue(criteriaDetail);
             }
@@ -78,22 +80,22 @@ namespace GSqlQuery.Queries
     /// Delete Query Builder
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
-    internal class DeleteQueryBuilder<T> : DeleteQueryBuilder<T, DeleteQuery<T>>
+    internal class DeleteQueryBuilder<T> : DeleteQueryBuilder<T, DeleteQuery<T>, QueryOptions>
         where T : class
     {
         /// <summary>
         /// Delete Query Builder
         /// </summary>
-        /// <param name="formats">Formats</param>
-        public DeleteQueryBuilder(IFormats formats) : base(formats)
+        /// <param name="queryOptions">QueryOptions</param>
+        public DeleteQueryBuilder(QueryOptions queryOptions) : base(queryOptions)
         { }
 
         /// <summary>
         /// Delete Query Builder
         /// </summary>
         /// <param name="entity">Entity</param>
-        /// <param name="formats">Formats</param>
-        public DeleteQueryBuilder(object entity, IFormats formats) : base(entity,formats)
+        /// <param name="queryOptions">QueryOptions</param>
+        public DeleteQueryBuilder(object entity, QueryOptions queryOptions) : base(entity, queryOptions)
         { }
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace GSqlQuery.Queries
         public override DeleteQuery<T> Build()
         {
             string text = _entity == null ? CreateQuery() : CreateQueryByEntty();
-            return new DeleteQuery<T>(text, Columns, _criteria, Options);
+            return new DeleteQuery<T>(text, Columns, _criteria, QueryOptions);
         }
     }
 }

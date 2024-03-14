@@ -16,7 +16,7 @@
         {
             string tableName = formats.Format.Replace("{0}", tableAttribute.Name);
 
-            if(string.IsNullOrWhiteSpace(tableAttribute.Scheme))
+            if (string.IsNullOrWhiteSpace(tableAttribute.Scheme))
             {
                 return tableName;
             }

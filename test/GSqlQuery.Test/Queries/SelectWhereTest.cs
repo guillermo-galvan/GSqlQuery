@@ -20,14 +20,14 @@ namespace GSqlQuery.Test.Queries
             var columnAttribute = classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
             var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
-            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-               new DefaultFormats());
+            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }),
+               new QueryOptions(new DefaultFormats()));
         }
 
         [Fact]
         public void Should_add_criteria_SelectQuery()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> query = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> query = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             Assert.NotNull(query);
             query.Add(_equal);
             Assert.True(true);
@@ -36,7 +36,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Throw_exception_if_null_ISearchCriteria_is_added_SelectQuery()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> query = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> query = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             Assert.NotNull(query);
             Assert.Throws<ArgumentNullException>(() => query.Add(null));
         }
@@ -44,7 +44,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_build_the_criteria_SelectQuery()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> query = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> query = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             Assert.NotNull(query);
             query.Add(_equal);
 
@@ -56,22 +56,22 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_get_the_IAndOr_interface_with_expression_SelectQuery()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
-            IAndOr<Test1, SelectQuery<Test1>> andOr = GSqlQueryExtension.GetAndOr(where, x => x.Id);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
+            IAndOr<Test1, SelectQuery<Test1>, QueryOptions> andOr = GSqlQueryExtension.GetAndOr(where, x => x.Id);
             Assert.NotNull(andOr);
         }
 
         [Fact]
         public void Throw_exception_if_expression_is_null_with_expression_SelectQuery()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = null;
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = null;
             Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where, x => x.Id));
         }
 
         [Fact]
         public void Should_validate_of_IAndOr_SelectQuery()
         {
-            IAndOr<Test1, SelectQuery<Test1>> andOr = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
+            IAndOr<Test1, SelectQuery<Test1>, QueryOptions> andOr = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             try
             {
                 GSqlQueryExtension.Validate(andOr, x => x.IsTest);
@@ -86,22 +86,22 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Throw_exception_if_expression_is_null_in_IAndOr_SelectQuery()
         {
-            IAndOr<Test1, SelectQuery<Test1>> where = null;
+            IAndOr<Test1, SelectQuery<Test1>, QueryOptions> where = null;
             Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.Validate(where, x => x.Id));
         }
 
         [Fact]
         public void Should_get_the_IAndOr_interface_SelectQuery()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder, _queryBuilder.Options);
-            IAndOr<Test1, SelectQuery<Test1>> andOr = GSqlQueryExtension.GetAndOr(where);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
+            IAndOr<Test1, SelectQuery<Test1>, QueryOptions> andOr = GSqlQueryExtension.GetAndOr(where);
             Assert.NotNull(andOr);
         }
 
         [Fact]
         public void Throw_exception_if_expression_is_null_SelectQuery()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = null;
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = null;
             Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where));
         }
     }

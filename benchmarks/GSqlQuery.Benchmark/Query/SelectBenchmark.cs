@@ -13,45 +13,45 @@ namespace GSqlQuery.Benchmarks.Query
         }
 
         [Benchmark]
-        public IWhere<User, SelectQuery<User>> GenerateWhereQuery()
+        public IWhere<User, SelectQuery<User>, QueryOptions> GenerateWhereQuery()
         {
-            return User.Select(_formats).Where();
+            return User.Select(_queryOptions).Where();
         }
 
         [Benchmark]
         public IQuery GenerateQuery()
         {
-            return User.Select(_formats).Build();
+            return User.Select(_queryOptions).Build();
         }
 
         [Benchmark]
         public IQuery GenerateManyColumnsQuery()
         {
-            return User.Select(_formats, x => new { x.Name, x.LastName, x.IsActive }).Build();
+            return User.Select(_queryOptions, x => new { x.Name, x.LastName, x.IsActive }).Build();
         }
 
         [Benchmark]
         public IQuery GenerateEqualWhereQuery()
         {
-            return User.Select(_formats).Where().Equal(x => x.Id, 1).Build();
+            return User.Select(_queryOptions).Where().Equal(x => x.Id, 1).Build();
         }
 
         [Benchmark]
         public IQuery GenerateBetweenWhereQuery()
         {
-            return User.Select(_formats).Where().Between(x => x.Id, 1, 2).Build();
+            return User.Select(_queryOptions).Where().Between(x => x.Id, 1, 2).Build();
         }
 
         [Benchmark]
         public IQuery GenerateLikeWhereQuery()
         {
-            return User.Select(_formats).Where().Like(x => x.Name, "23").Build();
+            return User.Select(_queryOptions).Where().Like(x => x.Name, "23").Build();
         }
 
         [Benchmark]
         public IQuery GenerateIsNullWhereQuery()
         {
-            return User.Select(_formats).Where().IsNull(x => x.Name).Build();
+            return User.Select(_queryOptions).Where().IsNull(x => x.Name).Build();
         }
     }
 
@@ -66,13 +66,13 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateInWhereQuery()
         {
-            return User.Select(_formats).Where().In(x => x.Id, _ids).Build();
+            return User.Select(_queryOptions).Where().In(x => x.Id, _ids).Build();
         }
 
         [Benchmark]
         public IQuery GenerateFiveWhereQuery()
         {
-            return User.Select(_formats).Where()
+            return User.Select(_queryOptions).Where()
                        .In(x => x.Id, _ids)
                        .AndEqual(x => x.Name, "nombre")
                        .OrBetween(x => x.Id, 1, 10)
@@ -84,49 +84,49 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateCountOneColumn()
         {
-            return User.Select(_formats,x=> new {x.Id}).Count().Where().In(x => x.Id, _ids).Build();
+            return User.Select(_queryOptions,x=> new {x.Id}).Count().Where().In(x => x.Id, _ids).Build();
         }
 
         [Benchmark]
         public IQuery GenerateCountAllColumns()
         {
-            return User.Select(_formats).Count().Where().In(x => x.Id, _ids).Build();
+            return User.Select(_queryOptions).Count().Where().In(x => x.Id, _ids).Build();
         }
 
         [Benchmark]
         public IQuery GenerateOrderBy()
         {
-            return User.Select(_formats).OrderBy(x => x.Id, OrderBy.ASC).Build();
+            return User.Select(_queryOptions).OrderBy(x => x.Id, OrderBy.ASC).Build();
         }
 
         [Benchmark]
         public IQuery GenerateOrderByWithWhere()
         {
-            return User.Select(_formats).Where().Equal(x => x.Id, 1).OrderBy(x => x.Id , OrderBy.ASC).Build();
+            return User.Select(_queryOptions).Where().Equal(x => x.Id, 1).OrderBy(x => x.Id , OrderBy.ASC).Build();
         }
 
         [Benchmark]
         public IQuery GenerateOrderByMany()
         {
-            return User.Select(_formats).OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => x.Name, OrderBy.DESC).Build();
+            return User.Select(_queryOptions).OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => x.Name, OrderBy.DESC).Build();
         }
 
         [Benchmark]
         public IQuery GenerateOrderBy_new()
         {
-            return User.Select(_formats).OrderBy(x => new { x.Id , x.Name}, OrderBy.ASC).Build();
+            return User.Select(_queryOptions).OrderBy(x => new { x.Id , x.Name}, OrderBy.ASC).Build();
         }
 
         [Benchmark]
         public IQuery GenerateOrderByWithWhere_new()
         {
-            return User.Select(_formats).Where().Equal(x => x.Id, 1).OrderBy(x => x.Id, OrderBy.ASC).Build();
+            return User.Select(_queryOptions).Where().Equal(x => x.Id, 1).OrderBy(x => x.Id, OrderBy.ASC).Build();
         }
 
         [Benchmark]
         public IQuery GenerateOrderByMany_new()
         {
-            return User.Select(_formats).OrderBy(x => new { x.Id }, OrderBy.ASC).OrderBy(x => new { x.Name }, OrderBy.DESC).Build();
+            return User.Select(_queryOptions).OrderBy(x => new { x.Id }, OrderBy.ASC).OrderBy(x => new { x.Name }, OrderBy.DESC).Build();
         }
     }
 }

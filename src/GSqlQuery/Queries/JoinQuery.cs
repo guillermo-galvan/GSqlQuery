@@ -16,8 +16,8 @@ namespace GSqlQuery
         /// <param name="criteria">Criteria</param>
         /// <param name="formats">Formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        internal JoinQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
-            base(text, columns, criteria, formats)
+        internal JoinQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+            base(text, columns, criteria, queryOptions)
         { }
     }
 }

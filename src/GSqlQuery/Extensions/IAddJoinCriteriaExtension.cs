@@ -28,8 +28,8 @@ namespace GSqlQuery.Extensions
             where T1 : class
             where T2 : class
         {
-            JoinCriteriaPart joinCriteria1 = GeneralExtension.GetJoinColumn(field1);
-            JoinCriteriaPart joinCriteria2 = GeneralExtension.GetJoinColumn(field2);
+            JoinCriteriaPart joinCriteria1 = ExpressionExtension.GetJoinColumn(field1);
+            JoinCriteriaPart joinCriteria2 = ExpressionExtension.GetJoinColumn(field2);
             JoinModel joinModel = new JoinModel(logicalOperador, joinCriteria1, joinCriteriaEnum, joinCriteria2);
             joinCriteria.AddColumns(joinModel);
         }
@@ -55,8 +55,8 @@ namespace GSqlQuery.Extensions
             where T2 : class
             where T3 : class
         {
-            JoinCriteriaPart joinCriteria1 = GeneralExtension.GetJoinColumn(field1);
-            JoinCriteriaPart joinCriteria2 = GeneralExtension.GetJoinColumn(field2);
+            JoinCriteriaPart joinCriteria1 = ExpressionExtension.GetJoinColumn(field1);
+            JoinCriteriaPart joinCriteria2 = ExpressionExtension.GetJoinColumn(field2);
             JoinModel joinModel = new JoinModel(logicalOperador, joinCriteria1, joinCriteriaEnum, joinCriteria2);
 
             joinCriteria.AddColumns(joinModel);

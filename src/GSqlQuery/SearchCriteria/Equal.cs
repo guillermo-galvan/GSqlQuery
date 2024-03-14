@@ -25,7 +25,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
-        public Equal(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value) : 
+        public Equal(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value) :
             this(classOptionsTupla, formats, value, null)
         { }
 
@@ -48,16 +48,15 @@ namespace GSqlQuery.SearchCriteria
             string tableName = TableAttributeExtension.GetTableName(Table, Formats);
             string parameterName = "@" + ParameterPrefix + Helpers.GetIdParam();
             string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
-            
-            string criterion = "{0} {1} {2}".Replace("{0}", columName).Replace("{1}",RelationalOperator).Replace("{2}",parameterName);
+
+            string criterion = "{0} {1} {2}".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", parameterName);
 
             if (!string.IsNullOrWhiteSpace(LogicalOperator))
             {
                 criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
-            PropertyOptions property = ColumnAttributeExtension.GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
 
-            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName, Value, property)]));
+            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName, Value)]));
         }
     }
 }
