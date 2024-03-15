@@ -132,7 +132,7 @@ namespace GSqlQuery
         /// <returns>IQueryBuilder&lt;OrderByQuery&lt;<typeparamref name="T"/>&gt;, IFormats&gt;</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static IQueryBuilder<OrderByQuery<Join<T1, T2>>, QueryOptions> OrderBy<T1,T2, TProperties>
-            (this IQueryBuilderWithWhere<Join<T1, T2>, IQuery<Join<T1, T2>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2>, TProperties>> expression, OrderBy orderBy)
+            (this IQueryBuilderWithWhere<Join<T1, T2>, JoinQuery<Join<T1, T2>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2>, TProperties>> expression, OrderBy orderBy)
             where T1 : class
             where T2 : class
         {
@@ -161,7 +161,7 @@ namespace GSqlQuery
         /// <returns>IQueryBuilder&lt;OrderByQuery&lt;<typeparamref name="T"/>&gt;, IFormats&gt;</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static IQueryBuilder<OrderByQuery<Join<T1, T2, T3>>, QueryOptions> OrderBy<T1, T2, T3, TProperties>
-            (this IQueryBuilderWithWhere<Join<T1, T2, T3>, IQuery<Join<T1, T2, T3>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2>, TProperties>> expression, OrderBy orderBy)
+            (this IQueryBuilderWithWhere<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2>, TProperties>> expression, OrderBy orderBy)
             where T1 : class
             where T2 : class
             where T3 : class
@@ -191,7 +191,7 @@ namespace GSqlQuery
         /// <returns>IQueryBuilder&lt;OrderByQuery&lt;<typeparamref name="T"/>&gt;, IFormats&gt;</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static IQueryBuilder<OrderByQuery<Join<T1, T2>>, QueryOptions> OrderBy<T1, T2, TProperties>
-            (this IAndOr<Join<T1, T2>, IQuery<Join<T1, T2>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2>, TProperties>> expression, OrderBy orderBy)
+            (this IAndOr<Join<T1, T2>, JoinQuery<Join<T1, T2>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2>, TProperties>> expression, OrderBy orderBy)
             where T1 : class
             where T2 : class
         {
@@ -220,7 +220,7 @@ namespace GSqlQuery
         /// <returns>IQueryBuilder&lt;OrderByQuery&lt;<typeparamref name="T"/>&gt;, IFormats&gt;</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static IQueryBuilder<OrderByQuery<Join<T1, T2, T3>>, QueryOptions> OrderBy<T1, T2, T3, TProperties>
-            (this IAndOr<Join<T1, T2, T3>, IQuery<Join<T1, T2, T3>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2, T3>, TProperties>> expression, OrderBy orderBy)
+            (this IAndOr<Join<T1, T2, T3>, JoinQuery<Join<T1, T2, T3>, QueryOptions>, QueryOptions> queryBuilder, Expression<Func<Join<T1, T2, T3>, TProperties>> expression, OrderBy orderBy)
             where T1 : class
             where T2 : class
             where T3 : class

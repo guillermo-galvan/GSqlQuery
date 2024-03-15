@@ -142,7 +142,7 @@ namespace GSqlQuery.Queries
          where T1 : class
          where T2 : class
          where TJoin : class
-         where TReturn : IQuery<TJoin, TQueryOptions>
+         where TReturn : JoinQuery<TJoin, TQueryOptions>
          where TQueryOptions : QueryOptions
     {
         protected readonly Queue<JoinInfo> _joinInfos = joinInfos ?? new Queue<JoinInfo>();
@@ -212,7 +212,7 @@ namespace GSqlQuery.Queries
         where T2 : class
         where T3 : class
         where TJoin : class
-        where TReturn : IQuery<TJoin, TQueryOptions>
+        where TReturn : JoinQuery<TJoin, TQueryOptions>
          where TQueryOptions : QueryOptions
     {
         /// <summary>

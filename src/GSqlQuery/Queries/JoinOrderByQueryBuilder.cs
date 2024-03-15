@@ -174,7 +174,7 @@ namespace GSqlQuery.Queries
     /// Join Order By Query Builder
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class JoinOrderByQueryBuilder<T> : JoinOrderByQueryBuilder<T, OrderByQuery<T>, QueryOptions, IQuery<T, QueryOptions>>
+    internal class JoinOrderByQueryBuilder<T> : JoinOrderByQueryBuilder<T, OrderByQuery<T>, QueryOptions, JoinQuery<T, QueryOptions>>
         where T : class
     {
         /// <summary>
@@ -184,7 +184,7 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
         public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, IQuery<T, QueryOptions>, QueryOptions> queryBuilder)
+            IQueryBuilderWithWhere<T, JoinQuery<T, QueryOptions>, QueryOptions> queryBuilder)
             : base(selectMember, orderBy, queryBuilder, queryBuilder.QueryOptions)
         { }
 
@@ -196,7 +196,7 @@ namespace GSqlQuery.Queries
         /// <param name="andOr">Implementation of the IAndOr interface</param>
         /// <param name="formats">Formats</param>
         public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
-           IAndOr<T, IQuery<T, QueryOptions>, QueryOptions> andOr, QueryOptions queryOptions)
+           IAndOr<T, JoinQuery<T, QueryOptions>, QueryOptions> andOr, QueryOptions queryOptions)
            : base(selectMember, orderBy, andOr, queryOptions)
         { }
 
