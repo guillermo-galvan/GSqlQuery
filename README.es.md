@@ -7,7 +7,7 @@ Una biblioteca para generar consultas Sql para .NET a partir modelos o clases qu
 GSqlQuery se puede instalar utilizando el administrador de [paquetes Nuget](https://www.nuget.org/packages/GSqlQuery) o la `dotnet` CLI
 
 ```shell
-dotnet add package GSqlQuery --version 2.0.0-beta-1
+dotnet add package GSqlQuery --version 2.0.0-beta-2
 ```
 
 [Revise nuestra documentación](./docs/es/Config.md) para obtener instrucciones sobre cómo utilizar el paquete.
