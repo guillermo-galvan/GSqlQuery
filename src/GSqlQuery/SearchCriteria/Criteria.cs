@@ -46,5 +46,16 @@ namespace GSqlQuery.SearchCriteria
             _task.Wait();
             return new CriteriaDetail(this, _task.Result.Criterion, _task.Result.Parameters);
         }
+
+        /// <summary>
+        /// Find the properties that receive in the column parameter.
+        /// </summary>
+        /// <param name="column">Contains the property information</param>
+        /// <param name="propertyOptions">List of property options</param>
+        /// <returns>Property options</returns>
+        protected PropertyOptions GetPropertyOptions(ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
+        {
+            return propertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
+        }
     }
 }

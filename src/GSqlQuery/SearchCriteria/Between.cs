@@ -67,7 +67,9 @@ namespace GSqlQuery.SearchCriteria
                 criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
 
-            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName1, Initial), new ParameterDetail(parameterName2, Final)]));
+            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
+
+            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName1, Initial, property), new ParameterDetail(parameterName2, Final, property)]));
         }
     }
 }

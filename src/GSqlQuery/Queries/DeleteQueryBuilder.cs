@@ -1,8 +1,6 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GSqlQuery.Queries
 {
@@ -68,7 +66,7 @@ namespace GSqlQuery.Queries
                 string paramName = "@PD" + Helpers.GetIdParam().ToString();
                 string columName = QueryOptions.Formats.GetColumnName(_tableName, item.ColumnAttribute, QueryType.Criteria);
                 string partQuery = (count++ == 0 ? string.Empty : "AND ") + columName + "=" + paramName;
-                ParameterDetail parameterDetail = new ParameterDetail(paramName, value);
+                ParameterDetail parameterDetail = new ParameterDetail(paramName, value, item);
                 CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
                 criteriaDetails.Enqueue(criteriaDetail);
             }

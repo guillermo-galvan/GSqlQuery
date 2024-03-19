@@ -105,7 +105,7 @@ namespace GSqlQuery.Queries
                 string paramName = "@PU" + Helpers.GetIdParam().ToString();
                 string columName = QueryOptions.Formats.GetColumnName(tableName, item.Key, QueryType.Criteria);
                 string partQuery = columName + "=" + paramName;
-                ParameterDetail parameterDetail = new ParameterDetail(paramName, item.Value ?? DBNull.Value);
+                ParameterDetail parameterDetail = new ParameterDetail(paramName, item.Value ?? DBNull.Value, options);
                 CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
                 criteriaDetails.Enqueue(criteriaDetail);
             }

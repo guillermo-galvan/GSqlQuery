@@ -59,11 +59,12 @@ namespace GSqlQuery.SearchCriteria
             int index = 0;
             string ticks = Helpers.GetIdParam().ToString();
             string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
 
             foreach (T item in Values)
             {
                 string parameterName = "@" + ParameterPrefix + count++.ToString() + ticks;
-                parameters[index++] = new ParameterDetail(parameterName, item);
+                parameters[index++] = new ParameterDetail(parameterName, item, property);
             }
             string columnNames = string.Join(",", parameters.Select(x => x.Name));
             string criterion = "{0} {1} ({2})".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", columnNames);

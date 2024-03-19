@@ -62,7 +62,7 @@ namespace GSqlQuery.Queries
                 string columnName = QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Create);
                 object value = ExpressionExtension.GetValue(x, _entity);
                 string parameterName = "@PI" + Helpers.GetIdParam();
-                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value);
+                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value, x);
                 ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, parameterDetail);
                 tmpColumnsParameters.Enqueue(columnParameterDetail);
             }
