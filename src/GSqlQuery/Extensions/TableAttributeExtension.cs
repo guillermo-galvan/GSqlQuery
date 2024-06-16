@@ -12,13 +12,17 @@
         /// <param name="formats">Formats for the table.</param>
         /// <returns>Table Name</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static string GetTableName(this TableAttribute tableAttribute, IFormats formats)
+        public static string GetTableName(TableAttribute tableAttribute, IFormats formats)
         {
-            tableAttribute.NullValidate(ErrorMessages.ParameterNotNull, nameof(tableAttribute));
-            formats.NullValidate(ErrorMessages.ParameterNotNull, nameof(formats));
+            string tableName = formats.Format.Replace("{0}", tableAttribute.Name);
 
-            return string.IsNullOrWhiteSpace(tableAttribute.Scheme) ? string.Format(formats.Format, tableAttribute.Name) :
-                  $"{string.Format(formats.Format, tableAttribute.Scheme)}.{string.Format(formats.Format, tableAttribute.Name)}";
+            if (string.IsNullOrWhiteSpace(tableAttribute.Scheme))
+            {
+                return tableName;
+            }
+
+            string schema = formats.Format.Replace("{0}", tableAttribute.Scheme) + ".";
+            return schema + tableName;
         }
     }
 }

@@ -24,7 +24,8 @@
         /// <returns>Column Name</returns>
         public virtual string GetColumnName(string tableName, ColumnAttribute column, QueryType queryType)
         {
-            return $"{tableName}.{string.Format(Format, column.Name)}";
+            string columnName = Format.Replace("{0}", column.Name);
+            return tableName + "." + columnName;
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -7,7 +7,7 @@ namespace GSqlQuery.SearchCriteria
     /// Represents the search criteria BETWEEN
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class Between<T> : Criteria, ISearchCriteria
+    internal class Between<T> : Criteria, ISearchCriteria
     {
         protected virtual string RelationalOperator => "BETWEEN";
 
@@ -26,11 +26,12 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Initializes a new instance of the Between class.
         /// </summary>
-        /// <param name="table">Table Attribute</param>
-        /// <param name="columnAttribute">Column Attribute</param>
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+        /// <param name="formats">Formats</param>
         /// <param name="initialValue">Initial value</param>
         /// <param name="finalValue">Logical operator</param>
-        public Between(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue) : this(table, columnAttribute, initialValue, finalValue, null)
+        public Between(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue) :
+            this(classOptionsTupla, formats, initialValue, finalValue, null)
         {
 
         }
@@ -38,40 +39,37 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Initializes a new instance of the Between class.
         /// </summary>
-        /// <param name="table">Table Attribute</param>
-        /// <param name="columnAttribute">Column Attribute</param>
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+        /// <param name="formats">Formats</param>
         /// <param name="initialValue">Initial value</param>
         /// <param name="logicalOperator">Logical operator</param>
-        public Between(TableAttribute table, ColumnAttribute columnAttribute, T initialValue, T finalValue, string logicalOperator) :
-            base(table, columnAttribute, logicalOperator)
+        public Between(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue, string logicalOperator) :
+            base(classOptionsTupla, formats, logicalOperator)
         {
             Initial = initialValue;
             Final = finalValue;
+            _task = CreteData();
         }
 
-        /// <summary>
-        /// Get Criteria
-        /// </summary>
-        /// <param name="formats">formats</param>
-        /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
+        private Task<CriteriaDetails> CreteData()
         {
-            string tableName = Table.GetTableName(formats);
-            ulong tiks = Helpers.GetIdParam();
-            string parameterName1 = $"@{ParameterPrefix}1{tiks}";
-            string parameterName2 = $"@{ParameterPrefix}2{tiks}";
+            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string tiks = Helpers.GetIdParam().ToString();
+            string parameterName1 = "@{0}1".Replace("{0}", ParameterPrefix) + tiks;
+            string parameterName2 = "@{0}2".Replace("{0}", ParameterPrefix) + tiks;
+            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
 
-            string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} {parameterName1} AND {parameterName2}";
+            string criterion = "{0} {1} {2} AND {3}".Replace("{0}", columName).Replace("{1}", RelationalOperator)
+                                                    .Replace("{2}", parameterName1).Replace("{3}", parameterName2);
 
-            var property = Column.GetPropertyOptions(propertyOptions);
-
-            return new CriteriaDetail(this, criterion, new ParameterDetail[]
+            if (!string.IsNullOrWhiteSpace(LogicalOperator))
             {
-                new ParameterDetail(parameterName1, Initial,property),
-                new ParameterDetail(parameterName2, Final,property)
-            });
+                criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
+            }
+
+            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
+
+            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName1, Initial, property), new ParameterDetail(parameterName2, Final, property)]));
         }
     }
 }

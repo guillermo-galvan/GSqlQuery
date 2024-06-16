@@ -9,12 +9,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new DefaultFormats(),"DELETE FROM Test3;"
+                new QueryOptions (new DefaultFormats()),"DELETE FROM Test3;"
             };
 
             yield return new object[]
             {
-                new Models.Formats(),"DELETE FROM [Test3];"
+                new QueryOptions (new Models.Formats()),"DELETE FROM [Test3];"
             };
         }
 
@@ -27,12 +27,31 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new DefaultFormats(),"DELETE FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Create IS NOT NULL;"
+                new QueryOptions (new DefaultFormats()),"DELETE FROM Test3 WHERE Test3.IsTests = @Param AND Test3.Create IS NOT NULL;"
             };
 
             yield return new object[]
             {
-                new Models.Formats(),"DELETE FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] IS NOT NULL;"
+                new QueryOptions (new Models.Formats()),"DELETE FROM [Test3] WHERE [Test3].[IsTests] = @Param AND [Test3].[Create] IS NOT NULL;"
+            };
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+
+    internal class Delete_Test3_TestData3 : IEnumerable<object[]>
+    {
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            yield return new object[]
+            {
+                new QueryOptions (new DefaultFormats()),"DELETE FROM Test3 WHERE Test3.Id=@Param AND Test3.Name=@Param AND Test3.Create=@Param AND Test3.IsTests=@Param;"
+            };
+
+            yield return new object[]
+            {
+                new QueryOptions (new Models.Formats()),"DELETE FROM [Test3] WHERE [Test3].[Id]=@Param AND [Test3].[Name]=@Param AND [Test3].[Create]=@Param AND [Test3].[IsTests]=@Param;"
             };
         }
 

@@ -9,10 +9,11 @@ namespace GSqlQuery
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    public abstract class QueryBuilderBase<T, TReturn> : IBuilder<TReturn>, IQueryBuilder<TReturn, IFormats>
-        where T : class where TReturn : IQuery<T>
+    public abstract class QueryBuilderBase<T, TReturn, TQueryOptions> : IBuilder<TReturn>, IQueryBuilder<TReturn, TQueryOptions>
+        where T : class 
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
-        private readonly IFormats _formats;
         protected readonly string _tableName;
         protected readonly ClassOptions _classOptions;
 
@@ -22,21 +23,21 @@ namespace GSqlQuery
         public IEnumerable<PropertyOptions> Columns { get; protected set; }
 
         /// <summary>
-        /// Get Options
+        /// Query Options
         /// </summary>
-        public IFormats Options => _formats;
+        public TQueryOptions QueryOptions { get; }
 
         /// <summary>
         /// Class constructor
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public QueryBuilderBase(IFormats formats)
+        public QueryBuilderBase(TQueryOptions queryOptions)
         {
-            _formats = formats ?? throw new ArgumentNullException(nameof(formats));
+            QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
             Columns = _classOptions.PropertyOptions;
-            _tableName = _classOptions.Table.GetTableName(formats);
+            _tableName = TableAttributeExtension.GetTableName(_classOptions.Table, QueryOptions.Formats);
         }
 
         /// <summary>

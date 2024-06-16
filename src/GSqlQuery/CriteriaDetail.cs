@@ -22,7 +22,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get Search Criteria
         /// </summary>
-        public ISearchCriteria SearchCriteria { get; }
+        internal ISearchCriteria SearchCriteria { get; }
 
         /// <summary>
         /// Initializes a new instance of the CriteriaDetail class.

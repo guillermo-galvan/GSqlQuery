@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-
 namespace GSqlQuery
 {
     public interface IQuery
@@ -25,11 +24,10 @@ namespace GSqlQuery
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public interface IQuery<T> : IQuery where T : class
+    public interface IQuery<T, TQueryOptions> : IQueryOptions<TQueryOptions>, IQuery 
+        where T : class
+        where TQueryOptions : QueryOptions
     {
-        /// <summary>
-        /// Formats
-        /// </summary>
-        IFormats Formats { get; }
+        
     }
 }

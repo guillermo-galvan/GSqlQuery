@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System.Collections.Generic;
@@ -10,25 +11,24 @@ namespace GSqlQuery.Test.SearchCriteria
     public class IsNotNullTest
     {
         private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
-        private readonly IFormats _formats;
+        private readonly QueryOptions _queryOptions;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
+        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
 
         public IsNotNullTest()
         {
-            _formats = new DefaultFormats();
-            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                new DefaultFormats());
+            _queryOptions = new QueryOptions(new DefaultFormats());
+            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), new QueryOptions(new DefaultFormats()));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
+            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
         }
 
         [Fact]
         public void Should_create_an_instance()
         {
-            IsNotNull test = new IsNotNull(_tableAttribute, _columnAttribute);
+            IsNotNull test = new IsNotNull(_classOptionsTupla, new DefaultFormats());
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -41,7 +41,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR")]
         public void Should_create_an_instance_1(string logicalOperator)
         {
-            IsNotNull test = new IsNotNull(_tableAttribute, _columnAttribute, logicalOperator);
+            IsNotNull test = new IsNotNull(_classOptionsTupla, new DefaultFormats(), logicalOperator);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Table);
@@ -56,8 +56,8 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", "OR Test1.Id IS NOT NULL")]
         public void Should_get_criteria_detail(string logicalOperator, string querypart)
         {
-            IsNotNull test = new IsNotNull(_tableAttribute, _columnAttribute, logicalOperator);
-            var result = test.GetCriteria(_formats, _classOptions.PropertyOptions);
+            IsNotNull test = new IsNotNull(_classOptionsTupla, new DefaultFormats(), logicalOperator);
+            var result = test.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
@@ -73,10 +73,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.IsNotNull(x => x.Id);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Options);
+            var result = andOr.BuildCriteria();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -85,10 +85,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.IsNotNull(x => x.Id).AndIsNotNull(x => x.IsTest);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Options);
+            var result = andOr.BuildCriteria();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -97,10 +97,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.IsNotNull(x => x.Id).OrIsNotNull(x => x.IsTest);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Options);
+            var result = andOr.BuildCriteria();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

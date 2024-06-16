@@ -2,7 +2,6 @@
 using GSqlQuery.Queries;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -12,98 +11,162 @@ namespace GSqlQuery
     /// Entity 
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public abstract class Entity<T> : ICreate<T>, IRead<T>, IUpdate<T>, IDelete<T> where T : class
+    public abstract class Entity<T> 
+        where T : class
     {
         /// <summary>
         /// Select query
         /// </summary>
         /// <typeparam name="TProperties">Property type</typeparam>
-        /// <param name="formats">Formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>Bulder</returns>
-        public static IJoinQueryBuilder<T, SelectQuery<T>, IFormats> Select<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression)
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IJoinQueryBuilder<T, SelectQuery<T>, QueryOptions> Select<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Select(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Select(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new SelectQueryBuilder<T>(options.MemberInfo.Select(x => x.Name), formats);
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateMemberInfos(QueryType.Read, options);
+            return new SelectQueryBuilder<T>(options, queryOptions);
         }
 
         /// <summary>
         /// Select query
         /// </summary>
-        /// <param name="formats">Formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <returns>Bulder</returns>
-        public static IJoinQueryBuilder<T, SelectQuery<T>, IFormats> Select(IFormats formats)
+        public static IJoinQueryBuilder<T, SelectQuery<T>, QueryOptions> Select(QueryOptions queryOptions)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            return new SelectQueryBuilder<T>(ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions.Select(x => x.PropertyInfo.Name), formats);
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+            return new SelectQueryBuilder<T>(queryOptions);
         }
 
         /// <summary>
         /// Insert query
         /// </summary>
-        /// <param name="formats">Formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <returns>Bulder</returns>
-        public IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats formats)
+        public IQueryBuilder<InsertQuery<T>, QueryOptions> Insert(QueryOptions queryOptions)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            return new InsertQueryBuilder<T>(formats, this);
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+
+            return new InsertQueryBuilder<T>(queryOptions, this);
         }
 
         /// <summary>
         /// Insert query
         /// </summary>
-        /// <param name="formats">Formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <param name="entity">Entity</param>
         /// <returns>Bulder</returns>
-        public static IQueryBuilder<InsertQuery<T>, IFormats> Insert(IFormats formats, T entity)
+        public static IQueryBuilder<InsertQuery<T>, QueryOptions> Insert(QueryOptions queryOptions, T entity)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            entity.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(entity));
-            return new InsertQueryBuilder<T>(formats, entity);
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), ErrorMessages.ParameterNotNullEmpty);
+            }
+            return new InsertQueryBuilder<T>(queryOptions, entity);
         }
 
         /// <summary>
         /// Update query
         /// </summary>
         /// <typeparam name="TProperties">Property type</typeparam>
-        /// <param name="formats">Formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of ISet</returns>
-        public static ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression, TProperties value)
+        public static ISet<T, UpdateQuery<T>, QueryOptions> Update<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression, TProperties value)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            ClassOptionsTupla<MemberInfo> options = expression.GetOptionsAndMember();
-            options.MemberInfo.ValidateMemberInfo(options.ClassOptions);
-            return new UpdateQueryBuilder<T>(formats, new string[] { options.MemberInfo.Name }, value);
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
+            return new UpdateQueryBuilder<T>(queryOptions, options, value);
         }
 
         /// <summary>
         /// Update query
         /// </summary>
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
-        /// <param name="formats">Formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T, UpdateQuery<T>, IFormats> Update<TProperties>(IFormats formats, Expression<Func<T, TProperties>> expression)
+        public ISet<T, UpdateQuery<T>, QueryOptions> Update<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = expression.GetOptionsAndMembers();
-            options.MemberInfo.ValidateMemberInfos($"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})");
-            return new UpdateQueryBuilder<T>(formats, this, options.MemberInfo.Select(x => x.Name));
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateMemberInfos(QueryType.Update, options);
+            return new UpdateQueryBuilder<T>(queryOptions, this, options);
         }
 
         /// <summary>
         /// Delete query
         /// </summary>
-        /// <param name="formats">formats</param>
+        /// <param name="queryOptions">QueryOptions</param>
         /// <returns>Bulder</returns>
-        public static IQueryBuilderWithWhere<T, DeleteQuery<T>, IFormats> Delete(IFormats formats)
+        public static IQueryBuilderWithWhere<T, DeleteQuery<T>, QueryOptions> Delete(QueryOptions queryOptions)
         {
-            formats.NullValidate(ErrorMessages.ParameterNotNullEmpty, nameof(formats));
-            return new DeleteQueryBuilder<T>(formats);
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+            return new DeleteQueryBuilder<T>(queryOptions);
+        }
+
+        /// <summary>
+        /// Delete query
+        /// </summary>
+        /// <param name="queryOptions">QueryOptions</param>
+        /// <param name="entity">Entity</param>
+        /// <returns>Bulder</returns>
+        public static IQueryBuilder<DeleteQuery<T>, QueryOptions> Delete(QueryOptions queryOptions, T entity)
+        {
+            if (queryOptions == null)
+            {
+                throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
+            }
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), ErrorMessages.ParameterNotNull);
+            }
+
+            return new DeleteQueryBuilder<T>(entity, queryOptions);
         }
     }
 }

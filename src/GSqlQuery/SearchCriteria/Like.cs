@@ -1,13 +1,14 @@
 ﻿using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria like (LIKE)
     /// </summary>
-    public class Like : Criteria
+    internal class Like : Criteria
     {
         protected virtual string RelationalOperator => "LIKE";
 
@@ -21,38 +22,43 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Initializes a new instance of the Like class.
         /// </summary>
-        /// <param name="table">Table Attribute</param>
-        /// <param name="columnAttribute">Column Attribute</param>
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+        /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
-        public Like(TableAttribute table, ColumnAttribute columnAttribute, string value) : this(table, columnAttribute, value, null)
+        public Like(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string value) :
+            this(classOptionsTupla, formats, value, null)
         { }
 
         /// <summary>
         /// Initializes a new instance of the Like class.
         /// </summary>
-        /// <param name="table">TableAttribute</param>
-        /// <param name="columnAttribute">ColumnAttribute</param>
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+        /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public Like(TableAttribute table, ColumnAttribute columnAttribute, string value, string logicalOperator) : base(table, columnAttribute, logicalOperator)
+        public Like(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string value, string logicalOperator) :
+            base(classOptionsTupla, formats, logicalOperator)
         {
             Value = value;
+
+            _task = CreteData();
         }
 
-        /// <summary>
-        /// Get Criteria detail
-        /// </summary>
-        /// <param name="formats">Formats</param>
-        /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
+        private Task<CriteriaDetails> CreteData()
         {
-            string tableName = Table.GetTableName(formats);
-            string parameterName = $"@{ParameterPrefix}{Helpers.GetIdParam()}";
-            string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator} CONCAT('%', {parameterName}, '%')";
+            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string parameterName = "@" + ParameterPrefix + Helpers.GetIdParam();
+            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
 
-            return new CriteriaDetail(this, criterion, new ParameterDetail[] { new ParameterDetail(parameterName, Value, Column.GetPropertyOptions(propertyOptions)) });
+            string criterion = "{0} {1} CONCAT('%', {2}, '%')".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", parameterName);
+
+            if (!string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
+            }
+            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
+            ParameterDetail parameterDetail = new ParameterDetail(parameterName, Value, property);
+            return Task.FromResult(new CriteriaDetails(criterion, [parameterDetail]));
         }
     }
 }

@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// Update query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class UpdateQuery<T> : Query<T> where T : class
+    public class UpdateQuery<T> : Query<T, QueryOptions> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the UpdateQuery class.
@@ -14,10 +14,10 @@ namespace GSqlQuery
         /// <param name="text">The Query</param>
         /// <param name="columns">Columns of the query</param>
         /// <param name="criteria">Query criteria</param>
-        /// <param name="formats">Formats</param>        
+        /// <param name="queryOptions">QueryOptions</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal UpdateQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats) :
-            base(text, columns, criteria, formats)
+        internal UpdateQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+            base(ref text, columns, criteria, queryOptions)
         { }
     }
 }

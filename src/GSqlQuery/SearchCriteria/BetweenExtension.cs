@@ -18,12 +18,15 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> Between<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> Between<T, TReturn, TQueryOptions,  TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> expression, TProperties initial, TProperties final) 
+            where T : class
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new Between<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final));
+            IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            Between<TProperties> between = new Between<TProperties>(columnInfo, where.QueryOptions.Formats, initial, final);
+            andor.Add(between);
             return andor;
         }
 
@@ -37,12 +40,23 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> AndBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> AndBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression, TProperties initial, TProperties final) 
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new Between<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final, "AND"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            Between<TProperties> between = new Between<TProperties>(columnInfo, andOr.QueryOptions.Formats, initial, final, "AND");
+            andOr.Add(between);
             return andOr;
         }
 
@@ -56,12 +70,24 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> OrBetween<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression,
-            TProperties initial, TProperties final) where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> OrBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression, TProperties initial, TProperties final) 
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new Between<TProperties>(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, initial, final, "OR"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            Between<TProperties> between = new Between<TProperties>(columnInfo, andOr.QueryOptions.Formats, initial, final, "OR");
+            andOr.Add(between);
             return andOr;
         }
     }

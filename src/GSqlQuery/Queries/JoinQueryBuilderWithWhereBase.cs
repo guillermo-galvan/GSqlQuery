@@ -20,6 +20,21 @@ namespace GSqlQuery.Queries
         }
 
         /// <summary>
+        /// Retrieves table name and alias for join query
+        /// </summary>
+        /// <param name="column">Contains the property information</param>
+        /// <param name="joinInfo">Contains the information for the join query</param>
+        /// <param name="formats">Formats for the column.</param>
+        /// <returns>Column name for join query</returns>
+        internal static string GetColumnNameJoin(ColumnAttribute column, JoinInfo joinInfo, IFormats formats)
+        {
+            string alias = formats.Format.Replace("{0}", $"{joinInfo.ClassOptions.Type.Name}_{column.Name}");
+            string tableName = TableAttributeExtension.GetTableName(joinInfo.ClassOptions.Table, formats);
+            string columnName = formats.GetColumnName(tableName, column, QueryType.Join);
+            return "{0} as {1}".Replace("{0}", columnName).Replace("{1}", alias);
+        }
+
+        /// <summary>
         /// Get Columns
         /// </summary>
         /// <param name="joinInfos">Join info</param>
@@ -27,7 +42,7 @@ namespace GSqlQuery.Queries
         /// <returns></returns>
         internal static IEnumerable<string> GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats formats)
         {
-            return joinInfos.SelectMany(c => c.Columns.Select(x => x.ColumnAttribute.GetColumnNameJoin(c, formats)));
+            return joinInfos.SelectMany(c => c.Columns.Select(x => GetColumnNameJoin(x.ColumnAttribute, c, formats)));
         }
 
         /// <summary>
@@ -39,12 +54,12 @@ namespace GSqlQuery.Queries
         internal static IEnumerable<string> CreateJoinQuery(IEnumerable<JoinInfo> joinInfos, IFormats formats)
         {
             Queue<string> joinQuerys = new Queue<string>();
-
-            foreach (var item in joinInfos.Where(x => !x.IsMain))
+            IEnumerable<JoinInfo> joins = joinInfos.Where(x => !x.IsMain);
+            foreach (JoinInfo item in joins)
             {
-                var a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(formats, x)));
+                string a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(formats, x)));
 
-                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, item.ClassOptions.Table.GetTableName(formats), a)}");
+                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, TableAttributeExtension.GetTableName(item.ClassOptions.Table, formats), a)}");
             }
 
             return joinQuerys;
@@ -74,8 +89,8 @@ namespace GSqlQuery.Queries
         /// <returns></returns>
         internal static string CreateJoinQueryPart(IFormats formats, JoinModel joinModel)
         {
-            string partRight = joinModel.JoinModel1.Column.GetColumnName(joinModel.JoinModel1.Table.GetTableName(formats), formats, QueryType.Join);
-            string partLeft = joinModel.JoinModel2.Column.GetColumnName(joinModel.JoinModel2.Table.GetTableName(formats), formats, QueryType.Join);
+            string partRight = formats.GetColumnName(TableAttributeExtension.GetTableName(joinModel.JoinModel1.Table, formats), joinModel.JoinModel1.Column, QueryType.Join);
+            string partLeft = formats.GetColumnName(TableAttributeExtension.GetTableName(joinModel.JoinModel2.Table, formats), joinModel.JoinModel2.Column, QueryType.Join);
 
             string joinCriteria = string.Empty;
 
@@ -113,38 +128,36 @@ namespace GSqlQuery.Queries
     /// <typeparam name="T2">Type for second table</typeparam>
     /// <typeparam name="TJoin">Type for third table</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    /// <typeparam name="TOptions">Options query</typeparam>
-    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions> : QueryBuilderWithCriteria<TJoin, TReturn>,
-         IComparisonOperators<TJoin, TReturn, TOptions>,
-         IAddJoinCriteria<JoinModel>
+    /// <typeparam name="TQueryOptions">Options query</typeparam>
+    /// <remarks>
+    /// Class constructor
+    /// </remarks>
+    /// <param name="joinInfos">joinInfos</param>
+    /// <param name="formats">Formats</param>
+    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TQueryOptions>(Queue<JoinInfo> joinInfos, TQueryOptions options) :
+        QueryBuilderWithCriteria<TJoin, TReturn, TQueryOptions>(options),
+         IComparisonOperators<TJoin, TReturn, TQueryOptions>,
+         IAddJoinCriteria<JoinModel>,
+         IQueryBuilderWithWhere<TReturn, TQueryOptions>
          where T1 : class
          where T2 : class
          where TJoin : class
-         where TReturn : IQuery<TJoin>
+         where TReturn : JoinQuery<TJoin, TQueryOptions>
+         where TQueryOptions : QueryOptions
     {
-        protected readonly Queue<JoinInfo> _joinInfos;
+        protected readonly Queue<JoinInfo> _joinInfos = joinInfos ?? new Queue<JoinInfo>();
         protected JoinInfo _joinInfo;
 
         public IEnumerable<JoinInfo> JoinInfos => _joinInfos;
 
         /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="joinInfos">joinInfos</param>
-        /// <param name="formats">Formats</param>
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, IFormats formats) : base(formats)
-        {
-            _joinInfos = joinInfos ?? new Queue<JoinInfo>();
-        }
-
-        /// <summary>
         /// Method to add the Where statement
         /// </summary>
         /// <returns>IWhere&lt;<typeparamref name="TJoin"/>, <typeparamref name="TReturn"/>&gt;</returns>
-        public override IWhere<TJoin, TReturn> Where()
+        public override IWhere<TJoin, TReturn, TQueryOptions> Where()
         {
-            _andOr = new AndOrJoin<T1, T2, TJoin, TReturn, TOptions>((IQueryBuilderWithWhere<TReturn, TOptions>)this);
-            return (IWhere<TJoin, TReturn>)_andOr;
+            _andOr = new AndOrJoin<T1, T2, TJoin, TReturn, TQueryOptions>(this, QueryOptions);
+            return (IWhere<TJoin, TReturn, TQueryOptions>)_andOr;
         }
 
         /// <summary>
@@ -162,23 +175,23 @@ namespace GSqlQuery.Queries
         /// <returns>Query text</returns>
         internal string CreateQuery()
         {
-            var columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, Options);
-            var tableMain = JoinQueryBuilderWithWhereBase.GetTableMain(_joinInfos);
-            IEnumerable<string> JoinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, Options);
+            IEnumerable<string> columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, QueryOptions.Formats);
+            JoinInfo tableMain = JoinQueryBuilderWithWhereBase.GetTableMain(_joinInfos);
+            IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, QueryOptions.Formats);
 
-            string result;
-            string tableName = tableMain.ClassOptions.Table.GetTableName(Options);
+            string tableName = TableAttributeExtension.GetTableName(tableMain.ClassOptions.Table, QueryOptions.Formats);
+            string resultColumns = string.Join(",", columns);
+            string resultJoinQuerys = string.Join(" ", joinQuerys);
 
             if (_andOr == null)
             {
-                result = string.Format(ConstFormat.JOINSELECT, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys));
+                return ConstFormat.JOINSELECT.Replace("{0}", resultColumns).Replace("{1}", tableName).Replace("{2}", resultJoinQuerys);
             }
             else
             {
-                result = string.Format(ConstFormat.JOINSELECTWHERE, string.Join(",", columns), tableName, string.Join(" ", JoinQuerys), GetCriteria());
+                string criteria = GetCriteria();
+                return ConstFormat.JOINSELECTWHERE.Replace("{0}", resultColumns).Replace("{1}", tableName).Replace("{2}", resultJoinQuerys).Replace("{3}", criteria);
             }
-
-            return result;
         }
     }
 
@@ -190,25 +203,26 @@ namespace GSqlQuery.Queries
     /// <typeparam name="T3">Type for third table</typeparam>
     /// <typeparam name="TJoin">Table type</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    /// <typeparam name="TOptions">Options Query</typeparam>
+    /// <typeparam name="TQueryOptions">Options Query</typeparam>
 
-    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, T3, TJoin, TReturn, TOptions> : JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TOptions>,
-        IComparisonOperators<TJoin, TReturn, TOptions>,
+    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, T3, TJoin, TReturn, TQueryOptions> : JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TQueryOptions>,
+        IComparisonOperators<TJoin, TReturn, TQueryOptions>,
         IAddJoinCriteria<JoinModel>
         where T1 : class
         where T2 : class
         where T3 : class
         where TJoin : class
-        where TReturn : IQuery<TJoin>
+        where TReturn : JoinQuery<TJoin, TQueryOptions>
+         where TQueryOptions : QueryOptions
     {
         /// <summary>
         /// Method to add the Where statement
         /// </summary>
         /// <returns>IWhere&lt;<typeparamref name="TJoin"/>, <typeparamref name="TReturn"/>&gt;</returns>
-        public override IWhere<TJoin, TReturn> Where()
+        public override IWhere<TJoin, TReturn, TQueryOptions> Where()
         {
-            _andOr = new AndOrJoin<T1, T2, T3, TJoin, TReturn, TOptions>((IQueryBuilderWithWhere<TReturn, TOptions>)this);
-            return (IWhere<TJoin, TReturn>)_andOr;
+            _andOr = new AndOrJoin<T1, T2, T3, TJoin, TReturn, TQueryOptions>(this, QueryOptions);
+            return (IWhere<TJoin, TReturn, TQueryOptions>)_andOr;
         }
 
         /// <summary>
@@ -219,16 +233,13 @@ namespace GSqlQuery.Queries
         /// <param name="formats">formats</param>
         /// <param name="columnsT3">Columns third table</param>
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, IFormats formats, IEnumerable<PropertyOptions> columnsT3 = null)
-            : base(joinInfos, formats)
+        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, IEnumerable<PropertyOptions> columnsT3 = null)
+            : base(joinInfos, options)
         {
-            var tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
-            _joinInfo = new JoinInfo
-            {
-                Columns = columnsT3 ?? tmp.GetPropertyQuery(tmp.PropertyOptions.Select(x => x.PropertyInfo.Name)),
-                JoinEnum = joinType,
-                ClassOptions = tmp,
-            };
+            ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
+            columnsT3 ??= tmp.PropertyOptions;
+
+            _joinInfo = new JoinInfo(columnsT3, tmp, joinType);
 
             _joinInfos.Enqueue(_joinInfo);
             Columns = _joinInfos.SelectMany(x => x.Columns);

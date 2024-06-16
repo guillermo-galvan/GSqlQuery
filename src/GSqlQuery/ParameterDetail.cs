@@ -20,7 +20,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get Value
         /// </summary>
-        public object Value { get; set; }
+        public object Value { get; }
 
         /// <summary>
         /// Initializes a new instance of the ParameterDetail class.
@@ -31,8 +31,8 @@ namespace GSqlQuery
         public ParameterDetail(string name, object value, PropertyOptions propertyOptions)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            PropertyOptions = propertyOptions ?? throw new ArgumentNullException(nameof(propertyOptions));
             Value = value;
-            PropertyOptions = propertyOptions;
         }
     }
 }

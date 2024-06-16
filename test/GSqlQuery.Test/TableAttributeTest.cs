@@ -44,24 +44,11 @@ namespace GSqlQuery.Test
         public void Should_get_the_table_name(string scheme, string name)
         {
             TableAttribute table = new TableAttribute(scheme, name);
-            var result = table.GetTableName(new DefaultFormats());
+            var result = TableAttributeExtension.GetTableName(table,new DefaultFormats());
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal($"{scheme}.{name}", result);
             Assert.NotEmpty(table.ToString());
-        }
-
-        [Fact]
-        public void Throw_exception_if_any_null_parameters_are_passed()
-        {
-            Assert.Throws<ArgumentNullException>(() => new TableAttribute(null));
-            Assert.Throws<ArgumentNullException>(() => new TableAttribute(null, null));
-            Assert.Throws<ArgumentNullException>(() => new TableAttribute(null, "Test"));
-
-            TableAttribute table = new TableAttribute("Test");
-            Assert.Throws<ArgumentNullException>(() => table.GetTableName(null));
-            table = null;
-            Assert.Throws<ArgumentNullException>(() => table.GetTableName(new DefaultFormats()));
         }
     }
 }

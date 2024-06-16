@@ -1,47 +1,48 @@
 ﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria is null
     /// </summary>
-    public class IsNull : Criteria, ISearchCriteria
+    internal class IsNull : Criteria, ISearchCriteria
     {
         protected virtual string RelationalOperator => "IS NULL";
 
         /// <summary>
         /// Initializes a new instance of the IsNull class.
         /// </summary>
-        /// <param name="table">Table Attribute</param>
-        /// <param name="columnAttribute">Column Attribute</param>
-        public IsNull(TableAttribute table, ColumnAttribute columnAttribute) : this(table, columnAttribute, null)
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+        /// <param name="formats">Formats</param>
+        public IsNull(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats) :
+            this(classOptionsTupla, formats, null)
         { }
 
         /// <summary>
         /// Initializes a new instance of the IsNull class.
         /// </summary>
-        /// <param name="table">Table Attribute</param>
-        /// <param name="columnAttribute">Column Attribute</param>
-        /// <param name="logicalOperator">Logical Operator</param>
-        public IsNull(TableAttribute table, ColumnAttribute columnAttribute, string logicalOperator) : base(table, columnAttribute, logicalOperator)
-        { }
-
-        /// <summary>
-        /// Get Criteria detail
-        /// </summary>
+        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
-        /// <returns>Details of the criteria</returns>
-        public override CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
+        /// <param name="logicalOperator">Logical Operator</param>
+        public IsNull(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string logicalOperator) :
+            base(classOptionsTupla, formats, logicalOperator)
         {
-            string tableName = Table.GetTableName(formats);
+            _task = CreteData();
+        }
 
-            string criterion = string.IsNullOrWhiteSpace(LogicalOperator) ?
-                $"{Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator}" :
-                $"{LogicalOperator} {Column.GetColumnName(tableName, formats, QueryType.Criteria)} {RelationalOperator}";
+        private Task<CriteriaDetails> CreteData()
+        {
+            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+            string criterion = "{0} {1}".Replace("{0}", columName).Replace("{1}", RelationalOperator);
 
-            return new CriteriaDetail(this, criterion, Enumerable.Empty<ParameterDetail>());
+            if (!string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
+            }
+
+            return Task.FromResult(new CriteriaDetails(criterion, []));
         }
     }
 }

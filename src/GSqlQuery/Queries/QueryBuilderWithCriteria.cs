@@ -1,5 +1,7 @@
 ﻿using GSqlQuery.Extensions;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery
 {
@@ -8,10 +10,11 @@ namespace GSqlQuery
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    public abstract class QueryBuilderWithCriteria<T, TReturn> : QueryBuilderBase<T, TReturn>, IQueryBuilderWithWhere<TReturn, IFormats>,
-        IQueryBuilderWithWhere<T, TReturn, IFormats>
+    public abstract class QueryBuilderWithCriteria<T, TReturn, TQueryOptions> : QueryBuilderBase<T, TReturn, TQueryOptions>, IQueryBuilderWithWhere<TReturn, TQueryOptions>,
+        IQueryBuilderWithWhere<T, TReturn, TQueryOptions>
         where T : class
-        where TReturn : IQuery<T>
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
         protected IEnumerable<CriteriaDetail> _criteria = null;
         protected IAndOr<TReturn> _andOr;
@@ -20,17 +23,17 @@ namespace GSqlQuery
         /// Class constructor
         /// </summary>
         /// <param name="formats"></param>
-        protected QueryBuilderWithCriteria(IFormats formats) : base(formats)
+        protected QueryBuilderWithCriteria(TQueryOptions queryOptions) : base(queryOptions)
         { }
 
         /// <summary>
         /// Method to add the Where statement
         /// </summary>
         /// <returns>IWhere&lt;<typeparamref name="T"/>, <typeparamref name="TReturn"/>&gt;</returns>
-        public virtual IWhere<T, TReturn> Where()
+        public virtual IWhere<T, TReturn, TQueryOptions> Where()
         {
-            _andOr = new AndOrBase<T, TReturn, IFormats>(this);
-            return (IWhere<T, TReturn>)_andOr;
+            _andOr = new AndOrBase<T, TReturn, TQueryOptions>(this, QueryOptions, _classOptions);
+            return (IWhere<T, TReturn, TQueryOptions>)_andOr;
         }
 
         /// <summary>
@@ -39,14 +42,16 @@ namespace GSqlQuery
         /// <returns></returns>
         protected string GetCriteria()
         {
-            return _andOr.GetCliteria(Options, ref _criteria);
+            _criteria ??= _andOr.BuildCriteria();
+            IEnumerable<string> queryParts = _criteria.Select(x => x.QueryPart);
+            return string.Join(" ", queryParts);
         }
 
         /// <summary>
         /// Method to add the Where statement
         /// </summary>
         /// <returns>IWhere&lt;<typeparamref name="TReturn"/>&gt;</returns>
-        IWhere<TReturn> IQueryBuilderWithWhere<TReturn, IFormats>.Where()
+        IWhere<TReturn> IQueryBuilderWithWhere<TReturn, TQueryOptions>.Where()
         {
             return Where();
         }

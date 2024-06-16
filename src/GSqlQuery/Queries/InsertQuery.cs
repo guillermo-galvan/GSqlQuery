@@ -7,7 +7,7 @@ namespace GSqlQuery
     /// Insert Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class InsertQuery<T> : Query<T> where T : class
+    public class InsertQuery<T> : Query<T, QueryOptions> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the InsertQuery class.
@@ -15,10 +15,10 @@ namespace GSqlQuery
         /// <param name="text">Query</param>
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criteria</param>
-        /// <param name="formats">Formats</param>        
+        /// <param name="queryOptions">QueryOptions</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal InsertQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, IFormats formats)
-            : base(text, columns, criteria, formats)
+        internal InsertQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions)
+            : base(ref text, columns, criteria, queryOptions)
         { }
     }
 }

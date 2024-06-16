@@ -74,38 +74,11 @@ namespace GSqlQuery.Test
         public void Should_get_the_column_name()
         {
             ColumnAttribute column = new ColumnAttribute("Test");
-            var result = column.GetColumnName("Test", new DefaultFormats(), QueryType.Read);
+            var result = new DefaultFormats().GetColumnName("Test", column, QueryType.Read);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal("Test.Test", result);
             Assert.Equal($"Column Name: Test", column.ToString());
-        }
-
-        [Fact]
-        public void Throw_exception_if_any_null_parameters_are_passed()
-        {
-            ColumnAttribute column = new ColumnAttribute("Test");
-
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName(null, new DefaultFormats(), QueryType.Read));
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", null, QueryType.Read));
-            column = null;
-            Assert.Throws<ArgumentNullException>(() => column.GetColumnName("Test", new DefaultFormats(), QueryType.Read));
-        }
-
-        [Theory]
-        [InlineData(typeof(Test1))]
-        [InlineData(typeof(Test3))]
-        [InlineData(typeof(Test4))]
-        [InlineData(typeof(Test6))]
-        public void Should_get_property_options(Type type)
-        {
-            ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(type);
-
-            foreach (var item in classOptions.PropertyOptions)
-            {
-                var tmp = item.ColumnAttribute.GetPropertyOptions(classOptions.PropertyOptions);
-                Assert.Equal(item.ColumnAttribute, tmp.ColumnAttribute);
-            }
         }
         
         [Fact]

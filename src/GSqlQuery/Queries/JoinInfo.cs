@@ -16,5 +16,19 @@ namespace GSqlQuery.Queries
         public JoinType JoinEnum { get; set; }
 
         public ClassOptions ClassOptions { get; set; }
+
+        public JoinInfo(IEnumerable<PropertyOptions> columns, ClassOptions classOptions, bool isMain)
+        {
+            Columns = columns;
+            ClassOptions = classOptions;
+            IsMain = isMain;
+        }
+
+        public JoinInfo(IEnumerable<PropertyOptions> columns, ClassOptions classOptions, JoinType joinType)
+        {
+            Columns = columns;
+            ClassOptions = classOptions;
+            JoinEnum = joinType;
+        }
     }
 }

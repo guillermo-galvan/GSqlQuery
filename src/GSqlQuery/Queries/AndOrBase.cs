@@ -11,26 +11,33 @@ namespace GSqlQuery
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    /// <typeparam name="TOptions">Options type</typeparam>
-    public class AndOrBase<T, TReturn, TOptions> : WhereBase<TReturn>, IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn>, IWhere<T, TReturn>
-        where TReturn : IQuery<T>
+    /// <typeparam name="TQueryOptions">Options type</typeparam>
+    /// <exception cref="ArgumentException"></exception>
+    public class AndOrBase<T, TReturn, TQueryOptions> : IWhere<TReturn>,
+        IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn, TQueryOptions>, IWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>
+        where TReturn : IQuery<T, TQueryOptions>
         where T : class
+        where TQueryOptions : QueryOptions
     {
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
-        internal readonly IQueryBuilderWithWhere<TReturn, TOptions> _queryBuilderWithWhere;
+        internal readonly IQueryBuilderWithWhere<TReturn, TQueryOptions> _queryBuilderWithWhere;
 
         protected IEnumerable<PropertyOptions> Columns { get; set; }
 
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="queryBuilderWithWhere">Implementation of the IQueryBuilderWithWhere interface</param>
-        /// <param name="isColumns">Determines whether to take the columns from <typeparamref name="T"/></param>
-        /// <exception cref="ArgumentException"></exception>
-        public AndOrBase(IQueryBuilderWithWhere<TReturn, TOptions> queryBuilderWithWhere, bool isColumns = true) : base()
+        public TQueryOptions QueryOptions { get; }
+
+        public AndOrBase(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions) : base()
         {
-            _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentException(nameof(queryBuilderWithWhere));
-            Columns = isColumns ? ClassOptionsFactory.GetClassOptions(typeof(T)).PropertyOptions : Enumerable.Empty<PropertyOptions>();
+            _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentNullException(nameof(queryBuilderWithWhere));
+            QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
+            Columns = [];
+        }
+
+        public AndOrBase(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions, ClassOptions classOptions) : base()
+        {
+            _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentNullException(nameof(queryBuilderWithWhere));
+            QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
+            Columns = classOptions?.PropertyOptions ?? throw new ArgumentNullException(nameof(classOptions));
         }
 
         /// <summary>
@@ -39,8 +46,7 @@ namespace GSqlQuery
         /// <param name="criteria"></param>
         public void Add(ISearchCriteria criteria)
         {
-            criteria.NullValidate(ErrorMessages.ParameterNotNull, nameof(criteria));
-            _searchCriterias.Enqueue(criteria);
+            _searchCriterias.Enqueue(criteria ?? throw new ArgumentNullException(nameof(criteria), ErrorMessages.ParameterNotNull));
         }
 
         /// <summary>
@@ -48,9 +54,17 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public virtual IEnumerable<CriteriaDetail> BuildCriteria(IFormats formats)
+        public virtual IEnumerable<CriteriaDetail> BuildCriteria()
         {
-            return _searchCriterias.Select(x => x.GetCriteria(formats, Columns)).ToArray();
+            CriteriaDetail[] result = new CriteriaDetail[_searchCriterias.Count];
+            int count = 0;
+
+            foreach (ISearchCriteria item in _searchCriterias)
+            {
+                result[count++] = item.GetCriteria(QueryOptions.Formats, Columns);
+            }
+
+            return result;
         }
         /// <summary>
         /// Build the query

@@ -16,12 +16,15 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> IsNull<T, TReturn, TProperties>(this IWhere<T, TReturn> where, Expression<Func<T, TProperties>> expression)
-            where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> IsNull<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> expression)
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            IAndOr<T, TReturn> andor = where.GetAndOr(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andor.Add(new IsNull(columnInfo.ClassOptions.Table, columnInfo.MemberInfo));
+            IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            IsNull isNull = new IsNull(columnInfo, where.QueryOptions.Formats);
+            andor.Add(isNull);
             return andor;
         }
 
@@ -34,12 +37,23 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> AndIsNull<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression)
-            where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> AndIsNull<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression)
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new IsNull(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, "AND"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            IsNull isNull = new IsNull(columnInfo, andOr.QueryOptions.Formats, "AND");
+            andOr.Add(isNull);
             return andOr;
         }
 
@@ -52,12 +66,23 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn> OrIsNull<T, TReturn, TProperties>(this IAndOr<T, TReturn> andOr, Expression<Func<T, TProperties>> expression)
-            where T : class where TReturn : IQuery<T>
+        public static IAndOr<T, TReturn, TQueryOptions> OrIsNull<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> expression)
+            where T : class 
+            where TReturn : IQuery<T, TQueryOptions>
+            where TQueryOptions : QueryOptions
         {
-            andOr.Validate(expression);
-            var columnInfo = expression.GetColumnAttribute();
-            andOr.Add(new IsNull(columnInfo.ClassOptions.Table, columnInfo.MemberInfo, "OR"));
+            if (andOr == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
+            }
+            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            IsNull isNull = new IsNull(columnInfo, andOr.QueryOptions.Formats, "OR");
+            andOr.Add(isNull);
             return andOr;
         }
     }

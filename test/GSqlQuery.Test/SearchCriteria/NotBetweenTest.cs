@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
@@ -11,25 +12,24 @@ namespace GSqlQuery.Test.SearchCriteria
     public class NotBetweenTest
     {
         private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
-        private readonly IFormats _formats;
+        private readonly QueryOptions _queryOptions;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
+        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
 
         public NotBetweenTest()
         {
-            _formats = new DefaultFormats();
-            _queryBuilder = new SelectQueryBuilder<Test1>(new List<string> { nameof(Test1.Id), nameof(Test1.Name), nameof(Test1.Create) },
-                _formats);
+            _queryOptions = new QueryOptions(new DefaultFormats());
+            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), _queryOptions);
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
+            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
         }
 
         [Fact]
         public void Should_create_an_instance()
         {
-            NotBetween<int> equal = new NotBetween<int>(_tableAttribute, _columnAttribute, 1, 2);
+            NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), 1, 2);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -44,7 +44,7 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5, 8)]
         public void Should_create_an_instance_1(string logicalOperator, int initValue, int finalValue)
         {
-            NotBetween<int> equal = new NotBetween<int>(_tableAttribute, _columnAttribute, initValue, finalValue, logicalOperator);
+            NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), initValue, finalValue, logicalOperator);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Table);
@@ -61,8 +61,8 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", 5, 7, "OR Test1.Id NOT BETWEEN @Param AND @Param")]
         public void Should_get_criteria_detail(string logicalOperator, int inicialValue, int finalValue, string querypart)
         {
-            NotBetween<int> equal = new NotBetween<int>(_tableAttribute, _columnAttribute, inicialValue, finalValue, logicalOperator);
-            var result = equal.GetCriteria(_formats, _classOptions.PropertyOptions);
+            NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), inicialValue, finalValue, logicalOperator);
+            var result = equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
@@ -74,8 +74,7 @@ namespace GSqlQuery.Test.SearchCriteria
             Assert.Equal(inicialValue, parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);
-            Assert.NotNull(parameter.PropertyOptions);
-            Assert.Equal(_columnAttribute.Name, parameter.PropertyOptions.ColumnAttribute.Name);
+            Assert.Contains("@", parameter.Name);
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);
             Assert.Equal(querypart, result.ParameterReplace());
@@ -84,10 +83,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_Between_query()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.NotBetween(x => x.Id, 1, 2);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Options);
+            var result = andOr.BuildCriteria();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -96,10 +95,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_and()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.NotBetween(x => x.Id, 1, 3).AndNotBetween(x => x.IsTest, true, false);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Options);
+            var result = andOr.BuildCriteria();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -108,10 +107,10 @@ namespace GSqlQuery.Test.SearchCriteria
         [Fact]
         public void Should_add_the_equality_query_with_or()
         {
-            AndOrBase<Test1, SelectQuery<Test1>, IFormats> where = new AndOrBase<Test1, SelectQuery<Test1>, IFormats>(_queryBuilder);
+            AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.NotBetween(x => x.Id, 1, 5).OrNotBetween(x => x.IsTest, true, false);
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria(_queryBuilder.Options);
+            var result = andOr.BuildCriteria();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

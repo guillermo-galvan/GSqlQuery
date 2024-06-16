@@ -18,6 +18,11 @@ namespace GSqlQuery.SearchCriteria
         TableAttribute Table { get; }
 
         /// <summary>
+        /// Get Formats
+        /// </summary>
+        IFormats Formats { get; }
+
+        /// <summary>
         /// Get Criteria detail
         /// </summary>
         /// <param name="formats">formats</param>

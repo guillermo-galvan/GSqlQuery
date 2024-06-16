@@ -16,10 +16,11 @@ namespace GSqlQuery
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn"></typeparam>
-    public interface IAndOr<T, TReturn> : ISearchCriteriaBuilder<TReturn>, IBuilder<TReturn>, IAndOr<TReturn>
+    public interface IAndOr<T, TReturn, TQueryOptions> : ISearchCriteriaBuilder<TReturn>, IBuilder<TReturn>, IAndOr<TReturn>, IQueryOptions<TQueryOptions>
         where T : class
-        where TReturn : IQuery<T>
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
-
+        
     }
 }
