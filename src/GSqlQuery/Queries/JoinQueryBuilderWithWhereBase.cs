@@ -237,7 +237,7 @@ namespace GSqlQuery.Queries
             : base(joinInfos, options)
         {
             ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
-            columnsT3 ??= tmp.PropertyOptions;
+            columnsT3 ??= tmp.PropertyOptions.Values;
 
             _joinInfo = new JoinInfo(columnsT3, tmp, joinType);
 

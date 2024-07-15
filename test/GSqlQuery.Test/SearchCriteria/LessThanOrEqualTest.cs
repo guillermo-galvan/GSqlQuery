@@ -22,7 +22,7 @@ namespace GSqlQuery.Test.SearchCriteria
             _queryOptions = new QueryOptions(new DefaultFormats());
             _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), new QueryOptions(new DefaultFormats()));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
             _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
         }
 
@@ -60,7 +60,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int value, string querypart)
         {
             LessThanOrEqual<int> equal = new LessThanOrEqual<int>(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
-            var result = equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions);
+            var result = equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

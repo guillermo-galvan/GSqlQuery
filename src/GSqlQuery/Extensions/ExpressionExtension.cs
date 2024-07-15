@@ -62,10 +62,10 @@ namespace GSqlQuery.Extensions
                 switch (queryType)
                 {
                     case QueryType.Read:
-                        message = $"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Select(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Select(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})";
+                        message = $"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Select(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Select(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Keys.Select(x => $"x.{x}"))} }})";
                         break;
                     case QueryType.Update:
-                        message = $"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Select(x => $"x.{x.PropertyInfo.Name}"))} }})";
+                        message = $"Could not infer property name for expression. Please explicitly specify a property name by calling {options.ClassOptions.Type.Name}.Update(x => x.{options.ClassOptions.PropertyOptions.First().PropertyInfo.Name}) or {options.ClassOptions.Type.Name}.Update(x => new {{ {string.Join(",", options.ClassOptions.PropertyOptions.Keys.Select(x => $"x.{x}"))} }})";
                         break;
                     case QueryType.Join:
                         message = $"Could not infer property name for expression.";
@@ -85,9 +85,9 @@ namespace GSqlQuery.Extensions
         /// <exception cref="ArgumentNullException"></exception>
         internal static IEnumerable<PropertyOptions> GetPropertyQuery(ClassOptions options, IEnumerable<string> selectMember)
         {
-            return (from prop in options.PropertyOptions
-                    join sel in selectMember on prop.PropertyInfo.Name equals sel
-                    select prop).ToArray();
+            return (from prop in options.PropertyOptions.KeyValues
+                    join sel in selectMember on prop.Key equals sel
+                    select prop.Value).ToArray();
         }
 
         /// <summary>
@@ -99,9 +99,9 @@ namespace GSqlQuery.Extensions
         /// <exception cref="ArgumentNullException"></exception>
         internal static IEnumerable<PropertyOptions> GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla)
         {
-            return (from prop in classOptionsTupla.ClassOptions.PropertyOptions
-                    join sel in classOptionsTupla.MemberInfo on prop.PropertyInfo.Name equals sel.Name
-                    select prop).ToArray();
+            return (from prop in classOptionsTupla.ClassOptions.PropertyOptions.KeyValues
+                    join sel in classOptionsTupla.MemberInfo on prop.Key equals sel.Name
+                    select prop.Value).ToArray();
         }
 
         /// <summary>
@@ -159,9 +159,9 @@ namespace GSqlQuery.Extensions
         /// <returns>ColumnAttribute that match selectMember</returns>
         internal static IEnumerable<ColumnAttribute> GetColumnsQuery(ClassOptions options, IEnumerable<string> selectMember)
         {
-            return from prop in options.PropertyOptions
-                   join sel in selectMember on prop.PropertyInfo.Name equals sel
-                   select prop.ColumnAttribute;
+            return from prop in options.PropertyOptions.KeyValues
+                   join sel in selectMember on prop.Key equals sel
+                   select prop.Value.ColumnAttribute;
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace GSqlQuery.Extensions
         /// <returns>ColumnAttribute that match selectMember</returns>
         internal static ColumnAttribute GetColumnQuery(ClassOptionsTupla<MemberInfo> classOptionsTupla)
         {
-            return classOptionsTupla.ClassOptions.PropertyOptions.First(x => x.PropertyInfo.Name == classOptionsTupla.MemberInfo.Name).ColumnAttribute;
+            return classOptionsTupla.ClassOptions.PropertyOptions[classOptionsTupla.MemberInfo.Name]?.ColumnAttribute;
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace GSqlQuery.Extensions
         /// <exception cref="InvalidOperationException"></exception>
         internal static PropertyOptions ValidateMemberInfo(MemberInfo memberInfo, ClassOptions options)
         {
-            PropertyOptions result = options.PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name == memberInfo.Name);
+            PropertyOptions result = options.PropertyOptions[memberInfo.Name];
             return result ?? throw new InvalidOperationException($"Could not find property {memberInfo.Name} on type {options.Type.Name}");
         }
 
@@ -231,7 +231,7 @@ namespace GSqlQuery.Extensions
         {
             MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
-            ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
+            ColumnAttribute columnAttribute = options.PropertyOptions[memberInfos.Name].ColumnAttribute;
 
             return new JoinCriteriaPart(columnAttribute, options.Table, memberInfos); ;
         }
@@ -253,7 +253,7 @@ namespace GSqlQuery.Extensions
         {
             MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
-            ColumnAttribute columnAttribute = options.PropertyOptions.First(x => x.PropertyInfo.Name == memberInfos.Name).ColumnAttribute;
+            ColumnAttribute columnAttribute = options.PropertyOptions[memberInfos.Name].ColumnAttribute;
 
             return new JoinCriteriaPart(columnAttribute, options.Table, memberInfos);
         }

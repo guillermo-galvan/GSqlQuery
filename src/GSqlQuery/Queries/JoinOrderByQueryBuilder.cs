@@ -147,10 +147,10 @@ namespace GSqlQuery.Queries
 
             if (optionsTupla.MemberInfo.Any(x => x.DeclaringType.IsGenericType))
             {
-                foreach (PropertyOptions item in optionsTupla.ClassOptions.PropertyOptions.Where(x => x.PropertyInfo.PropertyType.IsClass))
+                foreach (PropertyOptions item in optionsTupla.ClassOptions.PropertyOptions.Values.Where(x => x.PropertyInfo.PropertyType.IsClass))
                 {
                     ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.PropertyInfo.PropertyType);
-                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
+                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Values.Where(x => listName.Contains(x.PropertyInfo.Name));
 
                     properties.AddRange(a);
                 }
@@ -160,7 +160,7 @@ namespace GSqlQuery.Queries
                 foreach (MemberInfo item in optionsTupla.MemberInfo)
                 {
                     ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.DeclaringType);
-                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Where(x => listName.Contains(x.PropertyInfo.Name));
+                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Values.Where(x => listName.Contains(x.PropertyInfo.Name));
 
                     properties.AddRange(a);
                 }

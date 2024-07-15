@@ -2,6 +2,7 @@
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
 using System;
+using System.Diagnostics;
 using Xunit;
 
 namespace GSqlQuery.Test
@@ -18,14 +19,21 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_desepues()
         {
-            var select = Test3.Select(_queryOptions);
-            var join = select.InnerJoin<Test3>(x => new {x.Ids, x.Names});
-            var joinEqual = join.Equal(x => x.Table1.Ids, x => x.Table2.Ids);
-            var join1 = joinEqual.InnerJoin<Test3>(x => new { x.Ids, x.Names });
-            var joinEqual1 = join1.Equal(x => x.Table2.Ids, x => x.Table3.Ids);
-            var where = joinEqual1.Where();
-            var criteri = where.Equal(x => x.Table1.Ids, 1);
-            var result = criteri.Build();
+            Stopwatch timeMeasure = new Stopwatch();
+
+            timeMeasure.Start();
+            var select = Film.Select(_queryOptions);
+            var query = select.Build();
+            timeMeasure.Stop();
+
+            Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
+
+            timeMeasure.Restart();
+            select = Film.Select(_queryOptions);
+            query = select.Build();
+            timeMeasure.Stop();
+
+            Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
         }
 
         [Fact]

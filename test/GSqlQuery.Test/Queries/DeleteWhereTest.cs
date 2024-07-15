@@ -3,7 +3,6 @@ using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System;
-using System.Linq;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries
@@ -16,7 +15,7 @@ namespace GSqlQuery.Test.Queries
         public DeleteWhereTest()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            var columnAttribute = classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            var columnAttribute = classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
             var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
             _queryBuilder = new DeleteQueryBuilder<Test1>(new QueryOptions(new DefaultFormats()));

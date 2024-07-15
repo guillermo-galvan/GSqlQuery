@@ -84,7 +84,7 @@ namespace GSqlQuery.Queries
         public SelectQueryBuilder(QueryOptions queryOptions)
             : base(queryOptions)
         {
-            Columns = _classOptions.PropertyOptions;
+            Columns = _classOptions.PropertyOptions.Values;
         }
 
         /// <summary>

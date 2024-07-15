@@ -22,7 +22,7 @@ namespace GSqlQuery
         protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
         internal readonly IQueryBuilderWithWhere<TReturn, TQueryOptions> _queryBuilderWithWhere;
 
-        protected IEnumerable<PropertyOptions> Columns { get; set; }
+        protected PropertyOptionsCollection Columns { get; set; }
 
         public TQueryOptions QueryOptions { get; }
 
@@ -30,7 +30,7 @@ namespace GSqlQuery
         {
             _queryBuilderWithWhere = queryBuilderWithWhere ?? throw new ArgumentNullException(nameof(queryBuilderWithWhere));
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
-            Columns = [];
+            Columns = new PropertyOptionsCollection([]);
         }
 
         public AndOrBase(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions, ClassOptions classOptions) : base()
@@ -61,7 +61,7 @@ namespace GSqlQuery
 
             foreach (ISearchCriteria item in _searchCriterias)
             {
-                result[count++] = item.GetCriteria(QueryOptions.Formats, Columns);
+                result[count++] = item.GetCriteria(QueryOptions.Formats, Columns.Values);
             }
 
             return result;

@@ -17,7 +17,7 @@ namespace GSqlQuery.Test.Queries
         public UpdateWhereTest()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            var columnAttribute = classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            var columnAttribute = classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
             var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1); 
             var columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, object>((x) => x.Id);

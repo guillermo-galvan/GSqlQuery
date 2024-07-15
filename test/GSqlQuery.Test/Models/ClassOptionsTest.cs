@@ -12,7 +12,8 @@ namespace GSqlQuery.Test.Models
             Assert.NotNull(classOptions);
             Assert.NotNull(classOptions.Table);
             Assert.NotNull(classOptions.PropertyOptions);
-            Assert.NotEmpty(classOptions.PropertyOptions);
+            Assert.NotEmpty(classOptions.PropertyOptions.Keys);
+            Assert.NotEmpty(classOptions.PropertyOptions.Values);
             Assert.NotNull(classOptions.Type);
             Assert.NotNull(classOptions.ConstructorInfo);
             Assert.True(classOptions.IsConstructorByParam);

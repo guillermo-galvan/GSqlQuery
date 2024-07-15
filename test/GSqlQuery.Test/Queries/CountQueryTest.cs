@@ -18,7 +18,7 @@ namespace GSqlQuery.Test.Queries
         public CountQueryTest()
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
+            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
             _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
             _equal = new Equal<int>(_classOptionsTupla, new DefaultFormats(), 1);
             _queryOptions = new QueryOptions(new DefaultFormats());
@@ -27,7 +27,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            CountQuery<Test1> query = new CountQuery<Test1>("query", _classOptions.PropertyOptions, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions)], _queryOptions);
+            CountQuery<Test1> query = new CountQuery<Test1>("query", _classOptions.PropertyOptions.Values, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values)], _queryOptions);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -43,9 +43,9 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            Assert.Throws<ArgumentNullException>(() => new CountQuery<Test1>("query", null, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions)], _queryOptions));
-            Assert.Throws<ArgumentNullException>(() => new CountQuery<Test1>("query", _classOptions.PropertyOptions, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions)], null));
-            Assert.Throws<ArgumentNullException>(() => new CountQuery<Test1>(null, _classOptions.PropertyOptions, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions)], _queryOptions));
+            Assert.Throws<ArgumentNullException>(() => new CountQuery<Test1>("query", null, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values)], _queryOptions));
+            Assert.Throws<ArgumentNullException>(() => new CountQuery<Test1>("query", _classOptions.PropertyOptions.Values, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values)], null));
+            Assert.Throws<ArgumentNullException>(() => new CountQuery<Test1>(null, _classOptions.PropertyOptions.Values, [_equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values)], _queryOptions));
         }
     }
 }

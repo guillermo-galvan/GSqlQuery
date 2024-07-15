@@ -35,7 +35,7 @@ namespace GSqlQuery.Queries
 
             ClassOptions classOptions2 = ClassOptionsFactory.GetClassOptions(typeof(T2));
 
-            columnsT2 ??= classOptions2.PropertyOptions;
+            columnsT2 ??= classOptions2.PropertyOptions.Values;
 
             _joinInfo = new JoinInfo(columnsT2, classOptions2, joinType);
 

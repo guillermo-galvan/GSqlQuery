@@ -36,7 +36,7 @@ namespace GSqlQuery
         {
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
-            Columns = _classOptions.PropertyOptions;
+            Columns = _classOptions.PropertyOptions.Values;
             _tableName = TableAttributeExtension.GetTableName(_classOptions.Table, QueryOptions.Formats);
         }
 
