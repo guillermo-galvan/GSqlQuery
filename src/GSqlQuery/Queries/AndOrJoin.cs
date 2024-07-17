@@ -41,7 +41,7 @@ namespace GSqlQuery.Queries
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria(QueryOptions.Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions.Values);
+                CriteriaDetail criteria = x.GetCriteria();
                 result.Enqueue(criteria);
             }
 
@@ -87,7 +87,7 @@ namespace GSqlQuery.Queries
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria(QueryOptions.Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions.Values);
+                CriteriaDetail criteria = x.GetCriteria();
                 result.Enqueue(criteria);
             }
 

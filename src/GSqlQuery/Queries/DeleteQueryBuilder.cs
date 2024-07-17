@@ -60,7 +60,7 @@ namespace GSqlQuery.Queries
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
             int count = 0;
 
-            foreach (PropertyOptions item in Columns)
+            foreach (PropertyOptions item in Columns.Values)
             {
                 object value = ExpressionExtension.GetValue(item, _entity);
                 string paramName = "@PD" + Helpers.GetIdParam().ToString();

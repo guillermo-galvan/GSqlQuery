@@ -42,7 +42,7 @@ namespace GSqlQuery.Queries
         /// <returns></returns>
         internal static IEnumerable<string> GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats formats)
         {
-            return joinInfos.SelectMany(c => c.Columns.Select(x => GetColumnNameJoin(x.ColumnAttribute, c, formats)));
+            return joinInfos.SelectMany(c => c.Columns.Values.Select(x => GetColumnNameJoin(x.ColumnAttribute, c, formats)));
         }
 
         /// <summary>
@@ -147,6 +147,7 @@ namespace GSqlQuery.Queries
     {
         protected readonly Queue<JoinInfo> _joinInfos = joinInfos ?? new Queue<JoinInfo>();
         protected JoinInfo _joinInfo;
+        protected IEnumerable<KeyValuePair<string, PropertyOptions>> _properties;
 
         public IEnumerable<JoinInfo> JoinInfos => _joinInfos;
 
@@ -233,16 +234,17 @@ namespace GSqlQuery.Queries
         /// <param name="formats">formats</param>
         /// <param name="columnsT3">Columns third table</param>
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, IEnumerable<PropertyOptions> columnsT3 = null)
+        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, PropertyOptionsCollection columnsT3 = null)
             : base(joinInfos, options)
         {
             ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
-            columnsT3 ??= tmp.PropertyOptions.Values;
+            columnsT3 ??= tmp.PropertyOptions;
 
             _joinInfo = new JoinInfo(columnsT3, tmp, joinType);
 
             _joinInfos.Enqueue(_joinInfo);
-            Columns = _joinInfos.SelectMany(x => x.Columns);
+            Columns = new PropertyOptionsCollection([]);
+            _properties = _joinInfos.SelectMany(x => x.Columns);
         }
 
     }

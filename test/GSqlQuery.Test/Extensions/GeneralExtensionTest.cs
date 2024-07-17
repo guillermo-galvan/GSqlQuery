@@ -89,7 +89,7 @@ namespace GSqlQuery.Test.Extensions
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
-            Assert.Equal(3, result.Count());
+            Assert.Equal(3, result.Count);
         }
 
         [Fact]

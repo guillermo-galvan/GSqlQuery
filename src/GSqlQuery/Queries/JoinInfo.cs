@@ -7,7 +7,7 @@ namespace GSqlQuery.Queries
     /// </summary>
     internal class JoinInfo
     {
-        public IEnumerable<PropertyOptions> Columns { get; set; }
+        public PropertyOptionsCollection Columns { get; set; }
 
         public bool IsMain { get; set; } = false;
 
@@ -17,14 +17,14 @@ namespace GSqlQuery.Queries
 
         public ClassOptions ClassOptions { get; set; }
 
-        public JoinInfo(IEnumerable<PropertyOptions> columns, ClassOptions classOptions, bool isMain)
+        public JoinInfo(PropertyOptionsCollection columns, ClassOptions classOptions, bool isMain)
         {
             Columns = columns;
             ClassOptions = classOptions;
             IsMain = isMain;
         }
 
-        public JoinInfo(IEnumerable<PropertyOptions> columns, ClassOptions classOptions, JoinType joinType)
+        public JoinInfo(PropertyOptionsCollection columns, ClassOptions classOptions, JoinType joinType)
         {
             Columns = columns;
             ClassOptions = classOptions;

@@ -54,7 +54,7 @@ namespace GSqlQuery.Queries
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GetPropertyQuery(selectMember), orderBy));
             _andorBuilder = andOr;
-            Columns = [];
+            Columns = new PropertyOptionsCollection([]);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace GSqlQuery.Queries
         /// <param name="columns">Colums</param>
         /// <param name="criteria">Criteria</param>
         /// <returns>Query text</returns>
-        internal string CreateQuery(out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria)
         {
             IAddJoinCriteria<JoinModel> addJoinCriteria = null;
 
@@ -82,7 +82,7 @@ namespace GSqlQuery.Queries
             foreach (ColumnsOrderBy x in _columnsByOrderBy)
             {
                 IEnumerable<string> columnNames =
-                    x.Columns.Select(y => QueryOptions.Formats.GetColumnName(TableAttributeExtension.GetTableName(y.TableAttribute, QueryOptions.Formats), y.ColumnAttribute, QueryType.Join));
+                    x.Columns.Values.Select(y => QueryOptions.Formats.GetColumnName(TableAttributeExtension.GetTableName(y.TableAttribute, QueryOptions.Formats), y.ColumnAttribute, QueryType.Join));
                 string tmpJoinColumns = string.Join(",", columnNames);
 
                 string tmpColumns = "{0} {1}".Replace("{0}", tmpJoinColumns).Replace("{1}", x.OrderBy.ToString());
@@ -135,12 +135,14 @@ namespace GSqlQuery.Queries
         /// <param name="optionsTupla">Class that contains the ClassOptions and selectMember information</param>
         /// <returns>Properties that match selectMember</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        protected IEnumerable<PropertyOptions> GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> optionsTupla)
+        protected PropertyOptionsCollection GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> optionsTupla)
         {
             if (optionsTupla == null)
             {
                 throw new ArgumentNullException(nameof(optionsTupla), ErrorMessages.ParameterNotNull);
             }
+
+            PropertyOptionsCollection result = new PropertyOptionsCollection([]);
 
             List<PropertyOptions> properties = [];
             IEnumerable<string> listName = optionsTupla.MemberInfo.Select(x => x.Name);
@@ -150,9 +152,11 @@ namespace GSqlQuery.Queries
                 foreach (PropertyOptions item in optionsTupla.ClassOptions.PropertyOptions.Values.Where(x => x.PropertyInfo.PropertyType.IsClass))
                 {
                     ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.PropertyInfo.PropertyType);
-                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Values.Where(x => listName.Contains(x.PropertyInfo.Name));
 
-                    properties.AddRange(a);
+                    IEnumerable<KeyValuePair<string, PropertyOptions>> columns = (from n in listName
+                                                                                  join prop in classOptions.PropertyOptions on n equals prop.Key
+                                                                                  select new KeyValuePair<string, PropertyOptions>(prop.Key, prop.Value)).ToArray();
+                    result.AddRange(columns);
                 }
             }
             else
@@ -160,13 +164,14 @@ namespace GSqlQuery.Queries
                 foreach (MemberInfo item in optionsTupla.MemberInfo)
                 {
                     ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.DeclaringType);
-                    IEnumerable<PropertyOptions> a = classOptions.PropertyOptions.Values.Where(x => listName.Contains(x.PropertyInfo.Name));
-
-                    properties.AddRange(a);
+                    IEnumerable<KeyValuePair<string, PropertyOptions>> columns = (from n in listName
+                                                                                  join prop in classOptions.PropertyOptions on n equals prop.Key
+                                                                                  select new KeyValuePair<string, PropertyOptions>(prop.Key, prop.Value)).ToArray();
+                    result.AddRange(columns);
                 }
             }
 
-            return properties;
+            return result;
         }
     }
 
@@ -206,7 +211,7 @@ namespace GSqlQuery.Queries
         /// <returns>Order by Query</returns>
         public override OrderByQuery<T> Build()
         {
-            string query = CreateQuery(out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria);
+            string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria);
             return new OrderByQuery<T>(query, columns, criteria, QueryOptions);
         }
     }

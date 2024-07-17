@@ -61,7 +61,7 @@ namespace GSqlQuery
 
             foreach (ISearchCriteria item in _searchCriterias)
             {
-                result[count++] = item.GetCriteria(QueryOptions.Formats, Columns.Values);
+                result[count++] = item.GetCriteria();
             }
 
             return result;

@@ -16,7 +16,7 @@ namespace GSqlQuery
         /// <param name="criteria">Query criteria</param>
         /// <param name="queryOptions">QueryOptions</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal UpdateQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+        internal UpdateQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
             base(ref text, columns, criteria, queryOptions)
         { }
     }

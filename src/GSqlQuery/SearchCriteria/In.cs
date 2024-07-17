@@ -59,7 +59,7 @@ namespace GSqlQuery.SearchCriteria
             int index = 0;
             string ticks = Helpers.GetIdParam().ToString();
             string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
-            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions.Values);
+            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
 
             foreach (T item in Values)
             {

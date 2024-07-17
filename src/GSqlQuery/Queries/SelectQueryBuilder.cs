@@ -43,7 +43,7 @@ namespace GSqlQuery.Queries
         /// <returns>Query Text</returns>
         internal string CreateQuery()
         {
-            IEnumerable<string> columnsName = Columns.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            IEnumerable<string> columnsName = Columns.Values.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
             string columns = string.Join(",", columnsName);
 
             if (_andOr == null)
@@ -84,7 +84,7 @@ namespace GSqlQuery.Queries
         public SelectQueryBuilder(QueryOptions queryOptions)
             : base(queryOptions)
         {
-            Columns = _classOptions.PropertyOptions.Values;
+            Columns = _classOptions.PropertyOptions;
         }
 
         /// <summary>

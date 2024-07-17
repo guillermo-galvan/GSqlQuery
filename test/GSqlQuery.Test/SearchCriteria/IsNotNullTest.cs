@@ -57,7 +57,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, string querypart)
         {
             IsNotNull test = new IsNotNull(_classOptionsTupla, new DefaultFormats(), logicalOperator);
-            var result = test.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values);
+            var result = test.GetCriteria();
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

@@ -60,7 +60,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int[] value, string querypart)
         {
             In<int> test = new In<int>(_classOptionsTupla, _queryBuilder.QueryOptions.Formats, value, logicalOperator);
-            var result = test.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values);
+            var result = test.GetCriteria();
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

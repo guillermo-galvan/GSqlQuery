@@ -28,7 +28,7 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(result.QueryOptions);
             Assert.NotNull(result.Columns);
             Assert.NotEmpty(result.Columns);
-            Assert.Equal(queryBuilder.Columns.Count(), result.Columns.Count());
+            Assert.Equal(queryBuilder.Columns.Count, result.Columns.Count);
         }
 
         [Fact]

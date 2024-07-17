@@ -12,7 +12,7 @@ namespace GSqlQuery
         /// <summary>
         /// Columns of the query
         /// </summary>
-        IEnumerable<PropertyOptions> Columns { get; }
+        PropertyOptionsCollection Columns { get; }
 
         /// <summary>
         /// Query criteria

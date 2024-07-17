@@ -14,6 +14,6 @@ namespace GSqlQuery
         /// <summary>
         /// Get columns
         /// </summary>
-        IEnumerable<PropertyOptions> Columns { get; }
+        PropertyOptionsCollection Columns { get; }
     }
 }

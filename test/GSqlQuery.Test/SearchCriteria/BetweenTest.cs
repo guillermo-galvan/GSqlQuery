@@ -62,7 +62,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int inicialValue, int finalValue, string querypart)
         {
             Between<int> equal = new Between<int>(_classOptionsTupla, new DefaultFormats(), inicialValue, finalValue, logicalOperator);
-            var result = equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values);
+            var result = equal.GetCriteria();
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

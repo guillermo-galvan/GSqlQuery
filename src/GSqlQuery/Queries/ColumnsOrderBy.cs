@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GSqlQuery
+﻿namespace GSqlQuery
 {
     /// <summary>
     /// Columns for 'Order By' query
@@ -10,7 +8,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get columns
         /// </summary>
-        public IEnumerable<PropertyOptions> Columns { get; }
+        public PropertyOptionsCollection Columns { get; }
 
         /// <summary>
         /// Order by Type
@@ -22,7 +20,7 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="columns">columns</param>
         /// <param name="orderBy">Order by Type</param>
-        public ColumnsOrderBy(IEnumerable<PropertyOptions> columns, OrderBy orderBy)
+        public ColumnsOrderBy(PropertyOptionsCollection columns, OrderBy orderBy)
         {
             Columns = columns;
             OrderBy = orderBy;

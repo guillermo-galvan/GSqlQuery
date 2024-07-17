@@ -54,7 +54,7 @@ namespace GSqlQuery.Queries
         /// <returns>AutoIncrementingClass</returns>
         internal AutoIncrementingClass GetValues()
         {
-            IEnumerable<PropertyOptions> propertyOptions = Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing);
+            IEnumerable<PropertyOptions> propertyOptions = Columns.Values.Where(x => !x.ColumnAttribute.IsAutoIncrementing);
             Queue<ColumnParameterDetail> tmpColumnsParameters = new Queue<ColumnParameterDetail>();
 
             foreach (PropertyOptions x in propertyOptions)
@@ -69,7 +69,7 @@ namespace GSqlQuery.Queries
 
             ColumnParameterDetail[] columnsParameters = [.. tmpColumnsParameters];
 
-            bool isAutoIncrement = Columns.Count() != columnsParameters.Length;
+            bool isAutoIncrement = Columns.Count != columnsParameters.Length;
             return new AutoIncrementingClass(isAutoIncrement, columnsParameters);
         }
     }

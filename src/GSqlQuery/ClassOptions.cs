@@ -5,70 +5,6 @@ using System.Reflection;
 
 namespace GSqlQuery
 {
-
-    public sealed class PropertyOptionsCollection
-    {
-        private readonly Dictionary<string, PropertyOptions> _properties;
-        private readonly Dictionary<string, string> _lowCase;
-
-        internal PropertyOptionsCollection(IEnumerable<KeyValuePair<string, PropertyOptions>> keyValuePairs)
-        {
-            _properties = [];
-            _lowCase = [];
-
-            foreach (var item in keyValuePairs)
-            {
-                _properties.Add(item.Key, item.Value);
-                _lowCase.Add(item.Key.ToLower(), item.Key);
-            }
-        }
-
-        internal IEnumerable<string> Keys { get { return _properties.Keys; } }
-
-        internal IEnumerable<PropertyOptions> Values { get { return _properties.Values; } }
-
-        public IEnumerable<KeyValuePair<string, PropertyOptions>> KeyValues { get { return _properties.AsEnumerable(); } }
-
-
-        internal void Add(string key, PropertyOptions propertyOptions)
-        {
-            _properties.Add(key, propertyOptions);
-        }
-
-        public int Count()
-        {
-            return _properties.Count;
-        }
-        public PropertyOptions TyrGetValueToLower(string key)
-        {
-            if (_lowCase.TryGetValue(key.ToLower(), out string tmpKey))
-            {
-                return _properties.TryGetValue(tmpKey, out PropertyOptions tmp) ? tmp : null;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public PropertyOptions First()
-        {
-            return _properties.First().Value;
-        }
-
-        public PropertyOptions this[string key]
-        {
-            get 
-            { 
-                return _properties.TryGetValue(key, out PropertyOptions tmp) ? tmp : null;
-            }
-            internal set 
-            {
-                    _properties[key] = value;
-            }
-        }
-    }
-
     /// <summary>
     /// Class Options
     /// </summary>
@@ -146,7 +82,7 @@ namespace GSqlQuery
                 {
                     ConstructorInfoDefault = item;
                 }
-                else if (parameters.Length > 0 && parameters.Length == _propertyOptions.Count())
+                else if (parameters.Length > 0 && parameters.Length == _propertyOptions.Count)
                 {
                     bool find = true;
                     byte position = 0;
@@ -155,7 +91,7 @@ namespace GSqlQuery
                     for (int i = 0; i < parameters.Length; i++)
                     {
                         var param = tmp[i];
-                        PropertyOptions propertyOptions = _propertyOptions.TyrGetValueToLower(param.Name);
+                        PropertyOptions propertyOptions = _propertyOptions[param.Name];
 
                         if (propertyOptions == null || propertyOptions.PropertyInfo.PropertyType != param.ParameterType)
                         {

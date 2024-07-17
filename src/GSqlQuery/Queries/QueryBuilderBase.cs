@@ -20,7 +20,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get columns
         /// </summary>
-        public IEnumerable<PropertyOptions> Columns { get; protected set; }
+        public PropertyOptionsCollection Columns { get; protected set; }
 
         /// <summary>
         /// Query Options
@@ -36,7 +36,7 @@ namespace GSqlQuery
         {
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
-            Columns = _classOptions.PropertyOptions.Values;
+            Columns = _classOptions.PropertyOptions;
             _tableName = TableAttributeExtension.GetTableName(_classOptions.Table, QueryOptions.Formats);
         }
 

@@ -60,7 +60,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int value, string querypart)
         {
             GreaterThan<int> equal = new GreaterThan<int>(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
-            var result = equal.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions.Values);
+            var result = equal.GetCriteria();
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);

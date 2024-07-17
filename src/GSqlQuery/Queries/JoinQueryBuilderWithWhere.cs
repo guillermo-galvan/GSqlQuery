@@ -26,8 +26,8 @@ namespace GSqlQuery.Queries
         /// <param name="joinType"> Join Type</param>
         /// <param name="formats">Formats</param>
         /// <param name="columnsT2">Columns second table</param>
-        public JoinQueryBuilderWithWhere(IEnumerable<PropertyOptions> columns, JoinType joinType, QueryOptions queryOptions,
-            IEnumerable<PropertyOptions> columnsT2 = null) : base(null, queryOptions)
+        public JoinQueryBuilderWithWhere(PropertyOptionsCollection columns, JoinType joinType, QueryOptions queryOptions,
+            PropertyOptionsCollection columnsT2 = null) : base(null, queryOptions)
         {
             ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(typeof(T1));
             JoinInfo joinInfo = new JoinInfo(columns, classOptions, true);
@@ -35,13 +35,13 @@ namespace GSqlQuery.Queries
 
             ClassOptions classOptions2 = ClassOptionsFactory.GetClassOptions(typeof(T2));
 
-            columnsT2 ??= classOptions2.PropertyOptions.Values;
+            columnsT2 ??= classOptions2.PropertyOptions;
 
             _joinInfo = new JoinInfo(columnsT2, classOptions2, joinType);
 
             _joinInfos.Enqueue(_joinInfo);
-
-            Columns = _joinInfos.SelectMany(x => x.Columns);
+            _properties = _joinInfos.SelectMany(x => x.Columns);
+            Columns = new PropertyOptionsCollection([]);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace GSqlQuery.Queries
         public override JoinQuery<Join<T1, T2>, QueryOptions> Build()
         {
             string query = CreateQuery();
-            return new JoinQuery<Join<T1, T2>, QueryOptions>(query, Columns, _criteria, QueryOptions);
+            return new JoinQuery<Join<T1, T2>, QueryOptions>(query, new PropertyOptionsCollection(_properties), _criteria, QueryOptions);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace GSqlQuery.Queries
         /// <param name="joinType">Join Type</param>
         /// <param name="formats">Formats</param>
         /// <param name="columnsT3">Columns third table</param>
-        public JoinQueryBuilderWithWhere(Queue<JoinInfo> joinInfos, JoinType joinType, QueryOptions queryOptions, IEnumerable<PropertyOptions> columnsT3 = null) :
+        public JoinQueryBuilderWithWhere(Queue<JoinInfo> joinInfos, JoinType joinType, QueryOptions queryOptions, PropertyOptionsCollection columnsT3 = null) :
             base(joinInfos, joinType, queryOptions, columnsT3)
         { }
 
@@ -160,7 +160,7 @@ namespace GSqlQuery.Queries
         public override JoinQuery<Join<T1, T2, T3>, QueryOptions> Build()
         {
             string query = CreateQuery();
-            return new JoinQuery<Join<T1, T2, T3>, QueryOptions>(query, Columns, _criteria, QueryOptions);
+            return new JoinQuery<Join<T1, T2, T3>, QueryOptions>(query, new PropertyOptionsCollection(_properties), _criteria, QueryOptions);
         }
     }
 

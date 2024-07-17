@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GSqlQuery.SearchCriteria
+﻿namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Search criteria
@@ -23,10 +21,14 @@ namespace GSqlQuery.SearchCriteria
         IFormats Formats { get; }
 
         /// <summary>
+        /// Get ClassOptions
+        /// </summary>
+        ClassOptions ClassOptions { get; }
+
+        /// <summary>
         /// Get Criteria detail
         /// </summary>
-        /// <param name="formats">formats</param>
         /// <returns>Details of the criteria</returns>
-        CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions);
+        CriteriaDetail GetCriteria();
     }
 }

@@ -34,14 +34,22 @@ namespace GSqlQuery.SearchCriteria
         /// </summary>
         public string LogicalOperator { get; } = logicalOperator;
 
+        /// <summary>
+        /// Get Formats
+        /// </summary>
         public IFormats Formats { get; } = formats;
+
+        /// <summary>
+        /// Get ClassOptions
+        /// </summary>
+        public ClassOptions ClassOptions => _classOptionsTupla.ClassOptions;
 
         /// <summary>
         /// Get Criteria detail
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>Details of the criteria</returns>
-        public virtual CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
+        public virtual CriteriaDetail GetCriteria()
         {
             _task.Wait();
             return new CriteriaDetail(this, _task.Result.Criterion, _task.Result.Parameters);
@@ -53,9 +61,9 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="column">Contains the property information</param>
         /// <param name="propertyOptions">List of property options</param>
         /// <returns>Property options</returns>
-        protected PropertyOptions GetPropertyOptions(ColumnAttribute column, IEnumerable<PropertyOptions> propertyOptions)
+        protected PropertyOptions GetPropertyOptions(ColumnAttribute column, PropertyOptionsCollection propertyOptions)
         {
-            return propertyOptions.First(x => x.ColumnAttribute.Name == column.Name);
+            return propertyOptions.GetValue(column);
         }
     }
 }

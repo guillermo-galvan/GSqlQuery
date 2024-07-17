@@ -8,7 +8,7 @@ namespace GSqlQuery.Test.Extensions
         {
             foreach (var param in parameterDetails)
             {
-                query = query.Replace(param.Name, newName);
+                query = query?.Replace(param.Name, newName);
             }
 
             return query;
@@ -16,7 +16,7 @@ namespace GSqlQuery.Test.Extensions
 
         public static string ParameterReplace(this CriteriaDetail criteriaDetail, string newName = "@Param")
         {
-            return criteriaDetail.ParameterDetails.ParameterReplace(criteriaDetail.QueryPart, newName);
+            return criteriaDetail?.ParameterDetails?.ParameterReplace(criteriaDetail.QueryPart, newName);
 
         }
     }

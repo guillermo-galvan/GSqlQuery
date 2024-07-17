@@ -33,7 +33,7 @@ namespace GSqlQuery.Queries
             IQueryBuilderWithWhere<T, TSelectQuery, TQueryOptions> queryBuilder, TQueryOptions queryOptions) : base(queryOptions)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            IEnumerable<PropertyOptions> properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
+            PropertyOptionsCollection properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(properties, orderBy);
             _columnsByOrderBy.Enqueue(columnsOrderBy);
             _queryBuilder = queryBuilder;
@@ -50,11 +50,11 @@ namespace GSqlQuery.Queries
            IAndOr<T, TSelectQuery, TQueryOptions> andOr) : base(andOr.QueryOptions)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            IEnumerable<PropertyOptions> properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
+            PropertyOptionsCollection properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(properties, orderBy);
             _columnsByOrderBy.Enqueue(columnsOrderBy);
             _andorBuilder = andOr;
-            Columns = [];
+            Columns = new PropertyOptionsCollection([]);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace GSqlQuery.Queries
         public void AddOrderBy(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy)
         {
             IEnumerable<string> columnsName = selectMember.MemberInfo.Select(x => x.Name);
-            IEnumerable<PropertyOptions> propertyInfos = ExpressionExtension.GetPropertyQuery(_classOptions, columnsName);
+            PropertyOptionsCollection propertyInfos = ExpressionExtension.GetPropertyQuery(_classOptions, columnsName);
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(propertyInfos, orderBy);
             _columnsByOrderBy.Enqueue(columnsOrderBy);
         }
@@ -76,14 +76,14 @@ namespace GSqlQuery.Queries
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criterias</param>
         /// <returns></returns>
-        internal string CreateQuery(out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria)
         {
             TSelectQuery selectQuery = _andorBuilder != null ? _andorBuilder.Build() : _queryBuilder.Build();
             Queue<string> parts = new Queue<string>();
 
             foreach (ColumnsOrderBy x in _columnsByOrderBy)
             {
-                IEnumerable<string> names = x.Columns.Select(y => QueryOptions.Formats.GetColumnName(_tableName, y.ColumnAttribute, QueryType.Read));
+                IEnumerable<string> names = x.Columns.Values.Select(y => QueryOptions.Formats.GetColumnName(_tableName, y.ColumnAttribute, QueryType.Read));
                 string columnsName = string.Join(",", names);
                 string orderByQuery = "{0} {1}".Replace("{0}", columnsName).Replace("{1}", x.OrderBy.ToString());
                 parts.Enqueue(orderByQuery);
@@ -93,7 +93,7 @@ namespace GSqlQuery.Queries
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;
 
-            IEnumerable<string> ColumnNames = columns.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            IEnumerable<string> ColumnNames = columns.Values.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
             string resultColumnsName = string.Join(",", ColumnNames);
 
             if (selectQuery.Criteria == null || !selectQuery.Criteria.Any())
@@ -146,7 +146,7 @@ namespace GSqlQuery.Queries
         /// <returns>Order by Query</returns>
         public override OrderByQuery<T> Build()
         {
-            string query = CreateQuery(out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria);
+            string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria);
             return new OrderByQuery<T>(query, columns, criteria, QueryOptions);
         }
     }

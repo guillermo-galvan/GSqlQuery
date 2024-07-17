@@ -83,11 +83,13 @@ namespace GSqlQuery.Extensions
         /// <param name="selectMember">Name of properties to search</param>
         /// <returns>Properties that match selectMember</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static IEnumerable<PropertyOptions> GetPropertyQuery(ClassOptions options, IEnumerable<string> selectMember)
+        internal static PropertyOptionsCollection GetPropertyQuery(ClassOptions options, IEnumerable<string> selectMember)
         {
-            return (from prop in options.PropertyOptions.KeyValues
-                    join sel in selectMember on prop.Key equals sel
-                    select prop.Value).ToArray();
+            var columns = (from prop in options.PropertyOptions
+                           join sel in selectMember on prop.Key equals sel
+                           select new KeyValuePair<string, PropertyOptions>(prop.Key, prop.Value)).ToArray();
+
+            return new PropertyOptionsCollection(columns);
         }
 
         /// <summary>
@@ -97,11 +99,12 @@ namespace GSqlQuery.Extensions
         /// <param name="selectMember">Name of properties to search</param>
         /// <returns>Properties that match selectMember</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static IEnumerable<PropertyOptions> GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla)
+        internal static PropertyOptionsCollection GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla)
         {
-            return (from prop in classOptionsTupla.ClassOptions.PropertyOptions.KeyValues
-                    join sel in classOptionsTupla.MemberInfo on prop.Key equals sel.Name
-                    select prop.Value).ToArray();
+            var columns = (from prop in classOptionsTupla.ClassOptions.PropertyOptions
+                           join sel in classOptionsTupla.MemberInfo on prop.Key equals sel.Name
+                           select new KeyValuePair<string, PropertyOptions>(prop.Key, prop.Value)).ToArray();
+            return new PropertyOptionsCollection(columns);
         }
 
         /// <summary>
@@ -159,7 +162,7 @@ namespace GSqlQuery.Extensions
         /// <returns>ColumnAttribute that match selectMember</returns>
         internal static IEnumerable<ColumnAttribute> GetColumnsQuery(ClassOptions options, IEnumerable<string> selectMember)
         {
-            return from prop in options.PropertyOptions.KeyValues
+            return from prop in options.PropertyOptions
                    join sel in selectMember on prop.Key equals sel
                    select prop.Value.ColumnAttribute;
         }

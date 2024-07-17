@@ -54,9 +54,9 @@ namespace GSqlQuery.Queries
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _columnValues = new Dictionary<ColumnAttribute, object>();
-            IEnumerable<PropertyOptions> properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
+            PropertyOptionsCollection properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
 
-            foreach (PropertyOptions item in properties)
+            foreach (PropertyOptions item in properties.Values)
             {
                 _columnValues.Add(item.ColumnAttribute, item.PropertyInfo.GetValue(entity));
             };
@@ -96,12 +96,12 @@ namespace GSqlQuery.Queries
             }
         }
 
-        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, IEnumerable<PropertyOptions> columns, string tableName)
+        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, PropertyOptionsCollection columns, string tableName)
         {
             Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
             foreach (KeyValuePair<ColumnAttribute, object> item in columnValues)
             {
-                PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
+                PropertyOptions options = columns[item.Key.Name];
                 string paramName = "@PU" + Helpers.GetIdParam().ToString();
                 string columName = QueryOptions.Formats.GetColumnName(tableName, item.Key, QueryType.Criteria);
                 string partQuery = columName + "=" + paramName;

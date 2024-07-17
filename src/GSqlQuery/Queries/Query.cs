@@ -9,7 +9,7 @@ namespace GSqlQuery
     /// </summary>
     public abstract class Query : IQuery
     {
-        private readonly IEnumerable<PropertyOptions> _columns;
+        private readonly PropertyOptionsCollection _columns;
         private readonly IEnumerable<CriteriaDetail> _criteria;
         private string _text;
 
@@ -21,7 +21,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get Columns
         /// </summary>
-        public IEnumerable<PropertyOptions> Columns => _columns;
+        public PropertyOptionsCollection Columns => _columns;
 
         /// <summary>
         /// Get Criterias
@@ -35,7 +35,7 @@ namespace GSqlQuery
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criterias</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(ref string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria)
+        public Query(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetail> criteria)
         {
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));
             _text = text ?? throw new ArgumentNullException(text);
@@ -64,7 +64,7 @@ namespace GSqlQuery
         /// <param name="formats">Formats</param>
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(ref string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, TQueryOptions queryOptions) :
+        public Query(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetail> criteria, TQueryOptions queryOptions) :
             base(ref text, columns, criteria)
         {
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
