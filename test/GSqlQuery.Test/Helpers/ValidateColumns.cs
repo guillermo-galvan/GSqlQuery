@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Xunit;
+using GSqlQuery.Extensions;
 
 namespace GSqlQuery.Test.Helpers
 {
@@ -43,28 +44,28 @@ namespace GSqlQuery.Test.Helpers
         private readonly List<string> _thirdTable;
         private readonly ValidateType _validateType;
 
-        public ValidateColumnsJoin(IEnumerable<MemberInfo> memberInfoFirstable, IEnumerable<MemberInfo> memberInfoSecondTable, IEnumerable<MemberInfo> memberInfoThirdTable = null)
+        public ValidateColumnsJoin(IFormats formats,ClassOptionsTupla<IEnumerable<MemberInfo>> memberInfoFirstable, ClassOptionsTupla<IEnumerable<MemberInfo>> memberInfoSecondTable, ClassOptionsTupla<IEnumerable<MemberInfo>> memberInfoThirdTable = null)
         {
             _firstTable = [];
             _secondTable = [];
             _thirdTable = [];
             _validateType = ValidateType.First | ValidateType.Second;
 
-            foreach (MemberInfo item in memberInfoFirstable)
+            foreach (var item in ExpressionExtension.GetPropertyQuery(memberInfoFirstable))
             {
-                _firstTable.Add(item.Name);
+                _firstTable.Add(formats.Format.Replace("{0}", $"{memberInfoFirstable.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}"));
             }
 
-            foreach (MemberInfo item in memberInfoSecondTable)
+            foreach (var item in ExpressionExtension.GetPropertyQuery(memberInfoSecondTable))
             {
-                _secondTable.Add(item.Name);
+                _secondTable.Add(formats.Format.Replace("{0}", $"{memberInfoSecondTable.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}"));
             }
 
-            if (memberInfoThirdTable != null && memberInfoThirdTable.Any())
+            if (memberInfoThirdTable != null && memberInfoThirdTable.MemberInfo.Any())
             {
-                foreach (MemberInfo item in memberInfoThirdTable)
+                foreach (var item in ExpressionExtension.GetPropertyQuery(memberInfoThirdTable))
                 {
-                    _thirdTable.Add(item.Name);
+                    _thirdTable.Add(formats.Format.Replace("{0}", $"{memberInfoThirdTable.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}"));
                 }
 
                 _validateType |= ValidateType.Third;

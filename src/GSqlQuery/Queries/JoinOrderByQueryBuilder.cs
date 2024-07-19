@@ -54,7 +54,6 @@ namespace GSqlQuery.Queries
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
             _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GetPropertyQuery(selectMember), orderBy));
             _andorBuilder = andOr;
-            Columns = new PropertyOptionsCollection([]);
         }
 
         /// <summary>
@@ -93,11 +92,11 @@ namespace GSqlQuery.Queries
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;
 
-            IEnumerable<string> joinColumns = JoinQueryBuilderWithWhereBase.GetColumns(addJoinCriteria.JoinInfos, QueryOptions.Formats);
-            JoinInfo tableMain = JoinQueryBuilderWithWhereBase.GetTableMain(addJoinCriteria.JoinInfos);
+            List<ColumnDetailJoin> joinColumns = JoinQueryBuilderWithWhereBase.GetColumns(addJoinCriteria.JoinInfos, QueryOptions.Formats);
+            JoinInfo tableMain = addJoinCriteria.JoinInfos.First(x => x.IsMain);
             IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(addJoinCriteria.JoinInfos, QueryOptions.Formats);
 
-            string resultJoinColumns = string.Join(",", joinColumns);
+            string resultJoinColumns = string.Join(",", joinColumns.Select(x => x.PartQuery));
             string tableName = TableAttributeExtension.GetTableName(tableMain.ClassOptions.Table, QueryOptions.Formats);
             string resultJoinQuerys = string.Join(" ", joinQuerys);
 
@@ -142,36 +141,22 @@ namespace GSqlQuery.Queries
                 throw new ArgumentNullException(nameof(optionsTupla), ErrorMessages.ParameterNotNull);
             }
 
-            PropertyOptionsCollection result = new PropertyOptionsCollection([]);
+            List<KeyValuePair<string, PropertyOptions>> keyValuePairs = [];
 
-            List<PropertyOptions> properties = [];
-            IEnumerable<string> listName = optionsTupla.MemberInfo.Select(x => x.Name);
-
-            if (optionsTupla.MemberInfo.Any(x => x.DeclaringType.IsGenericType))
+            foreach (MemberInfo item in optionsTupla.MemberInfo)
             {
-                foreach (PropertyOptions item in optionsTupla.ClassOptions.PropertyOptions.Values.Where(x => x.PropertyInfo.PropertyType.IsClass))
+                if (item.DeclaringType.IsGenericType)
                 {
-                    ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.PropertyInfo.PropertyType);
-
-                    IEnumerable<KeyValuePair<string, PropertyOptions>> columns = (from n in listName
-                                                                                  join prop in classOptions.PropertyOptions on n equals prop.Key
-                                                                                  select new KeyValuePair<string, PropertyOptions>(prop.Key, prop.Value)).ToArray();
-                    result.AddRange(columns);
+                    throw new NotImplementedException();
                 }
-            }
-            else
-            {
-                foreach (MemberInfo item in optionsTupla.MemberInfo)
+                else
                 {
-                    ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(item.DeclaringType);
-                    IEnumerable<KeyValuePair<string, PropertyOptions>> columns = (from n in listName
-                                                                                  join prop in classOptions.PropertyOptions on n equals prop.Key
-                                                                                  select new KeyValuePair<string, PropertyOptions>(prop.Key, prop.Value)).ToArray();
-                    result.AddRange(columns);
+                    keyValuePairs.Add(new KeyValuePair<string, PropertyOptions>(item.Name, ClassOptionsFactory.GetClassOptions(item.DeclaringType).PropertyOptions[item.Name]));
+
                 }
             }
 
-            return result;
+            return new PropertyOptionsCollection(keyValuePairs);
         }
     }
 

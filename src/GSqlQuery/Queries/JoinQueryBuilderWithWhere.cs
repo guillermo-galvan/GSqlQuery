@@ -40,8 +40,6 @@ namespace GSqlQuery.Queries
             _joinInfo = new JoinInfo(columnsT2, classOptions2, joinType);
 
             _joinInfos.Enqueue(_joinInfo);
-            _properties = _joinInfos.SelectMany(x => x.Columns);
-            Columns = new PropertyOptionsCollection([]);
         }
 
         /// <summary>
@@ -50,8 +48,8 @@ namespace GSqlQuery.Queries
         /// <returns>Join Query</returns>
         public override JoinQuery<Join<T1, T2>, QueryOptions> Build()
         {
-            string query = CreateQuery();
-            return new JoinQuery<Join<T1, T2>, QueryOptions>(query, new PropertyOptionsCollection(_properties), _criteria, QueryOptions);
+            string query = CreateQuery(out PropertyOptionsCollection columns);
+            return new JoinQuery<Join<T1, T2>, QueryOptions>(query, columns, _criteria, QueryOptions);
         }
 
         /// <summary>
@@ -159,8 +157,8 @@ namespace GSqlQuery.Queries
         /// <returns>Order by Query</returns>
         public override JoinQuery<Join<T1, T2, T3>, QueryOptions> Build()
         {
-            string query = CreateQuery();
-            return new JoinQuery<Join<T1, T2, T3>, QueryOptions>(query, new PropertyOptionsCollection(_properties), _criteria, QueryOptions);
+            string query = CreateQuery(out PropertyOptionsCollection columns);
+            return new JoinQuery<Join<T1, T2, T3>, QueryOptions>(query, columns, _criteria, QueryOptions);
         }
     }
 

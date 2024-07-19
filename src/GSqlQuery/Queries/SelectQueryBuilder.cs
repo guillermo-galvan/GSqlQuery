@@ -83,9 +83,7 @@ namespace GSqlQuery.Queries
         /// <exception cref="ArgumentNullException"></exception>
         public SelectQueryBuilder(QueryOptions queryOptions)
             : base(queryOptions)
-        {
-            Columns = _classOptions.PropertyOptions;
-        }
+        { }
 
         /// <summary>
         /// Build select query

@@ -4,7 +4,10 @@ using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Helpers;
 using GSqlQuery.Test.Models;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
 using Xunit;
 
 namespace GSqlQuery.Test
@@ -468,12 +471,13 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_two_tables_TestData))]
         public void Should_generate_the_inner_join_two_tables_query(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions)
-                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .InnerJoin<Test6>()
+                              .Equal(x => x.Table1.Ids, x => x.Table2.Ids)
                               .Build();
 
             Assert.NotEmpty(result.Text);
@@ -486,10 +490,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_two_tables_TestData2))]
         public void Should_generate_the_inner_join_two_tables_query2(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Names, x.Ids });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Creates });
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Names, x.Ids });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Creates });
 
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -505,9 +509,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_two_tables_with_where_TestData))]
         public void Should_generate_the_inner_join_two_tables_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -536,9 +540,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Left_Join_two_tables_TestData))]
         public void Should_generate_the_left_join_two_tables_query(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -553,9 +557,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Left_Join_two_tables_TestData2))]
         public void Should_generate_the_left_join_two_tables_query2(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Names, x.Ids });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Creates });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Names, x.Ids });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Creates });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .LeftJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -570,9 +574,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Left_Join_two_tables_with_where_TestData))]
         public void Should_generate_the_left_join_two_tables_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -601,9 +605,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Right_Join_two_tables_TestData))]
         public void Should_generate_the_right_join_two_tables_query(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -618,9 +622,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Right_Join_two_tables_TestData2))]
         public void Should_generate_the_right_join_two_tables_query2(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Names, x.Ids });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Creates });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Names, x.Ids });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Creates });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .RightJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -635,9 +639,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Right_Join_two_tables_with_where_TestData))]
         public void Should_generate_the_right_join_two_tables_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -666,10 +670,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_three_tables_TestData))]
         public void Should_generate_the_inner_join_three_tables_query(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
 
             var result = Test3.Select(queryOptions)
@@ -686,10 +690,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_three_tables_with_where_TestData))]
         public void Should_generate_the_inner_join_three_tables_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -719,10 +723,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_three_tables_TestData2))]
         public void Should_generate_the_inner_join_three_tables_query2(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Names, x.Ids });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Creates });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Names, x.Ids });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Creates });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -738,10 +742,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Left_Join_three_tables_TestData))]
         public void Should_generate_the_left_join_three_tables_query(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var result = Test3.Select(queryOptions)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -757,10 +761,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Left_Join_three_tables_with_where_TestData))]
         public void Should_generate_the_left_join_three_tables_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .LeftJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -790,10 +794,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Left_Join_three_tables_TestData2))]
         public void Should_generate_the_left_join_three_tables_query2(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Names, x.Ids });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Creates });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Names, x.Ids });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Creates });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .LeftJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -810,10 +814,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Right_Join_three_tables_TestData))]
         public void Should_generate_the_right_join_three_tables_query(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var result = Test3.Select(queryOptions)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -829,10 +833,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Right_Join_three_tables_with_where_TestData))]
         public void Should_generate_the_right_join_three_tables_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .RightJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -862,10 +866,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Right_Join_three_tables_TestData2))]
         public void Should_generate_the_right_join_three_tables_query2(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Names, x.Ids });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Creates });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Names, x.Ids });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Creates });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .RightJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -882,9 +886,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_OrderBy_two_tables_TestData))]
         public void Should_generate_the_inner_join_two_tables_orderBy_query(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions)
                               .InnerJoin<Test6>()
@@ -903,9 +907,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_OrderBy_two_tables_TestData2))]
         public void Should_generate_the_inner_join_two_tables_orderBy_query2(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Names, x.Ids });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Creates });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Names, x.Ids });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Creates });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -921,9 +925,9 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_OrderBy_two_tables_with_where_TestData))]
         public void Should_generate_the_inner_join_two_tables_orderBy_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -953,9 +957,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_OrderBy_three_tables_TestData))]
         public void Should_generate_the_inner_join_three_tables_orderBy_query_with_where(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
@@ -987,10 +992,10 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Inner_Join_OrderBy_three_tables_Where_In_TestData))]
         public void Should_generate_the_inner_join_three_tables_orderBy_query_with_where_in(QueryOptions queryOptions, string query)
         {
-            var firstTable = ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var seconfTable = ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
-            var thirdTable = ExpressionExtension.GetMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
-            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(firstTable, seconfTable, thirdTable);
+            var firstTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var seconfTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests });
+            var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.Id, x.Name, x.Create, x.IsTest });
+            ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var queryResult = Test3.Select(queryOptions)
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)

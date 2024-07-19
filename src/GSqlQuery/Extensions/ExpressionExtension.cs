@@ -41,7 +41,16 @@ namespace GSqlQuery.Extensions
             }
             else if (withoutUnary.NodeType == ExpressionType.New && withoutUnary is NewExpression newExpression && newExpression.Members != null)
             {
-                return newExpression.Members;
+                List<MemberInfo> result = [];
+
+                foreach (Expression item in newExpression.Arguments)
+                {
+                    var member = (MemberExpression)item;
+                    var memberInfo = (MemberInfo)ClassOptionsFactory.GetClassOptions(member.Expression.Type).PropertyOptions[member.Member.Name].PropertyInfo;
+                    result.Add(memberInfo);
+                }
+
+                return result;
             }
 
             return [];
@@ -232,7 +241,7 @@ namespace GSqlQuery.Extensions
             where T1 : class
             where T2 : class
         {
-            MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
+            MemberInfo memberInfos = GetMember(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
             ColumnAttribute columnAttribute = options.PropertyOptions[memberInfos.Name].ColumnAttribute;
 

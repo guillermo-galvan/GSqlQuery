@@ -4,45 +4,43 @@ using System.Linq;
 
 namespace GSqlQuery.Queries
 {
+    internal class ColumnDetailJoin(string partquery, string key, PropertyOptions propertyOptions)
+    {
+        public string PartQuery { get; private set; } = partquery;
+
+        public string Key { get; private set; } = key;
+
+        public PropertyOptions PropertyOptions { get; private set; } = propertyOptions;
+    }
+
     /// <summary>
     /// Join Query Builder With Where Base
     /// </summary>
     internal static class JoinQueryBuilderWithWhereBase
     {
         /// <summary>
-        /// Find the main table
-        /// </summary>
-        /// <param name="joinInfos">Join Infos</param>
-        /// <returns>Join Info</returns>
-        internal static JoinInfo GetTableMain(IEnumerable<JoinInfo> joinInfos)
-        {
-            return joinInfos.First(x => x.IsMain);
-        }
-
-        /// <summary>
-        /// Retrieves table name and alias for join query
-        /// </summary>
-        /// <param name="column">Contains the property information</param>
-        /// <param name="joinInfo">Contains the information for the join query</param>
-        /// <param name="formats">Formats for the column.</param>
-        /// <returns>Column name for join query</returns>
-        internal static string GetColumnNameJoin(ColumnAttribute column, JoinInfo joinInfo, IFormats formats)
-        {
-            string alias = formats.Format.Replace("{0}", $"{joinInfo.ClassOptions.Type.Name}_{column.Name}");
-            string tableName = TableAttributeExtension.GetTableName(joinInfo.ClassOptions.Table, formats);
-            string columnName = formats.GetColumnName(tableName, column, QueryType.Join);
-            return "{0} as {1}".Replace("{0}", columnName).Replace("{1}", alias);
-        }
-
-        /// <summary>
         /// Get Columns
         /// </summary>
         /// <param name="joinInfos">Join info</param>
         /// <param name="formats">Formats</param>
         /// <returns></returns>
-        internal static IEnumerable<string> GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats formats)
+        internal static List<ColumnDetailJoin> GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats formats)
         {
-            return joinInfos.SelectMany(c => c.Columns.Values.Select(x => GetColumnNameJoin(x.ColumnAttribute, c, formats)));
+            List<ColumnDetailJoin> columnDetailJoins = [];
+
+            foreach (JoinInfo joinInfo in joinInfos)
+            {
+                foreach (KeyValuePair<string, PropertyOptions> item in joinInfo.Columns)
+                {
+                    string alias = formats.Format.Replace("{0}", $"{joinInfo.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}");
+                    string tableName = TableAttributeExtension.GetTableName(joinInfo.ClassOptions.Table, formats);
+                    string columnName = formats.GetColumnName(tableName, item.Value.ColumnAttribute, QueryType.Join);
+                    string queryPart = "{0} as {1}".Replace("{0}", columnName).Replace("{1}", alias);
+                    columnDetailJoins.Add(new ColumnDetailJoin(queryPart, alias, item.Value));
+                }
+            }
+
+            return columnDetailJoins;
         }
 
         /// <summary>
@@ -147,7 +145,6 @@ namespace GSqlQuery.Queries
     {
         protected readonly Queue<JoinInfo> _joinInfos = joinInfos ?? new Queue<JoinInfo>();
         protected JoinInfo _joinInfo;
-        protected IEnumerable<KeyValuePair<string, PropertyOptions>> _properties;
 
         public IEnumerable<JoinInfo> JoinInfos => _joinInfos;
 
@@ -174,14 +171,15 @@ namespace GSqlQuery.Queries
         /// Create Query
         /// </summary>
         /// <returns>Query text</returns>
-        internal string CreateQuery()
+        internal string CreateQuery(out PropertyOptionsCollection keyValuePairs)
         {
-            IEnumerable<string> columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, QueryOptions.Formats);
-            JoinInfo tableMain = JoinQueryBuilderWithWhereBase.GetTableMain(_joinInfos);
+            List<ColumnDetailJoin> columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, QueryOptions.Formats);
+            keyValuePairs = new PropertyOptionsCollection(columns.Select(x => new KeyValuePair<string, PropertyOptions>(x.Key, x.PropertyOptions)));
+            JoinInfo tableMain = _joinInfos.First(x => x.IsMain);
             IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, QueryOptions.Formats);
 
             string tableName = TableAttributeExtension.GetTableName(tableMain.ClassOptions.Table, QueryOptions.Formats);
-            string resultColumns = string.Join(",", columns);
+            string resultColumns = string.Join(",", columns.Select(x => x.PartQuery));
             string resultJoinQuerys = string.Join(" ", joinQuerys);
 
             if (_andOr == null)
@@ -244,7 +242,6 @@ namespace GSqlQuery.Queries
 
             _joinInfos.Enqueue(_joinInfo);
             Columns = new PropertyOptionsCollection([]);
-            _properties = _joinInfos.SelectMany(x => x.Columns);
         }
 
     }
