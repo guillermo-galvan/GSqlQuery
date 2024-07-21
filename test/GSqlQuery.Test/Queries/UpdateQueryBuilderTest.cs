@@ -4,6 +4,7 @@ using System;
 using Xunit;
 using GSqlQuery.Extensions;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -19,7 +20,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
             UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_queryOptions, columnsValue, string.Empty);
 
             Assert.NotNull(queryBuilder);
@@ -36,7 +37,7 @@ namespace GSqlQuery.Test.Queries
         {
             object entity = null;
             var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
             Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(null, columnsValue, string.Empty));
             Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(_queryOptions, null, string.Empty));
             Assert.Throws<ArgumentNullException>(() => new UpdateQueryBuilder<Test1>(_queryOptions, entity, columsn));
@@ -46,7 +47,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
             UpdateQueryBuilder<Test1> queryBuilder = new UpdateQueryBuilder<Test1>(_queryOptions, columnsValue, string.Empty);
             IWhere<Test1, UpdateQuery<Test1>, QueryOptions> where = queryBuilder.Where();
             Assert.NotNull(where);

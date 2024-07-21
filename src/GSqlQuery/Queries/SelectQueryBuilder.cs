@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
@@ -23,10 +22,15 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="formats">Formats</param>
-        public SelectQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, TQueryOptions queryOptions)
+        public SelectQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, TQueryOptions queryOptions)
            : base(queryOptions)
         {
-            Columns = ExpressionExtension.GetPropertyQuery(classOptionsTupla ?? throw new ArgumentNullException(nameof(classOptionsTupla)));
+            if(classOptionsTupla == null || classOptionsTupla.Columns == null )
+            {
+                throw new ArgumentNullException(nameof(classOptionsTupla));
+            }
+
+            Columns = classOptionsTupla.Columns;
         }
 
         /// <summary>
@@ -71,7 +75,7 @@ namespace GSqlQuery.Queries
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="formats">formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, QueryOptions queryOptions)
+        public SelectQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, QueryOptions queryOptions)
             : base(classOptionsTupla, queryOptions)
         { }
 
@@ -133,9 +137,9 @@ namespace GSqlQuery.Queries
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, ExpressionExtension.GetPropertyQuery(options));
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, options.Columns);
         }
 
         /// <summary>

@@ -1,10 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Queries;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery
 {
@@ -53,8 +50,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
             return new OrderByQueryBuilder<T>(options, orderBy, queryBuilder);
         }
 
@@ -81,8 +78,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
             return new OrderByQueryBuilder<T>(options, orderBy, queryBuilder);
         }
 
@@ -110,8 +107,8 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
 
             if (queryBuilder is IOrderByQueryBuilder order)
             {
@@ -145,8 +142,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
             return new JoinOrderByQueryBuilder<Join<T1, T2>>(options, orderBy, queryBuilder);
         }
 
@@ -175,8 +172,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
             return new JoinOrderByQueryBuilder<Join<T1, T2, T3>>(options, orderBy, queryBuilder);
         }
 
@@ -204,8 +201,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
             return new JoinOrderByQueryBuilder<Join<T1, T2>>(options, orderBy, queryBuilder, queryBuilder.QueryOptions);
         }
 
@@ -234,8 +231,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
             return new JoinOrderByQueryBuilder<Join<T1, T2, T3>>(options, orderBy, queryBuilder, queryBuilder.QueryOptions);
         }
     }

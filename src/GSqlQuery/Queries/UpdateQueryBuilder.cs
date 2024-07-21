@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
@@ -35,11 +34,16 @@ namespace GSqlQuery.Queries
         /// <param name="queryOptions">TQueryOptions</param>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="value">Value for update</param>
-        public UpdateQueryBuilder(TQueryOptions queryOptions, ClassOptionsTupla<MemberInfo> classOptionsTupla, object value) :
+        public UpdateQueryBuilder(TQueryOptions queryOptions, ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> classOptionsTupla, object value) :
             this(queryOptions)
         {
+            if (classOptionsTupla == null)
+            {
+                throw new ArgumentNullException(nameof(classOptionsTupla));
+            }
+
             _columnValues = new Dictionary<ColumnAttribute, object>();
-            ColumnAttribute columnAttributes = ExpressionExtension.GetColumnQuery(classOptionsTupla ?? throw new ArgumentNullException(nameof(classOptionsTupla)));
+            ColumnAttribute columnAttributes = classOptionsTupla.Columns.Value.ColumnAttribute;
             _columnValues.Add(columnAttributes, value);
         }
 
@@ -50,13 +54,12 @@ namespace GSqlQuery.Queries
         /// <param name="entity">Entity</param>
         /// <param name="selectMember">Name of properties to search</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(TQueryOptions queryOptions, object entity, ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla) : this(queryOptions)
+        public UpdateQueryBuilder(TQueryOptions queryOptions, object entity, ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla) : this(queryOptions)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _columnValues = new Dictionary<ColumnAttribute, object>();
-            PropertyOptionsCollection properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
 
-            foreach (PropertyOptions item in properties.Values)
+            foreach (PropertyOptions item in classOptionsTupla.Columns.Values)
             {
                 _columnValues.Add(item.ColumnAttribute, item.PropertyInfo.GetValue(entity));
             };
@@ -127,12 +130,11 @@ namespace GSqlQuery.Queries
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            PropertyOptions propertyOptions = ExpressionExtension.ValidateMemberInfo(options.MemberInfo, options.ClassOptions);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
 
-            if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
+            if (!_columnValues.ContainsKey(options.Columns.Value.ColumnAttribute))
             {
-                _columnValues.Add(propertyOptions.ColumnAttribute, value);
+                _columnValues.Add(options.Columns.Value.ColumnAttribute, value);
             }
         }
 
@@ -154,17 +156,15 @@ namespace GSqlQuery.Queries
                 throw new InvalidOperationException(ErrorMessages.EntityNotFound);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression, _classOptions);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Update, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetClassOptionsTuplaColumns(expression, _classOptions);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Update, options);
 
-            foreach (MemberInfo item in options.MemberInfo)
+            foreach (KeyValuePair<string, PropertyOptions> item in options.Columns)
             {
-                PropertyOptions propertyOptions = ExpressionExtension.ValidateMemberInfo(item, options.ClassOptions);
-
-                if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
+                if (!_columnValues.ContainsKey(item.Value.ColumnAttribute))
                 {
-                    object value = ExpressionExtension.GetValue(propertyOptions, entity);
-                    _columnValues.Add(propertyOptions.ColumnAttribute, value);
+                    object value = ExpressionExtension.GetValue(item.Value, entity);
+                    _columnValues.Add(item.Value.ColumnAttribute, value);
                 }
             }
         }
@@ -209,7 +209,7 @@ namespace GSqlQuery.Queries
         /// <param name="queryOptions">QueryOptions</param>
         /// <param name="value">Value for update</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(QueryOptions queryOptions, ClassOptionsTupla<MemberInfo> classOptionsTupla, object value) :
+        public UpdateQueryBuilder(QueryOptions queryOptions, ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> classOptionsTupla, object value) :
             base(queryOptions, classOptionsTupla, value)
         { }
 
@@ -219,7 +219,7 @@ namespace GSqlQuery.Queries
         /// <param name="queryOptions">QueryOptions</param>
         /// <param name="entity">Entity</param>
         /// <param name="selectMember">Name of properties to search</param>
-        public UpdateQueryBuilder(QueryOptions queryOptions, object entity, ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla) :
+        public UpdateQueryBuilder(QueryOptions queryOptions, object entity, ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla) :
            base(queryOptions, entity, classOptionsTupla)
         { }
 

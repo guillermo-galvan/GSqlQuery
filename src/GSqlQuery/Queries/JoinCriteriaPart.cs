@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
 
 namespace GSqlQuery.Queries
 {
@@ -7,17 +7,17 @@ namespace GSqlQuery.Queries
     /// </summary>
     internal class JoinCriteriaPart
     {
-        public JoinCriteriaPart(ColumnAttribute columnAttribute, TableAttribute table, MemberInfo memberInfos)
+        public JoinCriteriaPart(ColumnAttribute columnAttribute, TableAttribute table, KeyValuePair<string, PropertyOptions> keyValue)
         {
             Column = columnAttribute;
             Table = table;
-            MemberInfo = memberInfos;
+            KeyValue = keyValue;
         }
 
         public ColumnAttribute Column { get; set; }
 
         public TableAttribute Table { get; set; }
 
-        public MemberInfo MemberInfo { get; set; }
+        public KeyValuePair<string, PropertyOptions> KeyValue { get; set; }
     }
 }

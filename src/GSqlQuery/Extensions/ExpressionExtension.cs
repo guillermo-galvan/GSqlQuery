@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery.Extensions
 {
@@ -17,11 +16,11 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ClassOptionsTupla that match expression</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GeTQueryOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<PropertyOptionsCollection> GeTQueryOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            IEnumerable<MemberInfo> memberInfos = GetMembers(expression);
+            PropertyOptionsCollection valuePairs = GetPropertyOptionsCollections(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
+            return new ClassOptionsTupla<PropertyOptionsCollection>(options, valuePairs);
         }
 
         /// <summary>
@@ -30,41 +29,40 @@ namespace GSqlQuery.Extensions
         /// <typeparam name="T">Type of class</typeparam>
         /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
         /// <param name="expression">Expression to evaluate</param>
-        /// <returns>IEnumerable of MemberInfo</returns>
-		internal static IEnumerable<MemberInfo> GetMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        /// <returns>IEnumerable of PropertyOptionsCollection</returns>
+		internal static PropertyOptionsCollection GetPropertyOptionsCollections<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
             Expression withoutUnary = expression.Body is UnaryExpression unaryExpression ? unaryExpression.Operand : expression.Body;
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
-                return [memberExpression.Member];
+                return new PropertyOptionsCollection([new KeyValuePair<string, PropertyOptions>(memberExpression.Member.Name, ClassOptionsFactory.GetClassOptions(memberExpression.Expression.Type).PropertyOptions[memberExpression.Member.Name])]);
             }
             else if (withoutUnary.NodeType == ExpressionType.New && withoutUnary is NewExpression newExpression && newExpression.Members != null)
             {
-                List<MemberInfo> result = [];
+                List<KeyValuePair<string, PropertyOptions>> result = [];
 
                 foreach (Expression item in newExpression.Arguments)
                 {
                     var member = (MemberExpression)item;
-                    var memberInfo = (MemberInfo)ClassOptionsFactory.GetClassOptions(member.Expression.Type).PropertyOptions[member.Member.Name].PropertyInfo;
-                    result.Add(memberInfo);
+                    result.Add(new KeyValuePair<string, PropertyOptions>(member.Member.Name, ClassOptionsFactory.GetClassOptions(member.Expression.Type).PropertyOptions[member.Member.Name]));
                 }
 
-                return result;
+                return new PropertyOptionsCollection(result);
             }
 
-            return [];
+            return null;
         }
 
         /// <summary>
-        /// Valid that the memberInfos are not empty
+        /// Valid that the ClassOptionsTupla are not empty
         /// </summary>
-        /// <param name="memberInfos">MemberInfo list</param>
-        /// <param name="message">Message in case of error</param>
+        /// <param name="queryType">Query Type</param>
+        /// <param name="options">ClassOptionsTupla</param>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static void ValidateMemberInfos(QueryType queryType, ClassOptionsTupla<IEnumerable<MemberInfo>> options)
+        internal static void ValidateClassOptionsTupla(QueryType queryType, ClassOptionsTupla<PropertyOptionsCollection> options)
         {
-            if (!options.MemberInfo.Any())
+            if (options.Columns == null || options.Columns.Count == 0)
             {
                 string message = $"Could not infer property name for expression.";
 
@@ -102,21 +100,6 @@ namespace GSqlQuery.Extensions
         }
 
         /// <summary>
-        /// Gets the property options
-        /// </summary>
-        /// <param name="options">Contains the class information</param>
-        /// <param name="selectMember">Name of properties to search</param>
-        /// <returns>Properties that match selectMember</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        internal static PropertyOptionsCollection GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla)
-        {
-            var columns = (from prop in classOptionsTupla.ClassOptions.PropertyOptions
-                           join sel in classOptionsTupla.MemberInfo on prop.Key equals sel.Name
-                           select new KeyValuePair<string, PropertyOptions>(prop.Key, prop.Value)).ToArray();
-            return new PropertyOptionsCollection(columns);
-        }
-
-        /// <summary>
         /// Gets the value of the entity
         /// </summary>
         /// <param name="options">PropertyOptions</param>
@@ -135,29 +118,29 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ClassOptionsTupla that match expression</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static ClassOptionsTupla<MemberInfo> GetOptionsAndMember<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> GetOptionsAndMember<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            MemberInfo memberInfos = GetMember(expression);
+            KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
 
-            return new ClassOptionsTupla<MemberInfo>(options, memberInfos);
+            return new ClassOptionsTupla<KeyValuePair<string, PropertyOptions>>(options, keyValue);
         }
 
         /// <summary>
-        /// Get member information
+        /// Get Column information
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TProperties"></typeparam>
         /// <param name="expression"></param>
-        /// <returns>MemberInfo</returns>
+        /// <returns>KeyValuePair<string, PropertyOptions></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static MemberInfo GetMember<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        internal static KeyValuePair<string, PropertyOptions> GetKeyValue<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
             Expression withoutUnary = expression.Body is UnaryExpression unaryExpression ? unaryExpression.Operand : expression.Body;
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
-                return memberExpression.Member;
+                return new KeyValuePair<string, PropertyOptions> (memberExpression.Member.Name, ClassOptionsFactory.GetClassOptions(memberExpression.Expression.Type).PropertyOptions[memberExpression.Member.Name]);
             }
 
             throw new InvalidOperationException($"Could not infer property name for expression.");
@@ -177,40 +160,16 @@ namespace GSqlQuery.Extensions
         }
 
         /// <summary>
-        /// Gets the ColumnAttribute
-        /// </summary>
-        /// <param name="options">Contains the class information</param>
-        /// <param name="selectMember">Name of properties to search</param>
-        /// <returns>ColumnAttribute that match selectMember</returns>
-        internal static ColumnAttribute GetColumnQuery(ClassOptionsTupla<MemberInfo> classOptionsTupla)
-        {
-            return classOptionsTupla.ClassOptions.PropertyOptions[classOptionsTupla.MemberInfo.Name]?.ColumnAttribute;
-        }
-
-        /// <summary>
-        /// Gets the property option
-        /// </summary>
-        /// <param name="memberInfo">MemberInfo</param>
-        /// <param name="options">Contains the class information</param>
-        /// <returns>PropertyOptions</returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        internal static PropertyOptions ValidateMemberInfo(MemberInfo memberInfo, ClassOptions options)
-        {
-            PropertyOptions result = options.PropertyOptions[memberInfo.Name];
-            return result ?? throw new InvalidOperationException($"Could not find property {memberInfo.Name} on type {options.Type.Name}");
-        }
-
-        /// <summary>
         /// Gets the ClassOptionsTupla
         /// </summary>
         /// <typeparam name="T">Type of class</typeparam>
         /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ClassOptionsTupla that match expression</returns>
-        internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression, ClassOptions options)
+        internal static ClassOptionsTupla<PropertyOptionsCollection> GetClassOptionsTuplaColumns<T, TProperties>(Expression<Func<T, TProperties>> expression, ClassOptions options)
         {
-            IEnumerable<MemberInfo> memberInfos = GetMembers(expression);
-            return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
+            PropertyOptionsCollection valuePairs = GetPropertyOptionsCollections(expression);
+            return new ClassOptionsTupla<PropertyOptionsCollection>(options, valuePairs);
         }
 
         /// <summary>
@@ -221,11 +180,11 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ClassOptionsTupla that match expression</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static ClassOptionsTupla<IEnumerable<MemberInfo>> GetOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<PropertyOptionsCollection> GetOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            IEnumerable<MemberInfo> memberInfos = GetMembers(expression);
+            PropertyOptionsCollection valuePairs = GetPropertyOptionsCollections(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
-            return new ClassOptionsTupla<IEnumerable<MemberInfo>>(options, memberInfos);
+            return new ClassOptionsTupla<PropertyOptionsCollection>(options, valuePairs);
         }
 
         /// <summary>
@@ -241,11 +200,11 @@ namespace GSqlQuery.Extensions
             where T1 : class
             where T2 : class
         {
-            MemberInfo memberInfos = GetMember(expression);
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
-            ColumnAttribute columnAttribute = options.PropertyOptions[memberInfos.Name].ColumnAttribute;
+            KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
+            ColumnAttribute columnAttribute = keyValue.Value.ColumnAttribute;
 
-            return new JoinCriteriaPart(columnAttribute, options.Table, memberInfos); ;
+            return new JoinCriteriaPart(columnAttribute, options.Table, keyValue); ;
         }
 
         /// <summary>
@@ -263,11 +222,11 @@ namespace GSqlQuery.Extensions
             where T2 : class
             where T3 : class
         {
-            MemberInfo memberInfos = ExpressionExtension.GetMember(expression);
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfos.ReflectedType);
-            ColumnAttribute columnAttribute = options.PropertyOptions[memberInfos.Name].ColumnAttribute;
+            KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
+            ColumnAttribute columnAttribute = keyValue.Value.ColumnAttribute;
 
-            return new JoinCriteriaPart(columnAttribute, options.Table, memberInfos);
+            return new JoinCriteriaPart(columnAttribute, options.Table, keyValue);
         }
 
         /// <summary>
@@ -280,10 +239,9 @@ namespace GSqlQuery.Extensions
         /// <exception cref="InvalidOperationException"></exception>
         internal static ClassOptionsTupla<ColumnAttribute> GetColumnAttribute<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            MemberInfo memberInfo = GetMember(expression);
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(memberInfo.DeclaringType);
-            PropertyOptions propertyOptions = ValidateMemberInfo(memberInfo, options);
-            return new ClassOptionsTupla<ColumnAttribute>(options, propertyOptions.ColumnAttribute);
+            KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
+            return new ClassOptionsTupla<ColumnAttribute>(options, keyValue.Value.ColumnAttribute);
         }
     }
 }

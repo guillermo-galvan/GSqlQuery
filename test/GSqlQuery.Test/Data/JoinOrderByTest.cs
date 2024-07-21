@@ -31,12 +31,12 @@ namespace GSqlQuery.Test.Data
         {
             yield return new object[]
             {
-                new QueryOptions (new DefaultFormats()),"SELECT Test3.Id as Test3_Id,Test3.Name as Test3_Name,TableName.Create as Test6_Create FROM Test3 INNER JOIN TableName ON Test3.Id = TableName.Id ORDER BY Test3.Create,TableName.Name DESC;"
+                new QueryOptions (new DefaultFormats()),"SELECT Test3.Name as Test3_Name,Test3.Id as Test3_Id,TableName.Create as Test6_Create FROM Test3 INNER JOIN TableName ON Test3.Id = TableName.Id ORDER BY Test3.Create,TableName.Name DESC;"
             };
 
             yield return new object[]
             {
-                new QueryOptions (new Models.Formats()),"SELECT [Test3].[Id] as [Test3_Id],[Test3].[Name] as [Test3_Name],[TableName].[Create] as [Test6_Create] FROM [Test3] INNER JOIN [TableName] ON [Test3].[Id] = [TableName].[Id] ORDER BY [Test3].[Create],[TableName].[Name] DESC;"
+                new QueryOptions (new Models.Formats()),"SELECT [Test3].[Name] as [Test3_Name],[Test3].[Id] as [Test3_Id],[TableName].[Create] as [Test6_Create] FROM [Test3] INNER JOIN [TableName] ON [Test3].[Id] = [TableName].[Id] ORDER BY [Test3].[Create],[TableName].[Name] DESC;"
             };
         }
 

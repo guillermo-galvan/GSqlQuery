@@ -44,7 +44,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            ClassOptionsTupla<IEnumerable<MemberInfo>> ddsds = null;
+            ClassOptionsTupla<PropertyOptionsCollection> ddsds = null;
             Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(ddsds, _queryOptions));
             Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), null));
         }

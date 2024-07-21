@@ -1,6 +1,5 @@
 ﻿using GSqlQuery.Extensions;
 using System;
-using System.Collections.Generic;
 
 namespace GSqlQuery
 {
@@ -32,11 +31,11 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public QueryBuilderBase(TQueryOptions queryOptions)
+        public QueryBuilderBase(TQueryOptions queryOptions, PropertyOptionsCollection columns = null)
         {
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
-            Columns = _classOptions.PropertyOptions;
+            Columns = columns ?? _classOptions.PropertyOptions;
             _tableName = TableAttributeExtension.GetTableName(_classOptions.Table, QueryOptions.Formats);
         }
 

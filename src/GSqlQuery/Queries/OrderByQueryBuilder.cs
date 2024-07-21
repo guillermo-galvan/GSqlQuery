@@ -1,7 +1,6 @@
 ﻿using GSqlQuery.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
@@ -29,11 +28,11 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order By Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
         /// <param name="queryOptions">Formats</param>
-        protected OrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, OrderBy orderBy,
+        protected OrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, OrderBy orderBy,
             IQueryBuilderWithWhere<T, TSelectQuery, TQueryOptions> queryBuilder, TQueryOptions queryOptions) : base(queryOptions)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            PropertyOptionsCollection properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
+            PropertyOptionsCollection properties = classOptionsTupla.Columns;
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(properties, orderBy);
             _columnsByOrderBy.Enqueue(columnsOrderBy);
             _queryBuilder = queryBuilder;
@@ -46,11 +45,11 @@ namespace GSqlQuery.Queries
         /// <param name="classOptionsTupla">Name of properties to search</param>
         /// <param name="orderBy">Order By Type</param>
         /// <param name="andOr">Implementation of the IAndOr interface</param>
-        protected OrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, OrderBy orderBy,
+        protected OrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, OrderBy orderBy,
            IAndOr<T, TSelectQuery, TQueryOptions> andOr) : base(andOr.QueryOptions)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            PropertyOptionsCollection properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
+            PropertyOptionsCollection properties = classOptionsTupla.Columns;
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(properties, orderBy);
             _columnsByOrderBy.Enqueue(columnsOrderBy);
             _andorBuilder = andOr;
@@ -62,10 +61,9 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="orderBy">>Order By Type</param>
-        public void AddOrderBy(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy)
+        public void AddOrderBy(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy)
         {
-            IEnumerable<string> columnsName = selectMember.MemberInfo.Select(x => x.Name);
-            PropertyOptionsCollection propertyInfos = ExpressionExtension.GetPropertyQuery(_classOptions, columnsName);
+            PropertyOptionsCollection propertyInfos = selectMember.Columns;
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(propertyInfos, orderBy);
             _columnsByOrderBy.Enqueue(columnsOrderBy);
         }
@@ -123,7 +121,7 @@ namespace GSqlQuery.Queries
         /// <param name="classOptionsTupla">Name of properties to search</param>
         /// <param name="orderBy">Order By Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
-        public OrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, OrderBy orderBy,
+        public OrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, OrderBy orderBy,
             IQueryBuilderWithWhere<T, SelectQuery<T>, QueryOptions> queryBuilder)
             : base(classOptionsTupla, orderBy, queryBuilder, queryBuilder.QueryOptions)
         { }
@@ -135,7 +133,7 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order By Type</param>
         /// <param name="andOr">Implementation of the IAndOr interface</param>
         /// <param name="formats">Formats</param>
-        public OrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, OrderBy orderBy,
+        public OrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, OrderBy orderBy,
            IAndOr<T, SelectQuery<T>, QueryOptions> andOr)
            : base(classOptionsTupla, orderBy, andOr)
         { }

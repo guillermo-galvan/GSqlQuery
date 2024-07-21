@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
@@ -30,12 +29,12 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
         /// <param name="queryOptions">Formats</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
             IQueryBuilderWithWhere<T, TSelectQuery, TQueryOptions> queryBuilder, TQueryOptions queryOptions)
             : base(queryOptions)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GetPropertyQuery(selectMember), orderBy));
+            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.Columns, orderBy));
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
         }
@@ -47,12 +46,12 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="andOr">Implementation of the IAndOr interface</param>
         /// <param name="queryOptions">TQueryOptions</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
            IAndOr<T, TSelectQuery, TQueryOptions> andOr, TQueryOptions queryOptions)
            : base(queryOptions)
         {
             _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GetPropertyQuery(selectMember), orderBy));
+            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.Columns, orderBy));
             _andorBuilder = andOr;
         }
 
@@ -119,44 +118,13 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="orderBy">Order by Type</param>
-        public void AddOrderBy(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy)
+        public void AddOrderBy(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy)
         {
             if (selectMember == null)
             {
                 throw new ArgumentNullException(nameof(selectMember));
             }
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(GetPropertyQuery(selectMember), orderBy));
-        }
-
-        /// <summary>
-        /// Gets the property options
-        /// </summary>
-        /// <param name="optionsTupla">Class that contains the ClassOptions and selectMember information</param>
-        /// <returns>Properties that match selectMember</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        protected PropertyOptionsCollection GetPropertyQuery(ClassOptionsTupla<IEnumerable<MemberInfo>> optionsTupla)
-        {
-            if (optionsTupla == null)
-            {
-                throw new ArgumentNullException(nameof(optionsTupla), ErrorMessages.ParameterNotNull);
-            }
-
-            List<KeyValuePair<string, PropertyOptions>> keyValuePairs = [];
-
-            foreach (MemberInfo item in optionsTupla.MemberInfo)
-            {
-                if (item.DeclaringType.IsGenericType)
-                {
-                    throw new NotImplementedException();
-                }
-                else
-                {
-                    keyValuePairs.Add(new KeyValuePair<string, PropertyOptions>(item.Name, ClassOptionsFactory.GetClassOptions(item.DeclaringType).PropertyOptions[item.Name]));
-
-                }
-            }
-
-            return new PropertyOptionsCollection(keyValuePairs);
+            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.Columns, orderBy));
         }
     }
 
@@ -173,7 +141,7 @@ namespace GSqlQuery.Queries
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="orderBy">Order by Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
             IQueryBuilderWithWhere<T, JoinQuery<T, QueryOptions>, QueryOptions> queryBuilder)
             : base(selectMember, orderBy, queryBuilder, queryBuilder.QueryOptions)
         { }
@@ -185,7 +153,7 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="andOr">Implementation of the IAndOr interface</param>
         /// <param name="formats">Formats</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
            IAndOr<T, JoinQuery<T, QueryOptions>, QueryOptions> andOr, QueryOptions queryOptions)
            : base(selectMember, orderBy, andOr, queryOptions)
         { }

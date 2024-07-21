@@ -1,6 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery
@@ -23,7 +21,7 @@ namespace GSqlQuery
         /// Class constructor
         /// </summary>
         /// <param name="formats"></param>
-        protected QueryBuilderWithCriteria(TQueryOptions queryOptions) : base(queryOptions)
+        protected QueryBuilderWithCriteria(TQueryOptions queryOptions, PropertyOptionsCollection columns = null) : base(queryOptions, columns)
         { }
 
         /// <summary>

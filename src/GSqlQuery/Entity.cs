@@ -3,7 +3,6 @@ using GSqlQuery.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery
 {
@@ -34,8 +33,8 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Read, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Read, options);
             return new SelectQueryBuilder<T>(options, queryOptions);
         }
 
@@ -108,7 +107,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
             return new UpdateQueryBuilder<T>(queryOptions, options, value);
         }
 
@@ -130,8 +129,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Update, options);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Update, options);
             return new UpdateQueryBuilder<T>(queryOptions, this, options);
         }
 

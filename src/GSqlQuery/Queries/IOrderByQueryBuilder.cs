@@ -1,6 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
@@ -14,6 +12,6 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="orderBy">Order by Type</param>
-        void AddOrderBy(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy);
+        void AddOrderBy(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy);
     }
 }

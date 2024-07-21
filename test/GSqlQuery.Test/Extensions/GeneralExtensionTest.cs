@@ -29,29 +29,30 @@ namespace GSqlQuery.Test.Extensions
         public void Should_return_the_classoption_and_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
             Assert.NotNull(options.ClassOptions);
-            Assert.NotNull(options.MemberInfo);
+            Assert.NotNull(options.Columns);
         }
 
         [Fact]
         public void Should_return_the_classoption_and_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
             Assert.NotNull(options.ClassOptions);
-            Assert.NotNull(options.MemberInfo);
+            Assert.NotNull(options.Columns.Key);
+            Assert.NotNull(options.Columns.Value);
         }
 
         [Fact]
         public void Should_vallidate_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
 
             try
             {
-                ExpressionExtension.ValidateMemberInfos(QueryType.Delete, options);
+                ExpressionExtension.ValidateClassOptionsTupla(QueryType.Delete, options);
                 Assert.True(true);
             }
             catch (Exception)
@@ -64,9 +65,10 @@ namespace GSqlQuery.Test.Extensions
         public void Should_vallidate_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            var result = ExpressionExtension.ValidateMemberInfo(options.MemberInfo, options.ClassOptions);
-            Assert.NotNull(result);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
+            Assert.NotNull(options.ClassOptions);
+            Assert.NotNull(options.Columns.Key);
+            Assert.NotNull(options.Columns.Value);
         }
 
         [Fact]
@@ -74,9 +76,8 @@ namespace GSqlQuery.Test.Extensions
         {
             Test1 model = new Test1(1, "Name", DateTime.Now, true);
             Expression<Func<Test1, object>> expression = x => x.Name;
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            var propertyOptions = ExpressionExtension.ValidateMemberInfo(options.MemberInfo, options.ClassOptions);
-            var result = ExpressionExtension.GetValue(propertyOptions,model);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
+            var result = ExpressionExtension.GetValue(options.Columns.Value, model);
             Assert.NotNull(result);
             Assert.NotEmpty(result.ToString());
         }
@@ -100,7 +101,8 @@ namespace GSqlQuery.Test.Extensions
             Assert.NotNull(result);
             Assert.NotNull(result.Table);
             Assert.NotNull(result.Column);
-            Assert.NotNull(result.MemberInfo);
+            Assert.NotNull(result.KeyValue.Key);
+            Assert.NotNull(result.KeyValue.Value);
         }
 
         [Fact]
@@ -111,7 +113,8 @@ namespace GSqlQuery.Test.Extensions
             Assert.NotNull(result);
             Assert.NotNull(result.Table);
             Assert.NotNull(result.Column);
-            Assert.NotNull(result.MemberInfo);
+            Assert.NotNull(result.KeyValue.Key);
+            Assert.NotNull(result.KeyValue.Value);
         }
     }
 }

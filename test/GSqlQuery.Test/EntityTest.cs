@@ -4,10 +4,7 @@ using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Helpers;
 using GSqlQuery.Test.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Reflection;
 using Xunit;
 
 namespace GSqlQuery.Test
@@ -65,7 +62,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Select_Test3_TestData))]
         public void Retrieve_all_properties_of_the_query(QueryOptions queryOptions, string query)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
 
             IQueryBuilderWithWhere<SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions);
             SelectQuery<Test3> result = queryBuilder.Build();
@@ -81,7 +78,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Select_Test3_TestData2))]
         public void Retrieve_some_properties_from_the_query(QueryOptions queryOptions, string query)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
             IQueryBuilderWithWhere<SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates });
 
             SelectQuery<Test3> result = queryBuilder.Build();
@@ -97,7 +94,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Select_Test3_TestData3))]
         public void Should_return_the_query_with_where(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
             var query = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
 
             string result = query.Text;
@@ -120,7 +117,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test3_TestData))]
         public void Should_generate_the_insert_query_with_auto_incrementing(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
 
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Insert(queryOptions).Build();
@@ -143,7 +140,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_query(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             Test6 test = new Test6()
             {
                 Ids = 1, Names = null, Creates = DateTime.Now, IsTests = true
@@ -170,7 +167,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test3_TestData))]
         public void Should_generate_the_insert_static_query_with_auto_incrementing(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = Test3.Insert(queryOptions, test).Build();
 
@@ -194,7 +191,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Insert_Test6_TestData))]
         public void Should_generate_the_insert_static_query(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             Test6 test = new Test6()
             {
                 Ids = 1,
@@ -224,7 +221,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData))]
         public void Should_generate_the_update_query(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(queryOptions, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests).Build();
 
@@ -248,7 +245,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData2))]
         public void Should_generate_the_update_query_with_where(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             Test3 test = new Test3(1, null, DateTime.Now, true);
             var query = test.Update(queryOptions, x => new { x.Ids, x.Names, x.Creates }).Set(x => x.IsTests)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
@@ -273,7 +270,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData))]
         public void Should_generate_the_static_update_query(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             var query = Test3.Update(queryOptions, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false).Build();
 
             string result = query.Text;
@@ -296,7 +293,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Update_Test3_TestData2))]
         public void Should_generate_the_static_update_query_with_where(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             var query = Test3.Update(queryOptions, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now).Build();
 
@@ -319,7 +316,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Delete_Test3_TestData))]
         public void Should_generate_the_delete_query(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             var query = Test3.Delete(queryOptions).Build();
 
             Assert.NotNull(query);
@@ -333,7 +330,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Delete_Test3_TestData2))]
         public void Should_generate_the_delete_where_query(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
             var query = Test3.Delete(queryOptions).Where().Equal(x => x.IsTests, true).AndIsNotNull(x => x.Creates).Build();
 
             string result = query.Text;
@@ -359,7 +356,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Count_Test3_TestData))]
         public void Should_generate_the_count_query(QueryOptions queryOptions, string query)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids }));
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => x.Ids);
             IQueryBuilderWithWhere<Test3, CountQuery<Test3>, QueryOptions> countQuery = queryBuilder.Count();
             var queryTmp = countQuery?.Build();
@@ -375,7 +372,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Count_Test3_TestData2))]
         public void Should_generate_some_properties_from_the_count_query(QueryOptions queryOptions, string query)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates });
             IQueryBuilderWithWhere<Test3, CountQuery<Test3>, QueryOptions> countQuery = queryBuilder.Count();
             var queryTmp = countQuery?.Build();
@@ -390,7 +387,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Count_Test3_TestData3))]
         public void Should_return_the_count_query_with_where(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
             var query = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates }).Count().Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12).Build();
 
             string result = query.Text;
@@ -413,7 +410,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(OrderBy_Test3_TestData))]
         public void Should_generate_the_orderby_query(QueryOptions queryOptions, string query)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids }));
 
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => x.Ids);
             IQueryBuilder<OrderByQuery<Test3>, QueryOptions> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
@@ -430,7 +427,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(OrderBy_Test3_TestData2))]
         public void Should_generate_some_properties_from_the_orderby_query(QueryOptions queryOptions, string query)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates });
             IQueryBuilder<OrderByQuery<Test3>, QueryOptions> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             var queryTmp = countQuery?.Build();
@@ -446,7 +443,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(OrderBy_Test3_TestData3))]
         public void Should_return_the_orderby_query_with_where(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates }));
             var queryBuilder = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12);
             var query = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC).Build();
             
@@ -1026,7 +1023,7 @@ namespace GSqlQuery.Test
         [ClassData(typeof(Delete_Test3_TestData3))]
         public void Should_generate_the_delete_query_with_entity(QueryOptions queryOptions, string queryText)
         {
-            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetMembers<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
+            ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
 
             Test3 test3 = new Test3(1, "Names", DateTime.Now, true);
             var query = Test3.Delete(queryOptions, test3).Build();

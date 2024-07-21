@@ -1,9 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
@@ -85,14 +83,9 @@ namespace GSqlQuery.Queries
         private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
             where TJoin : class
         {
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Criteria, options);
-            IEnumerable<string> selectMember = options.MemberInfo.Select(x => x.Name);
-            if (selectMember == null)
-            {
-                throw new ArgumentNullException(nameof(selectMember));
-            }
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, QueryOptions, ExpressionExtension.GetPropertyQuery(options));
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
+            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, QueryOptions, options.Columns);
         }
 
         /// <summary>

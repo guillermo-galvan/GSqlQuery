@@ -1,9 +1,8 @@
-﻿using System;
+﻿using GSqlQuery.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Xunit;
-using GSqlQuery.Extensions;
 
 namespace GSqlQuery.Test.Helpers
 {
@@ -13,12 +12,12 @@ namespace GSqlQuery.Test.Helpers
 
         public int Count => _propertiesName.Count;
 
-        public ValidateColumns(IEnumerable<MemberInfo> memberInfos)
+        public ValidateColumns(PropertyOptionsCollection memberInfos)
         {
             _propertiesName = [];
-            foreach (MemberInfo item in memberInfos)
+            foreach (KeyValuePair<string, PropertyOptions> item in memberInfos)
             {
-                _propertiesName.Add(item.Name);
+                _propertiesName.Add(item.Key);
             }
         }
 
@@ -44,26 +43,26 @@ namespace GSqlQuery.Test.Helpers
         private readonly List<string> _thirdTable;
         private readonly ValidateType _validateType;
 
-        public ValidateColumnsJoin(IFormats formats,ClassOptionsTupla<IEnumerable<MemberInfo>> memberInfoFirstable, ClassOptionsTupla<IEnumerable<MemberInfo>> memberInfoSecondTable, ClassOptionsTupla<IEnumerable<MemberInfo>> memberInfoThirdTable = null)
+        public ValidateColumnsJoin(IFormats formats,ClassOptionsTupla<PropertyOptionsCollection> memberInfoFirstable, ClassOptionsTupla<PropertyOptionsCollection> memberInfoSecondTable, ClassOptionsTupla<PropertyOptionsCollection> memberInfoThirdTable = null)
         {
             _firstTable = [];
             _secondTable = [];
             _thirdTable = [];
             _validateType = ValidateType.First | ValidateType.Second;
 
-            foreach (var item in ExpressionExtension.GetPropertyQuery(memberInfoFirstable))
+            foreach (var item in memberInfoFirstable.Columns)
             {
                 _firstTable.Add(formats.Format.Replace("{0}", $"{memberInfoFirstable.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}"));
             }
 
-            foreach (var item in ExpressionExtension.GetPropertyQuery(memberInfoSecondTable))
+            foreach (var item in memberInfoSecondTable.Columns)
             {
                 _secondTable.Add(formats.Format.Replace("{0}", $"{memberInfoSecondTable.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}"));
             }
 
-            if (memberInfoThirdTable != null && memberInfoThirdTable.MemberInfo.Any())
+            if (memberInfoThirdTable != null && memberInfoThirdTable.Columns.Any())
             {
-                foreach (var item in ExpressionExtension.GetPropertyQuery(memberInfoThirdTable))
+                foreach (var item in memberInfoThirdTable.Columns)
                 {
                     _thirdTable.Add(formats.Format.Replace("{0}", $"{memberInfoThirdTable.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}"));
                 }

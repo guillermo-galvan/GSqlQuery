@@ -1,7 +1,5 @@
 ﻿using GSqlQuery.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
@@ -22,7 +20,7 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get Column
         /// </summary>
-        public ColumnAttribute Column { get; } = classOptionsTupla.MemberInfo;
+        public ColumnAttribute Column { get; } = classOptionsTupla.Columns;
 
         /// <summary>
         /// Get Table
