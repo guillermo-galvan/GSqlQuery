@@ -15,8 +15,8 @@ namespace GSqlQuery.Test.Queries
         public DeleteWhereTest()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            var columnAttribute = classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
-            var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, columnAttribute);
+            var columnAttribute = classOptions.PropertyOptions[nameof(Test1.Id)];
+            var classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(classOptions, columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
             _queryBuilder = new DeleteQueryBuilder<Test1>(new QueryOptions(new DefaultFormats()));
 

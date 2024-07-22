@@ -64,7 +64,7 @@ namespace GSqlQuery.Queries
             {
                 object value = ExpressionExtension.GetValue(item, _entity);
                 string paramName = "@PD" + Helpers.GetIdParam().ToString();
-                string columName = QueryOptions.Formats.GetColumnName(_tableName, item.ColumnAttribute, QueryType.Criteria);
+                string columName = item.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Criteria);
                 string partQuery = (count++ == 0 ? string.Empty : "AND ") + columName + "=" + paramName;
                 ParameterDetail parameterDetail = new ParameterDetail(paramName, value, item);
                 CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);

@@ -23,9 +23,9 @@ namespace GSqlQuery
         public ColumnAttribute ColumnAttribute { get; }
 
         /// <summary>
-        /// Get TableAttribute
+        /// Get FormatColumnName
         /// </summary>
-        public TableAttribute TableAttribute { get; }
+        public FormatColumnNameCollection FormatColumnName { get; }
 
         /// <summary>
         /// Class constructor
@@ -33,13 +33,13 @@ namespace GSqlQuery
         /// <param name="positionObject">Position Constructor</param>
         /// <param name="propertyInfo">PropertyInfo</param>
         /// <param name="columnAttribute">ColumnAttribute</param>
-        /// <param name="tableAttribute">TableAttribute</param>
-        public PropertyOptions(int positionObject, PropertyInfo propertyInfo, ColumnAttribute columnAttribute, TableAttribute tableAttribute)
+        /// <param name="formatColumnName">FormatColumnNameCollection</param>
+        internal PropertyOptions(int positionObject, PropertyInfo propertyInfo, ColumnAttribute columnAttribute, FormatColumnNameCollection formatColumnName)
         {
             PositionConstructor = positionObject;
             PropertyInfo = propertyInfo;
             ColumnAttribute = columnAttribute;
-            TableAttribute = tableAttribute;
+            FormatColumnName = formatColumnName;
         }
     }
 }

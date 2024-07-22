@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using System;
+﻿using System;
 
 namespace GSqlQuery
 {
@@ -36,7 +35,7 @@ namespace GSqlQuery
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
             Columns = columns ?? _classOptions.PropertyOptions;
-            _tableName = TableAttributeExtension.GetTableName(_classOptions.Table, QueryOptions.Formats);
+            _tableName = _classOptions.FormatTableName.GetTableName(QueryOptions.Formats);
         }
 
         /// <summary>

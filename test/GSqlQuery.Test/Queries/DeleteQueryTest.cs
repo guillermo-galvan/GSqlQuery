@@ -8,18 +8,18 @@ namespace GSqlQuery.Test.Queries
 {
     public class DeleteQueryTest
     {
-        private readonly ColumnAttribute _columnAttribute;
+        private readonly PropertyOptions _propertyOptions;
         private readonly Equal<int> _equal;
         private readonly QueryOptions _queryOptions;
         private readonly ClassOptions _classOptions;
-        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
+        private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
 
         public DeleteQueryTest()
         {
             _queryOptions = new QueryOptions(new DefaultFormats());
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
-            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
+            _propertyOptions = _classOptions.PropertyOptions[nameof(Test1.Id)];
+            _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _propertyOptions);
             _equal = new Equal<int>(_classOptionsTupla, new DefaultFormats(), 1);
         }
 

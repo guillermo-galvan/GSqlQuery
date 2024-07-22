@@ -11,7 +11,7 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="initialValue">Initial value</param>
     /// <param name="finalValue">Final value</param>
     /// <param name="logicalOperator">Logical Operator</param>
-    internal class NotBetween<T>(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue, string logicalOperator) :
+    internal class NotBetween<T>(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T initialValue, T finalValue, string logicalOperator) :
         Between<T>(classOptionsTupla, formats, initialValue, finalValue, logicalOperator)
     {
         protected override string RelationalOperator => "NOT BETWEEN";
@@ -25,7 +25,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="formats">Formats</param>
         /// <param name="initialValue">Initial value</param>
         /// <param name="finalValue">Final value</param>
-        public NotBetween(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue) :
+        public NotBetween(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T initialValue, T finalValue) :
             this(classOptionsTupla, formats, initialValue, finalValue, null)
         {
 

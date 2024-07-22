@@ -11,19 +11,19 @@ namespace GSqlQuery.Test.SearchCriteria
 {
     public class NotBetweenTest
     {
-        private readonly ColumnAttribute _columnAttribute;
+        private readonly PropertyOptions _columnAttribute;
         private readonly QueryOptions _queryOptions;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
-        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
+        private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
 
         public NotBetweenTest()
         {
             _queryOptions = new QueryOptions(new DefaultFormats());
             _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), _queryOptions);
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
-            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
+            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
+            _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
         }
 
         [Fact]

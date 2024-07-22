@@ -24,7 +24,7 @@ namespace GSqlQuery
             where TQueryOptions : QueryOptions
         {
             IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             Between<TProperties> between = new Between<TProperties>(columnInfo, where.QueryOptions.Formats, initial, final);
             andor.Add(between);
             return andor;
@@ -54,7 +54,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             Between<TProperties> between = new Between<TProperties>(columnInfo, andOr.QueryOptions.Formats, initial, final, "AND");
             andOr.Add(between);
             return andOr;
@@ -85,7 +85,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             Between<TProperties> between = new Between<TProperties>(columnInfo, andOr.QueryOptions.Formats, initial, final, "OR");
             andOr.Add(between);
             return andOr;

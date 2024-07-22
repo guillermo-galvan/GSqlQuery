@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -33,8 +32,8 @@ namespace GSqlQuery.Queries
                 foreach (KeyValuePair<string, PropertyOptions> item in joinInfo.Columns)
                 {
                     string alias = formats.Format.Replace("{0}", $"{joinInfo.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}");
-                    string tableName = TableAttributeExtension.GetTableName(joinInfo.ClassOptions.Table, formats);
-                    string columnName = formats.GetColumnName(tableName, item.Value.ColumnAttribute, QueryType.Join);
+                    string tableName = joinInfo.ClassOptions.FormatTableName.GetTableName(formats);
+                    string columnName = item.Value.FormatColumnName.GetColumnName(formats, QueryType.Join);
                     string queryPart = "{0} as {1}".Replace("{0}", columnName).Replace("{1}", alias);
                     columnDetailJoins.Add(new ColumnDetailJoin(queryPart, alias, item.Value));
                 }
@@ -57,7 +56,7 @@ namespace GSqlQuery.Queries
             {
                 string a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(formats, x)));
 
-                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, TableAttributeExtension.GetTableName(item.ClassOptions.Table, formats), a)}");
+                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, item.ClassOptions.FormatTableName.GetTableName(formats), a)}");
             }
 
             return joinQuerys;
@@ -87,8 +86,8 @@ namespace GSqlQuery.Queries
         /// <returns></returns>
         internal static string CreateJoinQueryPart(IFormats formats, JoinModel joinModel)
         {
-            string partRight = formats.GetColumnName(TableAttributeExtension.GetTableName(joinModel.JoinModel1.Table, formats), joinModel.JoinModel1.Column, QueryType.Join);
-            string partLeft = formats.GetColumnName(TableAttributeExtension.GetTableName(joinModel.JoinModel2.Table, formats), joinModel.JoinModel2.Column, QueryType.Join);
+            string partRight = joinModel.JoinModel1.KeyValue.Value.FormatColumnName.GetColumnName(formats, QueryType.Join);
+            string partLeft = joinModel.JoinModel2.KeyValue.Value.FormatColumnName.GetColumnName(formats, QueryType.Join);
 
             string joinCriteria = string.Empty;
 
@@ -178,7 +177,7 @@ namespace GSqlQuery.Queries
             JoinInfo tableMain = _joinInfos.First(x => x.IsMain);
             IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, QueryOptions.Formats);
 
-            string tableName = TableAttributeExtension.GetTableName(tableMain.ClassOptions.Table, QueryOptions.Formats);
+            string tableName = tableMain.ClassOptions.FormatTableName.GetTableName(QueryOptions.Formats);
             string resultColumns = string.Join(",", columns.Select(x => x.PartQuery));
             string resultJoinQuerys = string.Join(" ", joinQuerys);
 

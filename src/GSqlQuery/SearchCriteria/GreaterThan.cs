@@ -18,7 +18,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
         /// <param name="value">Value</param>
-        public GreaterThan(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value) :
+        public GreaterThan(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T value) :
             base(classOptionsTupla, formats, value)
         {
         }
@@ -30,7 +30,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="formats">Formats</param>
         /// <param name="value">Value</param>
         /// <param name="logicalOperator">Logical operator</param>
-        public GreaterThan(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value, string logicalOperator) :
+        public GreaterThan(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T value, string logicalOperator) :
             base(classOptionsTupla, formats, value, logicalOperator)
         { }
     }

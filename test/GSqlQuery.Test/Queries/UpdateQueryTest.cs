@@ -9,7 +9,7 @@ namespace GSqlQuery.Test.Queries
 {
     public class UpdateQueryTest
     {
-        private readonly ColumnAttribute _columnAttribute;
+        private readonly PropertyOptions _columnAttribute;
         private readonly Equal<int> _equal;
         private readonly QueryOptions _queryOptions;
         private readonly ClassOptions _classOptions;
@@ -17,8 +17,8 @@ namespace GSqlQuery.Test.Queries
         public UpdateQueryTest()
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)]?.ColumnAttribute;
-            var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
+            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
+            var classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
             _queryOptions = new QueryOptions(new DefaultFormats());
         }

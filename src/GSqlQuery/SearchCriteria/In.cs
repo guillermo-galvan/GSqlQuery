@@ -1,7 +1,6 @@
 ﻿using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +27,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
         /// <param name="values">Equality value</param>
-        public In(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values) : this(classOptionsTupla, formats, values, null)
+        public In(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, IEnumerable<T> values) : this(classOptionsTupla, formats, values, null)
         { }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="values">Equality value</param>
         /// <param name="logicalOperator">Logical operator </param>
         /// <exception cref="ArgumentNullException"></exception>
-        public In(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator)
+        public In(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator)
             : base(classOptionsTupla, formats, logicalOperator)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));
@@ -53,12 +52,12 @@ namespace GSqlQuery.SearchCriteria
 
         private Task<CriteriaDetails> CreteData()
         {
-            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
             ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
             int count = 0;
             int index = 0;
             string ticks = Helpers.GetIdParam().ToString();
-            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+            string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
             PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
 
             foreach (T item in Values)

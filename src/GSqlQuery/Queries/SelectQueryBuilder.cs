@@ -47,7 +47,7 @@ namespace GSqlQuery.Queries
         /// <returns>Query Text</returns>
         internal string CreateQuery()
         {
-            IEnumerable<string> columnsName = Columns.Values.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            IEnumerable<string> columnsName = Columns.Values.Select(x => x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Read));
             string columns = string.Join(",", columnsName);
 
             if (_andOr == null)

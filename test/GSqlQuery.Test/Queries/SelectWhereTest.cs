@@ -3,8 +3,6 @@ using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries
@@ -17,8 +15,8 @@ namespace GSqlQuery.Test.Queries
         public SelectWhereTest()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            var columnAttribute = classOptions.PropertyOptions[nameof(Test1.Id)].ColumnAttribute;
-            var classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, columnAttribute);
+            var columnAttribute = classOptions.PropertyOptions[nameof(Test1.Id)];
+            var classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(classOptions, columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
             _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }),
                new QueryOptions(new DefaultFormats()));

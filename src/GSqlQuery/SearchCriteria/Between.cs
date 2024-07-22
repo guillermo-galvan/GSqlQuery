@@ -30,7 +30,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="formats">Formats</param>
         /// <param name="initialValue">Initial value</param>
         /// <param name="finalValue">Logical operator</param>
-        public Between(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue) :
+        public Between(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T initialValue, T finalValue) :
             this(classOptionsTupla, formats, initialValue, finalValue, null)
         {
 
@@ -43,7 +43,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="formats">Formats</param>
         /// <param name="initialValue">Initial value</param>
         /// <param name="logicalOperator">Logical operator</param>
-        public Between(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue, string logicalOperator) :
+        public Between(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T initialValue, T finalValue, string logicalOperator) :
             base(classOptionsTupla, formats, logicalOperator)
         {
             Initial = initialValue;
@@ -53,11 +53,11 @@ namespace GSqlQuery.SearchCriteria
 
         private Task<CriteriaDetails> CreteData()
         {
-            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
             string tiks = Helpers.GetIdParam().ToString();
             string parameterName1 = "@{0}1".Replace("{0}", ParameterPrefix) + tiks;
             string parameterName2 = "@{0}2".Replace("{0}", ParameterPrefix) + tiks;
-            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+            string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
 
             string criterion = "{0} {1} {2} AND {3}".Replace("{0}", columName).Replace("{1}", RelationalOperator)
                                                     .Replace("{2}", parameterName1).Replace("{3}", parameterName2);

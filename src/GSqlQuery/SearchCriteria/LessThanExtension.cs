@@ -22,7 +22,7 @@ namespace GSqlQuery
             where TQueryOptions : QueryOptions
         {
             IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             LessThan<TProperties> lessThan = new LessThan<TProperties>(columnInfo, where.QueryOptions.Formats, value);
             andor.Add(lessThan);
             return andor;
@@ -51,7 +51,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             LessThan<TProperties> lessThan = new LessThan<TProperties>(columnInfo, andOr.QueryOptions.Formats, value, "AND");
             andOr.Add(lessThan);
             return andOr;
@@ -80,7 +80,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             LessThan<TProperties> lessThan = new LessThan<TProperties>(columnInfo, andOr.QueryOptions.Formats, value, "OR");
             andOr.Add(lessThan);
             return andOr;

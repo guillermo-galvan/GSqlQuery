@@ -10,7 +10,7 @@ namespace GSqlQuery.Test.Models
         {
             ClassOptions classOptions = new ClassOptions(typeof(Test1));
             Assert.NotNull(classOptions);
-            Assert.NotNull(classOptions.Table);
+            Assert.NotNull(classOptions.FormatTableName);
             Assert.NotNull(classOptions.PropertyOptions);
             Assert.NotEmpty(classOptions.PropertyOptions.Keys);
             Assert.NotEmpty(classOptions.PropertyOptions);

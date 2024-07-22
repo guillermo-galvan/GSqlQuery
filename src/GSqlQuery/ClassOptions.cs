@@ -10,8 +10,6 @@ namespace GSqlQuery
     /// </summary>
     public sealed class ClassOptions
     {
-        private PropertyOptionsCollection _propertyOptions;
-
         /// <summary>
         /// Get Type
         /// </summary>
@@ -20,13 +18,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get properties
         /// </summary>
-        public PropertyOptionsCollection PropertyOptions 
-        {
-            get
-            {
-                return _propertyOptions;
-            }
-        }
+        public PropertyOptionsCollection PropertyOptions { get; }
 
         /// <summary>
         /// Get default construtor
@@ -41,7 +33,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get table
         /// </summary>
-        public TableAttribute Table { get; private set; }
+        public FormatTableNameCollection FormatTableName { get; private set; }
 
         /// <summary>
         /// Class constructor
@@ -52,8 +44,8 @@ namespace GSqlQuery
         public ClassOptions(Type type)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
-            Table = GetTableAttribute();
-            _propertyOptions = new PropertyOptionsCollection(GetProperties());
+            FormatTableName = GetTableAttribute();
+            PropertyOptions = new PropertyOptionsCollection(GetProperties());
             ConstructorInfo = GetConstructor() ?? throw new Exception("No constructor found");
         }
 
@@ -64,7 +56,17 @@ namespace GSqlQuery
             {
                 throw new Exception($"{Type.Name} has no properties");
             }
-            return properties.Select(x => new KeyValuePair<string, PropertyOptions>(x.Name, new PropertyOptions(0, x, (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute, Table))).ToList();
+
+
+
+            return properties.Select(x => 
+            {
+                ColumnAttribute columnAttribute = (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute;
+                FormatColumnNameCollection formatColumnNameCollection = new FormatColumnNameCollection(columnAttribute, FormatTableName);
+                PropertyOptions  propertyOptions = new PropertyOptions(0, x, (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute, formatColumnNameCollection);
+
+                return new KeyValuePair<string, PropertyOptions>(x.Name, propertyOptions);
+            }).ToList();
         }
 
         private ConstructorInfo GetConstructor()
@@ -82,7 +84,7 @@ namespace GSqlQuery
                 {
                     ConstructorInfoDefault = item;
                 }
-                else if (parameters.Length > 0 && parameters.Length == _propertyOptions.Count)
+                else if (parameters.Length > 0 && parameters.Length == PropertyOptions.Count)
                 {
                     bool find = true;
                     byte position = 0;
@@ -91,7 +93,7 @@ namespace GSqlQuery
                     for (int i = 0; i < parameters.Length; i++)
                     {
                         var param = tmp[i];
-                        PropertyOptions propertyOptions = _propertyOptions[param.Name];
+                        PropertyOptions propertyOptions = PropertyOptions[param.Name];
 
                         if (propertyOptions == null || propertyOptions.PropertyInfo.PropertyType != param.ParameterType)
                         {
@@ -113,9 +115,10 @@ namespace GSqlQuery
             return result ?? ConstructorInfoDefault;
         }
 
-        private TableAttribute GetTableAttribute()
+        private FormatTableNameCollection GetTableAttribute()
         {
-            return (Attribute.GetCustomAttribute(Type, typeof(TableAttribute)) ?? new TableAttribute(Type.Name)) as TableAttribute;
+            TableAttribute tableAttribute = (Attribute.GetCustomAttribute(Type, typeof(TableAttribute)) ?? new TableAttribute(Type.Name)) as TableAttribute;
+            return new FormatTableNameCollection(tableAttribute);
         }
     }
 }

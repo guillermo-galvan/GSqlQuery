@@ -34,7 +34,7 @@ namespace GSqlQuery.Test
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();
-            query = select2.Build();
+            query = select2.Build(); 
             timeMeasure2.Stop();
 
             Console.WriteLine($"Tiempo: {timeMeasure2.Elapsed.TotalMilliseconds} ms");
@@ -960,13 +960,13 @@ namespace GSqlQuery.Test
             ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
             var queryResult = Test3.Select(queryOptions)
-                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
-                              .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
-                              .Where()
-                              .Equal(x => x.Table1.Ids, 1)
-                              .AndEqual(x => x.Table2.IsTests, true)
-                              .OrderBy(x => new { x.Table2.IsTests, x.Table1.Names, x.Table3.Id }, OrderBy.ASC)
-                              .Build();
+                                   .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                                   .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                                   .Where()
+                                   .Equal(x => x.Table1.Ids, 1)
+                                   .AndEqual(x => x.Table2.IsTests, true)
+                                   .OrderBy(x => new { x.Table2.IsTests, x.Table1.Names, x.Table3.Id }, OrderBy.ASC)
+                                   .Build();
 
             string result = queryResult.Text;
             if (queryResult.Criteria != null)

@@ -202,9 +202,7 @@ namespace GSqlQuery.Extensions
         {
             KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
-            ColumnAttribute columnAttribute = keyValue.Value.ColumnAttribute;
-
-            return new JoinCriteriaPart(columnAttribute, options.Table, keyValue); ;
+            return new JoinCriteriaPart(options, keyValue); ;
         }
 
         /// <summary>
@@ -224,9 +222,8 @@ namespace GSqlQuery.Extensions
         {
             KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
-            ColumnAttribute columnAttribute = keyValue.Value.ColumnAttribute;
 
-            return new JoinCriteriaPart(columnAttribute, options.Table, keyValue);
+            return new JoinCriteriaPart(options, keyValue);
         }
 
         /// <summary>
@@ -237,11 +234,11 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>ColumnAttribute</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static ClassOptionsTupla<ColumnAttribute> GetColumnAttribute<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        internal static ClassOptionsTupla<PropertyOptions> GetColumnAttribute<T, TProperties>(Expression<Func<T, TProperties>> expression)
         {
             KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
-            return new ClassOptionsTupla<ColumnAttribute>(options, keyValue.Value.ColumnAttribute);
+            return new ClassOptionsTupla<PropertyOptions>(options, keyValue.Value);
         }
     }
 }

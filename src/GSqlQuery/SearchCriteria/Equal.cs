@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
@@ -25,7 +24,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
-        public Equal(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value) :
+        public Equal(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T value) :
             this(classOptionsTupla, formats, value, null)
         { }
 
@@ -36,7 +35,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public Equal(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value, string logicalOperator) :
+        public Equal(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T value, string logicalOperator) :
             base(classOptionsTupla, formats, logicalOperator)
         {
             Value = value;
@@ -45,9 +44,9 @@ namespace GSqlQuery.SearchCriteria
 
         private Task<CriteriaDetails> CreteData()
         {
-            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
+            string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
             string parameterName = "@" + ParameterPrefix + Helpers.GetIdParam();
-            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+            string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
 
             string criterion = "{0} {1} {2}".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", parameterName);
 

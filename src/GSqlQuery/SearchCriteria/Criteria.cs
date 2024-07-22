@@ -11,21 +11,21 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="formats">Column Attribute</param>
     /// <param name="logicalOperator">Logical Operator </param>
     /// <exception cref="ArgumentNullException"></exception>
-    internal abstract class Criteria(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string logicalOperator) : ISearchCriteria
+    internal abstract class Criteria(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, string logicalOperator) : ISearchCriteria
     {
-        protected readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla = classOptionsTupla;
+        protected readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla = classOptionsTupla;
 
         protected Task<CriteriaDetails> _task;
 
         /// <summary>
         /// Get Column
         /// </summary>
-        public ColumnAttribute Column { get; } = classOptionsTupla.Columns;
+        public ColumnAttribute Column { get; } = classOptionsTupla.Columns.ColumnAttribute;
 
         /// <summary>
         /// Get Table
         /// </summary>
-        public TableAttribute Table { get; } = classOptionsTupla.ClassOptions.Table;
+        public TableAttribute Table { get; } = classOptionsTupla.ClassOptions.FormatTableName.Table;
 
         /// <summary>
         /// Get logical operator

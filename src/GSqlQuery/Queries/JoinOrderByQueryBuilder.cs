@@ -80,7 +80,7 @@ namespace GSqlQuery.Queries
             foreach (ColumnsOrderBy x in _columnsByOrderBy)
             {
                 IEnumerable<string> columnNames =
-                    x.Columns.Values.Select(y => QueryOptions.Formats.GetColumnName(TableAttributeExtension.GetTableName(y.TableAttribute, QueryOptions.Formats), y.ColumnAttribute, QueryType.Join));
+                    x.Columns.Values.Select(y => y.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Join));
                 string tmpJoinColumns = string.Join(",", columnNames);
 
                 string tmpColumns = "{0} {1}".Replace("{0}", tmpJoinColumns).Replace("{1}", x.OrderBy.ToString());
@@ -96,7 +96,7 @@ namespace GSqlQuery.Queries
             IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(addJoinCriteria.JoinInfos, QueryOptions.Formats);
 
             string resultJoinColumns = string.Join(",", joinColumns.Select(x => x.PartQuery));
-            string tableName = TableAttributeExtension.GetTableName(tableMain.ClassOptions.Table, QueryOptions.Formats);
+            string tableName = tableMain.ClassOptions.FormatTableName.GetTableName(QueryOptions.Formats);
             string resultJoinQuerys = string.Join(" ", joinQuerys);
 
             if (_andorBuilder == null)

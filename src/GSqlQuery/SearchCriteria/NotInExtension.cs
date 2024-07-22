@@ -23,7 +23,7 @@ namespace GSqlQuery
             where TQueryOptions : QueryOptions
         {
             IAndOr<T, TReturn, TQueryOptions> andor = GSqlQueryExtension.GetAndOr(where, expression);
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             NotIn<TProperties> notIn = new NotIn<TProperties>(columnInfo, where.QueryOptions.Formats, values);
             andor.Add(notIn);
             return andor;
@@ -52,7 +52,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             NotIn<TProperties> notIn = new NotIn<TProperties>(columnInfo, andOr.QueryOptions.Formats, values, "AND");
             andOr.Add(notIn);
             return andOr;
@@ -81,7 +81,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<ColumnAttribute> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
+            ClassOptionsTupla<PropertyOptions> columnInfo = ExpressionExtension.GetColumnAttribute(expression);
             NotIn<TProperties> notIn = new NotIn<TProperties>(columnInfo, andOr.QueryOptions.Formats, values, "OR");
             andOr.Add(notIn);
             return andOr;

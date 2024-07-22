@@ -81,7 +81,7 @@ namespace GSqlQuery.Queries
 
             foreach (ColumnsOrderBy x in _columnsByOrderBy)
             {
-                IEnumerable<string> names = x.Columns.Values.Select(y => QueryOptions.Formats.GetColumnName(_tableName, y.ColumnAttribute, QueryType.Read));
+                IEnumerable<string> names = x.Columns.Values.Select(y => y.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Read));
                 string columnsName = string.Join(",", names);
                 string orderByQuery = "{0} {1}".Replace("{0}", columnsName).Replace("{1}", x.OrderBy.ToString());
                 parts.Enqueue(orderByQuery);
@@ -91,7 +91,7 @@ namespace GSqlQuery.Queries
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;
 
-            IEnumerable<string> ColumnNames = columns.Values.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            IEnumerable<string> ColumnNames = columns.Values.Select(x => x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Read));
             string resultColumnsName = string.Join(",", ColumnNames);
 
             if (selectQuery.Criteria == null || !selectQuery.Criteria.Any())

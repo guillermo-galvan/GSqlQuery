@@ -59,7 +59,7 @@ namespace GSqlQuery.Queries
 
             foreach (PropertyOptions x in propertyOptions)
             {
-                string columnName = QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Create);
+                string columnName = x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Create);
                 object value = ExpressionExtension.GetValue(x, _entity);
                 string parameterName = "@PI" + Helpers.GetIdParam();
                 ParameterDetail parameterDetail = new ParameterDetail(parameterName, value, x);

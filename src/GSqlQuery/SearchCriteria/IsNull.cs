@@ -15,7 +15,7 @@ namespace GSqlQuery.SearchCriteria
         /// </summary>
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
-        public IsNull(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats) :
+        public IsNull(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats) :
             this(classOptionsTupla, formats, null)
         { }
 
@@ -25,7 +25,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
         /// <param name="logicalOperator">Logical Operator</param>
-        public IsNull(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string logicalOperator) :
+        public IsNull(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, string logicalOperator) :
             base(classOptionsTupla, formats, logicalOperator)
         {
             _task = CreteData();
@@ -33,8 +33,8 @@ namespace GSqlQuery.SearchCriteria
 
         private Task<CriteriaDetails> CreteData()
         {
-            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
-            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
+            string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
+            string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
             string criterion = "{0} {1}".Replace("{0}", columName).Replace("{1}", RelationalOperator);
 
             if (!string.IsNullOrWhiteSpace(LogicalOperator))

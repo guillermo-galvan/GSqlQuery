@@ -9,7 +9,7 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="formats">Formats</param>
     /// <param name="value">Equality value</param>
     /// <param name="logicalOperator">Logical Operator</param>
-    internal class NotLike(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string value, string logicalOperator) :
+    internal class NotLike(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, string value, string logicalOperator) :
         Like(classOptionsTupla, formats, value, logicalOperator)
     {
         protected override string RelationalOperator => "NOT LIKE";
@@ -22,7 +22,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="classOptionsTupla">ClassOptionsTupla</param>
         /// <param name="formats">Formats</param>
         /// <param name="value">Equality value</param>
-        public NotLike(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, string value) :
+        public NotLike(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, string value) :
             this(classOptionsTupla, formats, value, null)
         { }
     }

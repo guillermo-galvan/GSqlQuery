@@ -7,16 +7,13 @@ namespace GSqlQuery.Queries
     /// </summary>
     internal class JoinCriteriaPart
     {
-        public JoinCriteriaPart(ColumnAttribute columnAttribute, TableAttribute table, KeyValuePair<string, PropertyOptions> keyValue)
+        public JoinCriteriaPart(ClassOptions classOptions, KeyValuePair<string, PropertyOptions> keyValue)
         {
-            Column = columnAttribute;
-            Table = table;
+            ClassOptions = classOptions;
             KeyValue = keyValue;
         }
 
-        public ColumnAttribute Column { get; set; }
-
-        public TableAttribute Table { get; set; }
+        public ClassOptions ClassOptions { get; set; }
 
         public KeyValuePair<string, PropertyOptions> KeyValue { get; set; }
     }

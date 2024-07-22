@@ -37,18 +37,5 @@ namespace GSqlQuery.Test
             Assert.Null(table.Scheme);
             Assert.NotEmpty(table.ToString());
         }
-
-        [Theory]
-        [InlineData("Default", "table")]
-        [InlineData("My", "table1")]
-        public void Should_get_the_table_name(string scheme, string name)
-        {
-            TableAttribute table = new TableAttribute(scheme, name);
-            var result = TableAttributeExtension.GetTableName(table,new DefaultFormats());
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-            Assert.Equal($"{scheme}.{name}", result);
-            Assert.NotEmpty(table.ToString());
-        }
     }
 }

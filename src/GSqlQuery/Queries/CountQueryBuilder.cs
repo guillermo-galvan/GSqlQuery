@@ -37,7 +37,7 @@ namespace GSqlQuery.Queries
         internal string CreateQuery()
         {
             IQuery<T, TOptions> selectQuery = _queryBuilder.Build();
-            IEnumerable<string> columnsName = selectQuery.Columns.Values.Select(x => QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Read));
+            IEnumerable<string> columnsName = selectQuery.Columns.Values.Select(x => x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Read));
             string columns = string.Join(",", columnsName);
             columns = "COUNT({0})".Replace("{0}", columns);
 
