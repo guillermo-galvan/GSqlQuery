@@ -95,8 +95,19 @@ namespace GSqlQuery.Queries
         /// <returns>SelectQuery</returns>
         public override SelectQuery<T> Build()
         {
-            string text = CreateQuery();
-            return new SelectQuery<T>(text, Columns, _criteria, QueryOptions);
+            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, Columns, QueryOptions.Formats.GetType());
+
+            if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
+            {
+                return query as SelectQuery<T>;
+            }
+            else
+            {
+                string text = CreateQuery();
+                SelectQuery<T> result = new SelectQuery<T>(text, Columns, _criteria, QueryOptions);
+                QueryCache.Cache.Add(identity, result);
+                return result;
+            }
         }
 
         /// <summary>
