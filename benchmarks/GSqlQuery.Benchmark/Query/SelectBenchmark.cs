@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 using GSqlQuery.Benchmarks.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +23,11 @@ namespace GSqlQuery.Benchmarks.Query
             return User.Select(_queryOptions).Build();
         }
 
-        //[Benchmark]
-        //public IQuery GenerateManyColumnsQuery()
-        //{
-        //    return User.Select(_queryOptions, x => new { x.Name, x.LastName, x.IsActive }).Build();
-        //}
+        [Benchmark]
+        public IQuery GenerateManyColumnsQuery()
+        {
+            return User.Select(_queryOptions, x => new { x.Name, x.LastName, x.IsActive }).Build();
+        }
 
         //[Benchmark]
         //public IQuery GenerateEqualWhereQuery()

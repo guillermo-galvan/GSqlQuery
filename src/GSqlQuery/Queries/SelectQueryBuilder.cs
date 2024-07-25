@@ -16,21 +16,17 @@ namespace GSqlQuery.Queries
         where TReturn : IQuery<T,TQueryOptions>
         where TQueryOptions : QueryOptions
     {
+        protected readonly DynamicQuery _dynamicQuery;
 
         /// <summary>
         /// Class constructor
         /// </summary>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="formats">Formats</param>
-        public SelectQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, TQueryOptions queryOptions)
+        public SelectQueryBuilder(DynamicQuery dynamicQuery, TQueryOptions queryOptions)
            : base(queryOptions)
         {
-            if(classOptionsTupla == null || classOptionsTupla.Columns == null )
-            {
-                throw new ArgumentNullException(nameof(classOptionsTupla));
-            }
-
-            Columns = classOptionsTupla.Columns;
+            _dynamicQuery = dynamicQuery ?? throw new ArgumentNullException(nameof(dynamicQuery));
         }
 
         /// <summary>
@@ -47,6 +43,13 @@ namespace GSqlQuery.Queries
         /// <returns>Query Text</returns>
         internal string CreateQuery()
         {
+            if (_dynamicQuery != null)
+            {
+                ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembersByFunc(_dynamicQuery);
+                ExpressionExtension.ValidateClassOptionsTupla(QueryType.Read, options);
+                Columns = options.Columns;
+            }
+
             IEnumerable<string> columnsName = Columns.Values.Select(x => x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Read));
             string columns = string.Join(",", columnsName);
 
@@ -75,8 +78,8 @@ namespace GSqlQuery.Queries
         /// <param name="selectMember">Selected Member Set</param>
         /// <param name="formats">formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SelectQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> classOptionsTupla, QueryOptions queryOptions)
-            : base(classOptionsTupla, queryOptions)
+        public SelectQueryBuilder(DynamicQuery dynamicQuery, QueryOptions queryOptions)
+            : base(dynamicQuery, queryOptions)
         { }
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace GSqlQuery.Queries
         /// <returns>SelectQuery</returns>
         public override SelectQuery<T> Build()
         {
-            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, Columns, QueryOptions.Formats.GetType());
+            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, QueryOptions.Formats.GetType(), _dynamicQuery?.Properties, _andOr?.GetType());
 
             if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
             {

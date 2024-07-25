@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,8 @@ namespace GSqlQuery.Test.Extensions
 
         public IAndOrExtensionTest()
         {
-            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), new QueryOptions(new DefaultFormats()));
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create }) ; 
+            _queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, new QueryOptions(new DefaultFormats()));
         }
 
         [Fact]

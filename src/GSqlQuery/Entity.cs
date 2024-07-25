@@ -21,21 +21,19 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>Bulder</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IJoinQueryBuilder<T, SelectQuery<T>, QueryOptions> Select<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
+        public static IJoinQueryBuilder<T, SelectQuery<T>, QueryOptions> Select<TProperties>(QueryOptions queryOptions, Func<T, TProperties> func)
         {
             if (queryOptions == null)
             {
                 throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
             }
 
-            if (expression == null)
+            if (func == null)
             {
-                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+                throw new ArgumentNullException(nameof(func), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Read, options);
-            return new SelectQueryBuilder<T>(options, queryOptions);
+            return new SelectQueryBuilder<T>(new DynamicQuery(typeof(T), typeof(TProperties)), queryOptions);
         }
 
         /// <summary>

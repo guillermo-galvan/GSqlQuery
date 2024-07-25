@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace GSqlQuery.Extensions
 {
@@ -21,6 +22,48 @@ namespace GSqlQuery.Extensions
             PropertyOptionsCollection valuePairs = GetPropertyOptionsCollections(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
             return new ClassOptionsTupla<PropertyOptionsCollection>(options, valuePairs);
+        }
+
+        /// <summary>
+        /// Gets the ClassOptionsTupla
+        /// </summary>
+        /// <typeparam name="T">Type of class</typeparam>
+        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <param name="dynamicQuery">Expression to evaluate</param>
+        /// <returns>ClassOptionsTupla that match expression</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        internal static ClassOptionsTupla<PropertyOptionsCollection> GeTQueryOptionsAndMembersByFunc(DynamicQuery dynamicQuery)
+        {
+            PropertyOptionsCollection valuePairs = GetPropertyOptionsCollectionsByFunc(dynamicQuery);
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(dynamicQuery.Entity);
+            return new ClassOptionsTupla<PropertyOptionsCollection>(options, valuePairs);
+        }
+
+        /// <summary>
+        /// Get members information
+        /// </summary>
+        /// <typeparam name="T">Type of class</typeparam>
+        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <param name="func">Expression to evaluate</param>
+        /// <returns>IEnumerable of PropertyOptionsCollection</returns>
+		internal static PropertyOptionsCollection GetPropertyOptionsCollectionsByFunc(DynamicQuery dynamicQuery)
+        {
+            PropertyInfo[] properties = dynamicQuery.Properties.GetProperties();
+
+            if (properties.Length == 0 || dynamicQuery.Properties == dynamicQuery.Entity)
+            {
+                throw new InvalidOperationException();
+            }
+
+            ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(dynamicQuery.Entity);
+            List<KeyValuePair<string, PropertyOptions>> result = [];
+
+            foreach (PropertyInfo item in  properties)
+            {
+                result.Add(new KeyValuePair<string, PropertyOptions>(item.Name, classOptions.PropertyOptions[item.Name]));
+            }
+
+            return new PropertyOptionsCollection(result);
         }
 
         /// <summary>
@@ -44,8 +87,14 @@ namespace GSqlQuery.Extensions
 
                 foreach (Expression item in newExpression.Arguments)
                 {
-                    var member = (MemberExpression)item;
-                    result.Add(new KeyValuePair<string, PropertyOptions>(member.Member.Name, ClassOptionsFactory.GetClassOptions(member.Expression.Type).PropertyOptions[member.Member.Name]));
+                    if (item is MemberExpression member  && (member.Expression.NodeType == ExpressionType.Parameter || member.Expression.NodeType == ExpressionType.MemberAccess))
+                    {
+                        result.Add(new KeyValuePair<string, PropertyOptions>(member.Member.Name, ClassOptionsFactory.GetClassOptions(member.Expression.Type).PropertyOptions[member.Member.Name]));
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
 
                 return new PropertyOptionsCollection(result);

@@ -21,23 +21,30 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_despues()
         {
-            var select = Film.Select(_queryOptions);
+            //var sssss = "string";
 
-            Stopwatch timeMeasure = new Stopwatch();
-            timeMeasure.Start();            
-            var query = select.Build();
-            timeMeasure.Stop();
+            for (int i = 0; i < 1000000; i++)
+            {
+                var select = Film.Select(_queryOptions, (x) => new { x.FilmId, x.RentalDuration, x.Description, x.RentalRate }).Build();
+            }
 
-            Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
+            //var select = Film.Select(_queryOptions, x => new {x.FilmId, x.RentalDuration, x.Description, x.RentalRate});
 
-            var select2 = Film.Select(_queryOptions);
+            //Stopwatch timeMeasure = new Stopwatch();
+            //timeMeasure.Start();            
+            //var query = select.Build();
+            //timeMeasure.Stop();
 
-            Stopwatch timeMeasure2 = new Stopwatch();
-            timeMeasure2.Start();
-            query = select2.Build(); 
-            timeMeasure2.Stop();
+            //Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
 
-            Console.WriteLine($"Tiempo: {timeMeasure2.Elapsed.TotalMilliseconds} ms");
+            //var select2 = Film.Select(_queryOptions, x => new { x.FilmId, x.RentalDuration, x.Description, x.RentalRate });
+
+            //Stopwatch timeMeasure2 = new Stopwatch();
+            //timeMeasure2.Start();
+            //query = select2.Build(); 
+            //timeMeasure2.Stop();
+
+            //Console.WriteLine($"Tiempo: {timeMeasure2.Elapsed.TotalMilliseconds} ms");
         }
 
         [Fact]
@@ -55,7 +62,7 @@ namespace GSqlQuery.Test
         [Fact]
         public void Throw_exception_if_property_is_not_selected()
         {
-            Assert.Throws<InvalidOperationException>(() => Test3.Select(_queryOptions, x => x));
+            Assert.Throws<InvalidOperationException>(() => Test3.Select(_queryOptions, x => x).Build());
         }
 
         [Theory]
@@ -725,10 +732,10 @@ namespace GSqlQuery.Test
             var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.IsTest });
             ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
-            var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
+            var select = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
-                              .InnerJoin<Test1>(x => new { x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id)
-                              .Build();
+                              .InnerJoin<Test1>(x => new { x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id);
+            var result = select.Build();
             Assert.NotEmpty(result.Text);
             Assert.Equal(query, result.Text);
             Assert.Equal(validateColumns.Count, result.Columns.Count);

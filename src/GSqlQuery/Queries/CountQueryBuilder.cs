@@ -27,7 +27,6 @@ namespace GSqlQuery.Queries
         public CountQueryBuilder(IQueryBuilderWithWhere<TSelectQuery, TOptions> queryBuilder, TOptions queryOptions) : base(queryOptions)
         {
             _queryBuilder = queryBuilder;
-            Columns = queryBuilder.Columns;
         }
 
         /// <summary>
@@ -40,6 +39,7 @@ namespace GSqlQuery.Queries
             IEnumerable<string> columnsName = selectQuery.Columns.Values.Select(x => x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Read));
             string columns = string.Join(",", columnsName);
             columns = "COUNT({0})".Replace("{0}", columns);
+            Columns = selectQuery.Columns;
 
             if (_andOr == null)
             {

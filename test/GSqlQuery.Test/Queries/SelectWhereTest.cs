@@ -18,8 +18,8 @@ namespace GSqlQuery.Test.Queries
             var columnAttribute = classOptions.PropertyOptions[nameof(Test1.Id)];
             var classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(classOptions, columnAttribute);
             _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
-            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }),
-               new QueryOptions(new DefaultFormats()));
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            _queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, new QueryOptions(new DefaultFormats()));
         }
 
         [Fact]
