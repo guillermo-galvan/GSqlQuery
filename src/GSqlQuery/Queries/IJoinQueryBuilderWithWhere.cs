@@ -43,7 +43,7 @@ namespace GSqlQuery
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,<typeparamref name="TQueryOptions"/>&gt;</returns>
-        IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, TQueryOptions>, TQueryOptions> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
+        IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, TQueryOptions>, TQueryOptions> InnerJoin<TJoin>(Func<TJoin, object> func)
             where TJoin : class;
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace GSqlQuery
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,<typeparamref name="TQueryOptions"/>&gt;</returns>
-        IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, TQueryOptions>, TQueryOptions> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression)
+        IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, TQueryOptions>, TQueryOptions> LeftJoin<TJoin>(Func<TJoin, object> func)
             where TJoin : class;
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace GSqlQuery
         /// </summary>
         /// <typeparam name="TJoin">Type for third table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TJoin"/>&gt;&gt;,<typeparamref name="TQueryOptions"/>&gt;</returns>
-        IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, TQueryOptions>, TQueryOptions> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression)
+        IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, TQueryOptions>, TQueryOptions> RightJoin<TJoin>(Func<TJoin, object> func)
             where TJoin : class;
     }
 

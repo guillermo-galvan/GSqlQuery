@@ -35,6 +35,8 @@ namespace GSqlQuery
         /// </summary>
         public FormatTableNameCollection FormatTableName { get; private set; }
 
+        internal object Entity { get; set; }
+
         /// <summary>
         /// Class constructor
         /// </summary>
@@ -71,9 +73,14 @@ namespace GSqlQuery
 
         private ConstructorInfo GetConstructor()
         {
-            ConstructorInfo[] constructorInfos = Type.GetConstructors();
+            ConstructorInfo[] constructorInfos = Type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-            ConstructorInfo ConstructorInfoDefault = null;
+            if (constructorInfos.Length == 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            ConstructorInfo constructorInfoDefault = null;
             ConstructorInfo result = null;
 
             foreach (ConstructorInfo item in constructorInfos)
@@ -82,7 +89,8 @@ namespace GSqlQuery
 
                 if (parameters.Length == 0)
                 {
-                    ConstructorInfoDefault = item;
+                    constructorInfoDefault = item;
+                    Entity = constructorInfoDefault.Invoke(null);
                 }
                 else if (parameters.Length > 0 && parameters.Length == PropertyOptions.Count)
                 {
@@ -110,15 +118,33 @@ namespace GSqlQuery
                 }
             }
 
+            Entity = Entity ?? CreateEntity(constructorInfos);
             IsConstructorByParam = result != null;
 
-            return result ?? ConstructorInfoDefault;
+            return result ?? constructorInfoDefault;
         }
 
         private FormatTableNameCollection GetTableAttribute()
         {
             TableAttribute tableAttribute = (Attribute.GetCustomAttribute(Type, typeof(TableAttribute)) ?? new TableAttribute(Type.Name)) as TableAttribute;
             return new FormatTableNameCollection(tableAttribute);
+        }
+
+        private object CreateEntity(ConstructorInfo[] constructorInfos)
+        {
+            ConstructorInfo constructorInfo = constructorInfos[0];
+
+            ParameterInfo[] parameters = constructorInfo.GetParameters();
+            object[] objects = new object[parameters.Length];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                ParameterInfo param = parameters[i];
+                Type type = param.ParameterType;
+                objects[i] = type.IsValueType ? Activator.CreateInstance(type) : null ;
+            }
+
+            return constructorInfo.Invoke(objects);
         }
     }
 }

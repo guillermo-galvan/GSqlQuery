@@ -49,8 +49,9 @@ namespace GSqlQuery.Extensions
 		internal static PropertyOptionsCollection GetPropertyOptionsCollectionsByFunc(DynamicQuery dynamicQuery)
         {
             PropertyInfo[] properties = dynamicQuery.Properties.GetProperties();
+            
 
-            if (properties.Length == 0 || dynamicQuery.Properties == dynamicQuery.Entity)
+            if (properties.Length == 0 || dynamicQuery.Properties == dynamicQuery.Entity || dynamicQuery.Properties.IsPrimitive)
             {
                 throw new InvalidOperationException();
             }
@@ -58,7 +59,7 @@ namespace GSqlQuery.Extensions
             ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(dynamicQuery.Entity);
             List<KeyValuePair<string, PropertyOptions>> result = [];
 
-            foreach (PropertyInfo item in  properties)
+            foreach (PropertyInfo item in properties)
             {
                 result.Add(new KeyValuePair<string, PropertyOptions>(item.Name, classOptions.PropertyOptions[item.Name]));
             }

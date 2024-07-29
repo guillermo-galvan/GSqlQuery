@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -29,6 +30,13 @@ namespace GSqlQuery.Queries
 
             foreach (JoinInfo joinInfo in joinInfos)
             {
+                if (joinInfo.DynamicQuery != null)
+                {
+                    ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembersByFunc(joinInfo.DynamicQuery);
+                    ExpressionExtension.ValidateClassOptionsTupla(QueryType.Join, options);
+                    joinInfo.Columns = options.Columns;
+                }
+
                 foreach (KeyValuePair<string, PropertyOptions> item in joinInfo.Columns)
                 {
                     string alias = formats.Format.Replace("{0}", $"{joinInfo.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}");
@@ -167,9 +175,9 @@ namespace GSqlQuery.Queries
         }
 
         /// <summary>
+        /// <returns>Query text</returns>
         /// Create Query
         /// </summary>
-        /// <returns>Query text</returns>
         internal string CreateQuery(out PropertyOptionsCollection keyValuePairs)
         {
             List<ColumnDetailJoin> columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, QueryOptions.Formats);
@@ -240,7 +248,14 @@ namespace GSqlQuery.Queries
             _joinInfo = new JoinInfo(columnsT3, tmp, joinType);
 
             _joinInfos.Enqueue(_joinInfo);
-            Columns = new PropertyOptionsCollection([]);
+        }
+
+        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, DynamicQuery dynamicQuery = null)
+            : base(joinInfos, options)
+        {
+            ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
+            _joinInfo = new JoinInfo(dynamicQuery, tmp, joinType);
+            _joinInfos.Enqueue(_joinInfo);
         }
 
     }

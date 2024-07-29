@@ -17,6 +17,8 @@ namespace GSqlQuery.Queries
 
         public ClassOptions ClassOptions { get; set; }
 
+        public DynamicQuery DynamicQuery { get; set; }
+
         public JoinInfo(PropertyOptionsCollection columns, ClassOptions classOptions, bool isMain)
         {
             Columns = columns;
@@ -27,6 +29,20 @@ namespace GSqlQuery.Queries
         public JoinInfo(PropertyOptionsCollection columns, ClassOptions classOptions, JoinType joinType)
         {
             Columns = columns;
+            ClassOptions = classOptions;
+            JoinEnum = joinType;
+        }
+
+        public JoinInfo(DynamicQuery dynamicQuery, ClassOptions classOptions, bool isMain)
+        {
+            DynamicQuery = dynamicQuery;
+            ClassOptions = classOptions;
+            IsMain = isMain;
+        }
+
+        public JoinInfo(DynamicQuery dynamicQuery, ClassOptions classOptions, JoinType joinType)
+        {
+            DynamicQuery = dynamicQuery;
             ClassOptions = classOptions;
             JoinEnum = joinType;
         }

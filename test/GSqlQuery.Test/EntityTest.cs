@@ -4,7 +4,6 @@ using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Helpers;
 using GSqlQuery.Test.Models;
 using System;
-using System.Diagnostics;
 using Xunit;
 
 namespace GSqlQuery.Test
@@ -148,10 +147,7 @@ namespace GSqlQuery.Test
         public void Should_generate_the_insert_query(QueryOptions queryOptions, string queryText)
         {
             ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test6, object>(x => new { x.Ids, x.Names, x.Creates, x.IsTests }));
-            Test6 test = new Test6()
-            {
-                Ids = 1, Names = null, Creates = DateTime.Now, IsTests = true
-            };
+            Test6 test = new Test6() { Ids = 1, Names = null, Creates = DateTime.Now, IsTests = true, };
             var query = test.Insert(queryOptions).Build();
 
             string result = query.Text;
@@ -364,7 +360,7 @@ namespace GSqlQuery.Test
         public void Should_generate_the_count_query(QueryOptions queryOptions, string query)
         {
             ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids }));
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => x.Ids);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => new { x.Ids });
             IQueryBuilderWithWhere<Test3, CountQuery<Test3>, QueryOptions> countQuery = queryBuilder.Count();
             var queryTmp = countQuery?.Build();
 
@@ -419,7 +415,7 @@ namespace GSqlQuery.Test
         {
             ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections<Test3, object>(x => new { x.Ids }));
 
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => x.Ids);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => new { x.Ids });
             IQueryBuilder<OrderByQuery<Test3>, QueryOptions> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             var queryTmp = countQuery?.Build();
 
@@ -732,10 +728,10 @@ namespace GSqlQuery.Test
             var thirdTable = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>(x => new { x.IsTest });
             ValidateColumnsJoin validateColumns = new ValidateColumnsJoin(queryOptions.Formats, firstTable, seconfTable, thirdTable);
 
-            var select = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
+            var result = Test3.Select(queryOptions, x => new { x.Names, x.Ids })
                               .InnerJoin<Test6>(x => new { x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
-                              .InnerJoin<Test1>(x => new { x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id);
-            var result = select.Build();
+                              .InnerJoin<Test1>(x => new { x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Build();
             Assert.NotEmpty(result.Text);
             Assert.Equal(query, result.Text);
             Assert.Equal(validateColumns.Count, result.Columns.Count);

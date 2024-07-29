@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace GSqlQuery.Queries
 {
@@ -113,6 +112,28 @@ namespace GSqlQuery.Queries
             }
         }
 
+        private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum) where TJoin : class
+        {
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(TJoin));
+
+            return _dynamicQuery == null ? new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, options.PropertyOptions) : new JoinQueryBuilderWithWhere<T, TJoin>(_dynamicQuery, JoinType.Inner, QueryOptions, options.PropertyOptions);
+        }
+
+        private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum, Func<TJoin, object> func)
+           where TJoin : class
+        {
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func), ErrorMessages.ParameterNotNull);
+            }
+            Type secondTable = typeof(TJoin);
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(secondTable);
+            var result = func((TJoin)options.Entity);
+            DynamicQuery  dynamicQuery = new DynamicQuery(secondTable, result.GetType());
+
+            return _dynamicQuery == null ? new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, dynamicQuery) : new JoinQueryBuilderWithWhere<T, TJoin>(_dynamicQuery, joinEnum, QueryOptions, dynamicQuery);
+        }
+
         /// <summary>
         /// Inner Join query
         /// </summary>
@@ -120,7 +141,7 @@ namespace GSqlQuery.Queries
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> InnerJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Inner, QueryOptions);
+            return Join<TJoin>(JoinType.Inner);
         }
 
         /// <summary>
@@ -130,7 +151,7 @@ namespace GSqlQuery.Queries
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> LeftJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Left, QueryOptions);
+            return Join<TJoin>(JoinType.Left);
         }
 
         /// <summary>
@@ -140,20 +161,7 @@ namespace GSqlQuery.Queries
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
         public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> RightJoin<TJoin>() where TJoin : class
         {
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, JoinType.Right, QueryOptions);
-        }
-
-        private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin, TProperties>(JoinType joinEnum, Expression<Func<TJoin, TProperties>> expression)
-            where TJoin : class
-        {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
-            }
-
-            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
-            return new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, options.Columns);
+            return Join<TJoin>(JoinType.Right);
         }
 
         /// <summary>
@@ -161,10 +169,10 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> InnerJoin<TJoin>(Expression<Func<TJoin, object>> expression)
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> InnerJoin<TJoin>(Func<TJoin, object> func)
             where TJoin : class
         {
-            return Join(JoinType.Inner, expression);
+            return Join(JoinType.Inner, func);
         }
 
         /// <summary>
@@ -172,9 +180,9 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> LeftJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> LeftJoin<TJoin>(Func<TJoin, object> func) where TJoin : class
         {
-            return Join(JoinType.Left, expression);
+            return Join(JoinType.Left, func);
         }
 
         /// <summary>
@@ -182,9 +190,9 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,Formats&gt;</returns>
-        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> RightJoin<TJoin>(Expression<Func<TJoin, object>> expression) where TJoin : class
+        public IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> RightJoin<TJoin>(Func<TJoin, object> func) where TJoin : class
         {
-            return Join(JoinType.Right, expression);
+            return Join(JoinType.Right, func);
         }
     }
 }
