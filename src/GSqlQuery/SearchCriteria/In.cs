@@ -46,24 +46,21 @@ namespace GSqlQuery.SearchCriteria
             {
                 throw new IndexOutOfRangeException(nameof(values));
             }
-
-            _task = Task.Run(CreteData);
         }
 
-        private Task<CriteriaDetails> CreteData()
+        protected override CriteriaDetails GetCriteriaDetails(ref uint parameterId)
         {
             string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
             ParameterDetail[] parameters = new ParameterDetail[Values.Count()];
             int count = 0;
             int index = 0;
-            string ticks = Helpers.GetIdParam().ToString();
+            string ticks = $"{parameterId++}";
             string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
-            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
 
             foreach (T item in Values)
             {
                 string parameterName = "@" + ParameterPrefix + count++.ToString() + ticks;
-                parameters[index++] = new ParameterDetail(parameterName, item, property);
+                parameters[index++] = new ParameterDetail(parameterName, item);
             }
             string columnNames = string.Join(",", parameters.Select(x => x.Name));
             string criterion = "{0} {1} ({2})".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", columnNames);
@@ -73,7 +70,7 @@ namespace GSqlQuery.SearchCriteria
                 criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
 
-            return Task.FromResult(new CriteriaDetails(criterion, parameters));
+            return new CriteriaDetails(criterion, parameters);
         }
     }
 }

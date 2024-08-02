@@ -54,14 +54,15 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public virtual IEnumerable<CriteriaDetail> BuildCriteria()
+        public virtual IEnumerable<CriteriaDetailCollection> BuildCriteria()
         {
-            CriteriaDetail[] result = new CriteriaDetail[_searchCriterias.Count];
+            CriteriaDetailCollection[] result = new CriteriaDetailCollection[_searchCriterias.Count];
             int count = 0;
+            uint parameterId = 0;
 
             foreach (ISearchCriteria item in _searchCriterias)
             {
-                result[count++] = item.GetCriteria();
+                result[count++] = item.GetCriteria(ref parameterId);
             }
 
             return result;

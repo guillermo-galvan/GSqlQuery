@@ -27,11 +27,9 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="logicalOperator">Logical Operator</param>
         public IsNull(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, string logicalOperator) :
             base(classOptionsTupla, formats, logicalOperator)
-        {
-            _task = CreteData();
-        }
+        { }
 
-        private Task<CriteriaDetails> CreteData()
+        protected override CriteriaDetails GetCriteriaDetails(ref uint parameterId)
         {
             string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
             string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
@@ -42,7 +40,7 @@ namespace GSqlQuery.SearchCriteria
                 criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
 
-            return Task.FromResult(new CriteriaDetails(criterion, []));
+            return new CriteriaDetails(criterion, []);
         }
     }
 }

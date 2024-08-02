@@ -29,7 +29,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria()
+        public override IEnumerable<CriteriaDetailCollection> BuildCriteria()
         {
             ClassOptions[] classOptions =
             [
@@ -37,11 +37,12 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2))
             ];
 
-            Queue<CriteriaDetail> result = new Queue<CriteriaDetail>();
+            Queue<CriteriaDetailCollection> result = new Queue<CriteriaDetailCollection>();
+            uint parameterId = 0;
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria();
+                CriteriaDetailCollection criteria = x.GetCriteria(ref parameterId);
                 result.Enqueue(criteria);
             }
 
@@ -75,7 +76,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria()
+        public override IEnumerable<CriteriaDetailCollection> BuildCriteria()
         {
             ClassOptions[] classOptions =
             [
@@ -83,11 +84,12 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2)),
                 ClassOptionsFactory.GetClassOptions(typeof(T3)),
             ];
-            Queue<CriteriaDetail> result = new Queue<CriteriaDetail>();
+            Queue<CriteriaDetailCollection> result = new Queue<CriteriaDetailCollection>();
+            uint parameterId = 0;
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria();
+                CriteriaDetailCollection criteria = x.GetCriteria(ref parameterId);
                 result.Enqueue(criteria);
             }
 

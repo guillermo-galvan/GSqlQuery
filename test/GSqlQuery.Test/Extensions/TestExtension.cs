@@ -14,10 +14,16 @@ namespace GSqlQuery.Test.Extensions
             return query;
         }
 
-        public static string ParameterReplace(this CriteriaDetail criteriaDetail, string newName = "@Param")
+        public static string ParameterReplace(this CriteriaDetailCollection criteriaDetail, string newName = "@Param")
         {
-            return criteriaDetail?.ParameterDetails?.ParameterReplace(criteriaDetail.QueryPart, newName);
+            string result = string.Empty;
+            result += criteriaDetail.Values?.ParameterReplace(criteriaDetail.QueryPart, newName);
+            return result;
+        }
 
+        public static string ParameterReplaceInQuery(this CriteriaDetailCollection criteriaDetail, string query)
+        {
+            return criteriaDetail.Values?.ParameterReplace(query, "@Param");
         }
     }
 }

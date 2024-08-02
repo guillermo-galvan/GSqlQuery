@@ -25,10 +25,6 @@
         /// </summary>
         ClassOptions ClassOptions { get; }
 
-        /// <summary>
-        /// Get Criteria detail
-        /// </summary>
-        /// <returns>Details of the criteria</returns>
-        CriteriaDetail GetCriteria();
+        CriteriaDetailCollection GetCriteria(ref uint parameterId);
     }
 }

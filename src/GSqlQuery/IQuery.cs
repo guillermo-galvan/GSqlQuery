@@ -17,7 +17,7 @@ namespace GSqlQuery
         /// <summary>
         /// Query criteria
         /// </summary>
-        IEnumerable<CriteriaDetail> Criteria { get; }
+        IEnumerable<CriteriaDetailCollection> Criteria { get; }
     }
 
     /// <summary>

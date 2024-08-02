@@ -15,6 +15,7 @@ namespace GSqlQuery.Test.SearchCriteria
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
         private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
+        private uint _parameterId = 0;
 
         public IsNotNullTest()
         {
@@ -58,14 +59,14 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, string querypart)
         {
             IsNotNull test = new IsNotNull(_classOptionsTupla, new DefaultFormats(), logicalOperator);
-            var result = test.GetCriteria();
+            var result = test.GetCriteria(ref _parameterId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
             Assert.NotNull(result.SearchCriteria.Table);
-            Assert.NotNull(result.ParameterDetails);
-            Assert.Empty(result.ParameterDetails);
+            Assert.NotNull(result);
+            Assert.Empty(result);
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);
             Assert.Equal(querypart, result.QueryPart);

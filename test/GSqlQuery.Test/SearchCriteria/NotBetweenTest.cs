@@ -16,6 +16,7 @@ namespace GSqlQuery.Test.SearchCriteria
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
         private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
+        private uint _parameterId = 0;
 
         public NotBetweenTest()
         {
@@ -63,15 +64,15 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int inicialValue, int finalValue, string querypart)
         {
             NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), inicialValue, finalValue, logicalOperator);
-            var result = equal.GetCriteria();
+            var result = equal.GetCriteria(ref _parameterId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
             Assert.NotNull(result.SearchCriteria.Table);
-            Assert.NotNull(result.ParameterDetails);
-            Assert.NotEmpty(result.ParameterDetails);
-            var parameter = result.ParameterDetails.ElementAt(0);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            var parameter = result.Values.First();
             Assert.Equal(inicialValue, parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);

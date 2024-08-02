@@ -16,6 +16,7 @@ namespace GSqlQuery.Test.SearchCriteria
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
         private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
+        private uint _parameterId = 0;
 
         public InTest()
         {
@@ -61,15 +62,15 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int[] value, string querypart)
         {
             In<int> test = new In<int>(_classOptionsTupla, _queryBuilder.QueryOptions.Formats, value, logicalOperator);
-            var result = test.GetCriteria();
+            var result = test.GetCriteria(ref _parameterId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
             Assert.NotNull(result.SearchCriteria.Table);
-            Assert.NotNull(result.ParameterDetails);
-            Assert.NotEmpty(result.ParameterDetails);
-            var parameter = result.ParameterDetails.ElementAt(0);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            var parameter = result.Values.First();
             Assert.Equal(value[0], parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);

@@ -25,20 +25,18 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="criteria">Criterias</param>
         /// <returns>Query text</returns>
-        internal string CreateQuery(out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(out IEnumerable<CriteriaDetailCollection> criteria)
         {
             AutoIncrementingClass autoIncrementingClass = GetValues();
 
-            IEnumerable<ParameterDetail> parameters = autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail);
+            IEnumerable<ParameterDetail> parameters = autoIncrementingClass.ColumnParameters.SelectMany(x => x.CriteriaDetail.Values);
             string querypart = string.Join(",", parameters.Select(x => x.Name));
 
-
-            CriteriaDetail criteriaDetail = new CriteriaDetail(querypart, parameters);
-            criteria = [criteriaDetail];
+            criteria = autoIncrementingClass.ColumnParameters.Select(x => x.CriteriaDetail);
             IEnumerable<string> columnsName = autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName);
             string columnNames = string.Join(",", columnsName);
 
-            string text = ConstFormat.INSERT.Replace("{0}", _tableName).Replace("{1}", columnNames).Replace("{2}", criteriaDetail.QueryPart);
+            string text = ConstFormat.INSERT.Replace("{0}", _tableName).Replace("{1}", columnNames).Replace("{2}", querypart);
 
             if (autoIncrementingClass.WithAutoIncrementing)
             {
@@ -56,14 +54,15 @@ namespace GSqlQuery.Queries
         {
             IEnumerable<PropertyOptions> propertyOptions = Columns.Values.Where(x => !x.ColumnAttribute.IsAutoIncrementing);
             Queue<ColumnParameterDetail> tmpColumnsParameters = new Queue<ColumnParameterDetail>();
+            int count = 0;
 
             foreach (PropertyOptions x in propertyOptions)
             {
                 string columnName = x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Create);
                 object value = ExpressionExtension.GetValue(x, _entity);
-                string parameterName = "@PI" + Helpers.GetIdParam();
-                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value, x);
-                ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, parameterDetail);
+                string parameterName = "@PI" + count++;
+                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value);
+                ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, new CriteriaDetailCollection(parameterName, x, [parameterDetail]));
                 tmpColumnsParameters.Enqueue(columnParameterDetail);
             }
 
@@ -90,7 +89,7 @@ namespace GSqlQuery.Queries
         /// <returns>Insert Query</returns>
         public override InsertQuery<T> Build()
         {
-            string query = CreateQuery(out IEnumerable<CriteriaDetail> criteria);
+            string query = CreateQuery(out IEnumerable<CriteriaDetailCollection> criteria);
             return new InsertQuery<T>(query, Columns, criteria, QueryOptions);
         }
     }

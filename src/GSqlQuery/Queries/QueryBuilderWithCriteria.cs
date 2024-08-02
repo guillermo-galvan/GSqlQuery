@@ -14,7 +14,7 @@ namespace GSqlQuery
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {
-        protected IEnumerable<CriteriaDetail> _criteria = null;
+        protected IEnumerable<CriteriaDetailCollection> _criteria = null;
         protected IAndOr<TReturn> _andOr;
 
         /// <summary>

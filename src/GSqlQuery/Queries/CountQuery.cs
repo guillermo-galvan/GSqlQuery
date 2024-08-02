@@ -16,7 +16,7 @@ namespace GSqlQuery
         /// <param name="criteria">Criteria</param>
         /// <param name="queryOptions">QueryOptions</param>
         /// <exception cref="ArgumentNullException"></exception>
-        internal CountQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+        internal CountQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions) :
             base(ref text, columns, criteria, queryOptions)
         {
         }

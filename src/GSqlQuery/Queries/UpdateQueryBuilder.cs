@@ -77,7 +77,7 @@ namespace GSqlQuery.Queries
                 throw new InvalidOperationException("Column values not found");
             }
 
-            Queue<CriteriaDetail> tmpCriteria = GetUpdateCliterias(_columnValues, Columns, _tableName);
+            Queue<CriteriaDetailCollection> tmpCriteria = GetUpdateCliterias(_columnValues, Columns, _tableName);
             IEnumerable<string> queryParts = tmpCriteria.Select(x => x.QueryPart);
             string setParts = string.Join(",", queryParts);
             if (_andOr == null)
@@ -89,7 +89,7 @@ namespace GSqlQuery.Queries
             {
                 string criterias = GetCriteria();
 
-                foreach (CriteriaDetail item in _criteria)
+                foreach (CriteriaDetailCollection item in _criteria)
                 {
                     tmpCriteria.Enqueue(item);
                 }
@@ -99,17 +99,18 @@ namespace GSqlQuery.Queries
             }
         }
 
-        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, PropertyOptionsCollection columns, string tableName)
+        private Queue<CriteriaDetailCollection> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, PropertyOptionsCollection columns, string tableName)
         {
-            Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
+            Queue<CriteriaDetailCollection> criteriaDetails = new Queue<CriteriaDetailCollection>();
+            int count = 0;
             foreach (KeyValuePair<ColumnAttribute, object> item in columnValues)
             {
                 PropertyOptions options = columns[item.Key.Name];
-                string paramName = "@PU" + Helpers.GetIdParam().ToString();
+                string paramName = "@PU" + count++;
                 string columName = options.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Criteria);
                 string partQuery = columName + "=" + paramName;
-                ParameterDetail parameterDetail = new ParameterDetail(paramName, item.Value ?? DBNull.Value, options);
-                CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
+                ParameterDetail parameterDetail = new ParameterDetail(paramName, item.Value ?? DBNull.Value);
+                CriteriaDetailCollection criteriaDetail = new CriteriaDetailCollection(partQuery, options, [parameterDetail]);
                 criteriaDetails.Enqueue(criteriaDetail);
             }
             return criteriaDetails;

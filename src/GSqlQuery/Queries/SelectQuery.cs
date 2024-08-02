@@ -17,7 +17,7 @@ namespace GSqlQuery
         /// <param name="criteria">Criteria</param>
         /// <param name="formats">Formats</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal SelectQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
+        internal SelectQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions) :
             base(ref text, columns, criteria, queryOptions)
         { }
     }

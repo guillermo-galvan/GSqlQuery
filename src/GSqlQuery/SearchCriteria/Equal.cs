@@ -39,13 +39,12 @@ namespace GSqlQuery.SearchCriteria
             base(classOptionsTupla, formats, logicalOperator)
         {
             Value = value;
-            _task = CreteData();
         }
 
-        private Task<CriteriaDetails> CreteData()
+        protected override CriteriaDetails GetCriteriaDetails(ref uint parameterId)
         {
             string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
-            string parameterName = "@" + ParameterPrefix + Helpers.GetIdParam();
+            string parameterName = "@" + ParameterPrefix + parameterId++;
             string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
 
             string criterion = "{0} {1} {2}".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", parameterName);
@@ -54,8 +53,8 @@ namespace GSqlQuery.SearchCriteria
             {
                 criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
-            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
-            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName, Value, property)]));
+
+            return new CriteriaDetails(criterion, [new ParameterDetail(parameterName, Value)]);
         }
     }
 }

@@ -11,19 +11,19 @@
         public string ColumnName { get; set; }
 
         /// <summary>
-        /// Parameter Detail
+        /// Criteria Detail
         /// </summary>
-        public ParameterDetail ParameterDetail { get; set; }
+        public CriteriaDetailCollection CriteriaDetail { get; set; }
 
         /// <summary>
         /// Class constructor
         /// </summary>
         /// <param name="columnName">Column Name</param>
-        /// <param name="parameterDetail">Parameter Detail</param>
-        public ColumnParameterDetail(string columnName, ParameterDetail parameterDetail)
+        /// <param name="criteriaDetail">Criteria Detail</param>
+        public ColumnParameterDetail(string columnName, CriteriaDetailCollection criteriaDetail)
         {
             ColumnName = columnName;
-            ParameterDetail = parameterDetail;
+            CriteriaDetail = criteriaDetail;
         }
     }
 }

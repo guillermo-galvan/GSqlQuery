@@ -1,6 +1,5 @@
 ﻿using GSqlQuery.Extensions;
 using System;
-using System.Threading.Tasks;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -14,8 +13,6 @@ namespace GSqlQuery.SearchCriteria
     internal abstract class Criteria(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, string logicalOperator) : ISearchCriteria
     {
         protected readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla = classOptionsTupla;
-
-        protected Task<CriteriaDetails> _task;
 
         /// <summary>
         /// Get Column
@@ -47,21 +44,12 @@ namespace GSqlQuery.SearchCriteria
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>Details of the criteria</returns>
-        public virtual CriteriaDetail GetCriteria()
+        public virtual CriteriaDetailCollection GetCriteria(ref uint parameterId)
         {
-            _task.Wait();
-            return new CriteriaDetail(this, _task.Result.Criterion, _task.Result.Parameters);
+            CriteriaDetails result = GetCriteriaDetails(ref parameterId);
+            return new CriteriaDetailCollection(this, result.Criterion, _classOptionsTupla.ClassOptions.PropertyOptions.GetValue(Column), result.Parameters);
         }
 
-        /// <summary>
-        /// Find the properties that receive in the column parameter.
-        /// </summary>
-        /// <param name="column">Contains the property information</param>
-        /// <param name="propertyOptions">List of property options</param>
-        /// <returns>Property options</returns>
-        protected PropertyOptions GetPropertyOptions(ColumnAttribute column, PropertyOptionsCollection propertyOptions)
-        {
-            return propertyOptions.GetValue(column);
-        }
+        protected abstract CriteriaDetails GetCriteriaDetails(ref uint parameterId);
     }
 }

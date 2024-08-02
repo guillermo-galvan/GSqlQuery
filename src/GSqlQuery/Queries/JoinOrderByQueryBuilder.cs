@@ -61,7 +61,7 @@ namespace GSqlQuery.Queries
         /// <param name="columns">Colums</param>
         /// <param name="criteria">Criteria</param>
         /// <returns>Query text</returns>
-        internal string CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria)
         {
             IAddJoinCriteria<JoinModel> addJoinCriteria = null;
 
@@ -164,7 +164,7 @@ namespace GSqlQuery.Queries
         /// <returns>Order by Query</returns>
         public override OrderByQuery<T> Build()
         {
-            string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria);
+            string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
             return new OrderByQuery<T>(query, columns, criteria, QueryOptions);
         }
     }

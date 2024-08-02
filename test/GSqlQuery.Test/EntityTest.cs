@@ -4,6 +4,7 @@ using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Helpers;
 using GSqlQuery.Test.Models;
 using System;
+using System.Diagnostics;
 using Xunit;
 
 namespace GSqlQuery.Test
@@ -20,30 +21,23 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_despues()
         {
-            //var sssss = "string";
+            var select = Film.Select(_queryOptions).Where().Equal(x => x.FilmId, 1);
 
-            for (int i = 0; i < 1000000; i++)
-            {
-                var select = Film.Select(_queryOptions, (x) => new { x.FilmId, x.RentalDuration, x.Description, x.RentalRate }).Build();
-            }
+            Stopwatch timeMeasure = new Stopwatch();
+            timeMeasure.Start();
+            var query = select.Build();
+            timeMeasure.Stop();
 
-            //var select = Film.Select(_queryOptions, x => new {x.FilmId, x.RentalDuration, x.Description, x.RentalRate});
+            Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
 
-            //Stopwatch timeMeasure = new Stopwatch();
-            //timeMeasure.Start();            
-            //var query = select.Build();
-            //timeMeasure.Stop();
+            var select2 = Film.Select(_queryOptions);
 
-            //Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
+            Stopwatch timeMeasure2 = new Stopwatch();
+            timeMeasure2.Start();
+            query = select2.Build();
+            timeMeasure2.Stop();
 
-            //var select2 = Film.Select(_queryOptions, x => new { x.FilmId, x.RentalDuration, x.Description, x.RentalRate });
-
-            //Stopwatch timeMeasure2 = new Stopwatch();
-            //timeMeasure2.Start();
-            //query = select2.Build(); 
-            //timeMeasure2.Stop();
-
-            //Console.WriteLine($"Tiempo: {timeMeasure2.Elapsed.TotalMilliseconds} ms");
+            Console.WriteLine($"Tiempo: {timeMeasure2.Elapsed.TotalMilliseconds} ms");
         }
 
         [Fact]
@@ -108,7 +102,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -132,7 +126,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.NotNull(query);
@@ -155,7 +149,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -179,7 +173,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -209,7 +203,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -233,7 +227,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -258,7 +252,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -281,7 +275,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -305,7 +299,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.NotNull(query);
@@ -339,7 +333,7 @@ namespace GSqlQuery.Test
             string result = query.Text;
             foreach (var item in query.Criteria)
             {
-                result = item.ParameterDetails.ParameterReplace(result);
+                result = item.ParameterReplaceInQuery(result);
             }
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -398,7 +392,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -456,7 +450,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -525,7 +519,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -590,7 +584,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -655,7 +649,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -708,7 +702,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -779,7 +773,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -851,7 +845,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -942,7 +936,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -976,7 +970,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -1011,7 +1005,7 @@ namespace GSqlQuery.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -1034,7 +1028,7 @@ namespace GSqlQuery.Test
             string result = query.Text;
             foreach (var item in query.Criteria)
             {
-                result = item.ParameterDetails.ParameterReplace(result);
+                result = item.ParameterReplaceInQuery(result);
             }
 
             Assert.NotNull(query);

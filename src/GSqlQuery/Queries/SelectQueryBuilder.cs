@@ -1,6 +1,7 @@
 ﻿using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -62,6 +63,25 @@ namespace GSqlQuery.Queries
                 return ConstFormat.SELECTWHERE.Replace("{0}", columns).Replace("{1}", _tableName).Replace("{2}", criteria);
             }
         }
+
+        public override TReturn Build()
+        {
+            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, QueryOptions.Formats.GetType(), _dynamicQuery?.Properties, _andOr?.GetType());
+
+            if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
+            {
+                return (TReturn)query;
+            }
+            else
+            {
+                string text = CreateQuery();
+                TReturn result = CreateQuery(ref text, Columns, _criteria, QueryOptions);
+                QueryCache.Cache.Add(identity, result);
+                return result;
+            }
+        }
+
+        public abstract TReturn CreateQuery(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>
@@ -91,25 +111,9 @@ namespace GSqlQuery.Queries
             : base(queryOptions)
         { }
 
-        /// <summary>
-        /// Build select query
-        /// </summary>
-        /// <returns>SelectQuery</returns>
-        public override SelectQuery<T> Build()
+        public override SelectQuery<T> CreateQuery(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, QueryOptions.Formats.GetType(), _dynamicQuery?.Properties, _andOr?.GetType());
-
-            if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
-            {
-                return query as SelectQuery<T>;
-            }
-            else
-            {
-                string text = CreateQuery();
-                SelectQuery<T> result = new SelectQuery<T>(text, Columns, _criteria, QueryOptions);
-                QueryCache.Cache.Add(identity, result);
-                return result;
-            }
+            return new SelectQuery<T>(text, Columns, _criteria, QueryOptions);
         }
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum) where TJoin : class

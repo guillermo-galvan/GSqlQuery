@@ -55,19 +55,19 @@ namespace GSqlQuery.Queries
         /// Get values
         /// </summary>
         /// <returns>AutoIncrementingClass</returns>
-        private Queue<CriteriaDetail> GetUpdateCliterias()
+        private Queue<CriteriaDetailCollection> GetUpdateCliterias()
         {
-            Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
+            Queue<CriteriaDetailCollection> criteriaDetails = new Queue<CriteriaDetailCollection>();
             int count = 0;
 
             foreach (PropertyOptions item in Columns.Values)
             {
                 object value = ExpressionExtension.GetValue(item, _entity);
-                string paramName = "@PD" + Helpers.GetIdParam().ToString();
+                string paramName = "@PD" + count;
                 string columName = item.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Criteria);
                 string partQuery = (count++ == 0 ? string.Empty : "AND ") + columName + "=" + paramName;
-                ParameterDetail parameterDetail = new ParameterDetail(paramName, value, item);
-                CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
+                ParameterDetail parameterDetail = new ParameterDetail(paramName, value);
+                CriteriaDetailCollection criteriaDetail = new CriteriaDetailCollection(partQuery, item, [parameterDetail]);
                 criteriaDetails.Enqueue(criteriaDetail);
             }
             return criteriaDetails;

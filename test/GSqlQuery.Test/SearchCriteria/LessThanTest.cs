@@ -15,6 +15,7 @@ namespace GSqlQuery.Test.SearchCriteria
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
         private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
+        private uint _parameterId = 0;
 
         public LessThanTest()
         {
@@ -60,15 +61,15 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int value, string querypart)
         {
             LessThan<int> equal = new LessThan<int>(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
-            var result = equal.GetCriteria();
+            var result = equal.GetCriteria(ref _parameterId);
 
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
             Assert.NotNull(result.SearchCriteria.Table);
-            Assert.NotNull(result.ParameterDetails);
-            Assert.NotEmpty(result.ParameterDetails);
-            var parameter = result.ParameterDetails.ElementAt(0);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            var parameter = result.Values.First();
             Assert.Equal(value, parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);

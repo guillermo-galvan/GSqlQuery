@@ -74,7 +74,7 @@ namespace GSqlQuery.Queries
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criterias</param>
         /// <returns></returns>
-        internal string CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria)
         {
             TSelectQuery selectQuery = _andorBuilder != null ? _andorBuilder.Build() : _queryBuilder.Build();
             Queue<string> parts = new Queue<string>();
@@ -144,7 +144,7 @@ namespace GSqlQuery.Queries
         /// <returns>Order by Query</returns>
         public override OrderByQuery<T> Build()
         {
-            string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetail> criteria);
+            string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
             return new OrderByQuery<T>(query, columns, criteria, QueryOptions);
         }
     }
