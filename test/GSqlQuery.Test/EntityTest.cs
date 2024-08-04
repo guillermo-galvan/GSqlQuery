@@ -30,7 +30,7 @@ namespace GSqlQuery.Test
 
             Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
 
-            var select2 = Film.Select(_queryOptions);
+            var select2 = Film.Select(_queryOptions).Where().Equal(x => x.FilmId, 1);
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();

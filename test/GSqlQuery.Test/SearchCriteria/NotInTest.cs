@@ -33,7 +33,6 @@ namespace GSqlQuery.Test.SearchCriteria
             NotIn<int> test = new NotIn<int>(_classOptionsTupla, _queryBuilder.QueryOptions.Formats, new int[] { 1, 2, 3, 1, 4 });
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
             Assert.NotNull(test.Column);
             Assert.Equal(new int[] { 1, 2, 3, 1, 4 }, test.Values);
             Assert.Null(test.LogicalOperator);
@@ -47,7 +46,6 @@ namespace GSqlQuery.Test.SearchCriteria
             NotIn<int> test = new NotIn<int>(_classOptionsTupla, _queryBuilder.QueryOptions.Formats, value, logicalOperator);
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
             Assert.NotNull(test.Column);
             Assert.Equal(value, test.Values);
             Assert.NotNull(test.LogicalOperator);
@@ -66,7 +64,6 @@ namespace GSqlQuery.Test.SearchCriteria
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
-            Assert.NotNull(result.SearchCriteria.Table);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             var parameter = result.Values.First();

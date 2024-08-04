@@ -11,11 +11,6 @@
         ColumnAttribute Column { get; }
 
         /// <summary>
-        /// Get Table
-        /// </summary>
-        TableAttribute Table { get; }
-
-        /// <summary>
         /// Get Formats
         /// </summary>
         IFormats Formats { get; }

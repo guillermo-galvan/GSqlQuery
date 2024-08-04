@@ -103,7 +103,7 @@ namespace GSqlQuery.Queries
         public override DeleteQuery<T> Build()
         {
             string text = _entity == null ? CreateQuery() : CreateQueryByEntty();
-            return new DeleteQuery<T>(text, Columns, _criteria, QueryOptions);
+            return new DeleteQuery<T>(text, _classOptions.FormatTableName.Table, Columns, _criteria, QueryOptions);
         }
     }
 }

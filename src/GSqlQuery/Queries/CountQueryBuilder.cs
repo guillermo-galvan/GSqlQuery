@@ -68,7 +68,7 @@ namespace GSqlQuery.Queries
         public override CountQuery<T> Build()
         {
             string query = CreateQuery();
-            return new CountQuery<T>(query, Columns, _criteria, _queryBuilder.QueryOptions);
+            return new CountQuery<T>(query, _classOptions.FormatTableName.Table, Columns, _criteria, _queryBuilder.QueryOptions);
         }
     }
 }

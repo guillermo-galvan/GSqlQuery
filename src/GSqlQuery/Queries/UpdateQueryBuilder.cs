@@ -227,7 +227,7 @@ namespace GSqlQuery.Queries
         public override UpdateQuery<T> Build()
         {
             string text = CreateQuery();
-            return new UpdateQuery<T>(text, Columns, _criteria, QueryOptions);
+            return new UpdateQuery<T>(text, _classOptions.FormatTableName.Table, Columns, _criteria, QueryOptions);
         }
     }
 }

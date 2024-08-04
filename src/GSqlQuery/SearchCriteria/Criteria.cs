@@ -20,11 +20,6 @@ namespace GSqlQuery.SearchCriteria
         public ColumnAttribute Column { get; } = classOptionsTupla.Columns.ColumnAttribute;
 
         /// <summary>
-        /// Get Table
-        /// </summary>
-        public TableAttribute Table { get; } = classOptionsTupla.ClassOptions.FormatTableName.Table;
-
-        /// <summary>
         /// Get logical operator
         /// </summary>
         public string LogicalOperator { get; } = logicalOperator;

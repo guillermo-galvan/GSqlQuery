@@ -5,9 +5,14 @@ namespace GSqlQuery
     public interface IQuery
     {
         /// <summary>
+        /// Get Table
+        /// </summary>
+        TableAttribute Table { get; }
+
+        /// <summary>
         /// Query Text
         /// </summary>
-        string Text { get; set; }
+        string Text { get; }
 
         /// <summary>
         /// Columns of the query

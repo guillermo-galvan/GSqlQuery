@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GSqlQuery
 {
@@ -14,9 +13,14 @@ namespace GSqlQuery
         private string _text;
 
         /// <summary>
+        /// Get Table
+        /// </summary>
+        public TableAttribute Table { get; }
+
+        /// <summary>
         /// Query Text
         /// </summary>
-        public string Text { get => _text; set => _text = value; }
+        public string Text { get => _text; }
 
         /// <summary>
         /// Get Columns
@@ -35,8 +39,9 @@ namespace GSqlQuery
         /// <param name="columns">Columns</param>
         /// <param name="criteria">Criterias</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria)
+        public Query(ref string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria)
         {
+            Table = table ?? throw new ArgumentNullException(nameof(table));
             _columns = columns ?? throw new ArgumentNullException(nameof(columns));
             _text = text ?? throw new ArgumentNullException(text);
             _criteria = criteria ?? [];
@@ -64,8 +69,8 @@ namespace GSqlQuery
         /// <param name="formats">Formats</param>
         /// <param name="text">The Query</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public Query(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions) :
-            base(ref text, columns, criteria)
+        public Query(ref string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions) :
+            base(ref text, table, columns, criteria)
         {
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
         }

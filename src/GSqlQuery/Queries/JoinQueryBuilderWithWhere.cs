@@ -85,7 +85,7 @@ namespace GSqlQuery.Queries
         public override JoinQuery<Join<T1, T2>, QueryOptions> Build()
         {
             string query = CreateQuery(out PropertyOptionsCollection columns);
-            return new JoinQuery<Join<T1, T2>, QueryOptions>(query, columns, _criteria, QueryOptions);
+            return new JoinQuery<Join<T1, T2>, QueryOptions>(query, ClassOptionsFactory.GetClassOptions(typeof(T1)).FormatTableName.Table, columns, _criteria, QueryOptions, ClassOptionsFactory.GetClassOptions(typeof(T2)).FormatTableName.Table);
         }
 
         private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum) where TJoin : class
@@ -208,7 +208,7 @@ namespace GSqlQuery.Queries
         public override JoinQuery<Join<T1, T2, T3>, QueryOptions> Build()
         {
             string query = CreateQuery(out PropertyOptionsCollection columns);
-            return new JoinQuery<Join<T1, T2, T3>, QueryOptions>(query, columns, _criteria, QueryOptions);
+            return new JoinQuery<Join<T1, T2, T3>, QueryOptions>(query, _classOptions.FormatTableName.Table, columns, _criteria, QueryOptions, ClassOptionsFactory.GetClassOptions(typeof(T2)).FormatTableName.Table, ClassOptionsFactory.GetClassOptions(typeof(T3)).FormatTableName.Table);
         }
     }
 

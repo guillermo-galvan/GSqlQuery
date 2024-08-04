@@ -34,7 +34,6 @@ namespace GSqlQuery.Test.SearchCriteria
             NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), 1, 2);
 
             Assert.NotNull(equal);
-            Assert.NotNull(equal.Table);
             Assert.NotNull(equal.Column);
             Assert.Equal(1, equal.Initial);
             Assert.Equal(2, equal.Final);
@@ -49,7 +48,6 @@ namespace GSqlQuery.Test.SearchCriteria
             NotBetween<int> equal = new NotBetween<int>(_classOptionsTupla, new DefaultFormats(), initValue, finalValue, logicalOperator);
 
             Assert.NotNull(equal);
-            Assert.NotNull(equal.Table);
             Assert.NotNull(equal.Column);
             Assert.Equal(initValue, equal.Initial);
             Assert.Equal(finalValue, equal.Final);
@@ -69,7 +67,6 @@ namespace GSqlQuery.Test.SearchCriteria
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
-            Assert.NotNull(result.SearchCriteria.Table);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             var parameter = result.Values.First();

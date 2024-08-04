@@ -33,7 +33,6 @@ namespace GSqlQuery.Test.SearchCriteria
             IsNotNull test = new IsNotNull(_classOptionsTupla, new DefaultFormats());
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
             Assert.NotNull(test.Column);
             Assert.Null(test.LogicalOperator);
         }
@@ -46,7 +45,6 @@ namespace GSqlQuery.Test.SearchCriteria
             IsNotNull test = new IsNotNull(_classOptionsTupla, new DefaultFormats(), logicalOperator);
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
             Assert.NotNull(test.Column);
             Assert.NotNull(test.LogicalOperator);
             Assert.Equal(logicalOperator, test.LogicalOperator);
@@ -64,7 +62,6 @@ namespace GSqlQuery.Test.SearchCriteria
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
-            Assert.NotNull(result.SearchCriteria.Table);
             Assert.NotNull(result);
             Assert.Empty(result);
             Assert.NotNull(result.QueryPart);

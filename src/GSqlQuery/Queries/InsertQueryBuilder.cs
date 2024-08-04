@@ -90,7 +90,7 @@ namespace GSqlQuery.Queries
         public override InsertQuery<T> Build()
         {
             string query = CreateQuery(out IEnumerable<CriteriaDetailCollection> criteria);
-            return new InsertQuery<T>(query, Columns, criteria, QueryOptions);
+            return new InsertQuery<T>(query, _classOptions.FormatTableName.Table, Columns, criteria, QueryOptions);
         }
     }
 }

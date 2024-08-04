@@ -34,7 +34,6 @@ namespace GSqlQuery.Test.SearchCriteria
             LessThanOrEqual<int> equal = new LessThanOrEqual<int>(_classOptionsTupla, new DefaultFormats(), 1);
 
             Assert.NotNull(equal);
-            Assert.NotNull(equal.Table);
             Assert.NotNull(equal.Column);
             Assert.Equal(1, equal.Value);
             Assert.Null(equal.LogicalOperator);
@@ -48,7 +47,6 @@ namespace GSqlQuery.Test.SearchCriteria
             LessThanOrEqual<int> equal = new LessThanOrEqual<int>(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
 
             Assert.NotNull(equal);
-            Assert.NotNull(equal.Table);
             Assert.NotNull(equal.Column);
             Assert.Equal(value, equal.Value);
             Assert.NotNull(equal.LogicalOperator);
@@ -67,7 +65,6 @@ namespace GSqlQuery.Test.SearchCriteria
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
-            Assert.NotNull(result.SearchCriteria.Table);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             var parameter = result.Values.First();

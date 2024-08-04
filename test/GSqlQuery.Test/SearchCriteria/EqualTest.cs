@@ -34,7 +34,6 @@ namespace GSqlQuery.Test.SearchCriteria
             Equal<int> test = new Equal<int>(_classOptionsTupla, new DefaultFormats(), 1);
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
             Assert.NotNull(test.Column);
             Assert.Equal(1, test.Value);
             Assert.Null(test.LogicalOperator);
@@ -48,7 +47,6 @@ namespace GSqlQuery.Test.SearchCriteria
             Equal<int> test = new Equal<int>(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
             Assert.NotNull(test.Column);
             Assert.Equal(value, test.Value);
             Assert.NotNull(test.LogicalOperator);
@@ -67,7 +65,6 @@ namespace GSqlQuery.Test.SearchCriteria
             Assert.NotNull(result);
             Assert.NotNull(result.SearchCriteria);
             Assert.NotNull(result.SearchCriteria.Column);
-            Assert.NotNull(result.SearchCriteria.Table);
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             var parameter = result.Values.First();

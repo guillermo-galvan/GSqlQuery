@@ -113,7 +113,7 @@ namespace GSqlQuery.Queries
 
         public override SelectQuery<T> CreateQuery(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            return new SelectQuery<T>(text, Columns, _criteria, QueryOptions);
+            return new SelectQuery<T>(text, _classOptions.FormatTableName.Table, Columns, _criteria, QueryOptions);
         }
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum) where TJoin : class

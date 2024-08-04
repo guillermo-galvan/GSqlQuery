@@ -17,8 +17,8 @@ namespace GSqlQuery
         /// <param name="criteria">Criteria</param>
         /// <param name="queryOptions">QueryOptions</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal InsertQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
-            : base(ref text, columns, criteria, queryOptions)
+        internal InsertQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
+            : base(ref text, table, columns, criteria, queryOptions)
         { }
     }
 }

@@ -165,7 +165,7 @@ namespace GSqlQuery.Queries
         public override OrderByQuery<T> Build()
         {
             string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
-            return new OrderByQuery<T>(query, columns, criteria, QueryOptions);
+            return new OrderByQuery<T>(query, _classOptions.FormatTableName.Table, columns, criteria, QueryOptions);
         }
     }
 }
