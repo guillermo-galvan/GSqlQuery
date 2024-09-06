@@ -2,6 +2,7 @@
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries
@@ -9,7 +10,7 @@ namespace GSqlQuery.Test.Queries
     public class CountQueryTest
     {
         private readonly PropertyOptions _propertyOptions;
-        private readonly Equal<int> _equal;
+        private readonly Equal<Test1, int> _equal;
         private readonly QueryOptions _queryOptions;
         private readonly ClassOptions _classOptions;
         private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
@@ -20,7 +21,8 @@ namespace GSqlQuery.Test.Queries
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _propertyOptions = _classOptions.PropertyOptions[nameof(Test1.Id)];
             _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _propertyOptions);
-            _equal = new Equal<int>(_classOptionsTupla, new DefaultFormats(), 1);
+            Expression<Func<Test1, int>> expression = (x) => x.Id;
+            _equal = new Equal<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression);
             _queryOptions = new QueryOptions(new DefaultFormats());
         }
 

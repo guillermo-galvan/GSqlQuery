@@ -36,25 +36,11 @@ namespace GSqlQuery.Extensions
             throw new ArgumentNullException(nameof(where));
         }
 
-        /// <summary>
-        /// Instance of IAndOr
-        /// </summary>
-        /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TReturn">Query</typeparam>
-        /// <typeparam name="TProperties">Property type</typeparam>
-        /// <param name="where">Instance of IWhere</param>
-        /// <param name="expression">Expression to evaluate</param>
-        /// <returns>Instance of IAndOr</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static IAndOr<T, TReturn, TQueryOptions> GetAndOr<T, TReturn, TQueryOptions, TProperties>(IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> expression)
-            where T : class 
-            where TReturn : IQuery<T, TQueryOptions>
-            where TQueryOptions : QueryOptions
+        public static IAndOr<T, TReturn, TQueryOptions> GetAndOr<T, TReturn, TQueryOptions, TProperties>(IWhere<T, TReturn, TQueryOptions> where)
+           where T : class
+           where TReturn : IQuery<T, TQueryOptions>
+           where TQueryOptions : QueryOptions
         {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(nameof(expression));
-            }
 
             if (where is IAndOr<T, TReturn, TQueryOptions> andor)
             {
@@ -62,27 +48,6 @@ namespace GSqlQuery.Extensions
             }
 
             throw new ArgumentNullException(nameof(where));
-        }
-
-        /// <summary>
-        /// Instance of IAndOr
-        /// </summary>
-        /// <typeparam name="T">The type to query</typeparam>
-        /// <typeparam name="TReturn">Query</typeparam>
-        /// <param name="where">Instance of IWhere</param>
-        /// <returns>Instance of IAndOr</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static IAndOr<T, TReturn, TQueryOptions> GetAndOr<T, TReturn, TQueryOptions>(IWhere<T, TReturn, TQueryOptions> where)
-            where T : class 
-            where TReturn : IQuery<T, TQueryOptions>
-            where TQueryOptions : QueryOptions
-        {
-            if (where is IAndOr<T, TReturn, TQueryOptions> andor)
-            {
-                return andor;
-            }
-
-            throw new ArgumentNullException(nameof(where), ErrorMessages.ParameterNotNull);
         }
 
         /// <summary>

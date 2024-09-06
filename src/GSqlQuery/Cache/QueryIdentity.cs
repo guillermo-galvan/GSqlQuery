@@ -1,11 +1,13 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using GSqlQuery.SearchCriteria;
+using System;
+using System.Collections.Generic;
 
 namespace GSqlQuery
 {
     internal class QueryIdentity : IEquatable<QueryIdentity>
     {
         protected readonly int _hashCode;
+        protected List<Type> _searchCriteriaTypes = [];
 
         public QueryType QueryType { get; }
 
@@ -15,15 +17,22 @@ namespace GSqlQuery
 
         public Type Properties { get; }
 
-        public Type AndOr { get; }
+        public List<Type> SearchCriteriaTypes => _searchCriteriaTypes;
 
-        public QueryIdentity(Type entity, QueryType queryType, Type format,  Type properties,  Type andOr)
+        public QueryIdentity(Type entity, QueryType queryType, Type format, Type properties, ISearchCriteriaBuilder searchCriteriaBuilder)
         {
-            QueryType = queryType; 
+            QueryType = queryType;
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
             Format = format ?? throw new ArgumentNullException(nameof(format));
             Properties = properties;
-            AndOr = andOr;
+
+            if(searchCriteriaBuilder != null)
+            {
+                foreach (ISearchCriteria item in searchCriteriaBuilder?.SearchCriterias ?? [])
+                {
+                    _searchCriteriaTypes.Add(item.GetType());
+                }
+            }
 
             unchecked
             {
@@ -32,18 +41,21 @@ namespace GSqlQuery
                 _hashCode = (_hashCode * 23) + QueryType.GetHashCode();
                 _hashCode = (_hashCode * 23) + Format.GetHashCode();
                 _hashCode = (_hashCode * 23) + (Properties?.GetHashCode() ?? 0);
-                _hashCode = (_hashCode * 23) + (AndOr?.GetHashCode() ?? 0);
+                foreach (var type in _searchCriteriaTypes)
+                {
+                    _hashCode = (_hashCode * 23) + type.GetHashCode();
+                }
             }
         }
 
-        protected virtual bool ExpresionValidation(QueryIdentity other)
+        protected virtual bool PropertiesValidation(QueryIdentity other)
         {
-            if (Properties == null && other.Properties == null) 
+            if (Properties == null && other.Properties == null)
             {
                 return true;
             }
 
-            if (Properties != null && other.Properties != null && Properties == other.Properties) 
+            if (Properties != null && other.Properties != null && Properties == other.Properties)
             {
                 return true;
             }
@@ -51,19 +63,22 @@ namespace GSqlQuery
             return false;
         }
 
-        protected virtual bool ObjectValidation(object source, object validate)
+        protected virtual bool SearchCriteriaTypesValidation(QueryIdentity other) 
         {
-            if (source == null && validate == null)
+            if(_searchCriteriaTypes.Count != other._searchCriteriaTypes.Count)
             {
-                return true;
+                return false;
             }
 
-            if (source != null && validate != null && source.Equals(validate))
+            for (int i = 0; i < _searchCriteriaTypes.Count; i++)
             {
-                return true;
+                if (_searchCriteriaTypes[i] != other._searchCriteriaTypes[i])
+                {
+                    return false;
+                }
             }
 
-            return false;
+            return true;
         }
 
         public bool Equals(QueryIdentity other)
@@ -74,8 +89,8 @@ namespace GSqlQuery
             return QueryType == other.QueryType
                 && Entity == other.Entity
                 && Format == other.Format
-                && ExpresionValidation(other)
-                && ObjectValidation(AndOr, other.AndOr);
+                && PropertiesValidation(other) 
+                && SearchCriteriaTypesValidation(other);
         }
 
         public override int GetHashCode()

@@ -22,7 +22,7 @@ namespace GSqlQuery
             ColumnIdentity identity = new ColumnIdentity(formats.GetType(), queryType);
             return _names.GetOrAdd(identity, (newType) =>
             {
-                return formats.GetColumnName(FormatTableName.GetTableName(formats), _column, QueryType.Read);
+                return formats.GetColumnName(FormatTableName.GetTableName(formats), _column, queryType);
             });
         }
     }

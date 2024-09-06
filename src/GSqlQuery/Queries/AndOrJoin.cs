@@ -29,7 +29,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetailCollection> BuildCriteria()
+        public override IEnumerable<CriteriaDetailCollection> Create()
         {
             ClassOptions[] classOptions =
             [
@@ -76,7 +76,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetailCollection> BuildCriteria()
+        public override IEnumerable<CriteriaDetailCollection> Create()
         {
             ClassOptions[] classOptions =
             [

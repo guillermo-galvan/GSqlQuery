@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -6,32 +7,18 @@ namespace GSqlQuery.SearchCriteria
     /// Represents the search criteria Less Than Or Equal(<=)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class LessThanOrEqual<T> : Equal<T>
+    /// <remarks>
+    /// Initializes a new instance of the LessThanOrEqual class.
+    /// </remarks>
+    /// <param name="classOptions">ClassOptions</param>
+    /// <param name="formats">Formats</param>
+    /// <param name="value">Value</param>
+    /// <param name="logicalOperator">Logical operator</param>
+    /// <param name="dynamicQuery">DynamicQuery</param>
+    internal class LessThanOrEqual<T, TProperties>(ClassOptions classOptions, IFormats formats, TProperties value, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : Equal<T, TProperties>(classOptions, formats, value, logicalOperator, ref expression)
     {
         protected override string ParameterPrefix => "PLTE";
 
         protected override string RelationalOperator => "<=";
-
-        /// <summary>
-        /// Initializes a new instance of the LessThanOrEqual class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        /// <param name="value">Value</param>
-        public LessThanOrEqual(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T value) :
-            base(classOptionsTupla, formats, value)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the LessThanOrEqual class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        /// <param name="value">Value</param>
-        /// <param name="logicalOperator">Logical Operator</param>
-        public LessThanOrEqual(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, T value, string logicalOperator) :
-            base(classOptionsTupla, formats, value, logicalOperator)
-        { }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using GSqlQuery.Extensions;
+using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
-using System.IO.Pipes;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -41,7 +41,7 @@ namespace GSqlQuery.Queries
         /// Create query
         /// </summary>
         /// <returns>Query Text</returns>
-        internal string CreateQuery()
+        internal string CreateQueryText()
         {
             if (_dynamicQuery != null)
             {
@@ -66,22 +66,49 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
-            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, QueryOptions.Formats.GetType(), _dynamicQuery?.Properties, _andOr?.GetType());
+            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, QueryOptions.Formats.GetType(), _dynamicQuery?.Properties, _andOr);
 
             if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
             {
+                if (identity.SearchCriteriaTypes.Count > 0)
+                {
+                    IQuery<T, TQueryOptions> tmpQuery = (IQuery<T,TQueryOptions>)query;
+                    List<CriteriaDetailCollection> tmp = new List<CriteriaDetailCollection>(tmpQuery.Criteria);
+                    int count = 0;
+                    foreach (ISearchCriteria item in _andOr.SearchCriterias)
+                    {
+                         var criteria = item.ReplaceValue(tmp[count]);
+                        if(criteria == null)
+                        {
+                            QueryCache.Cache.TryRemove(identity, out IQuery _);
+                            return CreateQuery(identity);
+                        }
+                        tmp[count] = criteria;
+                        count++;
+                    }
+
+                    string tmpText = tmpQuery.Text;
+                    var a = CreateQuery(ref tmpText, tmpQuery.Columns, tmp, tmpQuery.QueryOptions);
+                    return a;
+                }
+
                 return (TReturn)query;
             }
             else
             {
-                string text = CreateQuery();
-                TReturn result = CreateQuery(ref text, Columns, _criteria, QueryOptions);
-                QueryCache.Cache.Add(identity, result);
-                return result;
+                return CreateQuery(identity);
             }
         }
 
         public abstract TReturn CreateQuery(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
+
+        public TReturn CreateQuery(QueryIdentity identity)
+        {
+            string text = CreateQueryText();
+            TReturn result = CreateQuery(ref text, Columns, _criteria, QueryOptions);
+            QueryCache.Cache.Add(identity, result);
+            return result;
+        }
     }
 
     /// <summary>
@@ -113,7 +140,7 @@ namespace GSqlQuery.Queries
 
         public override SelectQuery<T> CreateQuery(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            return new SelectQuery<T>(text, _classOptions.FormatTableName.Table, Columns, _criteria, QueryOptions);
+            return new SelectQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum) where TJoin : class

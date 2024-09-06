@@ -14,7 +14,7 @@ namespace GSqlQuery
     /// <typeparam name="TQueryOptions">Options type</typeparam>
     /// <exception cref="ArgumentException"></exception>
     public class AndOrBase<T, TReturn, TQueryOptions> : IWhere<TReturn>,
-        IAndOr<TReturn>, ISearchCriteriaBuilder<TReturn>, IAndOr<T, TReturn, TQueryOptions>, IWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>
+        IAndOr<TReturn>, ISearchCriteriaBuilder, IAndOr<T, TReturn, TQueryOptions>, IWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>
         where TReturn : IQuery<T, TQueryOptions>
         where T : class
         where TQueryOptions : QueryOptions
@@ -25,6 +25,12 @@ namespace GSqlQuery
         protected PropertyOptionsCollection Columns { get; set; }
 
         public TQueryOptions QueryOptions { get; }
+
+        public IAndOr<T, TReturn, TQueryOptions> AndOr => Count == 0 ? null: this;
+
+        public IEnumerable<ISearchCriteria> SearchCriterias => _searchCriterias;
+
+        public int Count => _searchCriterias.Count;
 
         public AndOrBase(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions) : base()
         {
@@ -54,7 +60,7 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public virtual IEnumerable<CriteriaDetailCollection> BuildCriteria()
+        public virtual IEnumerable<CriteriaDetailCollection> Create()
         {
             CriteriaDetailCollection[] result = new CriteriaDetailCollection[_searchCriterias.Count];
             int count = 0;

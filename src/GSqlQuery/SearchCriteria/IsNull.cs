@@ -1,39 +1,32 @@
-﻿using GSqlQuery.Extensions;
-using System.Threading.Tasks;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Represents the search criteria is null
     /// </summary>
-    internal class IsNull : Criteria, ISearchCriteria
+    /// <remarks>
+    /// Initializes a new instance of the IsNull class.
+    /// </remarks>
+    /// <param name="classOptions">ClassOptions</param>
+    /// <param name="formats">Formats</param>
+    /// <param name="logicalOperator">Logical Operator</param>
+    /// <param name="expression">Expression</param>
+    internal class IsNull<T,TProperties>(ClassOptions classOptions, IFormats formats, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : Criteria<T, TProperties>(classOptions, formats, logicalOperator,ref expression), ISearchCriteria
     {
+        public override object Value => null;
+
         protected virtual string RelationalOperator => "IS NULL";
 
-        /// <summary>
-        /// Initializes a new instance of the IsNull class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        public IsNull(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats) :
-            this(classOptionsTupla, formats, null)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the IsNull class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        /// <param name="logicalOperator">Logical Operator</param>
-        public IsNull(ClassOptionsTupla<PropertyOptions> classOptionsTupla, IFormats formats, string logicalOperator) :
-            base(classOptionsTupla, formats, logicalOperator)
-        { }
+        public override CriteriaDetailCollection ReplaceValue(CriteriaDetailCollection criteriaDetailCollection)
+        {
+            return criteriaDetailCollection;
+        }
 
         protected override CriteriaDetails GetCriteriaDetails(ref uint parameterId)
         {
-            string tableName = _classOptionsTupla.ClassOptions.FormatTableName.GetTableName(Formats);
-            string columName = _classOptionsTupla.Columns.FormatColumnName.GetColumnName(Formats, QueryType.Criteria);
-            string criterion = "{0} {1}".Replace("{0}", columName).Replace("{1}", RelationalOperator);
+            string criterion = "{0} {1}".Replace("{0}", _columnName).Replace("{1}", RelationalOperator);
 
             if (!string.IsNullOrWhiteSpace(LogicalOperator))
             {

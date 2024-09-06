@@ -2,7 +2,7 @@
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System;
-using System.Linq;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries
@@ -10,7 +10,7 @@ namespace GSqlQuery.Test.Queries
     public class UpdateQueryTest
     {
         private readonly PropertyOptions _columnAttribute;
-        private readonly Equal<int> _equal;
+        private readonly Equal<Test1, int> _equal;
         private readonly QueryOptions _queryOptions;
         private readonly ClassOptions _classOptions;
         private uint _parameterId = 0;
@@ -20,7 +20,8 @@ namespace GSqlQuery.Test.Queries
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
             var classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
-            _equal = new Equal<int>(classOptionsTupla, new DefaultFormats(), 1);
+            Expression<Func<Test1, int>> expression = (x) => x.Id;
+            _equal = new Equal<Test1, int>(classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression );
             _queryOptions = new QueryOptions(new DefaultFormats());
         }
 

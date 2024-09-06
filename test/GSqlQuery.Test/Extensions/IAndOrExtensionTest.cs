@@ -21,7 +21,7 @@ namespace GSqlQuery.Test.Extensions
         {
             AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.Equal(x => x.Id, 1);
-            IEnumerable<CriteriaDetailCollection> criterias = where.BuildCriteria();
+            IEnumerable<CriteriaDetailCollection> criterias = where.Create();
             string result = string.Join(" ", criterias.SelectMany(x => x.QueryPart));
 
             Assert.NotNull(result);

@@ -196,6 +196,23 @@ namespace GSqlQuery.Extensions
             throw new InvalidOperationException($"Could not infer property name for expression.");
         }
 
+        internal static KeyValuePair<string, PropertyOptions> GetKeyValueEx(Expression expression)
+        {
+            // Obtener el cuerpo de la expresión
+            Expression body = expression is LambdaExpression lambda ? lambda.Body : expression;
+
+            // Verificar si la expresión es un UnaryExpression y obtener su operando
+            Expression withoutUnary = body is UnaryExpression unaryExpression ? unaryExpression.Operand : body;
+
+
+            if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
+            {
+                return new KeyValuePair<string, PropertyOptions>(memberExpression.Member.Name, ClassOptionsFactory.GetClassOptions(memberExpression.Expression.Type).PropertyOptions[memberExpression.Member.Name]);
+            }
+
+            throw new InvalidOperationException($"Could not infer property name for expression.");
+        }
+
         /// <summary>
         /// Gets the ColumnAttribute
         /// </summary>
@@ -289,6 +306,43 @@ namespace GSqlQuery.Extensions
             KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
             return new ClassOptionsTupla<PropertyOptions>(options, keyValue.Value);
+        }
+
+        /// <summary>
+        /// Get ColumnAttribute
+        /// </summary>
+        /// <typeparam name="T">Type of class</typeparam>
+        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>ColumnAttribute</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        internal static ClassOptionsTupla<PropertyOptions> GetColumnAttribute(DynamicQuery dynamicQuery)
+        {
+            KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(dynamicQuery);
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
+            return new ClassOptionsTupla<PropertyOptions>(options, keyValue.Value);
+        }
+
+        /// <summary>
+        /// Get Column information
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TProperties"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns>KeyValuePair<string, PropertyOptions></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        internal static KeyValuePair<string, PropertyOptions> GetKeyValue(DynamicQuery dynamicQuery)
+        {
+            PropertyInfo[] properties = dynamicQuery.Properties.GetProperties();
+
+            if (properties.Length == 0 || dynamicQuery.Properties == dynamicQuery.Entity || dynamicQuery.Properties.IsPrimitive || properties.Length > 1)
+            {
+                throw new InvalidOperationException($"Could not infer property name for expression.");
+            }
+
+            ClassOptions classOptions = ClassOptionsFactory.GetClassOptions(dynamicQuery.Entity);
+            PropertyInfo item = properties.First();
+            return new KeyValuePair<string, PropertyOptions>(item.Name, classOptions.PropertyOptions[item.Name]);
         }
     }
 }

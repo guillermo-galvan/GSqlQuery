@@ -40,7 +40,7 @@ namespace GSqlQuery
         /// <returns></returns>
         protected string GetCriteria()
         {
-            _criteria ??= _andOr.BuildCriteria();
+            _criteria ??= _andOr.Create();
             IEnumerable<string> queryParts = _criteria.Select(x => x.QueryPart);
             return string.Join(" ", queryParts);
         }

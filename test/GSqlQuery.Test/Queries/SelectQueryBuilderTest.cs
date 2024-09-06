@@ -1,11 +1,7 @@
 ﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System;
-using System.Collections.Generic;
 using Xunit;
-using GSqlQuery.Extensions;
-using System.Reflection;
-using System.Linq.Expressions;
 
 namespace GSqlQuery.Test.Queries
 {
