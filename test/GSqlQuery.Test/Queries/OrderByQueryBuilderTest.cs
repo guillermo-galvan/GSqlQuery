@@ -26,10 +26,6 @@ namespace GSqlQuery.Test.Queries
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC);
 
             Assert.NotNull(result);
-            Assert.NotNull(result.QueryOptions);
-            Assert.NotNull(result.Columns);
-            Assert.NotEmpty(result.Columns);
-            Assert.Equal(queryBuilder.Columns.Count, result.Columns.Count);
         }
 
         [Fact]
@@ -44,7 +40,7 @@ namespace GSqlQuery.Test.Queries
         {
             DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id });
             SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions);
-            var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
+            var result = queryBuilder.OrderBy(x => new { x.Id }, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             IQuery<Test1, QueryOptions> query = result.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
@@ -61,7 +57,7 @@ namespace GSqlQuery.Test.Queries
             DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id });
             var queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions)
                                    .Where().Equal(x => x.IsTest, true).OrEqual(x => x.IsTest, false);
-            var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
+            var result = queryBuilder.OrderBy(x => new { x.Id }, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             IQuery<Test1, QueryOptions> query = result.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);

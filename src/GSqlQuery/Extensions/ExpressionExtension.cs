@@ -74,9 +74,13 @@ namespace GSqlQuery.Extensions
         /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>IEnumerable of PropertyOptionsCollection</returns>
-		internal static PropertyOptionsCollection GetPropertyOptionsCollections<T, TProperties>(Expression<Func<T, TProperties>> expression)
+		internal static PropertyOptionsCollection GetPropertyOptionsCollections(Expression expression)
         {
-            Expression withoutUnary = expression.Body is UnaryExpression unaryExpression ? unaryExpression.Operand : expression.Body;
+            // Obtener el cuerpo de la expresión
+            Expression body = expression is LambdaExpression lambda ? lambda.Body : expression;
+
+            // Verificar si la expresión es un UnaryExpression y obtener su operando
+            Expression withoutUnary = body is UnaryExpression unaryExpression ? unaryExpression.Operand : body;
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
@@ -248,6 +252,21 @@ namespace GSqlQuery.Extensions
         /// <returns>ClassOptionsTupla that match expression</returns>
         /// <exception cref="ArgumentNullException"></exception>
         internal static ClassOptionsTupla<PropertyOptionsCollection> GetOptionsAndMembers<T, TProperties>(Expression<Func<T, TProperties>> expression)
+        {
+            PropertyOptionsCollection valuePairs = GetPropertyOptionsCollections(expression);
+            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));
+            return new ClassOptionsTupla<PropertyOptionsCollection>(options, valuePairs);
+        }
+
+        /// <summary>
+        /// Gets the ClassOptionsTupla
+        /// </summary>
+        /// <typeparam name="T">Type of class</typeparam>
+        /// <typeparam name="TProperties">TProperties is property of T class</typeparam>
+        /// <param name="expression">Expression to evaluate</param>
+        /// <returns>ClassOptionsTupla that match expression</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        internal static ClassOptionsTupla<PropertyOptionsCollection> GetOptionsAndMembers<T>(Expression expression)
         {
             PropertyOptionsCollection valuePairs = GetPropertyOptionsCollections(expression);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(T));

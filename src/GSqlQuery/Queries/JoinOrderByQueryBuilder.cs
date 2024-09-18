@@ -1,7 +1,9 @@
 ﻿using GSqlQuery.Extensions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.Queries
 {
@@ -12,7 +14,7 @@ namespace GSqlQuery.Queries
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TQueryOptions">Options Type</typeparam>
     /// <typeparam name="TSelectQuery">Select Query</typeparam>
-    internal abstract class JoinOrderByQueryBuilder<T, TReturn, TQueryOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>, IOrderByQueryBuilder
+    internal abstract class JoinOrderByQueryBuilder<T, TReturn, TQueryOptions, TSelectQuery> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>, IJoinOrderByQueryBuilder<T, TReturn, TQueryOptions>
         where T : class
         where TReturn : IQuery<T, TQueryOptions>
         where TSelectQuery : IQuery<T, TQueryOptions>
@@ -21,6 +23,7 @@ namespace GSqlQuery.Queries
         protected readonly IQueryBuilderWithWhere<TSelectQuery, TQueryOptions> _queryBuilder;
         protected readonly IAndOr<T, TSelectQuery, TQueryOptions> _andorBuilder;
         protected readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
+        protected readonly List<ColumnsJoinOrderBy> _expression = [];
 
         /// <summary>
         /// Class constructor
@@ -29,12 +32,11 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
         /// <param name="queryOptions">Formats</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(Expression expression, OrderBy orderBy,
             IQueryBuilderWithWhere<T, TSelectQuery, TQueryOptions> queryBuilder, TQueryOptions queryOptions)
             : base(queryOptions)
         {
-            _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.Columns, orderBy));
+            _expression.Add(new ColumnsJoinOrderBy(expression, orderBy));
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
         }
@@ -46,12 +48,11 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="andOr">Implementation of the IAndOr interface</param>
         /// <param name="queryOptions">TQueryOptions</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(Expression expression, OrderBy orderBy,
            IAndOr<T, TSelectQuery, TQueryOptions> andOr, TQueryOptions queryOptions)
            : base(queryOptions)
         {
-            _columnsByOrderBy = new Queue<ColumnsOrderBy>();
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.Columns, orderBy));
+            _expression.Add(new ColumnsJoinOrderBy(expression, orderBy));
             _andorBuilder = andOr;
         }
 
@@ -61,7 +62,7 @@ namespace GSqlQuery.Queries
         /// <param name="columns">Colums</param>
         /// <param name="criteria">Criteria</param>
         /// <returns>Query text</returns>
-        internal string CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria)
+        internal string CreateQueryText(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria)
         {
             IAddJoinCriteria<JoinModel> addJoinCriteria = null;
 
@@ -77,10 +78,13 @@ namespace GSqlQuery.Queries
             TSelectQuery selectQuery = _andorBuilder != null ? _andorBuilder.Build() : _queryBuilder.Build();
             Queue<string> parts = new Queue<string>();
 
-            foreach (ColumnsOrderBy x in _columnsByOrderBy)
+            foreach (ColumnsJoinOrderBy x in _expression)
             {
+                ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers<T>(x.Expression);
+                ExpressionExtension.ValidateClassOptionsTupla(QueryType.Criteria, options);
+
                 IEnumerable<string> columnNames =
-                    x.Columns.Values.Select(y => y.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Join));
+                    options.Columns.Values.Select(y => y.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Join));
                 string tmpJoinColumns = string.Join(",", columnNames);
 
                 string tmpColumns = "{0} {1}".Replace("{0}", tmpJoinColumns).Replace("{1}", x.OrderBy.ToString());
@@ -113,18 +117,23 @@ namespace GSqlQuery.Queries
             }
         }
 
-        /// <summary>
-        /// Add Columns
-        /// </summary>
-        /// <param name="selectMember">Name of properties to search</param>
-        /// <param name="orderBy">Order by Type</param>
-        public void AddOrderBy(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy)
+        public override TReturn Build()
         {
-            if (selectMember == null)
+            string query = CreateQueryText(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
+            TReturn result = GetQuery(query, columns, criteria, QueryOptions);
+            return result;
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
+
+        public virtual void AddOrderBy<TProperties>(Expression<Func<T, TProperties>> expression, OrderBy orderBy)
+        {
+            if(expression ==  null)
             {
-                throw new ArgumentNullException(nameof(selectMember));
+                throw new ArgumentNullException(nameof(expression));
             }
-            _columnsByOrderBy.Enqueue(new ColumnsOrderBy(selectMember.Columns, orderBy));
+
+            _expression.Add(new ColumnsJoinOrderBy(expression, orderBy));
         }
     }
 
@@ -141,9 +150,9 @@ namespace GSqlQuery.Queries
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="orderBy">Order by Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(Expression expression, OrderBy orderBy,
             IQueryBuilderWithWhere<T, JoinQuery<T, QueryOptions>, QueryOptions> queryBuilder)
-            : base(selectMember, orderBy, queryBuilder, queryBuilder.QueryOptions)
+            : base(expression, orderBy, queryBuilder, queryBuilder.QueryOptions)
         { }
 
         /// <summary>
@@ -153,19 +162,14 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="andOr">Implementation of the IAndOr interface</param>
         /// <param name="formats">Formats</param>
-        public JoinOrderByQueryBuilder(ClassOptionsTupla<PropertyOptionsCollection> selectMember, OrderBy orderBy,
+        public JoinOrderByQueryBuilder(Expression expression, OrderBy orderBy,
            IAndOr<T, JoinQuery<T, QueryOptions>, QueryOptions> andOr, QueryOptions queryOptions)
-           : base(selectMember, orderBy, andOr, queryOptions)
+           : base(expression, orderBy, andOr, queryOptions)
         { }
 
-        /// <summary>
-        /// Build the query
-        /// </summary>
-        /// <returns>Order by Query</returns>
-        public override OrderByQuery<T> Build()
+        public override OrderByQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            string query = CreateQuery(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
-            return new OrderByQuery<T>(query, _classOptions.FormatTableName.Table, columns, criteria, QueryOptions);
+            return new OrderByQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, QueryOptions);
         }
     }
 }

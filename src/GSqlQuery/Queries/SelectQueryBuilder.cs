@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,47 +65,15 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
-            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, QueryOptions.Formats.GetType(), _dynamicQuery?.Properties, _andOr);
-
-            if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
-            {
-                if (identity.SearchCriteriaTypes.Count > 0)
-                {
-                    IQuery<T, TQueryOptions> tmpQuery = (IQuery<T,TQueryOptions>)query;
-                    List<CriteriaDetailCollection> tmp = new List<CriteriaDetailCollection>(tmpQuery.Criteria);
-                    int count = 0;
-                    foreach (ISearchCriteria item in _andOr.SearchCriterias)
-                    {
-                         var criteria = item.ReplaceValue(tmp[count]);
-                        if(criteria == null)
-                        {
-                            QueryCache.Cache.TryRemove(identity, out IQuery _);
-                            return CreateQuery(identity);
-                        }
-                        tmp[count] = criteria;
-                        count++;
-                    }
-
-                    string tmpText = tmpQuery.Text;
-                    var a = CreateQuery(ref tmpText, tmpQuery.Columns, tmp, tmpQuery.QueryOptions);
-                    return a;
-                }
-
-                return (TReturn)query;
-            }
-            else
-            {
-                return CreateQuery(identity);
-            }
+            return QueryBuilderExtension.GetCriteria<T, TReturn, TQueryOptions>(QueryType.Read, QueryOptions, _dynamicQuery, _andOr, CreateQuery, GetQuery);
         }
 
-        public abstract TReturn CreateQuery(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
 
-        public TReturn CreateQuery(QueryIdentity identity)
+        public TReturn CreateQuery()
         {
             string text = CreateQueryText();
-            TReturn result = CreateQuery(ref text, Columns, _criteria, QueryOptions);
-            QueryCache.Cache.Add(identity, result);
+            TReturn result = GetQuery(text, Columns, _criteria, QueryOptions);            
             return result;
         }
     }
@@ -138,7 +105,7 @@ namespace GSqlQuery.Queries
             : base(queryOptions)
         { }
 
-        public override SelectQuery<T> CreateQuery(ref string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
+        public override SelectQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
             return new SelectQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
