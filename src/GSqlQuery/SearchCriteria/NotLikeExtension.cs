@@ -36,7 +36,7 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> NotLike<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, string value)
-            where T : class 
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -53,8 +53,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> AndNotLike<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, string value) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> AndNotLike<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, string value)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -71,7 +71,7 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> OrNotLike<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, string value) 
+        public static IAndOr<T, TReturn, TQueryOptions> OrNotLike<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, string value)
             where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions

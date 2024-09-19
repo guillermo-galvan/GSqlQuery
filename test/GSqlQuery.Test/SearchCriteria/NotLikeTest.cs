@@ -28,7 +28,7 @@ namespace GSqlQuery.Test.SearchCriteria
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
             _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
-            _dynamicQuery = (x) =>  x.Id;
+            _dynamicQuery = (x) => x.Id;
         }
 
         [Fact]

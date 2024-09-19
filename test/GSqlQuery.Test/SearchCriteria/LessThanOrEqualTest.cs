@@ -35,7 +35,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_create_an_instance()
         {
             var dynamicQuery = _dynamicQuery;
-            LessThanOrEqual<Test1,int> equal = new LessThanOrEqual<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref dynamicQuery);
+            LessThanOrEqual<Test1, int> equal = new LessThanOrEqual<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref dynamicQuery);
 
             Assert.NotNull(equal);
             Assert.NotNull(equal.Formats);

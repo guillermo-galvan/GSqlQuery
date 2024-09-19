@@ -28,14 +28,14 @@ namespace GSqlQuery.Test.SearchCriteria
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
             _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
-            _dynamicQuery = (x) =>  x.Id;
+            _dynamicQuery = (x) => x.Id;
         }
 
         [Fact]
         public void Should_create_an_instance()
         {
             var dynamicQuery = _dynamicQuery;
-            NotIn<Test1,int> test = new NotIn<Test1,int>(_classOptionsTupla.ClassOptions, _queryBuilder.QueryOptions.Formats, new int[] { 1, 2, 3, 1, 4 },  null, ref dynamicQuery);
+            NotIn<Test1, int> test = new NotIn<Test1, int>(_classOptionsTupla.ClassOptions, _queryBuilder.QueryOptions.Formats, new int[] { 1, 2, 3, 1, 4 }, null, ref dynamicQuery);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Formats);

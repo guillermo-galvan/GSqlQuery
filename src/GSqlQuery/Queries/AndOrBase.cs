@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace GSqlQuery
 
         public TQueryOptions QueryOptions { get; }
 
-        public IAndOr<T, TReturn, TQueryOptions> AndOr => Count == 0 ? null: this;
+        public IAndOr<T, TReturn, TQueryOptions> AndOr => Count == 0 ? null : this;
 
         public IEnumerable<ISearchCriteria> SearchCriterias => _searchCriterias;
 

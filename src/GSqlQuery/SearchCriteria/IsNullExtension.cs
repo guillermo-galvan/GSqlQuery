@@ -7,7 +7,7 @@ namespace GSqlQuery
 {
     public static class IsNullExtension
     {
-        private static void CreateCriteria<T, TReturn, TQueryOptions, TProperties>(ISearchCriteriaBuilder andOr, IFormats formats,ref  Expression<Func<T, TProperties>> func, string logicalOperator)
+        private static void CreateCriteria<T, TReturn, TQueryOptions, TProperties>(ISearchCriteriaBuilder andOr, IFormats formats, ref Expression<Func<T, TProperties>> func, string logicalOperator)
            where T : class
            where TReturn : IQuery<T, TQueryOptions>
            where TQueryOptions : QueryOptions
@@ -35,7 +35,7 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> IsNull<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func)
-            where T : class 
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -52,7 +52,7 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> AndIsNull<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func)
-            where T : class 
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -69,11 +69,11 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> OrIsNull<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func)
-            where T : class 
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
-            CreateCriteria<T, TReturn, TQueryOptions, TProperties>(andOr,  andOr.QueryOptions.Formats, ref func, Constants.OR);
+            CreateCriteria<T, TReturn, TQueryOptions, TProperties>(andOr, andOr.QueryOptions.Formats, ref func, Constants.OR);
             return andOr;
         }
     }

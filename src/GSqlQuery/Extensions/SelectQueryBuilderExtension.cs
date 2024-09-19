@@ -74,7 +74,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(func), ErrorMessages.ParameterNotNull);
             }
-            
+
             return new OrderByQueryBuilder<T>(new DynamicQuery(typeof(T), typeof(TProperties)), orderBy, queryBuilder);
         }
 

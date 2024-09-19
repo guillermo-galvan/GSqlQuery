@@ -37,7 +37,7 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> Between<T, TReturn, TQueryOptions,  TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final) 
+        public static IAndOr<T, TReturn, TQueryOptions> Between<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final)
             where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
@@ -56,13 +56,13 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> AndBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> AndBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
-            CreateCriteria<T, TReturn, TQueryOptions, TProperties>(andOr, andOr.QueryOptions.Formats,ref func, initial, final, Constants.AND);
-            return  andOr;
+            CreateCriteria<T, TReturn, TQueryOptions, TProperties>(andOr, andOr.QueryOptions.Formats, ref func, initial, final, Constants.AND);
+            return andOr;
         }
 
         /// <summary>
@@ -75,8 +75,8 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> OrBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> OrBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {

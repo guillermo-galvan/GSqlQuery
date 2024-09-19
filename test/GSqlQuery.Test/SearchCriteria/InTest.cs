@@ -28,7 +28,7 @@ namespace GSqlQuery.Test.SearchCriteria
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
             _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
-            _dynamicQuery = (x) =>  x.Id ;
+            _dynamicQuery = (x) => x.Id;
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_create_an_instance_1(string logicalOperator, int[] value)
         {
             var dynamicQuery = _dynamicQuery;
-            In<Test1,int> test = new In<Test1,int>(_classOptionsTupla.ClassOptions, _queryBuilder.QueryOptions.Formats, value, logicalOperator, ref dynamicQuery);
+            In<Test1, int> test = new In<Test1, int>(_classOptionsTupla.ClassOptions, _queryBuilder.QueryOptions.Formats, value, logicalOperator, ref dynamicQuery);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Formats);
@@ -69,7 +69,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_get_criteria_detail(string logicalOperator, int[] value, string querypart)
         {
             var dynamicQuery = _dynamicQuery;
-            In<Test1,int> test = new In<Test1,int>(_classOptionsTupla.ClassOptions, _queryBuilder.QueryOptions.Formats, value, logicalOperator, ref dynamicQuery);
+            In<Test1, int> test = new In<Test1, int>(_classOptionsTupla.ClassOptions, _queryBuilder.QueryOptions.Formats, value, logicalOperator, ref dynamicQuery);
             var result = test.GetCriteria(ref _parameterId);
 
             Assert.NotNull(result);

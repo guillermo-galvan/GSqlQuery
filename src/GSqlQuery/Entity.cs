@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using GSqlQuery.Queries;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace GSqlQuery
     /// Entity 
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public abstract class Entity<T> 
+    public abstract class Entity<T>
         where T : class
     {
         /// <summary>

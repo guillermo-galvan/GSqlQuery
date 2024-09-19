@@ -37,7 +37,7 @@ namespace GSqlQuery.Test.Extensions
         public void LessThan_Join_Two_Table()
         {
             var query = Entity<Test1>.Select(_queryOptions).LeftJoin<Test3>().LessThan(x => x.Table2.Ids, x => x.Table1.Id).Build();
-          
+
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id < Test1.Id;", query.Text);
         }
@@ -46,7 +46,7 @@ namespace GSqlQuery.Test.Extensions
         public void GreaterThanOrEqual_Join_Two_Table()
         {
             var query = Entity<Test1>.Select(_queryOptions).LeftJoin<Test3>().GreaterThanOrEqual(x => x.Table2.Ids, x => x.Table1.Id).Build();
-            
+
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id >= Test1.Id;", query.Text);
         }

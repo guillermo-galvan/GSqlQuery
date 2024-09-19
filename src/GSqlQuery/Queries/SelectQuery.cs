@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery
@@ -7,7 +8,7 @@ namespace GSqlQuery
     /// Select query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class SelectQuery<T> : Query<T, QueryOptions> 
+    public class SelectQuery<T> : Query<T, QueryOptions>
         where T : class
     {
         /// <summary>

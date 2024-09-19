@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery.Queries
@@ -46,7 +47,7 @@ namespace GSqlQuery.Queries
             }
         }
 
-        public override TReturn Build() 
+        public override TReturn Build()
         {
             string text = CreateQueryText();
             TReturn result = GetQuery(text, Columns, _criteria, QueryOptions);

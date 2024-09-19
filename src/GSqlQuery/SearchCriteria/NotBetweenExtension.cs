@@ -36,8 +36,8 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> NotBetween<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> NotBetween<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -54,8 +54,8 @@ namespace GSqlQuery
         /// <param name="initial">Initial value</param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> AndNotBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> AndNotBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -72,8 +72,8 @@ namespace GSqlQuery
         /// <param name="initial">Initial value </param>
         /// <param name="final">Final value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> OrNotBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> OrNotBetween<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties initial, TProperties final)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {

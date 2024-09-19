@@ -29,7 +29,7 @@ namespace GSqlQuery
         public string QueryPart { get; } = queryPart ?? throw new ArgumentNullException(nameof(queryPart));
 
         public IEnumerable<string> Keys => _keyValues.Keys;
-        
+
         public IEnumerable<ParameterDetail> Values => _keyValues.Values;
 
         public int Count => _keyValues.Count;
@@ -66,7 +66,7 @@ namespace GSqlQuery
             SearchCriteria = searchCriteria ?? throw new ArgumentNullException(nameof(searchCriteria));
         }
 
-        internal CriteriaDetailCollection(ISearchCriteria searchCriteria, string queryPart, PropertyOptions propertyOptions, ParameterDetail[] parameters) : this(searchCriteria,queryPart, propertyOptions)
+        internal CriteriaDetailCollection(ISearchCriteria searchCriteria, string queryPart, PropertyOptions propertyOptions, ParameterDetail[] parameters) : this(searchCriteria, queryPart, propertyOptions)
         {
             if (parameters == null)
             {

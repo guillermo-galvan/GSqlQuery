@@ -23,7 +23,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
 
-            In<T,TProperties> equal = new In<T, TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)), formats, values, logicalOperator, ref func);
+            In<T, TProperties> equal = new In<T, TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)), formats, values, logicalOperator, ref func);
             andOr.Add(equal);
         }
 
@@ -36,8 +36,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="values">Values</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> In<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> In<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -54,8 +54,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="values">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> AndIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> AndIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -72,8 +72,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="values">Values</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> OrIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> OrIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {

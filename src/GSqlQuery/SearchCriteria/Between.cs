@@ -68,13 +68,13 @@ namespace GSqlQuery.SearchCriteria
                         result[item] = new ParameterDetail(item, Final);
                     }
                     else
-                    { 
+                    {
                         break;
                     }
 
                     count++;
                 }
-                
+
                 return result;
             }
 

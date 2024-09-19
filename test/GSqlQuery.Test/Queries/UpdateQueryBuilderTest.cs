@@ -1,10 +1,10 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System;
-using Xunit;
-using GSqlQuery.Extensions;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
+using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -146,7 +146,7 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_get_the_where_query2()
         {
-            var column = ExpressionExtension.GetOptionsAndMember<Test1, object>((x) =>  x.Id);
+            var column = ExpressionExtension.GetOptionsAndMember<Test1, object>((x) => x.Id);
             UpdateQueryBuilder<Test1> test = new UpdateQueryBuilder<Test1>(_queryOptions, column, string.Empty);
             var where = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Where();
             Assert.NotNull(where);

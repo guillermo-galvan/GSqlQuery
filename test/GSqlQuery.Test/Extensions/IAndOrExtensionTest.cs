@@ -12,7 +12,7 @@ namespace GSqlQuery.Test.Extensions
 
         public IAndOrExtensionTest()
         {
-            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create }) ; 
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
             _queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, new QueryOptions(new DefaultFormats()));
         }
 

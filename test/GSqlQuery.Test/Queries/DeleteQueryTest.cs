@@ -22,7 +22,7 @@ namespace GSqlQuery.Test.Queries
             _propertyOptions = _classOptions.PropertyOptions[nameof(Test1.Id)];
             _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _propertyOptions);
             Expression<Func<Test1, int>> expression = (x) => x.Id;
-            _equal = new Equal<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression );
+            _equal = new Equal<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression);
         }
 
         [Fact]

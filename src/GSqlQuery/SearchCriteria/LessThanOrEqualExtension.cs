@@ -36,12 +36,12 @@ namespace GSqlQuery
         /// <param name="value">Value for equality</param>
         /// <returns></returns>
         public static IAndOr<T, TReturn, TQueryOptions> LessThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func,
-            TProperties value) where T : class 
+            TProperties value) where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
             CreateCriteria<T, TReturn, TQueryOptions, TProperties>(where, where.QueryOptions.Formats, ref func, value, null);
-            return  where.AndOr;
+            return where.AndOr;
         }
 
         /// <summary>
@@ -54,8 +54,8 @@ namespace GSqlQuery
         /// <param name="value">Value for equality</param>
         /// <returns>IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> AndLessThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func,
-            TProperties value) 
-            where T : class 
+            TProperties value)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -73,8 +73,8 @@ namespace GSqlQuery
         /// <param name="value">Value for equality</param>
         /// <returns>IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> OrLessThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func,
-            TProperties value) 
-            where T : class 
+            TProperties value)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {

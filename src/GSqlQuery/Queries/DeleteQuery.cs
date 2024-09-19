@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GSqlQuery

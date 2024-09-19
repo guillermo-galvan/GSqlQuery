@@ -80,7 +80,7 @@ namespace GSqlQuery.Test
             Assert.Equal("Test.Test", result);
             Assert.Equal($"Column Name: Test", column.ToString());
         }
-        
+
         [Fact]
         public void Throw_exception_if_name_is_null()
         {

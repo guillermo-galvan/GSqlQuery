@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace GSqlQuery
+namespace GSqlQuery.Cache
 {
     internal class QueryCache
     {
@@ -20,12 +20,12 @@ namespace GSqlQuery
             return _queryCache.TryGetValue(queryIdentity, out value);
         }
 
-        public void Add(QueryIdentity queryIdentity, IQuery value) 
+        public void Add(QueryIdentity queryIdentity, IQuery value)
         {
             _queryCache[queryIdentity] = value;
         }
 
-        public bool TryRemove(QueryIdentity queryIdentity, out IQuery value) 
+        public bool TryRemove(QueryIdentity queryIdentity, out IQuery value)
         {
             return _queryCache.TryRemove(queryIdentity, out value);
         }

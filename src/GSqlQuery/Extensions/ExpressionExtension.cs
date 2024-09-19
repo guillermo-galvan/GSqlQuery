@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace GSqlQuery.Extensions
 		internal static PropertyOptionsCollection GetPropertyOptionsCollectionsByFunc(DynamicQuery dynamicQuery)
         {
             PropertyInfo[] properties = dynamicQuery.Properties.GetProperties();
-            
+
 
             if (properties.Length == 0 || dynamicQuery.Properties == dynamicQuery.Entity || dynamicQuery.Properties.IsPrimitive)
             {
@@ -92,7 +93,7 @@ namespace GSqlQuery.Extensions
 
                 foreach (Expression item in newExpression.Arguments)
                 {
-                    if (item is MemberExpression member  && (member.Expression.NodeType == ExpressionType.Parameter || member.Expression.NodeType == ExpressionType.MemberAccess))
+                    if (item is MemberExpression member && (member.Expression.NodeType == ExpressionType.Parameter || member.Expression.NodeType == ExpressionType.MemberAccess))
                     {
                         result.Add(new KeyValuePair<string, PropertyOptions>(member.Member.Name, ClassOptionsFactory.GetClassOptions(member.Expression.Type).PropertyOptions[member.Member.Name]));
                     }
@@ -194,7 +195,7 @@ namespace GSqlQuery.Extensions
 
             if (withoutUnary.NodeType == ExpressionType.MemberAccess && withoutUnary is MemberExpression memberExpression)
             {
-                return new KeyValuePair<string, PropertyOptions> (memberExpression.Member.Name, ClassOptionsFactory.GetClassOptions(memberExpression.Expression.Type).PropertyOptions[memberExpression.Member.Name]);
+                return new KeyValuePair<string, PropertyOptions>(memberExpression.Member.Name, ClassOptionsFactory.GetClassOptions(memberExpression.Expression.Type).PropertyOptions[memberExpression.Member.Name]);
             }
 
             throw new InvalidOperationException($"Could not infer property name for expression.");

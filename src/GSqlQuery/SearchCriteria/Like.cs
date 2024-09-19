@@ -15,7 +15,7 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="value">Equality value</param>
     /// <param name="logicalOperator">Logical Operator</param>
     /// <param name="dynamicQuery">DynamicQuery</param>
-    internal class Like<T,TProperties>(ClassOptions classOptions, IFormats formats, string value, string logicalOperator,ref Expression<Func<T, TProperties>> expression) : Criteria<T, TProperties>(classOptions, formats, logicalOperator, ref expression)
+    internal class Like<T, TProperties>(ClassOptions classOptions, IFormats formats, string value, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : Criteria<T, TProperties>(classOptions, formats, logicalOperator, ref expression)
     {
         protected virtual string RelationalOperator => "LIKE";
 

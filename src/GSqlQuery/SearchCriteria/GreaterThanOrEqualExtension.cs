@@ -22,7 +22,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(andOr), ErrorMessages.ParameterNotNull);
             }
 
-            GreaterThanOrEqual<T, TProperties> equal = new GreaterThanOrEqual<T,TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)), formats, value, logicalOperator, ref func);
+            GreaterThanOrEqual<T, TProperties> equal = new GreaterThanOrEqual<T, TProperties>(ClassOptionsFactory.GetClassOptions(typeof(T)), formats, value, logicalOperator, ref func);
             andOr.Add(equal);
         }
 
@@ -36,8 +36,8 @@ namespace GSqlQuery
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> GreaterThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func,
-            TProperties value) 
-            where T : class 
+            TProperties value)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -54,8 +54,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> AndGreaterThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties value) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> AndGreaterThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties value)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -72,8 +72,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="value">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> OrGreaterThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties value) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> OrGreaterThanOrEqual<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, TProperties value)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {

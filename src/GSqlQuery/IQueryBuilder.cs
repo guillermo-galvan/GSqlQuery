@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
 
 namespace GSqlQuery
 {
@@ -7,7 +8,7 @@ namespace GSqlQuery
     /// </summary>
     /// <typeparam name="TReturn">Query</typeparam>
     /// <typeparam name="TQueryOptions">Options type</typeparam>
-    public interface IQueryBuilder<TReturn, TQueryOptions> : IBuilder<TReturn> , IQueryOptions<TQueryOptions>
+    public interface IQueryBuilder<TReturn, TQueryOptions> : IBuilder<TReturn>, IQueryOptions<TQueryOptions>
         where TReturn : IQuery
         where TQueryOptions : QueryOptions
     {

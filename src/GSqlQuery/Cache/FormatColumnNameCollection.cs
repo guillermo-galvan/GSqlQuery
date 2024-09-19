@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using GSqlQuery.Cache;
+using System.Collections.Concurrent;
 
 namespace GSqlQuery
 {

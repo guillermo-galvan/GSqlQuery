@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -128,7 +129,7 @@ namespace GSqlQuery.Queries
 
         public virtual void AddOrderBy<TProperties>(Expression<Func<T, TProperties>> expression, OrderBy orderBy)
         {
-            if(expression ==  null)
+            if (expression == null)
             {
                 throw new ArgumentNullException(nameof(expression));
             }

@@ -1,4 +1,5 @@
 ﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.Test.Data;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Helpers;
@@ -7,7 +8,6 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Xunit;
-using GSqlQuery.Queries;
 
 namespace GSqlQuery.Test
 {
@@ -23,7 +23,7 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_despues()
         {
-            var select = Film.Select(_queryOptions).Count().Where().Equal(x => x.FilmId, 1);
+            var select = Film.Select(_queryOptions).Where().Equal(x => x.FilmId, 1);
 
             Stopwatch timeMeasure = new Stopwatch();
             timeMeasure.Start();
@@ -32,7 +32,7 @@ namespace GSqlQuery.Test
 
             Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
 
-            var select2 = Film.Select(_queryOptions).Count().Where().Equal(x => x.FilmId, 2);
+            var select2 = Film.Select(_queryOptions).Where().Equal(x => x.FilmId, 2);
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();
@@ -448,7 +448,7 @@ namespace GSqlQuery.Test
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3>, QueryOptions> queryBuilder = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates });
             IOrderByQueryBuilder<Test3, OrderByQuery<Test3>, QueryOptions> countQuery = queryBuilder.OrderBy(x => new { x.Names }, OrderBy.ASC).OrderBy(x => new { x.Creates }, OrderBy.DESC);
             var queryTmp = countQuery?.Build();
-            
+
             Assert.NotNull(countQuery);
             Assert.NotEmpty(queryTmp.Text);
             Assert.Equal(query, queryTmp.Text);
@@ -464,7 +464,7 @@ namespace GSqlQuery.Test
             ValidateColumns validateColumns = new ValidateColumns(ExpressionExtension.GetPropertyOptionsCollections(expression));
             var queryBuilder = Test3.Select(queryOptions, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12);
             var query = queryBuilder.OrderBy(x => new { x.Names }, OrderBy.ASC).OrderBy(x => new { x.Creates }, OrderBy.DESC).Build();
-            
+
 
             string result = query.Text;
             if (query.Criteria != null)
@@ -1016,7 +1016,7 @@ namespace GSqlQuery.Test
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
                               .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
                               .Where()
-                              .In(x => x.Table1.Ids, new int[] { 1,2,3 })
+                              .In(x => x.Table1.Ids, new int[] { 1, 2, 3 })
                               .AndNotIn(x => x.Table2.Ids, new int[] { 1, 2, 3 })
                               .OrderBy(x => new { x.Table2.IsTests, x.Table1.Names, x.Table3.Id }, OrderBy.ASC)
                               .Build();

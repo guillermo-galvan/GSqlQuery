@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSqlQuery.Cache;
+using System;
 
 namespace GSqlQuery
 {
@@ -8,7 +9,7 @@ namespace GSqlQuery
     /// <typeparam name="T">The type to query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
     public abstract class QueryBuilderBase<T, TReturn, TQueryOptions> : IBuilder<TReturn>, IQueryBuilder<TReturn, TQueryOptions>
-        where T : class 
+        where T : class
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {

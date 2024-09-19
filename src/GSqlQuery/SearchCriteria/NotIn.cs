@@ -16,7 +16,7 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="values">Equality value</param>
     /// <param name="logicalOperator">Logical operator </param>
     /// <param name="dynamicQuery">DynamicQuery</param>
-    internal class NotIn<T, TProperties>(ClassOptions classOptions, IFormats formats, IEnumerable<TProperties> values, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : In<T, TProperties>(classOptions, formats, values, logicalOperator,ref expression)
+    internal class NotIn<T, TProperties>(ClassOptions classOptions, IFormats formats, IEnumerable<TProperties> values, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : In<T, TProperties>(classOptions, formats, values, logicalOperator, ref expression)
     {
         protected override string RelationalOperator => "NOT IN";
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GSqlQuery
+namespace GSqlQuery.Cache
 {
     internal class ColumnIdentity : IEquatable<ColumnIdentity>
     {
@@ -18,8 +18,8 @@ namespace GSqlQuery
             unchecked
             {
                 _hashCode = 17;
-                _hashCode = (_hashCode * 23) + Type.GetHashCode();
-                _hashCode = (_hashCode * 23) + QueryType.GetHashCode();
+                _hashCode = _hashCode * 23 + Type.GetHashCode();
+                _hashCode = _hashCode * 23 + QueryType.GetHashCode();
             }
         }
 

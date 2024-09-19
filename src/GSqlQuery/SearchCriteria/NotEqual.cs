@@ -15,7 +15,7 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="value">Value</param>
     /// <param name="logicalOperator">Logical operator</param>
     /// <param name="expression">Expression</param>
-    internal class NotEqual<T, TProperties>(ClassOptions classOptions, IFormats formats, TProperties value, string logicalOperator,ref Expression<Func<T, TProperties>> expression) : Equal<T, TProperties>(classOptions, formats, value, logicalOperator,ref expression), ISearchCriteria
+    internal class NotEqual<T, TProperties>(ClassOptions classOptions, IFormats formats, TProperties value, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : Equal<T, TProperties>(classOptions, formats, value, logicalOperator, ref expression), ISearchCriteria
     {
         protected override string ParameterPrefix => "PNE";
 

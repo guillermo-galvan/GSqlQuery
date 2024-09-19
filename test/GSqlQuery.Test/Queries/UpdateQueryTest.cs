@@ -21,7 +21,7 @@ namespace GSqlQuery.Test.Queries
             _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
             var classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
             Expression<Func<Test1, int>> expression = (x) => x.Id;
-            _equal = new Equal<Test1, int>(classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression );
+            _equal = new Equal<Test1, int>(classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression);
             _queryOptions = new QueryOptions(new DefaultFormats());
         }
 
@@ -46,7 +46,7 @@ namespace GSqlQuery.Test.Queries
         {
             Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", _classOptions.FormatTableName.Table, null, [_equal.GetCriteria(ref _parameterId)], _queryOptions));
             Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", null, null, [_equal.GetCriteria(ref _parameterId)], _queryOptions));
-            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", _classOptions.FormatTableName.Table,  _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], null));
+            Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>("query", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], null));
             Assert.Throws<ArgumentNullException>(() => new UpdateQuery<Test1>(null, _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _queryOptions));
         }
     }

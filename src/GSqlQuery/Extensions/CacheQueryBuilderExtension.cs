@@ -1,23 +1,22 @@
-﻿using GSqlQuery.Queries;
-using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Queries;
 using System;
 using System.Collections.Generic;
 
 namespace GSqlQuery.Extensions
 {
-    internal static class QueryBuilderExtension
+    internal static class CacheQueryBuilderExtension
     {
-        public static TReturn GetCriteria<T, TReturn, TQueryOptions>(QueryType queryType, TQueryOptions queryOptions, DynamicQuery dynamicQuery, IAndOr<TReturn> andOr, Func<TReturn> createQuery, Func<string, PropertyOptionsCollection, IEnumerable<CriteriaDetailCollection>, TQueryOptions, TReturn> getQuery)
+        internal static TReturn CreateSelectQuery<T, TReturn, TQueryOptions>(TQueryOptions queryOptions, DynamicQuery dynamicQuery, IAndOr<TReturn> andOr, Func<TReturn> createQuery, Func<string, PropertyOptionsCollection, IEnumerable<CriteriaDetailCollection>, TQueryOptions, TReturn> getQuery)
             where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
-            QueryIdentity identity = new QueryIdentity(typeof(T), QueryType.Read, queryOptions.Formats.GetType(), dynamicQuery?.Properties, andOr);
+            SelectQueryIdentity identity = new SelectQueryIdentity(typeof(T), queryOptions.Formats.GetType(), dynamicQuery?.Properties, andOr);
 
             if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
             {
-                var tmpQuery = query as IQuery<T, TQueryOptions>;
-                if (tmpQuery != null && identity.SearchCriteriaTypes.Count > 0)
+                if (query is IQuery<T, TQueryOptions> tmpQuery && identity.SearchCriteriaTypes.Count > 0)
                 {
                     var tmp = new List<CriteriaDetailCollection>(tmpQuery.Criteria);
                     int count = 0;
@@ -47,7 +46,7 @@ namespace GSqlQuery.Extensions
         internal static TReturn AddCriteriaCache<TReturn>(QueryIdentity identity, Func<TReturn> createQuery)
             where TReturn : IQuery
         {
-            var result = createQuery();
+            TReturn result = createQuery();
             QueryCache.Cache.Add(identity, result);
             return result;
         }

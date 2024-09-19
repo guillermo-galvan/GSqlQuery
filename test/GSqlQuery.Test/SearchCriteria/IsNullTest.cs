@@ -34,7 +34,7 @@ namespace GSqlQuery.Test.SearchCriteria
         public void Should_create_an_instance()
         {
             var dynamicQuery = _dynamicQuery;
-            IsNull<Test1,int> test = new IsNull<Test1,int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), null, ref dynamicQuery);
+            IsNull<Test1, int> test = new IsNull<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), null, ref dynamicQuery);
 
             Assert.NotNull(test);
             Assert.NotNull(test.Formats);

@@ -37,7 +37,7 @@ namespace GSqlQuery
         /// <param name="values">Values</param>
         /// <returns>Instance of IAndOr</returns>
         public static IAndOr<T, TReturn, TQueryOptions> NotIn<T, TReturn, TQueryOptions, TProperties>(this IWhere<T, TReturn, TQueryOptions> where, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values)
-            where T : class 
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -54,8 +54,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="values">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> AndNotIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> AndNotIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
@@ -72,8 +72,8 @@ namespace GSqlQuery
         /// <param name="func">func to evaluate</param>
         /// <param name="values">Value</param>
         /// <returns>Instance of IAndOr</returns>
-        public static IAndOr<T, TReturn, TQueryOptions> OrNotIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values) 
-            where T : class 
+        public static IAndOr<T, TReturn, TQueryOptions> OrNotIn<T, TReturn, TQueryOptions, TProperties>(this IAndOr<T, TReturn, TQueryOptions> andOr, Expression<Func<T, TProperties>> func, IEnumerable<TProperties> values)
+            where T : class
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {

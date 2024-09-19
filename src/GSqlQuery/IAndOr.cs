@@ -21,6 +21,6 @@ namespace GSqlQuery
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {
-        
+
     }
 }

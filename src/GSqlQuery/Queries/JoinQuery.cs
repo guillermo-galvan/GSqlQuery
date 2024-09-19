@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
 
 namespace GSqlQuery
 {
@@ -24,7 +25,7 @@ namespace GSqlQuery
         /// <param name="criteria">Criteria</param>
         /// <param name="formats">Formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        internal JoinQuery(string text,TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions, TableAttribute secondTable) :
+        internal JoinQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions, TableAttribute secondTable) :
             base(text, table, columns, criteria, queryOptions)
         {
             _options = queryOptions;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GSqlQuery
+namespace GSqlQuery.Cache
 {
     public sealed class PropertyOptionsCollection : IEnumerable<KeyValuePair<string, PropertyOptions>>
     {
@@ -28,7 +28,7 @@ namespace GSqlQuery
 
         internal IEnumerable<PropertyOptions> Values { get { return _values; } }
 
-        public int Count {  get { return _values.Count; } }
+        public int Count { get { return _values.Count; } }
 
         private bool TryAdd(string key, int value)
         {
@@ -62,7 +62,7 @@ namespace GSqlQuery
             foreach (KeyValuePair<string, PropertyOptions> item in keyValues)
             {
                 bool tryKey = TryAdd(item.Key, index);
-                bool tryColumnAttribute =  TryAdd(item.Value.ColumnAttribute.Name, index);
+                bool tryColumnAttribute = TryAdd(item.Value.ColumnAttribute.Name, index);
                 bool lowerCase = TryAdd(item.Key.ToUpper(), index);
 
                 if (tryKey || tryColumnAttribute || lowerCase)

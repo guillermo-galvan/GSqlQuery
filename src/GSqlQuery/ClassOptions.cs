@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSqlQuery.Cache;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -54,18 +55,18 @@ namespace GSqlQuery
         private IEnumerable<KeyValuePair<string, PropertyOptions>> GetProperties()
         {
             PropertyInfo[] properties = Type.GetProperties();
-            if(properties.Length == 0)
+            if (properties.Length == 0)
             {
                 throw new Exception($"{Type.Name} has no properties");
             }
 
 
 
-            return properties.Select(x => 
+            return properties.Select(x =>
             {
                 ColumnAttribute columnAttribute = (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute;
                 FormatColumnNameCollection formatColumnNameCollection = new FormatColumnNameCollection(columnAttribute, FormatTableName);
-                PropertyOptions  propertyOptions = new PropertyOptions(0, x, (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute, formatColumnNameCollection);
+                PropertyOptions propertyOptions = new PropertyOptions(0, x, (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute, formatColumnNameCollection);
 
                 return new KeyValuePair<string, PropertyOptions>(x.Name, propertyOptions);
             }).ToList();
@@ -141,7 +142,7 @@ namespace GSqlQuery
             {
                 ParameterInfo param = parameters[i];
                 Type type = param.ParameterType;
-                objects[i] = type.IsValueType ? Activator.CreateInstance(type) : null ;
+                objects[i] = type.IsValueType ? Activator.CreateInstance(type) : null;
             }
 
             return constructorInfo.Invoke(objects);

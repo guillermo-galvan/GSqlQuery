@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
 
 namespace GSqlQuery
 {
@@ -29,10 +30,10 @@ namespace GSqlQuery
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public interface IQuery<T, TQueryOptions> : IQueryOptions<TQueryOptions>, IQuery 
+    public interface IQuery<T, TQueryOptions> : IQueryOptions<TQueryOptions>, IQuery
         where T : class
         where TQueryOptions : QueryOptions
     {
-        
+
     }
 }

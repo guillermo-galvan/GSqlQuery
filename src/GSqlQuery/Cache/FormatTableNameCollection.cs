@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace GSqlQuery
+namespace GSqlQuery.Cache
 {
     public sealed class FormatTableNameCollection
     {

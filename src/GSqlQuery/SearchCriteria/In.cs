@@ -31,7 +31,7 @@ namespace GSqlQuery.SearchCriteria
         /// <param name="logicalOperator">Logical operator </param>
         /// <param name="expression">Expression</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public In(ClassOptions classOptions, IFormats formats, IEnumerable<TProperties> values, string logicalOperator,ref Expression<Func<T, TProperties>> expression)
+        public In(ClassOptions classOptions, IFormats formats, IEnumerable<TProperties> values, string logicalOperator, ref Expression<Func<T, TProperties>> expression)
             : base(classOptions, formats, logicalOperator, ref expression)
         {
             Values = values ?? throw new ArgumentNullException(nameof(values));

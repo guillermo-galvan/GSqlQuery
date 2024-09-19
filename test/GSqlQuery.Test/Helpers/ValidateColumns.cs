@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace GSqlQuery.Test.Helpers
         private readonly List<string> _thirdTable;
         private readonly ValidateType _validateType;
 
-        public ValidateColumnsJoin(IFormats formats,ClassOptionsTupla<PropertyOptionsCollection> memberInfoFirstable, ClassOptionsTupla<PropertyOptionsCollection> memberInfoSecondTable, ClassOptionsTupla<PropertyOptionsCollection> memberInfoThirdTable = null)
+        public ValidateColumnsJoin(IFormats formats, ClassOptionsTupla<PropertyOptionsCollection> memberInfoFirstable, ClassOptionsTupla<PropertyOptionsCollection> memberInfoSecondTable, ClassOptionsTupla<PropertyOptionsCollection> memberInfoThirdTable = null)
         {
             _firstTable = [];
             _secondTable = [];

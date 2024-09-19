@@ -13,7 +13,7 @@ namespace GSqlQuery.SearchCriteria
     /// <param name="formats">Formats</param>
     /// <param name="logicalOperator">Logical Operator</param>
     /// <param name="expression">Expression</param>
-    internal class IsNull<T,TProperties>(ClassOptions classOptions, IFormats formats, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : Criteria<T, TProperties>(classOptions, formats, logicalOperator,ref expression), ISearchCriteria
+    internal class IsNull<T, TProperties>(ClassOptions classOptions, IFormats formats, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : Criteria<T, TProperties>(classOptions, formats, logicalOperator, ref expression), ISearchCriteria
     {
         public override object Value => null;
 

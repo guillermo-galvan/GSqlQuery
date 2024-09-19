@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using GSqlQuery.Test.Models;
 using System;
 using System.Collections.Generic;
@@ -86,7 +87,7 @@ namespace GSqlQuery.Test.Extensions
         public void Should_return_the_property_options()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test3));
-            var result = ExpressionExtension.GetPropertyQuery(classOptions,new string[] { nameof(Test3.Ids), nameof(Test3.IsTests), nameof(Test3.Creates) });
+            var result = ExpressionExtension.GetPropertyQuery(classOptions, new string[] { nameof(Test3.Ids), nameof(Test3.IsTests), nameof(Test3.Creates) });
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
@@ -109,7 +110,7 @@ namespace GSqlQuery.Test.Extensions
         {
             Expression<Func<Join<Test3, Test6, Test1>, int>> expression = x => x.Table1.Ids;
             var result = ExpressionExtension.GetJoinColumn(expression);
-            Assert.NotNull(result); 
+            Assert.NotNull(result);
             Assert.NotNull(result.ClassOptions);
             Assert.NotNull(result.KeyValue.Key);
             Assert.NotNull(result.KeyValue.Value);

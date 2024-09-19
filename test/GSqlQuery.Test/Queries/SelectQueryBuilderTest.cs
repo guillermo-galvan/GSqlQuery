@@ -52,7 +52,7 @@ namespace GSqlQuery.Test.Queries
         public void Should_return_an_implementation_of_the_IWhere_interface()
         {
             DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
-            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery,  _queryOptions);
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions);
             IWhere<Test1, SelectQuery<Test1>, QueryOptions> where = queryBuilder.Where();
             Assert.NotNull(where);
         }

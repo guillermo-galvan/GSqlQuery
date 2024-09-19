@@ -21,7 +21,7 @@ namespace GSqlQuery.Test.Queries
             var propertyOptions = classOptions.PropertyOptions[nameof(Test1.Id)];
             _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(classOptions, propertyOptions);
             Expression<Func<Test1, int>> expression = (x) => x.Id;
-            _equal = new Equal<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression );
+            _equal = new Equal<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression);
             DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
             _queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, new QueryOptions(new DefaultFormats()));
             _countQueryBuilder = new CountQueryBuilder<Test1>(_queryBuilder);
@@ -79,7 +79,7 @@ namespace GSqlQuery.Test.Queries
             IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = new AndOrBase<Test1, CountQuery<Test1>, QueryOptions>(_countQueryBuilder, _countQueryBuilder.QueryOptions);
             try
             {
-                GSqlQueryExtension.Validate(andOr,x => x.IsTest);
+                GSqlQueryExtension.Validate(andOr, x => x.IsTest);
                 Assert.True(true);
             }
             catch (Exception)

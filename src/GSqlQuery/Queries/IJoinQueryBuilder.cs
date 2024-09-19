@@ -18,7 +18,7 @@ namespace GSqlQuery
         /// </summary>
         /// <typeparam name="TJoin">Type for second table</typeparam>
         /// <returns>IComparisonOperators&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;,JoinQuery&lt;Join&lt;<typeparamref name="T"/>,<typeparamref name="TJoin"/>&gt;&gt;,<typeparamref name="TQueryOptions"/>&gt;</returns>
-        IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, TQueryOptions>, TQueryOptions> InnerJoin<TJoin>() 
+        IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, TQueryOptions>, TQueryOptions> InnerJoin<TJoin>()
             where TJoin : class;
 
         /// <summary>

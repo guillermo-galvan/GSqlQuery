@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace GSqlQuery.Queries
     /// <typeparam name="TReturn">Query</typeparam>
     internal abstract class SelectQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>
         where T : class
-        where TReturn : IQuery<T,TQueryOptions>
+        where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {
         protected readonly DynamicQuery _dynamicQuery;
@@ -65,7 +66,7 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
-            return QueryBuilderExtension.GetCriteria<T, TReturn, TQueryOptions>(QueryType.Read, QueryOptions, _dynamicQuery, _andOr, CreateQuery, GetQuery);
+            return CacheQueryBuilderExtension.CreateSelectQuery<T, TReturn, TQueryOptions>(QueryOptions, _dynamicQuery, _andOr, CreateQuery, GetQuery);
         }
 
         public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
@@ -73,7 +74,7 @@ namespace GSqlQuery.Queries
         public TReturn CreateQuery()
         {
             string text = CreateQueryText();
-            TReturn result = GetQuery(text, Columns, _criteria, QueryOptions);            
+            TReturn result = GetQuery(text, Columns, _criteria, QueryOptions);
             return result;
         }
     }
@@ -127,7 +128,7 @@ namespace GSqlQuery.Queries
             Type secondTable = typeof(TJoin);
             ClassOptions options = ClassOptionsFactory.GetClassOptions(secondTable);
             var result = func((TJoin)options.Entity);
-            DynamicQuery  dynamicQuery = new DynamicQuery(secondTable, result.GetType());
+            DynamicQuery dynamicQuery = new DynamicQuery(secondTable, result.GetType());
 
             return _dynamicQuery == null ? new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, dynamicQuery) : new JoinQueryBuilderWithWhere<T, TJoin>(_dynamicQuery, joinEnum, QueryOptions, dynamicQuery);
         }
