@@ -52,33 +52,33 @@ namespace GSqlQuery.SearchCriteria
 
         public override CriteriaDetailCollection ReplaceValue(CriteriaDetailCollection criteriaDetailCollection)
         {
-            if (criteriaDetailCollection.SearchCriteria is Between<T, TProperties> parameter)
+            if (criteriaDetailCollection.SearchCriteria is not Between<T, TProperties> parameter)
             {
-                var result = new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions);
-
-                int count = 0;
-                foreach (var item in criteriaDetailCollection.Keys)
-                {
-                    if (count == 0)
-                    {
-                        result[item] = new ParameterDetail(item, Initial);
-                    }
-                    else if (count == 1)
-                    {
-                        result[item] = new ParameterDetail(item, Final);
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    count++;
-                }
-
-                return result;
+                return null;
             }
 
-            return null;
+            var result = new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions);
+
+            int count = 0;
+            foreach (var item in criteriaDetailCollection.Keys)
+            {
+                if (count == 0)
+                {
+                    result[item] = new ParameterDetail(item, Initial);
+                }
+                else if (count == 1)
+                {
+                    result[item] = new ParameterDetail(item, Final);
+                }
+                else
+                {
+                    break;
+                }
+
+                count++;
+            }
+
+            return result;
         }
     }
 }

@@ -77,13 +77,13 @@ namespace GSqlQuery.Benchmarks.Query
         [Benchmark]
         public IQuery GenerateCountOneColumn()
         {
-            return User.Select(_queryOptions, x => new { x.Id }).Count().Where().In(x => x.Id, _ids).Build();
+            return User.Select(_queryOptions, x => new { x.Id }).Count().Where().Equal(x => x.Id, 1).Build();
         }
 
         [Benchmark]
         public IQuery GenerateCountAllColumns()
         {
-            return User.Select(_queryOptions).Count().Where().In(x => x.Id, _ids).Build();
+            return User.Select(_queryOptions).Count().Where().Equal(x => x.Id, 1).Build();
         }
 
         [Benchmark]

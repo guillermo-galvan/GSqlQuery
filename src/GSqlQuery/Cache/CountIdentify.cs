@@ -5,17 +5,9 @@ using System.Collections.Generic;
 
 namespace GSqlQuery.Cache
 {
-    internal class OrderByPropertiesType(Type property, OrderBy orderBy)
-    {
-        public Type Property { get; } = property;
-
-        public OrderBy OrderBy { get; } = orderBy;
-    }
-
-    internal sealed class OrderByQueryIdentity : QueryIdentity
+    internal class CountIdentify : QueryIdentity
     {
         private readonly List<Type> _searchCriteriaTypes = [];
-        private readonly List<OrderByPropertiesType> _properties = [];
 
         public Type IQueryBuilderType { get; }
 
@@ -23,12 +15,10 @@ namespace GSqlQuery.Cache
 
         public List<Type> SearchCriteriaTypes => _searchCriteriaTypes;
 
-        public List<OrderByPropertiesType> PropertiesTypes => _properties;
-
         public Type PropertiesColumns { get; }
 
-        // agrega properties select
-        public OrderByQueryIdentity(Type entity, QueryType queryType, Type format, Type queryBuilderType, Type iAndOrType, ISearchCriteriaBuilder searchCriteriaBuilder, List<ColumnsOrderBy> columnsOrders, IDynamicColumns dynamicColumns) : base(entity, queryType, format)
+        public CountIdentify(Type entity, QueryType queryType, Type format, Type queryBuilderType, Type iAndOrType, ISearchCriteriaBuilder searchCriteriaBuilder,
+            IDynamicColumns dynamicColumns) : base(entity, queryType, format)
         {
             IQueryBuilderType = queryBuilderType;
             IAndOrType = iAndOrType;
@@ -40,11 +30,6 @@ namespace GSqlQuery.Cache
                 {
                     _searchCriteriaTypes.Add(item.GetType());
                 }
-            }
-
-            foreach (ColumnsOrderBy item in columnsOrders)
-            {
-                _properties.Add(new OrderByPropertiesType(item.DynamicQuery.Properties, item.OrderBy));
             }
 
             unchecked
@@ -60,16 +45,10 @@ namespace GSqlQuery.Cache
                 {
                     _hashCode = _hashCode * 23 + type.GetHashCode();
                 }
-
-                foreach (OrderByPropertiesType item in _properties)
-                {
-                    _hashCode = _hashCode * 23 + item.Property.GetHashCode();
-                    _hashCode = _hashCode * 23 + item.OrderBy.GetHashCode();
-                }
             }
         }
 
-        private bool SearchCriteriaTypesValidation(OrderByQueryIdentity other)
+        private bool SearchCriteriaTypesValidation(CountIdentify other)
         {
             if (_searchCriteriaTypes.Count != other.SearchCriteriaTypes.Count)
             {
@@ -87,26 +66,7 @@ namespace GSqlQuery.Cache
             return true;
         }
 
-        private bool PropertiesTypesValidation(OrderByQueryIdentity other)
-        {
-            if (PropertiesTypes.Count != other.PropertiesTypes.Count)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < PropertiesTypes.Count; i++)
-            {
-                if (PropertiesTypes[i].Property != other.PropertiesTypes[i].Property ||
-                    PropertiesTypes[i].OrderBy != other.PropertiesTypes[i].OrderBy)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool PropertiesColumnsValidation(OrderByQueryIdentity other)
+        private bool PropertiesColumnsValidation(CountIdentify other)
         {
             if (PropertiesColumns == null && other.PropertiesColumns == null)
             {
@@ -123,16 +83,15 @@ namespace GSqlQuery.Cache
 
         public override bool Equals(QueryIdentity other)
         {
-            if (other is OrderByQueryIdentity orderByQueryIdentity)
+            if (other is CountIdentify countIdentify)
             {
-               return Entity == orderByQueryIdentity.Entity &&
-                QueryType == orderByQueryIdentity.QueryType &&
-                Format == orderByQueryIdentity.Format &&
-                IQueryBuilderType == orderByQueryIdentity.IQueryBuilderType &&
-                IAndOrType == orderByQueryIdentity.IAndOrType &&
-                SearchCriteriaTypesValidation(orderByQueryIdentity) &&
-                PropertiesTypesValidation(orderByQueryIdentity) &&
-                PropertiesColumnsValidation(orderByQueryIdentity);
+                return Entity == countIdentify.Entity &&
+                 QueryType == countIdentify.QueryType &&
+                 Format == countIdentify.Format &&
+                 IQueryBuilderType == countIdentify.IQueryBuilderType &&
+                 IAndOrType == countIdentify.IAndOrType &&
+                 SearchCriteriaTypesValidation(countIdentify) &&
+                 PropertiesColumnsValidation(countIdentify);
             }
 
             return false;

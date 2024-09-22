@@ -1,4 +1,5 @@
 ﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,12 +50,17 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
+            return CacheQueryBuilderExtension.CreateCountSelectQuery<T, TReturn, TQueryOptions, TSelectQuery>(QueryOptions, _queryBuilder, _andOr, CreateQuery, GetQuery );
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
+
+        public TReturn CreateQuery()
+        {
             string text = CreateQueryText();
             TReturn result = GetQuery(text, Columns, _criteria, QueryOptions);
             return result;
         }
-
-        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>
@@ -67,7 +73,7 @@ namespace GSqlQuery.Queries
     {
         public override CountQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            return new CountQuery<T>(text, _classOptions.FormatTableName.Table, Columns, _criteria, _queryBuilder.QueryOptions);
+            return new CountQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

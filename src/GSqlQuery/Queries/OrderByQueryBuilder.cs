@@ -21,7 +21,7 @@ namespace GSqlQuery.Queries
     {
         protected readonly IQueryBuilderWithWhere<TSelectQuery, TQueryOptions> _queryBuilder;
         protected readonly IAndOr<T, TSelectQuery, TQueryOptions> _andorBuilder = null;
-        protected readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
+        protected readonly List<ColumnsOrderBy> _columnsByOrderBy = [];
 
         /// <summary>
         /// Class constructor
@@ -33,9 +33,8 @@ namespace GSqlQuery.Queries
         protected OrderByQueryBuilder(DynamicQuery dynamicQuery, OrderBy orderBy,
             IQueryBuilderWithWhere<T, TSelectQuery, TQueryOptions> queryBuilder, TQueryOptions queryOptions) : base(queryOptions)
         {
-            _columnsByOrderBy = new Queue<ColumnsOrderBy>();
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(dynamicQuery, orderBy);
-            _columnsByOrderBy.Enqueue(columnsOrderBy);
+            _columnsByOrderBy.Add(columnsOrderBy);
             _queryBuilder = queryBuilder;
             Columns = queryBuilder.Columns;
         }
@@ -49,9 +48,8 @@ namespace GSqlQuery.Queries
         protected OrderByQueryBuilder(DynamicQuery dynamicQuery, OrderBy orderBy,
            IAndOr<T, TSelectQuery, TQueryOptions> andOr) : base(andOr.QueryOptions)
         {
-            _columnsByOrderBy = new Queue<ColumnsOrderBy>();
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(dynamicQuery, orderBy);
-            _columnsByOrderBy.Enqueue(columnsOrderBy);
+            _columnsByOrderBy.Add(columnsOrderBy);
             _andorBuilder = andOr;
             Columns = new PropertyOptionsCollection([]);
         }
@@ -64,7 +62,7 @@ namespace GSqlQuery.Queries
         public void AddOrderBy<TProperties>(Func<T, TProperties> func, OrderBy orderBy)
         {
             ColumnsOrderBy columnsOrderBy = new ColumnsOrderBy(new DynamicQuery(typeof(T), typeof(TProperties)), orderBy);
-            _columnsByOrderBy.Enqueue(columnsOrderBy);
+            _columnsByOrderBy.Add(columnsOrderBy);
         }
 
         /// <summary>
@@ -109,12 +107,17 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
+            return CacheQueryBuilderExtension.CreateOrderByQuery(QueryOptions, _queryBuilder, _andorBuilder, _columnsByOrderBy, CreateQuery, GetQuery);
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
+
+        public TReturn CreateQuery()
+        {
             string text = CreateQueryText(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
             TReturn result = GetQuery(text, columns, criteria, QueryOptions);
             return result;
         }
-
-        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using GSqlQuery.Cache;
 using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace GSqlQuery
     /// <typeparam name="TQueryOptions">Options type</typeparam>
     /// <exception cref="ArgumentException"></exception>
     public class AndOrBase<T, TReturn, TQueryOptions> : IWhere<TReturn>,
-        IAndOr<TReturn>, ISearchCriteriaBuilder, IAndOr<T, TReturn, TQueryOptions>, IWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>
+        IAndOr<TReturn>, ISearchCriteriaBuilder, IAndOr<T, TReturn, TQueryOptions>, IWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>,
+        IDynamicColumns
         where TReturn : IQuery<T, TQueryOptions>
         where T : class
         where TQueryOptions : QueryOptions
@@ -32,6 +34,19 @@ namespace GSqlQuery
         public IEnumerable<ISearchCriteria> SearchCriterias => _searchCriterias;
 
         public int Count => _searchCriterias.Count;
+
+        DynamicQuery IDynamicColumns.DynamicQuery
+        {
+            get 
+            {
+                if(_queryBuilderWithWhere is IDynamicColumns tmp)
+                {
+                    return tmp.DynamicQuery;
+                }
+
+                return null;
+            }
+        }
 
         public AndOrBase(IQueryBuilderWithWhere<TReturn, TQueryOptions> queryBuilderWithWhere, TQueryOptions queryOptions) : base()
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GSqlQuery.Cache
 {
-    internal class SelectQueryIdentity : QueryIdentity
+    internal sealed class SelectQueryIdentity : QueryIdentity
     {
         private readonly List<Type> _searchCriteriaTypes = [];
 
@@ -38,7 +38,7 @@ namespace GSqlQuery.Cache
             }
         }
 
-        protected virtual bool PropertiesValidation(SelectQueryIdentity other)
+        private bool PropertiesValidation(SelectQueryIdentity other)
         {
             if (Properties == null && other.Properties == null)
             {
@@ -53,16 +53,16 @@ namespace GSqlQuery.Cache
             return false;
         }
 
-        protected virtual bool SearchCriteriaTypesValidation(SelectQueryIdentity other)
+        private bool SearchCriteriaTypesValidation(SelectQueryIdentity other)
         {
-            if (_searchCriteriaTypes.Count != other._searchCriteriaTypes.Count)
+            if (_searchCriteriaTypes.Count != other.SearchCriteriaTypes.Count)
             {
                 return false;
             }
 
             for (int i = 0; i < _searchCriteriaTypes.Count; i++)
             {
-                if (_searchCriteriaTypes[i] != other._searchCriteriaTypes[i])
+                if (_searchCriteriaTypes[i] != other.SearchCriteriaTypes[i])
                 {
                     return false;
                 }

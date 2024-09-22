@@ -11,12 +11,14 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    internal abstract class SelectQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>
+    internal abstract class SelectQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>, IDynamicColumns
         where T : class
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {
         protected readonly DynamicQuery _dynamicQuery;
+
+        public DynamicQuery DynamicQuery => _dynamicQuery;
 
         /// <summary>
         /// Class constructor
