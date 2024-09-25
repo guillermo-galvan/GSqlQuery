@@ -28,8 +28,11 @@ namespace GSqlQuery.Extensions
             where T1 : class
             where T2 : class
         {
-            JoinCriteriaPart joinCriteria1 = ExpressionExtension.GetJoinColumn(field1);
-            JoinCriteriaPart joinCriteria2 = ExpressionExtension.GetJoinColumn(field2);
+            Type entity = typeof(Join<T1, T2>);
+            Type properties = typeof(TProperties);
+
+            JoinCriteriaPart joinCriteria1 = new JoinCriteriaPart(new DynamicQuery(entity, properties), field1);
+            JoinCriteriaPart joinCriteria2 = new JoinCriteriaPart(new DynamicQuery(entity, properties), field2);
             JoinModel joinModel = new JoinModel(logicalOperador, joinCriteria1, joinCriteriaEnum, joinCriteria2);
             joinCriteria.AddColumns(joinModel);
         }
@@ -55,8 +58,11 @@ namespace GSqlQuery.Extensions
             where T2 : class
             where T3 : class
         {
-            JoinCriteriaPart joinCriteria1 = ExpressionExtension.GetJoinColumn(field1);
-            JoinCriteriaPart joinCriteria2 = ExpressionExtension.GetJoinColumn(field2);
+            Type entity = typeof(Join<T1, T2, T3>);
+            Type properties = typeof(TProperties);
+
+            JoinCriteriaPart joinCriteria1 = new JoinCriteriaPart(new DynamicQuery(entity, properties), field1);
+            JoinCriteriaPart joinCriteria2 = new JoinCriteriaPart(new DynamicQuery(entity, properties), field2);
             JoinModel joinModel = new JoinModel(logicalOperador, joinCriteria1, joinCriteriaEnum, joinCriteria2);
 
             joinCriteria.AddColumns(joinModel);

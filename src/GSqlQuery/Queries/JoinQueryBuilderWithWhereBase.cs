@@ -31,14 +31,19 @@ namespace GSqlQuery.Queries
 
             foreach (JoinInfo joinInfo in joinInfos)
             {
+                PropertyOptionsCollection columns =  null;
                 if (joinInfo.DynamicQuery != null)
                 {
                     ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembersByFunc(joinInfo.DynamicQuery);
                     ExpressionExtension.ValidateClassOptionsTupla(QueryType.Join, options);
-                    joinInfo.Columns = options.Columns;
+                    columns = options.Columns;
+                }
+                else
+                {
+                    columns = joinInfo.ClassOptions.PropertyOptions;
                 }
 
-                foreach (KeyValuePair<string, PropertyOptions> item in joinInfo.Columns)
+                foreach (KeyValuePair<string, PropertyOptions> item in columns)
                 {
                     string alias = formats.Format.Replace("{0}", $"{joinInfo.ClassOptions.Type.Name}_{item.Value.ColumnAttribute.Name}");
                     string tableName = joinInfo.ClassOptions.FormatTableName.GetTableName(formats);
@@ -95,8 +100,11 @@ namespace GSqlQuery.Queries
         /// <returns></returns>
         internal static string CreateJoinQueryPart(IFormats formats, JoinModel joinModel)
         {
-            string partRight = joinModel.JoinModel1.KeyValue.Value.FormatColumnName.GetColumnName(formats, QueryType.Join);
-            string partLeft = joinModel.JoinModel2.KeyValue.Value.FormatColumnName.GetColumnName(formats, QueryType.Join);
+            var joinModel1 = ExpressionExtension.GetJoinColumn(joinModel.JoinModel1.Expression);
+            var joinModel2 = ExpressionExtension.GetJoinColumn(joinModel.JoinModel2.Expression);
+
+            string left = joinModel1.Value.FormatColumnName.GetColumnName(formats, QueryType.Join);
+            string right = joinModel2.Value.FormatColumnName.GetColumnName(formats, QueryType.Join);
 
             string joinCriteria = string.Empty;
 
@@ -122,8 +130,8 @@ namespace GSqlQuery.Queries
                     break;
             }
 
-            return string.IsNullOrWhiteSpace(joinModel.LogicalOperator) ? $"{partRight} {joinCriteria} {partLeft}" :
-                $"{joinModel.LogicalOperator} {partRight} {joinCriteria} {partLeft}";
+            return string.IsNullOrWhiteSpace(joinModel.LogicalOperator) ? $"{left} {joinCriteria} {right}" :
+                $"{joinModel.LogicalOperator} {left} {joinCriteria} {right}";
         }
     }
 
@@ -140,7 +148,7 @@ namespace GSqlQuery.Queries
     /// </remarks>
     /// <param name="joinInfos">joinInfos</param>
     /// <param name="formats">Formats</param>
-    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TQueryOptions>(Queue<JoinInfo> joinInfos, TQueryOptions options) :
+    internal abstract class JoinQueryBuilderWithWhereBase<T1, T2, TJoin, TReturn, TQueryOptions>(List<JoinInfo> joinInfos, TQueryOptions options) :
         QueryBuilderWithCriteria<TJoin, TReturn, TQueryOptions>(options),
          IComparisonOperators<TJoin, TReturn, TQueryOptions>,
          IAddJoinCriteria<JoinModel>,
@@ -151,7 +159,7 @@ namespace GSqlQuery.Queries
          where TReturn : JoinQuery<TJoin, TQueryOptions>
          where TQueryOptions : QueryOptions
     {
-        protected readonly Queue<JoinInfo> _joinInfos = joinInfos ?? new Queue<JoinInfo>();
+        protected readonly List<JoinInfo> _joinInfos = joinInfos ?? new List<JoinInfo>();
         protected JoinInfo _joinInfo;
 
         public IEnumerable<JoinInfo> JoinInfos => _joinInfos;
@@ -172,14 +180,14 @@ namespace GSqlQuery.Queries
         /// <param name="joinModel">Join Model</param>
         public void AddColumns(JoinModel joinModel)
         {
-            _joinInfo.Joins.Enqueue(joinModel);
+            _joinInfo.Joins.Add(joinModel);
         }
 
         /// <summary>
         /// <returns>Query text</returns>
         /// Create Query
         /// </summary>
-        internal string CreateQuery(out PropertyOptionsCollection keyValuePairs)
+        internal string CreateQueryText(out PropertyOptionsCollection keyValuePairs)
         {
             List<ColumnDetailJoin> columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, QueryOptions.Formats);
             keyValuePairs = new PropertyOptionsCollection(columns.Select(x => new KeyValuePair<string, PropertyOptions>(x.Key, x.PropertyOptions)));
@@ -199,6 +207,20 @@ namespace GSqlQuery.Queries
                 string criteria = GetCriteria();
                 return ConstFormat.JOINSELECTWHERE.Replace("{0}", resultColumns).Replace("{1}", tableName).Replace("{2}", resultJoinQuerys).Replace("{3}", criteria);
             }
+        }
+
+        public override TReturn Build()
+        {
+            return CreateQuery();
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
+
+        public TReturn CreateQuery()
+        {
+            string text = CreateQueryText(out PropertyOptionsCollection columns);
+            TReturn result = GetQuery(text, columns, _criteria, QueryOptions);
+            return result;
         }
     }
 
@@ -240,23 +262,20 @@ namespace GSqlQuery.Queries
         /// <param name="formats">formats</param>
         /// <param name="columnsT3">Columns third table</param>
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, PropertyOptionsCollection columnsT3 = null)
+        public JoinQueryBuilderWithWhereBase(List<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, PropertyOptionsCollection columnsT3 = null)
             : base(joinInfos, options)
         {
             ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
-            columnsT3 ??= tmp.PropertyOptions;
-
-            _joinInfo = new JoinInfo(columnsT3, tmp, joinType);
-
-            _joinInfos.Enqueue(_joinInfo);
+            _joinInfo = new JoinInfo(tmp, joinType);
+            _joinInfos.Add(_joinInfo);
         }
 
-        public JoinQueryBuilderWithWhereBase(Queue<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, DynamicQuery dynamicQuery = null)
+        public JoinQueryBuilderWithWhereBase(List<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, DynamicQuery dynamicQuery = null)
             : base(joinInfos, options)
         {
             ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));
             _joinInfo = new JoinInfo(dynamicQuery, tmp, joinType);
-            _joinInfos.Enqueue(_joinInfo);
+            _joinInfos.Add(_joinInfo);
         }
 
     }

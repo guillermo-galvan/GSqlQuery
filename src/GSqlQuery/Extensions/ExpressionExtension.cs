@@ -283,34 +283,9 @@ namespace GSqlQuery.Extensions
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>JoinCriteriaPart</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static JoinCriteriaPart GetJoinColumn<T1, T2, TProperties>(Expression<Func<Join<T1, T2>, TProperties>> expression)
-            where T1 : class
-            where T2 : class
+        internal static KeyValuePair<string, PropertyOptions> GetJoinColumn(Expression expression)
         {
-            KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
-            return new JoinCriteriaPart(options, keyValue); ;
-        }
-
-        /// <summary>
-        /// Gets the JoinCriteriaPart
-        /// </summary>
-        /// <typeparam name="T1">Table type</typeparam>
-        /// <typeparam name="T2">Table type</typeparam>
-        /// <typeparam name="T3">Table type</typeparam>
-        /// <typeparam name="TProperties">Property type</typeparam>
-        /// <param name="expression">Expression to evaluate</param>
-        /// <returns>JoinCriteriaPart</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        internal static JoinCriteriaPart GetJoinColumn<T1, T2, T3, TProperties>(Expression<Func<Join<T1, T2, T3>, TProperties>> expression)
-            where T1 : class
-            where T2 : class
-            where T3 : class
-        {
-            KeyValuePair<string, PropertyOptions> keyValue = GetKeyValue(expression);
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(keyValue.Value.PropertyInfo.ReflectedType);
-
-            return new JoinCriteriaPart(options, keyValue);
+            return GetKeyValueEx(expression);
         }
 
         /// <summary>

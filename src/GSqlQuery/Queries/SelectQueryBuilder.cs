@@ -117,7 +117,7 @@ namespace GSqlQuery.Queries
         {
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(TJoin));
 
-            return _dynamicQuery == null ? new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, options.PropertyOptions) : new JoinQueryBuilderWithWhere<T, TJoin>(_dynamicQuery, JoinType.Inner, QueryOptions, options.PropertyOptions);
+            return new JoinQueryBuilderWithWhere<T, TJoin>(joinEnum, QueryOptions, _dynamicQuery);
         }
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum, Func<TJoin, object> func)
@@ -132,7 +132,7 @@ namespace GSqlQuery.Queries
             var result = func((TJoin)options.Entity);
             DynamicQuery dynamicQuery = new DynamicQuery(secondTable, result.GetType());
 
-            return _dynamicQuery == null ? new JoinQueryBuilderWithWhere<T, TJoin>(Columns, joinEnum, QueryOptions, dynamicQuery) : new JoinQueryBuilderWithWhere<T, TJoin>(_dynamicQuery, joinEnum, QueryOptions, dynamicQuery);
+            return _dynamicQuery == null ? new JoinQueryBuilderWithWhere<T, TJoin>(joinEnum, QueryOptions, dynamicQuery) : new JoinQueryBuilderWithWhere<T, TJoin>(_dynamicQuery, joinEnum, QueryOptions, dynamicQuery);
         }
 
         /// <summary>

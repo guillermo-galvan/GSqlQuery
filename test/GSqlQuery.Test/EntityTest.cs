@@ -24,7 +24,12 @@ namespace GSqlQuery.Test
         public void borrar_despues()
         {
             Film.Select(_queryOptions).Build();
-            var select = Film.Select(_queryOptions, x => new { x.FilmId,  x.Length }).Count().Where().Equal(x => x.FilmId, 1);
+            var select = Test3.Select(_queryOptions)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .InnerJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true);
 
             Stopwatch timeMeasure = new Stopwatch();
             timeMeasure.Start();
@@ -33,7 +38,12 @@ namespace GSqlQuery.Test
 
             Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
 
-            var select2 = Film.Select(_queryOptions, x => new { x.FilmId, x.Length }).Count().Where().Equal(x => x.FilmId, 2);
+            var select2 = Test3.Select(_queryOptions)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .InnerJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
+                              .Where()
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true);
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();

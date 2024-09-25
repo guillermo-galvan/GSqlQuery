@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Cache;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace GSqlQuery.Queries
 {
@@ -8,11 +7,9 @@ namespace GSqlQuery.Queries
     /// </summary>
     internal class JoinInfo
     {
-        public PropertyOptionsCollection Columns { get; set; }
-
         public bool IsMain { get; set; } = false;
 
-        public Queue<JoinModel> Joins { get; set; } = new Queue<JoinModel>();
+        public List<JoinModel> Joins { get; set; } = [];
 
         public JoinType JoinEnum { get; set; }
 
@@ -20,32 +17,26 @@ namespace GSqlQuery.Queries
 
         public DynamicQuery DynamicQuery { get; set; }
 
-        public JoinInfo(PropertyOptionsCollection columns, ClassOptions classOptions, bool isMain)
+        public JoinInfo(ClassOptions classOptions, bool isMain)
         {
-            Columns = columns;
             ClassOptions = classOptions;
             IsMain = isMain;
         }
 
-        public JoinInfo(PropertyOptionsCollection columns, ClassOptions classOptions, JoinType joinType)
+        public JoinInfo(DynamicQuery dynamicQuery, ClassOptions classOptions, bool isMain) : this(classOptions, isMain)
         {
-            Columns = columns;
+            DynamicQuery = dynamicQuery;
+        }
+
+        public JoinInfo(ClassOptions classOptions, JoinType joinType)
+        {
             ClassOptions = classOptions;
             JoinEnum = joinType;
         }
 
-        public JoinInfo(DynamicQuery dynamicQuery, ClassOptions classOptions, bool isMain)
+        public JoinInfo(DynamicQuery dynamicQuery, ClassOptions classOptions, JoinType joinType) : this(classOptions, joinType)
         {
             DynamicQuery = dynamicQuery;
-            ClassOptions = classOptions;
-            IsMain = isMain;
-        }
-
-        public JoinInfo(DynamicQuery dynamicQuery, ClassOptions classOptions, JoinType joinType)
-        {
-            DynamicQuery = dynamicQuery;
-            ClassOptions = classOptions;
-            JoinEnum = joinType;
         }
     }
 }

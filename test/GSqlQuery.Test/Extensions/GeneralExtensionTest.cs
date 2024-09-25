@@ -99,10 +99,9 @@ namespace GSqlQuery.Test.Extensions
         {
             Expression<Func<Join<Test3, Test6>, int>> expression = x => x.Table1.Ids;
             var result = ExpressionExtension.GetJoinColumn(expression);
-            Assert.NotNull(result);
-            Assert.NotNull(result.ClassOptions);
-            Assert.NotNull(result.KeyValue.Key);
-            Assert.NotNull(result.KeyValue.Value);
+            Assert.NotNull(result.Key);
+            Assert.NotNull(result.Value);
+            Assert.Equal(nameof(Test3.Ids), result.Key);
         }
 
         [Fact]
@@ -110,10 +109,9 @@ namespace GSqlQuery.Test.Extensions
         {
             Expression<Func<Join<Test3, Test6, Test1>, int>> expression = x => x.Table1.Ids;
             var result = ExpressionExtension.GetJoinColumn(expression);
-            Assert.NotNull(result);
-            Assert.NotNull(result.ClassOptions);
-            Assert.NotNull(result.KeyValue.Key);
-            Assert.NotNull(result.KeyValue.Value);
+            Assert.NotNull(result.Key);
+            Assert.NotNull(result.Value);
+            Assert.Equal(nameof(Test3.Ids), result.Key);
         }
     }
 }
