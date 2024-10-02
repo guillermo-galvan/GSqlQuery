@@ -14,6 +14,13 @@ namespace GSqlQuery.Queries
         public PropertyOptions PropertyOptions { get; private set; } = propertyOptions;
     }
 
+    internal class QueryPartColumns(List<ColumnDetailJoin> columns, List<string> joinQueries)
+    {
+        public List<ColumnDetailJoin> Columns { get; private set; } = columns;
+
+        public List<string> JoinQuerys { get; private set; } = joinQueries;
+    }
+
     /// <summary>
     /// Join Query Builder With Where Base
     /// </summary>
@@ -25,9 +32,10 @@ namespace GSqlQuery.Queries
         /// <param name="joinInfos">Join info</param>
         /// <param name="formats">Formats</param>
         /// <returns></returns>
-        internal static List<ColumnDetailJoin> GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats formats)
+        internal static QueryPartColumns GetColumns(IEnumerable<JoinInfo> joinInfos, IFormats formats)
         {
             List<ColumnDetailJoin> columnDetailJoins = [];
+            List<string> joinQueries = [];
 
             foreach (JoinInfo joinInfo in joinInfos)
             {
@@ -51,29 +59,16 @@ namespace GSqlQuery.Queries
                     string queryPart = "{0} as {1}".Replace("{0}", columnName).Replace("{1}", alias);
                     columnDetailJoins.Add(new ColumnDetailJoin(queryPart, alias, item.Value));
                 }
+
+                if (!joinInfo.IsMain)
+                {
+                    string a = string.Join(" ", joinInfo.Joins.Select(x => CreateJoinQueryPart(formats, x)));
+
+                    joinQueries.Add($"{GetJoinQuery(joinInfo.JoinEnum)} {string.Format(ConstFormat.JOIN, joinInfo.ClassOptions.FormatTableName.GetTableName(formats), a)}");
+                }
             }
 
-            return columnDetailJoins;
-        }
-
-        /// <summary>
-        /// Create query
-        /// </summary>
-        /// <param name="joinInfos">Join info</param>
-        /// <param name="formats">Formats</param>
-        /// <returns></returns>
-        internal static IEnumerable<string> CreateJoinQuery(IEnumerable<JoinInfo> joinInfos, IFormats formats)
-        {
-            Queue<string> joinQuerys = new Queue<string>();
-            IEnumerable<JoinInfo> joins = joinInfos.Where(x => !x.IsMain);
-            foreach (JoinInfo item in joins)
-            {
-                string a = string.Join(" ", item.Joins.Select(x => CreateJoinQueryPart(formats, x)));
-
-                joinQuerys.Enqueue($"{GetJoinQuery(item.JoinEnum)} {string.Format(ConstFormat.JOIN, item.ClassOptions.FormatTableName.GetTableName(formats), a)}");
-            }
-
-            return joinQuerys;
+            return new QueryPartColumns(columnDetailJoins, joinQueries);
         }
 
         /// <summary>
@@ -189,14 +184,13 @@ namespace GSqlQuery.Queries
         /// </summary>
         internal string CreateQueryText(out PropertyOptionsCollection keyValuePairs)
         {
-            List<ColumnDetailJoin> columns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, QueryOptions.Formats);
-            keyValuePairs = new PropertyOptionsCollection(columns.Select(x => new KeyValuePair<string, PropertyOptions>(x.Key, x.PropertyOptions)));
+            QueryPartColumns queryPartColumns = JoinQueryBuilderWithWhereBase.GetColumns(_joinInfos, QueryOptions.Formats);
+            keyValuePairs = new PropertyOptionsCollection(queryPartColumns.Columns.Select(x => new KeyValuePair<string, PropertyOptions>(x.Key, x.PropertyOptions)));
             JoinInfo tableMain = _joinInfos.First(x => x.IsMain);
-            IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(_joinInfos, QueryOptions.Formats);
 
             string tableName = tableMain.ClassOptions.FormatTableName.GetTableName(QueryOptions.Formats);
-            string resultColumns = string.Join(",", columns.Select(x => x.PartQuery));
-            string resultJoinQuerys = string.Join(" ", joinQuerys);
+            string resultColumns = string.Join(",", queryPartColumns.Columns.Select(x => x.PartQuery));
+            string resultJoinQuerys = string.Join(" ", queryPartColumns.JoinQuerys);
 
             if (_andOr == null)
             {
@@ -211,7 +205,7 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
-            return CreateQuery();
+            return CacheQueryBuilderExtension.CreateJoinQuery<TJoin, TReturn, TQueryOptions>(QueryOptions, _joinInfos, _andOr, CreateQuery, GetQuery);
         }
 
         public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);

@@ -1,7 +1,6 @@
 ﻿using GSqlQuery.Cache;
 using GSqlQuery.Extensions;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -96,13 +95,12 @@ namespace GSqlQuery.Queries
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;
 
-            List<ColumnDetailJoin> joinColumns = JoinQueryBuilderWithWhereBase.GetColumns(addJoinCriteria.JoinInfos, QueryOptions.Formats);
+            QueryPartColumns queryPartColumns = JoinQueryBuilderWithWhereBase.GetColumns(addJoinCriteria.JoinInfos, QueryOptions.Formats);
             JoinInfo tableMain = addJoinCriteria.JoinInfos.First(x => x.IsMain);
-            IEnumerable<string> joinQuerys = JoinQueryBuilderWithWhereBase.CreateJoinQuery(addJoinCriteria.JoinInfos, QueryOptions.Formats);
 
-            string resultJoinColumns = string.Join(",", joinColumns.Select(x => x.PartQuery));
+            string resultJoinColumns = string.Join(",", queryPartColumns.Columns.Select(x => x.PartQuery));
             string tableName = tableMain.ClassOptions.FormatTableName.GetTableName(QueryOptions.Formats);
-            string resultJoinQuerys = string.Join(" ", joinQuerys);
+            string resultJoinQuerys = string.Join(" ", queryPartColumns.JoinQuerys);
 
             if (_andorBuilder == null)
             {
