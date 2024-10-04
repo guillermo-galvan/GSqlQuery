@@ -29,9 +29,6 @@
 
         internal const string JOINSELECTWHERE = "SELECT {0} FROM {1} {2} WHERE {3};";
 
-        internal const string JOINSELECTORDERBY = "SELECT {0} FROM {1} {2} ORDER BY {3};";
-
-        internal const string JOINSELECTWHEREORDERBY = "SELECT {0} FROM {1} {2} WHERE {3} ORDER BY {4};";
-
+        internal const string JOINSELECTORDERBY = "{0} ORDER BY {1};";
     }
 }

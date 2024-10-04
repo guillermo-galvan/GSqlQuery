@@ -28,7 +28,7 @@ namespace GSqlQuery.Test
                               .InnerJoin<Test1>(x => new {x.Id, x.Name, x.IsTest}).Equal(x => x.Table2.Ids, x => x.Table3.Id)
                               .Where()
                               .Equal(x => x.Table1.Ids, 1)
-                              .AndEqual(x => x.Table2.IsTests, true);
+                              .AndEqual(x => x.Table2.IsTests, true).OrderBy(x => new { x.Table1.Ids }, OrderBy.DESC);
 
             //var select = Test3.Select(_queryOptions).Where().Equal(x => x.Ids, 1).AndEqual(x => x.IsTests, true);
 
@@ -44,8 +44,8 @@ namespace GSqlQuery.Test
                               .InnerJoin<Test6>(x => new { x.Ids, x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
                               .InnerJoin<Test1>(x => new { x.Id, x.Name, x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id)
                               .Where()
-                              .Equal(x => x.Table1.Ids, 2)
-                              .AndEqual(x => x.Table2.IsTests, true);
+                              .Equal(x => x.Table1.Ids, 1)
+                              .AndEqual(x => x.Table2.IsTests, true).OrderBy(x => new { x.Table1.Ids }, OrderBy.DESC);
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();

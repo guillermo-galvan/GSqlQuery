@@ -64,19 +64,8 @@ namespace GSqlQuery.Queries
         /// <returns>Query text</returns>
         internal string CreateQueryText(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria)
         {
-            IAddJoinCriteria<JoinModel> addJoinCriteria = null;
-
-            if (_queryBuilder != null && _queryBuilder is IAddJoinCriteria<JoinModel> queryBuilder)
-            {
-                addJoinCriteria = queryBuilder;
-            }
-            else if (_andorBuilder != null && _andorBuilder is AndOrBase<T, TSelectQuery, TQueryOptions> andor && andor._queryBuilderWithWhere is IAddJoinCriteria<JoinModel> andorBuilder)
-            {
-                addJoinCriteria = andorBuilder;
-            }
-
             TSelectQuery selectQuery = _andorBuilder != null ? _andorBuilder.Build() : _queryBuilder.Build();
-            Queue<string> parts = new Queue<string>();
+            List<string> parts = [];
 
             foreach (ColumnsJoinOrderBy x in _expression)
             {
@@ -88,39 +77,28 @@ namespace GSqlQuery.Queries
                 string tmpJoinColumns = string.Join(",", columnNames);
 
                 string tmpColumns = "{0} {1}".Replace("{0}", tmpJoinColumns).Replace("{1}", x.OrderBy.ToString());
-                parts.Enqueue(tmpColumns);
+                parts.Add(tmpColumns);
             }
 
             string columnsOrderby = string.Join(",", parts);
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;
-
-            QueryPartColumns queryPartColumns = JoinQueryBuilderWithWhereBase.GetColumns(addJoinCriteria.JoinInfos, QueryOptions.Formats);
-            JoinInfo tableMain = addJoinCriteria.JoinInfos.First(x => x.IsMain);
-
-            string resultJoinColumns = string.Join(",", queryPartColumns.Columns.Select(x => x.PartQuery));
-            string tableName = tableMain.ClassOptions.FormatTableName.GetTableName(QueryOptions.Formats);
-            string resultJoinQuerys = string.Join(" ", queryPartColumns.JoinQuerys);
-
+            string text = selectQuery.Text.Replace(";", string.Empty);
+           
+            
             if (_andorBuilder == null)
             {
-                return ConstFormat.JOINSELECTORDERBY.Replace("{0}", resultJoinColumns).Replace("{1}", tableName)
-                                                    .Replace("{2}", resultJoinQuerys).Replace("{3}", columnsOrderby);
+                return ConstFormat.JOINSELECTORDERBY.Replace("{0}", text).Replace("{1}", columnsOrderby);
             }
             else
             {
-                string resultWhere = string.Join(" ", selectQuery.Criteria.Select(x => x.QueryPart));
-                return ConstFormat.JOINSELECTWHEREORDERBY.Replace("{0}", resultJoinColumns).Replace("{1}", tableName)
-                                                         .Replace("{2}", resultJoinQuerys).Replace("{3}", resultWhere)
-                                                         .Replace("{4}", columnsOrderby);
+                return ConstFormat.JOINSELECTORDERBY.Replace("{0}", text).Replace("{1}", columnsOrderby);
             }
         }
 
         public override TReturn Build()
         {
-            string query = CreateQueryText(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
-            TReturn result = GetQuery(query, columns, criteria, QueryOptions);
-            return result;
+            return CreateQuery();
         }
 
         public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
@@ -133,6 +111,13 @@ namespace GSqlQuery.Queries
             }
 
             _expression.Add(new ColumnsJoinOrderBy(expression, orderBy));
+        }
+
+        public TReturn CreateQuery()
+        {
+            string query = CreateQueryText(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria);
+            TReturn result = GetQuery(query, columns, criteria, QueryOptions);
+            return result;
         }
     }
 
