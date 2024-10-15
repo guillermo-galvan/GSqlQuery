@@ -3,6 +3,7 @@ using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery.Extensions
 {
@@ -21,7 +22,7 @@ namespace GSqlQuery.Extensions
                     int count = 0;
                     foreach (ISearchCriteria item in andOr?.SearchCriterias ?? [])
                     {
-                        var criteria = item.ReplaceValue(tmp[count]);
+                        CriteriaDetailCollection criteria = item.ReplaceValue(tmp[count]);
                         if (criteria == null)
                         {
                             QueryCache.Cache.TryRemove(identity, out _);
@@ -42,7 +43,35 @@ namespace GSqlQuery.Extensions
             }
         }
 
-        internal static TReturn AddQueryCache<TReturn>(QueryIdentity identity, Func<TReturn> createQuery)
+        private static TReturn TryAddQueryCacheByEntity<T, TReturn, TQueryOptions>(QueryIdentity identity, object values, Func<TReturn> createQuery, Func<string, PropertyOptionsCollection, IEnumerable<CriteriaDetailCollection>, TQueryOptions, TReturn> getQuery)
+            where T : class
+           where TReturn : IQuery<T, TQueryOptions>
+           where TQueryOptions : QueryOptions
+        {
+            if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
+            {
+                if (query is IQuery<T, TQueryOptions> tmpQuery)
+                {
+                    List<CriteriaDetailCollection> tmp = [];
+                    foreach (CriteriaDetailCollection item in tmpQuery.Criteria ?? [])
+                    {
+                        object value = ExpressionExtension.GetValue(item.PropertyOptions, values);
+                        ParameterDetail parameterDetail = new ParameterDetail(item.Keys.First(), value);
+                        tmp.Add(new CriteriaDetailCollection(item.QueryPart, item.PropertyOptions, [parameterDetail]));
+                    }
+
+                    return getQuery(tmpQuery.Text, tmpQuery.Columns, tmp, tmpQuery.QueryOptions);
+                }
+
+                return (TReturn)query;
+            }
+            else
+            {
+                return AddQueryCache(identity, createQuery);
+            }
+        }
+
+        private static TReturn AddQueryCache<TReturn>(QueryIdentity identity, Func<TReturn> createQuery)
             where TReturn : IQuery
         {
             TReturn result = createQuery();
@@ -77,7 +106,7 @@ namespace GSqlQuery.Extensions
                 dynamicColumns = dynamic1;
             }
 
-            if(dynamicColumns is  null)
+            if (dynamicColumns is null)
             {
                 return createQuery();
             }
@@ -122,6 +151,24 @@ namespace GSqlQuery.Extensions
             JoinQueryIdentity identity = new JoinQueryIdentity(typeof(T), QueryType.Join, queryOptions.Formats.GetType(), joinInfos, andOr);
 
             return TryAddQueryCache<T, TReturn, TQueryOptions>(identity, identity.SearchCriteriaTypes, andOr, createQuery, getQuery);
+        }
+
+        internal static TReturn CreateDeleteQuery<T, TReturn, TQueryOptions>(TQueryOptions queryOptions, IAndOr<TReturn> andOr, object entity, Func<TReturn> createQuery, Func<string, PropertyOptionsCollection, IEnumerable<CriteriaDetailCollection>, TQueryOptions, TReturn> getQuery)
+           where T : class
+           where TReturn : IQuery<T, TQueryOptions>
+           where TQueryOptions : QueryOptions
+        {
+            DeleteQueryIdentity identity = new DeleteQueryIdentity(typeof(T), queryOptions.Formats.GetType(), entity is not null, andOr);
+
+            if (entity is not null)
+            {
+                return TryAddQueryCacheByEntity<T, TReturn, TQueryOptions>(identity, entity, createQuery, getQuery);
+            }
+            else
+            {
+                return TryAddQueryCache<T, TReturn, TQueryOptions>(identity, identity.SearchCriteriaTypes, andOr, createQuery, getQuery);
+            }
+            
         }
     }
 }

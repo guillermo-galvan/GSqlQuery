@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -27,7 +28,7 @@ namespace GSqlQuery.Queries
         /// Create query
         /// </summary>
         /// <returns>Query text</returns>
-        internal string CreateQuery()
+        internal string CreateQueryText()
         {
             if (_andOr == null)
             {
@@ -44,7 +45,7 @@ namespace GSqlQuery.Queries
         /// Create query by entity
         /// </summary>
         /// <returns>Query text</returns>
-        internal string CreateQueryByEntty()
+        internal string CreateQueryTextByEntty()
         {
             _criteria = GetUpdateCliterias();
             string criteria = GetCriteria();
@@ -72,6 +73,23 @@ namespace GSqlQuery.Queries
             }
             return criteriaDetails;
         }
+
+        /// <summary>
+        /// Build the query
+        /// </summary>
+        /// <returns>Count Query</returns>
+        public override TReturn Build()
+        {
+            return CacheQueryBuilderExtension.CreateDeleteQuery<T, TReturn, TQueryOptions>(QueryOptions, _andOr, _entity, CreateQuery, GetQuery);
+        }
+
+        public TReturn CreateQuery()
+        {
+            string text = _entity == null ? CreateQueryText() : CreateQueryTextByEntty();
+            return GetQuery(text, Columns, _criteria, QueryOptions);
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>
@@ -96,14 +114,9 @@ namespace GSqlQuery.Queries
         public DeleteQueryBuilder(object entity, QueryOptions queryOptions) : base(entity, queryOptions)
         { }
 
-        /// <summary>
-        /// Build the query
-        /// </summary>
-        /// <returns>Count Query</returns>
-        public override DeleteQuery<T> Build()
+        public override DeleteQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            string text = _entity == null ? CreateQuery() : CreateQueryByEntty();
-            return new DeleteQuery<T>(text, _classOptions.FormatTableName.Table, Columns, _criteria, QueryOptions);
+            return new DeleteQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

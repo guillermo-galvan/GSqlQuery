@@ -47,8 +47,8 @@ namespace GSqlQuery.SearchCriteria
         {
             if (criteriaDetailCollection.SearchCriteria is Equal<T, TProperties> parameter)
             {
-                var result = new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions);
-                var nameColumn = criteriaDetailCollection.Keys.First();
+                CriteriaDetailCollection result = new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions);
+                string nameColumn = criteriaDetailCollection.Keys.First();
 
                 result[nameColumn] = new ParameterDetail(nameColumn, Data);
                 return result;

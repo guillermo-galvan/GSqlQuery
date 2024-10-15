@@ -1,5 +1,4 @@
 ﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
 using GSqlQuery.Test.Data;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Helpers;
@@ -23,14 +22,8 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_despues()
         {
-            var select = Test3.Select(_queryOptions, x => new {x.Names, x.IsTests})
-                              .InnerJoin<Test6>(x => new {x.Ids, x.Creates}).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
-                              .InnerJoin<Test1>(x => new {x.Id, x.Name, x.IsTest}).Equal(x => x.Table2.Ids, x => x.Table3.Id)
-                              .Where()
-                              .Equal(x => x.Table1.Ids, 1)
-                              .AndEqual(x => x.Table2.IsTests, true).OrderBy(x => new { x.Table1.Ids }, OrderBy.DESC);
-
-            //var select = Test3.Select(_queryOptions).Where().Equal(x => x.Ids, 1).AndEqual(x => x.IsTests, true);
+            Test3 test3 = new Test3 ( 1, "Test1", DateTime.Now, true);
+            var select = Test3.Delete(_queryOptions).Where().Equal(x => x.Ids, 1);
 
             Stopwatch timeMeasure = new Stopwatch();
             timeMeasure.Start();
@@ -38,14 +31,9 @@ namespace GSqlQuery.Test
             timeMeasure.Stop();
 
             Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
-
-            //var select2 = Test3.Select(_queryOptions).Where().Equal(x => x.Ids, 1).AndEqual(x => x.IsTests, true);
-            var select2 = Test3.Select(_queryOptions, x => new { x.Names, x.IsTests })
-                              .InnerJoin<Test6>(x => new { x.Ids, x.Creates }).Equal(x => x.Table1.Ids, x => x.Table2.Ids)
-                              .InnerJoin<Test1>(x => new { x.Id, x.Name, x.IsTest }).Equal(x => x.Table2.Ids, x => x.Table3.Id)
-                              .Where()
-                              .Equal(x => x.Table1.Ids, 1)
-                              .AndEqual(x => x.Table2.IsTests, true).OrderBy(x => new { x.Table1.Ids }, OrderBy.DESC);
+            test3.IsTests = false;
+            test3.Ids = 2;
+            var select2 = Test3.Delete(_queryOptions).Where().Equal(x => x.Ids, 2);
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();
@@ -1029,8 +1017,8 @@ namespace GSqlQuery.Test
                               .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
                               .RightJoin<Test1>().Equal(x => x.Table2.Ids, x => x.Table3.Id)
                               .Where()
-                              .In(x => x.Table1.Ids, new int[] { 1, 2, 3 })
-                              .AndNotIn(x => x.Table2.Ids, new int[] { 1, 2, 3 })
+                              .In(x => x.Table1.Ids, [1, 2, 3])
+                              .AndNotIn(x => x.Table2.Ids, [1, 2, 3])
                               .OrderBy(x => new { x.Table2.IsTests, x.Table1.Names, x.Table3.Id }, OrderBy.ASC)
                               .Build();
 
