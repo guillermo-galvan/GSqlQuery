@@ -168,7 +168,17 @@ namespace GSqlQuery.Extensions
             {
                 return TryAddQueryCache<T, TReturn, TQueryOptions>(identity, identity.SearchCriteriaTypes, andOr, createQuery, getQuery);
             }
-            
+        }
+
+        internal static TReturn CreateInsertQuery<T, TReturn, TQueryOptions>(TQueryOptions queryOptions, object entity, Func<TReturn> createQuery, Func<string, PropertyOptionsCollection, IEnumerable<CriteriaDetailCollection>, TQueryOptions, TReturn> getQuery)
+          where T : class
+          where TReturn : IQuery<T, TQueryOptions>
+          where TQueryOptions : QueryOptions
+        {
+            InsertQueryIdentity identity = new InsertQueryIdentity(typeof(T), queryOptions.Formats.GetType());
+
+            return TryAddQueryCacheByEntity<T, TReturn, TQueryOptions>(identity, entity, createQuery, getQuery);
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="criteria">Criterias</param>
         /// <returns>Query text</returns>
-        internal string CreateQuery(out IEnumerable<CriteriaDetailCollection> criteria)
+        internal string CreateQueryText(out IEnumerable<CriteriaDetailCollection> criteria)
         {
             AutoIncrementingClass autoIncrementingClass = GetValues();
 
@@ -71,6 +72,19 @@ namespace GSqlQuery.Queries
             bool isAutoIncrement = Columns.Count != columnsParameters.Length;
             return new AutoIncrementingClass(isAutoIncrement, columnsParameters);
         }
+
+        public override TReturn Build()
+        {
+            return CacheQueryBuilderExtension.CreateInsertQuery<T, TReturn, TQueryOptions>(QueryOptions, entity, CreateQuery, GetQuery);
+        }
+
+        public TReturn CreateQuery()
+        {
+            string text = CreateQueryText(out IEnumerable<CriteriaDetailCollection> criteria);
+            return GetQuery(text, Columns, criteria, QueryOptions);
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>
@@ -82,15 +96,9 @@ namespace GSqlQuery.Queries
     internal class InsertQueryBuilder<T>(QueryOptions queryOptions, object entity) : InsertQueryBuilder<T, InsertQuery<T>, QueryOptions>(queryOptions, entity)
         where T : class
     {
-
-        /// <summary>
-        /// Build the query
-        /// </summary>
-        /// <returns>Insert Query</returns>
-        public override InsertQuery<T> Build()
+        public override InsertQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            string query = CreateQuery(out IEnumerable<CriteriaDetailCollection> criteria);
-            return new InsertQuery<T>(query, _classOptions.FormatTableName.Table, Columns, criteria, QueryOptions);
+            return new InsertQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

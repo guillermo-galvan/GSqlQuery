@@ -23,7 +23,7 @@ namespace GSqlQuery.Test
         public void borrar_despues()
         {
             Test3 test3 = new Test3 ( 1, "Test1", DateTime.Now, true);
-            var select = Test3.Delete(_queryOptions).Where().Equal(x => x.Ids, 1);
+            var select = Test3.Insert(_queryOptions, test3);
 
             Stopwatch timeMeasure = new Stopwatch();
             timeMeasure.Start();
@@ -33,7 +33,7 @@ namespace GSqlQuery.Test
             Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
             test3.IsTests = false;
             test3.Ids = 2;
-            var select2 = Test3.Delete(_queryOptions).Where().Equal(x => x.Ids, 2);
+            var select2 = Test3.Insert(_queryOptions, test3);
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();
