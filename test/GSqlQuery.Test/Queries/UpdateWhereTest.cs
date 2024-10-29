@@ -20,9 +20,7 @@ namespace GSqlQuery.Test.Queries
             var classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(classOptions, columnAttribute);
             Expression<Func<Test1, int>> expression = (x) => x.Id;
             _equal = new Equal<Test1, int>(classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression);
-            var columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, object>((x) => x.Id);
-
-            _queryBuilder = new UpdateQueryBuilder<Test1>(new QueryOptions(new DefaultFormats()), columnsValue, string.Empty);
+            _queryBuilder = new UpdateQueryBuilder<Test1>(new QueryOptions(new DefaultFormats()), expression, string.Empty);
         }
 
         [Fact]

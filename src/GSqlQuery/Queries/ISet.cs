@@ -9,10 +9,6 @@ namespace GSqlQuery
     /// </summary>
     public interface ISet
     {
-        /// <summary>
-        /// Get column values
-        /// </summary>
-        IDictionary<ColumnAttribute, object> ColumnValues { get; }
     }
 
     /// <summary>

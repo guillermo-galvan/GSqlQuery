@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GSqlQuery.Test
 {
@@ -23,7 +24,8 @@ namespace GSqlQuery.Test
         public void borrar_despues()
         {
             Test3 test3 = new Test3 ( 1, "Test1", DateTime.Now, true);
-            var select = Test3.Insert(_queryOptions, test3);
+            var select = Test3.Update(_queryOptions, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false)
+                            .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now);
 
             Stopwatch timeMeasure = new Stopwatch();
             timeMeasure.Start();
@@ -33,7 +35,8 @@ namespace GSqlQuery.Test
             Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
             test3.IsTests = false;
             test3.Ids = 2;
-            var select2 = Test3.Insert(_queryOptions, test3);
+            var select2 = Test3.Update(_queryOptions, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false)
+                            .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now);
 
             Stopwatch timeMeasure2 = new Stopwatch();
             timeMeasure2.Start();

@@ -106,8 +106,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
-            return new UpdateQueryBuilder<T>(queryOptions, options, value);
+            return new UpdateQueryBuilder<T>(queryOptions, expression, value);
         }
 
         /// <summary>
@@ -128,9 +127,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateClassOptionsTupla(QueryType.Update, options);
-            return new UpdateQueryBuilder<T>(queryOptions, this, options);
+            
+            return new UpdateQueryBuilder<T>(queryOptions, this, expression);
         }
 
         /// <summary>
