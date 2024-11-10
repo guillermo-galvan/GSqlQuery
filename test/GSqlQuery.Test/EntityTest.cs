@@ -24,7 +24,7 @@ namespace GSqlQuery.Test
         public void borrar_despues()
         {
             Test3 test3 = new Test3 ( 1, "Test1", DateTime.Now, true);
-            var select = Test3.Update(_queryOptions, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false)
+            var select = test3.Update(_queryOptions, x => x.Ids).Set(x => x.Names).Set(x => x.Creates).Set(x => x.IsTests)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now);
 
             Stopwatch timeMeasure = new Stopwatch();
@@ -35,7 +35,7 @@ namespace GSqlQuery.Test
             Console.WriteLine($"Tiempo: {timeMeasure.Elapsed.TotalMilliseconds} ms");
             test3.IsTests = false;
             test3.Ids = 2;
-            var select2 = Test3.Update(_queryOptions, x => x.Ids, 1).Set(x => x.Names, "Test").Set(x => x.Creates, DateTime.Now).Set(x => x.IsTests, false)
+            var select2 = test3.Update(_queryOptions, x => x.Ids).Set(x => x.Names).Set(x => x.Creates).Set(x => x.IsTests)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now);
 
             Stopwatch timeMeasure2 = new Stopwatch();

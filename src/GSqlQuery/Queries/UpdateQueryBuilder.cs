@@ -7,16 +7,11 @@ using System.Linq.Expressions;
 
 namespace GSqlQuery.Queries
 {
-    internal class UpdateColumns
+    internal class UpdateColumns(Expression expression)
     {
-        public Expression Expression { get; set; }
+        public Expression Expression { get; set; } = expression;
 
         public object Value { get; set; }
-
-        public UpdateColumns(Expression expression)
-        {
-            Expression = expression;
-        }
 
         public UpdateColumns(Expression expression, object value) :  this(expression)
         {
@@ -29,7 +24,7 @@ namespace GSqlQuery.Queries
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    internal abstract class UpdateQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>, ISet<T, TReturn, TQueryOptions>
+    internal abstract class UpdateQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>, ISet<T, TReturn, TQueryOptions>, ISetByEntity<T, TReturn, TQueryOptions>
         where T : class
         where TReturn : IQuery<T, TQueryOptions>
          where TQueryOptions : QueryOptions
@@ -42,18 +37,11 @@ namespace GSqlQuery.Queries
         /// <summary>
         /// Class constructor
         /// </summary>
-        /// <param name="queryOptions">Formats</param>
-        private UpdateQueryBuilder(TQueryOptions queryOptions) : base(queryOptions)
-        { }
-
-        /// <summary>
-        /// Class constructor
-        /// </summary>
         /// <param name="queryOptions">TQueryOptions</param>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="value">Value for update</param>
         public UpdateQueryBuilder(TQueryOptions queryOptions, Expression expression, object value) :
-            this(queryOptions)
+            base(queryOptions)
         {
             _columnValues.Add(new UpdateColumns(expression, value)); 
         }
@@ -65,7 +53,7 @@ namespace GSqlQuery.Queries
         /// <param name="entity">Entity</param>
         /// <param name="selectMember">Name of properties to search</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(TQueryOptions queryOptions, object entity, Expression expression) : this(queryOptions)
+        public UpdateQueryBuilder(TQueryOptions queryOptions, object entity, Expression expression) : base(queryOptions)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _columnValues.Add(new UpdateColumns(expression, null));
@@ -182,7 +170,7 @@ namespace GSqlQuery.Queries
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression)
+        public ISetByEntity<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             AddSet(expression);
             return this;
@@ -190,7 +178,9 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
-            return CreateQuery();
+            return CacheQueryBuilderExtension.CreateUpdateQuery<T, TReturn, TQueryOptions>(QueryOptions, _andOr, _entity, ColumnValues.Select(x => x.Expression), CreateQuery, GetQuery);
+
+             //return CreateQuery();
         }
 
         public TReturn CreateQuery()

@@ -1,8 +1,5 @@
-﻿using GSqlQuery.Cache;
-using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
+﻿using GSqlQuery.Queries;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace GSqlQuery
@@ -116,7 +113,7 @@ namespace GSqlQuery
         /// <param name="queryOptions">QueryOptions</param>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T, UpdateQuery<T>, QueryOptions> Update<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
+        public ISetByEntity<T, UpdateQuery<T>, QueryOptions> Update<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
         {
             if (queryOptions == null)
             {

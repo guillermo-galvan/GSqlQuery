@@ -28,13 +28,19 @@ namespace GSqlQuery
         /// <param name="value"></param>
         /// <returns>Instance of ISet</returns>
         ISet<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression, TProperties value);
+    }
 
+    public interface ISetByEntity<T, TReturn, TQueryOptions> : IBuilder<TReturn>, ISet, IQueryBuilderWithWhere<TReturn, TQueryOptions>, IQueryBuilderWithWhere<T, TReturn, TQueryOptions>, IQueryOptions<TQueryOptions>
+        where T : class
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
+    {
         /// <summary>
         /// add to query update another column
         /// </summary>
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        ISet<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression);
+        ISetByEntity<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression);
     }
 }

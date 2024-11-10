@@ -4,6 +4,7 @@ using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.Extensions
 {
@@ -179,6 +180,65 @@ namespace GSqlQuery.Extensions
 
             return TryAddQueryCacheByEntity<T, TReturn, TQueryOptions>(identity, entity, createQuery, getQuery);
 
+        }
+
+        internal static TReturn CreateUpdateQuery<T, TReturn, TQueryOptions>(TQueryOptions queryOptions, IAndOr<TReturn> andOr, object entity, IEnumerable<Expression> expressions, Func<TReturn> createQuery, Func<string, PropertyOptionsCollection, IEnumerable<CriteriaDetailCollection>, TQueryOptions, TReturn> getQuery)
+          where T : class
+          where TReturn : IQuery<T, TQueryOptions>
+          where TQueryOptions : QueryOptions
+        {
+            if(entity == null)
+            {
+                return createQuery();
+            }
+
+            UpdateQueryIdentity identity = new UpdateQueryIdentity(typeof(T), queryOptions.Formats.GetType(), expressions, andOr);
+
+            if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
+            {
+                if (query is IQuery<T, TQueryOptions> tmpQuery)
+                {
+                    List<CriteriaDetailCollection> tmp = [];
+
+                    IEnumerable<CriteriaDetailCollection> updateColumnsTmp = tmpQuery.Criteria?.Where(x => x.SearchCriteria is null) ?? [];
+
+                    foreach (CriteriaDetailCollection item in updateColumnsTmp)
+                    {
+                        object value = ExpressionExtension.GetValue(item.PropertyOptions, entity);
+                        ParameterDetail parameterDetail = new ParameterDetail(item.Keys.First(), value);
+                        tmp.Add(new CriteriaDetailCollection(item.QueryPart, item.PropertyOptions, [parameterDetail]));
+                    }
+
+                    List<CriteriaDetailCollection> searchCriterias = tmpQuery.Criteria?.Where(x => x.SearchCriteria is not null).ToList() ?? [];
+
+                    if (searchCriterias.Count != (andOr?.SearchCriterias?.Count() ?? 0))
+                    {
+                        QueryCache.Cache.TryRemove(identity, out _);
+                        return AddQueryCache(identity, createQuery);
+                    }
+
+                    int count = 0;
+                    foreach (ISearchCriteria item in andOr?.SearchCriterias ?? [])
+                    {
+                        CriteriaDetailCollection criteria = item.ReplaceValue(searchCriterias[count]);
+                        if (criteria == null)
+                        {
+                            QueryCache.Cache.TryRemove(identity, out _);
+                            return AddQueryCache(identity, createQuery);
+                        }
+                        tmp[count] = criteria;
+                        count++;
+                    }
+
+                    return getQuery(tmpQuery.Text, tmpQuery.Columns, tmp, tmpQuery.QueryOptions);
+                }
+
+                return (TReturn)query;
+            }
+            else
+            {
+                return AddQueryCache(identity, createQuery);
+            }
         }
     }
 }

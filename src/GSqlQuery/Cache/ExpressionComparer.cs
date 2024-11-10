@@ -52,6 +52,8 @@ namespace GSqlQuery.Cache
                     return EqualsLambda((LambdaExpression)x, (LambdaExpression)y);
                 case ExpressionType.Parameter:
                     return EqualsParameter((ParameterExpression)x, (ParameterExpression)y);
+                case ExpressionType.New:
+                    return EqualsNew((NewExpression)x, (NewExpression)y);
                 default:
                     throw new NotImplementedException($"Tipo de expresión no manejado: '{x.NodeType}'");
             }
@@ -88,6 +90,29 @@ namespace GSqlQuery.Cache
         private bool EqualsParameter(ParameterExpression x, ParameterExpression y)
         {
             return x.Name == y.Name && x.Type == y.Type;
+        }
+
+        private bool EqualsNew(NewExpression x, NewExpression y)
+        {
+            if (x.Constructor != y.Constructor)
+            {
+                return false;
+            }
+
+            if (x.Arguments.Count != y.Arguments.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < x.Arguments.Count; i++)
+            {
+                if (!Visit(x.Arguments[i], y.Arguments[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
