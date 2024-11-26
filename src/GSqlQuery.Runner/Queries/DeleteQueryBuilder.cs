@@ -1,4 +1,7 @@
-﻿namespace GSqlQuery.Runner.Queries
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
+
+namespace GSqlQuery.Runner.Queries
 {
     internal class DeleteQueryBuilder<T, TDbConnection> : GSqlQuery.Queries.DeleteQueryBuilder<T, DeleteQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>,
         IQueryBuilder<DeleteQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>,
@@ -11,10 +14,9 @@
         public DeleteQueryBuilder(object entity, ConnectionOptions<TDbConnection> connectionOptions) : base(entity, connectionOptions)
         {}
 
-        public override DeleteQuery<T, TDbConnection> Build()
+        public override DeleteQuery<T, TDbConnection> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> queryOptions)
         {
-            string text = _entity == null ? CreateQuery() : CreateQueryByEntty();
-            return new DeleteQuery<T, TDbConnection>(text, Columns, _criteria, QueryOptions);
+            return new DeleteQuery<T, TDbConnection>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

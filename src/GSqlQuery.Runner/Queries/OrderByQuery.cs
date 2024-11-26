@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using GSqlQuery.Cache;
 using GSqlQuery.Runner;
 
 namespace GSqlQuery
@@ -14,8 +15,8 @@ namespace GSqlQuery
 
         public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
-        internal OrderByQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions) :
-            base(ref text, columns, criteria, connectionOptions)
+        internal OrderByQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> connectionOptions) :
+            base(ref text, table, columns, criteria, connectionOptions)
         {
             DatabaseManagement = connectionOptions.DatabaseManagement;
             _parameters = GeneralExtension.GetParameters<T, TDbConnection>(this, DatabaseManagement);

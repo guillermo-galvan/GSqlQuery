@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Runner.Test.Models;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Runner.Test.Models;
 using Moq;
 using System.Collections.Generic;
 using System.Data;
@@ -16,7 +17,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -31,7 +32,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id = Test1.Id AND Test3.Id = Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -41,7 +42,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -56,7 +57,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <> Test1.Id AND Test3.Id <> Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -66,7 +67,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -81,7 +82,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id > Test1.Id AND Test3.Id > Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -91,7 +92,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -106,7 +107,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id < Test1.Id AND Test3.Id < Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -116,7 +117,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -130,7 +131,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id >= Test1.Id AND Test3.Id >= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -140,7 +141,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -155,7 +156,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <= Test1.Id AND Test3.Id <= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -165,7 +166,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -181,7 +182,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id = Test1.Id RIGHT JOIN TableName ON TableName.Id = Test1.Id AND TableName.Id = Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -191,7 +192,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -207,7 +208,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <> Test1.Id RIGHT JOIN TableName ON TableName.Id <> Test1.Id AND TableName.Id <> Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -217,7 +218,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -233,7 +234,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id > Test1.Id RIGHT JOIN TableName ON TableName.Id > Test1.Id AND TableName.Id > Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -243,7 +244,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -259,7 +260,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id < Test1.Id RIGHT JOIN TableName ON TableName.Id < Test1.Id AND TableName.Id < Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -269,7 +270,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -285,7 +286,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id >= Test1.Id RIGHT JOIN TableName ON TableName.Id >= Test1.Id AND TableName.Id >= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -295,7 +296,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -311,7 +312,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <= Test1.Id RIGHT JOIN TableName ON TableName.Id <= Test1.Id AND TableName.Id <= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -321,7 +322,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -336,7 +337,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id = Test1.Id OR Test3.Id = Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -346,7 +347,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -361,7 +362,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <> Test1.Id OR Test3.Id <> Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -371,7 +372,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -386,7 +387,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id > Test1.Id OR Test3.Id > Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -396,7 +397,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -411,7 +412,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id < Test1.Id OR Test3.Id < Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -421,7 +422,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -435,7 +436,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id >= Test1.Id OR Test3.Id >= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -445,7 +446,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();
@@ -460,7 +461,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <= Test1.Id OR Test3.Id <= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -470,7 +471,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -486,7 +487,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id = Test1.Id RIGHT JOIN TableName ON TableName.Id = Test1.Id OR TableName.Id = Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -496,7 +497,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -512,7 +513,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <> Test1.Id RIGHT JOIN TableName ON TableName.Id <> Test1.Id OR TableName.Id <> Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -522,7 +523,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -538,7 +539,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id > Test1.Id RIGHT JOIN TableName ON TableName.Id > Test1.Id OR TableName.Id > Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -548,7 +549,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -564,7 +565,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id < Test1.Id RIGHT JOIN TableName ON TableName.Id < Test1.Id OR TableName.Id < Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -574,7 +575,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -590,7 +591,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id >= Test1.Id RIGHT JOIN TableName ON TableName.Id >= Test1.Id OR TableName.Id >= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
 
         [Fact]
@@ -600,7 +601,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery<Join<Test1, Test3, Test6>>, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3, Test6>>();
@@ -616,7 +617,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             Assert.NotNull(query.Text);
             Assert.Equal("SELECT Test1.Id as Test1_Id,Test1.Name as Test1_Name,Test1.Create as Test1_Create,Test1.IsTest as Test1_IsTest,Test3.Id as Test3_Id,Test3.Name as Test3_Name,Test3.Create as Test3_Create,Test3.IsTests as Test3_IsTests,TableName.Id as Test6_Id,TableName.Name as Test6_Name,TableName.Create as Test6_Create,TableName.IsTests as Test6_IsTests FROM Test1 LEFT JOIN Test3 ON Test3.Id <= Test1.Id RIGHT JOIN TableName ON TableName.Id <= Test1.Id OR TableName.Id <= Test1.Id;", query.Text);
             Assert.Empty(result);
-            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()));
+            mock.Verify(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3, Test6>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()));
         }
     }
 }

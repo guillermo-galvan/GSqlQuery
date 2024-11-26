@@ -11,7 +11,7 @@ namespace GSqlQuery.Runner
         {
             if (query.Criteria != null)
             {
-                IEnumerable<ParameterDetail> parameterDetails = query.Criteria.Where(x => x.ParameterDetails != null).SelectMany(x => x.ParameterDetails);
+                IEnumerable<ParameterDetail> parameterDetails = query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values);
                 return databaseManagement.Events.GetParameter<T>(parameterDetails);
             }
 

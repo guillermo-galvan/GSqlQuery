@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Runner;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Runner;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,9 +19,8 @@ namespace GSqlQuery
         private readonly IEnumerable<IDataParameter> _parameters;
 
 
-        internal InsertQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria,
-            ConnectionOptions<TDbConnection> connectionOptions, object entity, PropertyOptions propertyOptionsAutoIncrementing)
-            : base(ref text, columns, criteria, connectionOptions)
+        internal InsertQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> connectionOptions, object entity, PropertyOptions propertyOptionsAutoIncrementing)
+            : base(ref text, table,columns, criteria, connectionOptions)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _propertyOptionsAutoIncrementing = propertyOptionsAutoIncrementing;

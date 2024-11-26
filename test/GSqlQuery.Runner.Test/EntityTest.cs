@@ -3,7 +3,9 @@ using GSqlQuery.Runner.Test.Extensions;
 using GSqlQuery.Runner.Test.Models;
 using System;
 using System.Data;
+using System.Linq.Expressions;
 using Xunit;
+using GSqlQuery;
 
 namespace GSqlQuery.Runner.Test
 {
@@ -76,7 +78,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -97,7 +99,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -118,7 +120,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -139,7 +141,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -160,7 +162,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -181,7 +183,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -203,7 +205,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -223,7 +225,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -244,7 +246,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
             Assert.Equal(queryText, result);
@@ -281,7 +283,7 @@ namespace GSqlQuery.Runner.Test
             string result = query.Text;
             foreach (var item in query.Criteria)
             {
-                result = item.ParameterDetails.ParameterReplace(result);
+                result = item.ParameterReplaceInQuery(result);
             }
             Assert.Equal(queryText, result);
         }
@@ -324,7 +326,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -371,7 +373,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -418,7 +420,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -456,7 +458,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -494,7 +496,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -545,7 +547,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -570,8 +572,10 @@ namespace GSqlQuery.Runner.Test
         [ClassData(typeof(OrderBy_Test3_TestData))]
         public void Should_generate_the_orderby_query(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
+            Expression<Func<Test3, object>> expression = x => new { x.Ids };
+
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = Test3.Select(connectionOptions, x => x.Ids);
-            IQueryBuilder<OrderByQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            var countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -582,7 +586,7 @@ namespace GSqlQuery.Runner.Test
         public void Should_generate_some_properties_from_the_orderby_query(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = Test3.Select(connectionOptions, x => new { x.Ids, x.Names, x.Creates });
-            IQueryBuilder<OrderByQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+           var countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
             Assert.NotNull(countQuery);
             Assert.NotEmpty(countQuery.Build().Text);
             Assert.Equal(query, countQuery.Build().Text);
@@ -602,7 +606,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in query.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -614,7 +618,7 @@ namespace GSqlQuery.Runner.Test
         public void Should_generate_the_inner_join_two_tables_orderBy_query(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             var result = Test3.Select(connectionOptions)
-                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .InnerJoin<Test6>().Equal(x =>  x.Table1.Ids, x => x.Table2.Ids )
                               .OrderBy(x => x.Table1.Creates, OrderBy.DESC)
                               .OrderBy(x => x.Table2.Names, OrderBy.ASC)
                               .Build();
@@ -652,7 +656,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -681,7 +685,7 @@ namespace GSqlQuery.Runner.Test
             {
                 foreach (var item in queryResult.Criteria)
                 {
-                    result = item.ParameterDetails.ParameterReplace(result);
+                    result = item.ParameterReplaceInQuery(result);
                 }
             }
 
@@ -710,7 +714,7 @@ namespace GSqlQuery.Runner.Test
             string result = query.Text;
             foreach (var item in query.Criteria)
             {
-                result = item.ParameterDetails.ParameterReplace(result);
+                result = item.ParameterReplaceInQuery(result);
             }
             Assert.Equal(queryText, result);
         }

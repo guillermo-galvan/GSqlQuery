@@ -32,8 +32,7 @@ namespace GSqlQuery.Queries
         /// <param name="orderBy">Order by Type</param>
         /// <param name="queryBuilder">Implementation of the IQueryBuilderWithWhere interface</param>
         /// <param name="queryOptions">Formats</param>
-        public JoinOrderByQueryBuilder(Expression expression, OrderBy orderBy,
-            IQueryBuilderWithWhere<T, TSelectQuery, TQueryOptions> queryBuilder, TQueryOptions queryOptions)
+        public JoinOrderByQueryBuilder(Expression expression, OrderBy orderBy, IQueryBuilderWithWhere<T, TSelectQuery, TQueryOptions> queryBuilder, TQueryOptions queryOptions)
             : base(queryOptions)
         {
             _expression.Add(new ColumnsJoinOrderBy(expression, orderBy));

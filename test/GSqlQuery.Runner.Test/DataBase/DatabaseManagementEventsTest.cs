@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GSqlQuery.Runner.Test.DataBase
 {
@@ -24,12 +25,9 @@ namespace GSqlQuery.Runner.Test.DataBase
 
             if (query.Criteria != null)
             {
-                foreach (var item in query.Criteria.Where(x => x.ParameterDetails != null))
+                foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
                 {
-                    foreach (var item2 in item.ParameterDetails)
-                    {
-                        parameters.Enqueue(item2);
-                    }
+                    parameters.Enqueue(item);
                 }
             }
 
@@ -48,12 +46,9 @@ namespace GSqlQuery.Runner.Test.DataBase
             Queue<ParameterDetail> parameters = new Queue<ParameterDetail>();
             if (query.Criteria != null)
             {
-                foreach (var item in query.Criteria.Where(x => x.ParameterDetails != null))
+                foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
                 {
-                    foreach (var item2 in item.ParameterDetails)
-                    {
-                        parameters.Enqueue(item2);
-                    }
+                    parameters.Enqueue(item);
                 }
             }
 

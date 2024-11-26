@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Runner.Test.Models;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Runner.Test.Models;
 using Microsoft.Data.SqlClient;
 using Moq;
 using System;
@@ -25,7 +26,7 @@ namespace GSqlQuery.Runner.Test
             Mock<IDatabaseManagement<IDbConnection>> mock = new Mock<IDatabaseManagement<IDbConnection>>();
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
-            mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
 
@@ -38,7 +39,7 @@ namespace GSqlQuery.Runner.Test
                     return Enumerable.Empty<Test1>();
                 });
 
-            mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IDbConnection>(), It.IsAny<IQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IDbConnection>(), It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IDbConnection, IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((c, q, p, pa) =>
                 {
 
@@ -205,7 +206,7 @@ namespace GSqlQuery.Runner.Test
             Mock<IDatabaseManagement<IDbConnection>> mock = new Mock<IDatabaseManagement<IDbConnection>>();
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
-            mock.Setup(x => x.ExecuteReaderAsync<Test1>(It.IsAny<IQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
+            mock.Setup(x => x.ExecuteReaderAsync<Test1>(It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
                 .Returns<IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>, CancellationToken>((q, p, pa, t) =>
                 {
 
@@ -218,7 +219,7 @@ namespace GSqlQuery.Runner.Test
                     return Task.FromResult(Enumerable.Empty<Test1>());
                 });
 
-            mock.Setup(x => x.ExecuteReaderAsync<Test1>(It.IsAny<IDbConnection>(), It.IsAny<IQuery<Test1>>(), It.IsAny<IEnumerable<PropertyOptions>>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
+            mock.Setup(x => x.ExecuteReaderAsync<Test1>(It.IsAny<IDbConnection>(), It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
                 .Returns<IDbConnection, IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>, CancellationToken>((c, q, p, pa, t) =>
                 {
 

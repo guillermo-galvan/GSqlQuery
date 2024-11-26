@@ -10,7 +10,7 @@ namespace GSqlQuery.Runner.Test.DataBase
         public void PropertyOptionsInEntity()
         {
             PropertyOptionsInEntity propertyOptionsInEntity = 
-                new PropertyOptionsInEntity(ClassOptionsFactory.GetClassOptions(typeof(Test1)).PropertyOptions.FirstOrDefault(), typeof(Test1), null, 0);
+                new PropertyOptionsInEntity(ClassOptionsFactory.GetClassOptions(typeof(Test1)).PropertyOptions.Values.FirstOrDefault(), typeof(Test1), null, 0);
 
             Assert.NotNull(propertyOptionsInEntity.Property);
             Assert.NotNull(propertyOptionsInEntity.Type);

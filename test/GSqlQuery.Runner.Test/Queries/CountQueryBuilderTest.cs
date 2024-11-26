@@ -1,11 +1,10 @@
-﻿using GSqlQuery.Runner.Queries;
+﻿using GSqlQuery.Queries;
+using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Xunit;
-using GSqlQuery.Extensions;
 
 namespace GSqlQuery.Runner.Test.Queries
 {
@@ -39,8 +38,8 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
 
             var result = queryBuilder.Count();
 
@@ -63,8 +62,8 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface2()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn,  _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery,  _connectionOptions);
             var result = queryBuilder.Count();
             var where = result.Where();
             Assert.NotNull(where);
@@ -73,8 +72,8 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface3()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
             IQueryBuilderWithWhere<CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> result = queryBuilder.Count();
             IWhere<CountQuery<Test1, IDbConnection>> where = result.Where();
             Assert.NotNull(where);

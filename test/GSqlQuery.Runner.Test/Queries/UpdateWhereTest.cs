@@ -1,9 +1,10 @@
 ﻿using GSqlQuery.Extensions;
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
+using GSqlQuery.SearchCriteria;
 using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Linq.Expressions;
 using System.Reflection;
 using Xunit;
 
@@ -11,16 +12,17 @@ namespace GSqlQuery.Runner.Test.Queries
 {
     public class UpdateWhereTest
     {
-        private readonly Data.SearchCriteria _equal;
+        private readonly Equal<Test1, int> _equal;
         private readonly UpdateQueryBuilder<Test1, IDbConnection> _updateQueryBuilder;
         private readonly ConnectionOptions<IDbConnection> _connectionOptions;
 
         public UpdateWhereTest()
         {
             _connectionOptions = new ConnectionOptions<IDbConnection>(new TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock());
-            _equal = new Data.SearchCriteria(new DefaultFormats(), new TableAttribute("name"), new ColumnAttribute("column"));
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
-            _updateQueryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, columnsValue, string.Empty);
+            var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
+            Expression<Func<Test1, int>> expression = (x) => x.Id;
+            _equal = new Equal<Test1, int>(classOptions, new DefaultFormats(), 1, null, ref expression);
+            _updateQueryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, expression, string.Empty);
         }
 
         [Fact]
@@ -47,7 +49,7 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = query.BuildCriteria();
+            var criteria = query.Create();
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }
@@ -56,7 +58,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_with_expression_UpdateQuery()
         {
             AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_updateQueryBuilder, _connectionOptions);
-            var andOr = GSqlQueryExtension.GetAndOr(where, x => x.Id);
+            var andOr = where.AndOr;
             Assert.NotNull(andOr);
         }
 
@@ -64,7 +66,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Throw_exception_if_expression_is_null_with_expression_UpdateQuery()
         {
             AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = null;
-            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where, x => x.Id));
+            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.Validate(where, x => x.Id));
         }
 
         [Fact]
@@ -93,7 +95,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_UpdateQuery()
         {
             AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_updateQueryBuilder, _connectionOptions);
-            var andOr = GSqlQueryExtension.GetAndOr(where);
+            var andOr = where.AndOr;
             Assert.NotNull(andOr);
         }
 
@@ -101,7 +103,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Throw_exception_if_expression_is_null_UpdateQuery()
         {
             AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = null;
-            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where));
+            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.Validate(where, x => x.Id));
         }
     }
 }

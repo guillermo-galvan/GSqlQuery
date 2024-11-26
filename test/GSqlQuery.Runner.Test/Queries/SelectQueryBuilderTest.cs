@@ -1,11 +1,8 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Reflection;
 using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
@@ -22,10 +19,10 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Properties_cannot_be_null2()
+        public void Properties_cannot_be_null()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            SelectQueryBuilder<Test1, IDbConnection> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            SelectQueryBuilder<Test1, IDbConnection> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
 
             Assert.NotNull(queryBuilder);
             Assert.NotNull(queryBuilder.QueryOptions);
@@ -36,28 +33,30 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Throw_an_exception_if_nulls_are_passed_in_the_parameters2()
+        public void Throw_an_exception_if_nulls_are_passed_in_the_parameters()
         {
-            ClassOptionsTupla<IEnumerable<MemberInfo>> members = null;
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1, IDbConnection>(members, _connectionOptions));
-            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1, IDbConnection>(columsn, null));
+
+            DynamicQuery dynamicQuery = null;
+            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(dynamicQuery, _connectionOptions));
+
+            dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            Assert.Throws<ArgumentNullException>(() => new SelectQueryBuilder<Test1>(dynamicQuery, null));
         }
 
         [Fact]
-        public void Should_return_an_implementation_of_the_IWhere_interface2()
+        public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            SelectQueryBuilder<Test1, IDbConnection> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            SelectQueryBuilder<Test1, IDbConnection> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
             var where = queryBuilder.Where();
             Assert.NotNull(where);
         }
 
         [Fact]
-        public void Should_return_an_delete_query2()
+        public void Should_return_an_delete_query()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            SelectQueryBuilder<Test1, IDbConnection> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            SelectQueryBuilder<Test1, IDbConnection> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
             SelectQuery<Test1, IDbConnection> query = queryBuilder.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);

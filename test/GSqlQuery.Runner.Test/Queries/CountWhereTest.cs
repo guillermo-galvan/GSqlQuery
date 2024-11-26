@@ -1,4 +1,5 @@
 ﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
 using System;
@@ -16,8 +17,8 @@ namespace GSqlQuery.Runner.Test.Queries
         public CountWhereTest()
         {
             _connectionOptions = new ConnectionOptions<IDbConnection>(new TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock());
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            _selectQueryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            _selectQueryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
             _connectionCountQueryBuilder = new CountQueryBuilder<Test1, IDbConnection>(_selectQueryBuilder);
             _equal = new Data.SearchCriteria(_connectionOptions.Formats, new TableAttribute("name"), new ColumnAttribute("column"));
         }
@@ -48,7 +49,7 @@ namespace GSqlQuery.Runner.Test.Queries
                 new AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_connectionCountQueryBuilder, _connectionOptions);
             Assert.NotNull(query);
             query.Add(_equal);
-            var criteria = query.BuildCriteria();
+            var criteria = query.Create();
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }
@@ -57,15 +58,8 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_with_expression_CountQuery()
         {
             AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_connectionCountQueryBuilder, _connectionOptions);
-            var andOr = GSqlQueryExtension.GetAndOr(where,x => x.Id);
+            var andOr = where.AndOr; 
             Assert.NotNull(andOr);
-        }
-
-        [Fact]
-        public void Throw_exception_if_expression_is_null_with_expression_CountQuery()
-        {
-            AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = null;
-            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where,x => x.Id));
         }
 
         [Fact]
@@ -95,15 +89,8 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where =
                 new AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_connectionCountQueryBuilder, _connectionOptions);
-            var andOr = GSqlQueryExtension.GetAndOr(where);
+            var andOr = where.AndOr; 
             Assert.NotNull(andOr);
-        }
-
-        [Fact]
-        public void Throw_exception_if_expression_is_null_CountQuery()
-        {
-            AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = null;
-            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where));
         }
     }
 }

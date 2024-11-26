@@ -12,6 +12,10 @@ namespace GSqlQuery.Runner.Test.Data
 
         public IFormats Formats { get; }
 
+        public object Value => throw new NotImplementedException();
+
+        public ClassOptions ClassOptions => throw new NotImplementedException();
+
         public SearchCriteria(IFormats formats, TableAttribute table, ColumnAttribute columnAttribute)
         {
             Column = columnAttribute;
@@ -19,9 +23,15 @@ namespace GSqlQuery.Runner.Test.Data
             Formats = formats;
         }
 
-        public CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions)
+        public CriteriaDetailCollection GetCriteria(ref uint parameterId)
         {
-            return new CriteriaDetail(this, "SELECT COUNT([Test1].[Id]) FROM [Test1];", Array.Empty<ParameterDetail>());
+            CriteriaDetails criterion = new CriteriaDetails("SELECT COUNT([Test1].[Id]) FROM [Test1];", []);
+            return new CriteriaDetailCollection(this, criterion.Criterion, null, criterion.Parameters);
+        }
+
+        public CriteriaDetailCollection ReplaceValue(CriteriaDetailCollection criteriaDetailCollection)
+        {
+            throw new NotImplementedException();
         }
     }
 }

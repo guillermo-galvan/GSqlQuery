@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Runner;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Runner;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,8 +15,8 @@ namespace GSqlQuery
 
         public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
-        internal SelectQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, ConnectionOptions<TDbConnection> connectionOptions)
-            : base(ref text, columns, criteria, connectionOptions)
+        internal SelectQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> connectionOptions)
+            : base(ref text, table, columns, criteria, connectionOptions)
         {
             DatabaseManagement = connectionOptions.DatabaseManagement;
             _parameters = GeneralExtension.GetParameters<T, TDbConnection>(this, DatabaseManagement);

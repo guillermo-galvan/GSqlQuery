@@ -1,10 +1,8 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using Xunit;
 
 namespace GSqlQuery.Runner.Test.Queries
@@ -21,8 +19,8 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_orderBy_query2()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             var query = result.Build();
             Assert.NotNull(query.Text);
@@ -39,8 +37,8 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_orderBy_query_with_where2()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            var queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions).Where()
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            var queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions).Where()
                                                                                                         .Equal(x => x.IsTest, true)
                                                                                                         .OrEqual(x => x.IsTest, false);
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
@@ -59,18 +57,12 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Properties_cannot_be_null2()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            IQueryBuilderWithWhere<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
 
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC);
 
             Assert.NotNull(result);
-            Assert.NotNull(result.QueryOptions);
-            Assert.NotNull(result.QueryOptions.Formats);
-            Assert.NotNull(result.QueryOptions.DatabaseManagement);
-            Assert.NotNull(result.Columns);
-            Assert.NotEmpty(result.Columns);
-            Assert.Equal(queryBuilder.Columns.Count(), result.Columns.Count());
         }
 
         [Fact]

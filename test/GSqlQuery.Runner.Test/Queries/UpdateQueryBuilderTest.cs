@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq.Expressions;
 using System.Reflection;
 using Xunit;
 
@@ -20,10 +21,10 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Properties_cannot_be_null2()
+        public void Properties_cannot_be_null()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
-            UpdateQueryBuilder<Test1, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, columnsValue, string.Empty);
+            Expression<Func<Test1, string>> expression = (x) => x.Name;
+            UpdateQueryBuilder<Test1, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, expression, string.Empty);
 
             Assert.NotNull(queryBuilder);
             Assert.NotNull(queryBuilder.QueryOptions);
@@ -34,19 +35,19 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_return_an_implementation_of_the_IWhere_interface2()
+        public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
-            UpdateQueryBuilder<Test1, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, columnsValue, string.Empty);
+            Expression<Func<Test1, string>> expression = (x) => x.Name;
+            UpdateQueryBuilder<Test1, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, expression, string.Empty);
             var where = queryBuilder.Where();
             Assert.NotNull(where);
         }
 
         [Fact]
-        public void Should_return_an_update_query2()
+        public void Should_return_an_update_query()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
-            UpdateQueryBuilder<Test3, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test3, IDbConnection>(_connectionOptions, columnsValue, string.Empty);
+            Expression<Func<Test1, string>> expression = (x) => x.Name;
+            UpdateQueryBuilder<Test3, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test3, IDbConnection>(_connectionOptions, expression, string.Empty);
             var query = queryBuilder.Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -62,20 +63,20 @@ namespace GSqlQuery.Runner.Test.Queries
         }
 
         [Fact]
-        public void Should_add_a_new_column_value_with_set_value2()
+        public void Should_add_a_new_column_value_with_set_value()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
-            UpdateQueryBuilder<Test1, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, columnsValue, string.Empty);
+            Expression<Func<Test1, string>> expression = (x) => x.Name;
+            UpdateQueryBuilder<Test1, IDbConnection> queryBuilder = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, expression, string.Empty);
 
             queryBuilder.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now);
         }
 
         [Fact]
-        public void Should_add_a_new_column_value_with_property2()
+        public void Should_add_a_new_column_value_with_property()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
             Test1 model = new Test1(1, null, DateTime.Now, true);
-            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, model, columsn);
+            Expression<Func<Test1, object>> expression = (x) => new { x.Id, x.Name, x.Create };
+            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, model, expression);
 
             test.Set(x => x.Id).Set(x => x.Create);
         }
@@ -83,9 +84,9 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_generate_the_query3()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
             Test1 model = new Test1(1, null, DateTime.Now, true);
-            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, model, columsn);
+            Expression<Func<Test1, object>> expression = (x) => new { x.Id, x.Name, x.Create };
+            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, model, expression);
             var query = test.Set(x => x.Id).Set(x => x.Create).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -104,8 +105,8 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_generate_the_query4()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
-            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, columnsValue, string.Empty);
+            Expression<Func<Test1, string>> expression = (x) => x.Name;
+            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, expression, string.Empty);
             var query = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Build();
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -123,9 +124,9 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_get_the_where_query3()
         {
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
             Test1 model = new Test1(1, null, DateTime.Now, true);
-            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, model, columsn);
+            Expression<Func<Test1, object>> expression = (x) => new { x.Id, x.Name, x.Create };
+            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, model, expression);
             var where = test.Set(x => x.Id).Set(x => x.Create).Where();
             Assert.NotNull(where);
         }
@@ -133,8 +134,8 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_get_the_where_query4()
         {
-            ClassOptionsTupla<MemberInfo> columnsValue = ExpressionExtension.GetOptionsAndMember<Test1, string>((x) => x.Name);
-            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, columnsValue, string.Empty);
+            Expression<Func<Test1, string>> expression = (x) => x.Name;
+            UpdateQueryBuilder<Test1, IDbConnection> test = new UpdateQueryBuilder<Test1, IDbConnection>(_connectionOptions, expression, string.Empty);
             var where = test.Set(x => x.Id, 1).Set(x => x.Create, DateTime.Now).Where();
             Assert.NotNull(where);
         }

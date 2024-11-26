@@ -74,7 +74,7 @@ namespace GSqlQuery.Queries
         private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum) where TJoin : class
         {
             ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(TJoin));
-            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, QueryOptions, options.PropertyOptions);
+            return new JoinQueryBuilderWithWhere<T1, T2, TJoin>(_joinInfos, joinEnum, QueryOptions);
         }
 
         private IComparisonOperators<Join<T1, T2, TJoin>, JoinQuery<Join<T1, T2, TJoin>, QueryOptions>, QueryOptions> Join<TJoin, TProperties>(JoinType joinEnum, Func<TJoin, TProperties> func)
@@ -174,8 +174,8 @@ namespace GSqlQuery.Queries
         /// <param name="joinType">Join Type</param>
         /// <param name="formats">Formats</param>
         /// <param name="columnsT3">Columns third table</param>
-        public JoinQueryBuilderWithWhere(List<JoinInfo> joinInfos, JoinType joinType, QueryOptions queryOptions, PropertyOptionsCollection columnsT3 = null) :
-            base(joinInfos, joinType, queryOptions, columnsT3)
+        public JoinQueryBuilderWithWhere(List<JoinInfo> joinInfos, JoinType joinType, QueryOptions queryOptions) :
+            base(joinInfos, joinType, queryOptions)
         { }
 
         /// <summary>

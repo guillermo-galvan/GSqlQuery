@@ -1,9 +1,6 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries

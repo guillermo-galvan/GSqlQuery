@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Runner.Transforms;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Runner.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -99,7 +100,7 @@ namespace GSqlQuery.Runner
             }
         }
 
-        public virtual IEnumerable<T> ExecuteReader<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+        public virtual IEnumerable<T> ExecuteReader<T>(IQuery<T> query, PropertyOptionsCollection propertyOptions, IEnumerable<IDataParameter> parameters)
             where T : class
         {
             using (TIConnection connection = GetConnection())
@@ -115,7 +116,7 @@ namespace GSqlQuery.Runner
             }
         }
 
-        public virtual IEnumerable<T> ExecuteReader<T>(TIConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters)
+        public virtual IEnumerable<T> ExecuteReader<T>(TIConnection connection, IQuery<T> query, PropertyOptionsCollection propertyOptions, IEnumerable<IDataParameter> parameters)
             where T : class
         {
             if (Events.IsTraceActive)
@@ -134,7 +135,7 @@ namespace GSqlQuery.Runner
             }
         }
 
-        public virtual async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class
+        public virtual async Task<IEnumerable<T>> ExecuteReaderAsync<T>(IQuery<T> query, PropertyOptionsCollection propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class
         {
             using (TIConnection connection = await GetConnectionAsync(cancellationToken).ConfigureAwait(false))
             {
@@ -149,7 +150,7 @@ namespace GSqlQuery.Runner
             }
         }
 
-        public virtual async Task<IEnumerable<T>> ExecuteReaderAsync<T>(TIConnection connection, IQuery<T> query, IEnumerable<PropertyOptions> propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class
+        public virtual async Task<IEnumerable<T>> ExecuteReaderAsync<T>(TIConnection connection, IQuery<T> query, PropertyOptionsCollection propertyOptions, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default) where T : class
         {
             cancellationToken.ThrowIfCancellationRequested();
 

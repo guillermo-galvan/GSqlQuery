@@ -256,7 +256,7 @@ namespace GSqlQuery.Queries
         /// <param name="formats">formats</param>
         /// <param name="columnsT3">Columns third table</param>
 
-        public JoinQueryBuilderWithWhereBase(List<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options, PropertyOptionsCollection columnsT3 = null)
+        public JoinQueryBuilderWithWhereBase(List<JoinInfo> joinInfos, JoinType joinType, TQueryOptions options)
             : base(joinInfos, options)
         {
             ClassOptions tmp = ClassOptionsFactory.GetClassOptions(typeof(T3));

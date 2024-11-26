@@ -1,7 +1,6 @@
-﻿using GSqlQuery.Queries;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Queries;
 using System.Collections.Generic;
-using System.Reflection;
-using GSqlQuery.Extensions;
 
 namespace GSqlQuery.Runner.Queries
 {
@@ -10,18 +9,17 @@ namespace GSqlQuery.Runner.Queries
         where T : class
     {
 
-        public OrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, OrderBy orderBy,IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> queryBuilder) : base(classOptionsTupla, orderBy, queryBuilder, queryBuilder.QueryOptions)
+        public OrderByQueryBuilder(DynamicQuery dynamicQuery, OrderBy orderBy, IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> queryBuilder) : base(dynamicQuery, orderBy, queryBuilder, queryBuilder.QueryOptions)
         { }
 
-        public OrderByQueryBuilder(ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla, OrderBy orderBy,
+        public OrderByQueryBuilder(DynamicQuery dynamicQuery, OrderBy orderBy,
            IAndOr<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> andOr)
-           : base(classOptionsTupla, orderBy, andOr)
+           : base(dynamicQuery, orderBy, andOr)
         { }
 
-        public override OrderByQuery<T, TDbConnection> Build()
+        public override OrderByQuery<T, TDbConnection> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> queryOptions)
         {
-            string query = CreateQuery(out IEnumerable<PropertyOptions> columns, out IEnumerable<CriteriaDetail> criteria);
-            return new OrderByQuery<T, TDbConnection>(query, columns, criteria, QueryOptions);
+            return new OrderByQuery<T, TDbConnection>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

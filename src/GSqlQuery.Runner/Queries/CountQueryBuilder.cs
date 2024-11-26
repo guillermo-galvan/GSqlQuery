@@ -1,4 +1,7 @@
-﻿namespace GSqlQuery.Runner.Queries
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
+
+namespace GSqlQuery.Runner.Queries
 {
     internal class CountQueryBuilder<T, TDbConnection> :
         GSqlQuery.Queries.CountQueryBuilder<T, CountQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>, SelectQuery<T, TDbConnection>>,
@@ -11,10 +14,9 @@
             base(queryBuilder, queryBuilder.QueryOptions)
         { }
 
-        public override CountQuery<T, TDbConnection> Build()
+        public override CountQuery<T, TDbConnection> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> queryOptions)
         {
-            string query = CreateQuery();
-            return new CountQuery<T, TDbConnection>(query, Columns, _criteria, QueryOptions);
+            return new CountQuery<T, TDbConnection>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

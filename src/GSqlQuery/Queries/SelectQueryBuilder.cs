@@ -115,8 +115,6 @@ namespace GSqlQuery.Queries
 
         private IComparisonOperators<Join<T, TJoin>, JoinQuery<Join<T, TJoin>, QueryOptions>, QueryOptions> Join<TJoin>(JoinType joinEnum) where TJoin : class
         {
-            ClassOptions options = ClassOptionsFactory.GetClassOptions(typeof(TJoin));
-
             return new JoinQueryBuilderWithWhere<T, TJoin>(joinEnum, QueryOptions, _dynamicQuery);
         }
 

@@ -9,14 +9,14 @@ namespace GSqlQuery
     {
         private static DataTable CreateTable(ClassOptions classOption)
         {
-            DataTable dataTable = new DataTable(classOption.Table.Name);
-            foreach (PropertyOptions property in classOption.PropertyOptions)
+            DataTable dataTable = new DataTable(classOption.FormatTableName.Table.Name);
+            foreach (KeyValuePair<string, PropertyOptions> property in classOption.PropertyOptions)
             {
                 DataColumn dataColumn = new DataColumn
                 {
-                    DataType = Nullable.GetUnderlyingType(property.PropertyInfo.PropertyType) ?? property.PropertyInfo.PropertyType,
-                    ColumnName = property.ColumnAttribute.Name,
-                    AutoIncrement = property.ColumnAttribute.IsAutoIncrementing
+                    DataType = Nullable.GetUnderlyingType(property.Value.PropertyInfo.PropertyType) ?? property.Value.PropertyInfo.PropertyType,
+                    ColumnName = property.Value.ColumnAttribute.Name,
+                    AutoIncrement = property.Value.ColumnAttribute.IsAutoIncrementing
                 };
                 dataTable.Columns.Add(dataColumn);
             }
@@ -39,9 +39,9 @@ namespace GSqlQuery
             {
                 DataRow row = dataTable.NewRow();
 
-                foreach (PropertyOptions property in classOption.PropertyOptions)
+                foreach (KeyValuePair<string, PropertyOptions> property in classOption.PropertyOptions)
                 {
-                    row[property.ColumnAttribute.Name] = property.PropertyInfo.GetValue(val) ?? DBNull.Value;
+                    row[property.Value.ColumnAttribute.Name] = property.Value.PropertyInfo.GetValue(val) ?? DBNull.Value;
                 }
                 dataTable.Rows.Add(row);
             }

@@ -1,8 +1,8 @@
 ﻿using GSqlQuery.Extensions;
+using GSqlQuery.Queries;
 using GSqlQuery.Runner.Queries;
 using GSqlQuery.Runner.Test.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using Xunit;
 
@@ -18,8 +18,8 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             _connectionOptions = new ConnectionOptions<IDbConnection>(new TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock());
             _equal = new Data.SearchCriteria(new DefaultFormats(), new TableAttribute("name"), new ColumnAttribute("column"));
-            var columsn = ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create });
-            _selectQueryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(columsn, _connectionOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            _selectQueryBuilder = new SelectQueryBuilder<Test1, IDbConnection>(dynamicQuery, _connectionOptions);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = query.BuildCriteria();
+            var criteria = query.Create();
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }
@@ -55,7 +55,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_with_expression_SelectQuery()
         {
             AndOrBase<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_selectQueryBuilder, _connectionOptions);
-            var andOr = GSqlQueryExtension.GetAndOr(where, x => x.Id);
+            var andOr = where.AndOr;
             Assert.NotNull(andOr);
         }
 
@@ -63,7 +63,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Throw_exception_if_expression_is_null_with_expression_SelectQuery()
         {
             AndOrBase<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = null;
-            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where, x => x.Id));
+            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.Validate(where, x => x.Id));
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_SelectQuery()
         {
             AndOrBase<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_selectQueryBuilder, _connectionOptions);
-            IAndOr<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> andOr = GSqlQueryExtension.GetAndOr(where);
+            IAndOr<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> andOr =where.AndOr;
             Assert.NotNull(andOr);
         }
     }

@@ -1,7 +1,8 @@
 ﻿using GSqlQuery.Runner.Test.Models;
+using GSqlQuery.SearchCriteria;
 using System;
 using System.Data;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -10,30 +11,27 @@ namespace GSqlQuery.Runner.Test.Queries
 {
     public class SelectQueryTest
     {
-        private readonly ColumnAttribute _columnAttribute;
-        private readonly TableAttribute _tableAttribute;
-        private readonly Data.SearchCriteria _equal;
+        private readonly Equal<Test1, int> _equal;
         private readonly IFormats _formats;
         private readonly ClassOptions _classOptions;
         private readonly ConnectionOptions<IDbConnection> _connectionOptions;
         private readonly ConnectionOptions<IDbConnection> _connectionOptionsAsync;
+        private uint _parameterId = 0;
 
         public SelectQueryTest()
         {
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.First(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _tableAttribute = _classOptions.Table;
-            _equal = new Data.SearchCriteria(_formats, _tableAttribute, _columnAttribute);
+            Expression<Func<Test1, int>> expression = (x) => x.Id;
+            _equal = new Equal<Test1, int>(_classOptions, new DefaultFormats(), 1, null, ref expression);
             _formats = new TestFormats();
             _connectionOptions = new ConnectionOptions<IDbConnection>(_formats, LoadGSqlQueryOptions.GetDatabaseManagmentMock());
             _connectionOptionsAsync = new ConnectionOptions<IDbConnection>(_formats, LoadGSqlQueryOptions.GetDatabaseManagmentMockAsync());
         }
 
         [Fact]
-        public void Properties_cannot_be_null2()
+        public void Properties_cannot_be_null()
         {
-            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("query", _classOptions.PropertyOptions,
-                new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _connectionOptions);
+            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("query", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptions);
 
             Assert.NotNull(query);
             Assert.NotNull(query.Text);
@@ -52,8 +50,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_execute_the_query()
         {
             SelectQuery<Test1, IDbConnection> query =
-                new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.PropertyOptions,
-                new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _connectionOptions);
+                new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptions);
 
             var result = query.Execute();
 
@@ -65,16 +62,14 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Throw_exception_if_connection_is_null()
         {
-            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
-                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _connectionOptions);
+            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptions);
             Assert.Throws<ArgumentNullException>(() => query.Execute(null));
         }
 
         [Fact]
         public void Should_execute_the_query1()
         {
-            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
-                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _connectionOptions);
+            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptions);
             var result = query.Execute(LoadGSqlQueryOptions.GetIDbConnection());
 
             Assert.NotNull(result);
@@ -86,8 +81,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public async Task Should_executeAsync_the_query()
         {
             SelectQuery<Test1, IDbConnection> query =
-                new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.PropertyOptions,
-                new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+                new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptionsAsync);
 
             var result = await query.ExecuteAsync(CancellationToken.None);
 
@@ -99,16 +93,14 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public async Task Throw_exception_if_connection_is_null_Async()
         {
-            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
-                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptionsAsync);
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await query.ExecuteAsync(null, CancellationToken.None));
         }
 
         [Fact]
         public async Task Should_executeAsync_the_query1()
         {
-            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];",
-                _classOptions.PropertyOptions, new CriteriaDetail[] { _equal.GetCriteria(_formats, _classOptions.PropertyOptions) }, _connectionOptionsAsync);
+            SelectQuery<Test1, IDbConnection> query = new SelectQuery<Test1, IDbConnection>("SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];", _classOptions.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptionsAsync);
             var result = await query.ExecuteAsync(LoadGSqlQueryOptions.GetIDbConnection(), CancellationToken.None);
 
             Assert.NotNull(result);

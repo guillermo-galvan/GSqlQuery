@@ -1,6 +1,6 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.Runner.Queries
 {
@@ -9,18 +9,17 @@ namespace GSqlQuery.Runner.Queries
         ISet<T, UpdateQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>
         where T : class
     {
-        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object entity, ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla) :
-             base(connectionOptions, entity, classOptionsTupla)
+        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, object entity, Expression expression) :
+             base(connectionOptions, entity, expression)
         { }
 
-        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, ClassOptionsTupla<MemberInfo> classOptionsTupla, object value) :
-            base(connectionOptions, classOptionsTupla, value)
+        public UpdateQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions, Expression expression, object value) :
+            base(connectionOptions, expression, value)
         { }
 
-        public override UpdateQuery<T, TDbConnection> Build()
+        public override UpdateQuery<T, TDbConnection> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> queryOptions)
         {
-            string text = CreateQuery();
-            return new UpdateQuery<T, TDbConnection>(text, Columns, _criteria, QueryOptions);
+            return new UpdateQuery<T, TDbConnection>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

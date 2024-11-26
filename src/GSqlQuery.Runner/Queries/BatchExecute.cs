@@ -14,7 +14,7 @@ namespace GSqlQuery
         private readonly Queue<IQuery> _queries;
         private readonly Queue<IDataParameter> _parameters;
         private readonly StringBuilder _queryBuilder;
-        private readonly Queue<PropertyOptions> _columns;
+        private readonly List<KeyValuePair<string, PropertyOptions>> _columns;
 
         public ConnectionOptions<TDbConnection> DatabaseManagement => _connectionOptions;
 
@@ -26,7 +26,7 @@ namespace GSqlQuery
             _queries = new Queue<IQuery>();
             _parameters = new Queue<IDataParameter>();
             _queryBuilder = new StringBuilder();
-            _columns = new Queue<PropertyOptions>();
+            _columns = [];
         }
 
         public BatchExecute<TDbConnection> Add<T>(Func<ConnectionOptions<TDbConnection>, IQuery<T, ConnectionOptions<TDbConnection>>> expression)
@@ -42,9 +42,9 @@ namespace GSqlQuery
 
             _queryBuilder.Append(query.Text);
 
-            foreach (PropertyOptions item in query.Columns)
+            foreach (KeyValuePair<string, PropertyOptions> item in query.Columns)
             {
-                _columns.Enqueue(item);
+                _columns.Add(item);
             }
 
             _queries.Enqueue(query);
@@ -53,25 +53,25 @@ namespace GSqlQuery
 
         public int Execute()
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQuery(query, _parameters);
         }
 
         public int Execute(TDbConnection connection)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQuery(connection, query, _parameters);
         }
 
         public Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(query, _parameters, cancellationToken);
         }
 
         public Task<int> ExecuteAsync(TDbConnection connection, CancellationToken cancellationToken = default)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _columns, null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(connection, query, _parameters, cancellationToken);
         }
     }

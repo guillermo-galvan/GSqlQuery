@@ -1,9 +1,7 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Runner.Queries;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery
 {
@@ -11,21 +9,19 @@ namespace GSqlQuery
         where T : class
     {
         public static Runner.IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection>
-           Select<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
+           Select<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Func<T, TProperties> func)
         {
             if (connectionOptions == null)
             {
                 throw new ArgumentNullException(nameof(connectionOptions), ErrorMessages.ParameterNotNull);
             }
 
-            if (expression == null)
+            if (func == null)
             {
-                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+                throw new ArgumentNullException(nameof(func), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Read, options);
-            return new SelectQueryBuilder<T, TDbConnection>(options, connectionOptions);
+            return new SelectQueryBuilder<T, TDbConnection>(new DynamicQuery(typeof(T), typeof(TProperties)), connectionOptions);
         }
 
         public static Runner.IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, TDbConnection> Select<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
@@ -67,11 +63,11 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(connectionOptions), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions, options, value);
+
+            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions, expression, value);
         }
 
-        public ISet<T, UpdateQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
+        public ISetByEntity<T, UpdateQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> Update<TProperties, TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions, Expression<Func<T, TProperties>> expression)
         {
             if (connectionOptions == null)
             {
@@ -83,9 +79,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Update, options);
-            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions, this, options);
+            return new UpdateQueryBuilder<T, TDbConnection>(connectionOptions, this, expression);
         }
 
         public static IQueryBuilderWithWhere<T, DeleteQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> Delete<TDbConnection>(ConnectionOptions<TDbConnection> connectionOptions)
