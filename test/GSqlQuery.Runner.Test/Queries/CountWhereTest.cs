@@ -58,6 +58,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_with_expression_CountQuery()
         {
             AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_connectionCountQueryBuilder, _connectionOptions);
+            where.Add(_equal);
             var andOr = where.AndOr; 
             Assert.NotNull(andOr);
         }
@@ -89,6 +90,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where =
                 new AndOrBase<Test1, CountQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_connectionCountQueryBuilder, _connectionOptions);
+            where.Add(_equal);
             var andOr = where.AndOr; 
             Assert.NotNull(andOr);
         }

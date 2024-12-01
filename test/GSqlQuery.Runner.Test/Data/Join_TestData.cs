@@ -28,12 +28,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions<IDbConnection>(new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Id as Test3_Id,Test3.Name as Test3_Name,TableName.Create as Test6_Create FROM Test3 INNER JOIN TableName ON Test3.Id = TableName.Id;"
+                new ConnectionOptions<IDbConnection>(new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Name as Test3_Name,Test3.Id as Test3_Id,TableName.Create as Test6_Create FROM Test3 INNER JOIN TableName ON Test3.Id = TableName.Id;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Id] as [Test3_Id],[Test3].[Name] as [Test3_Name],[TableName].[Create] as [Test6_Create] FROM [Test3] INNER JOIN [TableName] ON [Test3].[Id] = [TableName].[Id];"
+                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Name] as [Test3_Name],[Test3].[Id] as [Test3_Id],[TableName].[Create] as [Test6_Create] FROM [Test3] INNER JOIN [TableName] ON [Test3].[Id] = [TableName].[Id];"
             };
         }
 
@@ -82,12 +82,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Id as Test3_Id,Test3.Name as Test3_Name,TableName.Create as Test6_Create FROM Test3 LEFT JOIN TableName ON Test3.Id = TableName.Id;"
+                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Name as Test3_Name,Test3.Id as Test3_Id,TableName.Create as Test6_Create FROM Test3 LEFT JOIN TableName ON Test3.Id = TableName.Id;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Id] as [Test3_Id],[Test3].[Name] as [Test3_Name],[TableName].[Create] as [Test6_Create] FROM [Test3] LEFT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id];"
+                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Name] as [Test3_Name],[Test3].[Id] as [Test3_Id],[TableName].[Create] as [Test6_Create] FROM [Test3] LEFT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id];"
             };
         }
 
@@ -136,12 +136,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Id as Test3_Id,Test3.Name as Test3_Name,TableName.Create as Test6_Create FROM Test3 RIGHT JOIN TableName ON Test3.Id = TableName.Id;"
+                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Name as Test3_Name,Test3.Id as Test3_Id,TableName.Create as Test6_Create FROM Test3 RIGHT JOIN TableName ON Test3.Id = TableName.Id;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Id] as [Test3_Id],[Test3].[Name] as [Test3_Name],[TableName].[Create] as [Test6_Create] FROM [Test3] RIGHT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id];"
+                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Name] as [Test3_Name],[Test3].[Id] as [Test3_Id],[TableName].[Create] as [Test6_Create] FROM [Test3] RIGHT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id];"
             };
         }
 
@@ -262,12 +262,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Id as Test3_Id,Test3.Name as Test3_Name,TableName.Create as Test6_Create,Test1.IsTest as Test1_IsTest FROM Test3 LEFT JOIN TableName ON Test3.Id = TableName.Id LEFT JOIN Test1 ON TableName.Id = Test1.Id;"
+                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Name as Test3_Name,Test3.Id as Test3_Id,TableName.Create as Test6_Create,Test1.IsTest as Test1_IsTest FROM Test3 LEFT JOIN TableName ON Test3.Id = TableName.Id LEFT JOIN Test1 ON TableName.Id = Test1.Id;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Id] as [Test3_Id],[Test3].[Name] as [Test3_Name],[TableName].[Create] as [Test6_Create],[Test1].[IsTest] as [Test1_IsTest] FROM [Test3] LEFT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id] LEFT JOIN [Test1] ON [TableName].[Id] = [Test1].[Id];"
+                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Name] as [Test3_Name],[Test3].[Id] as [Test3_Id],[TableName].[Create] as [Test6_Create],[Test1].[IsTest] as [Test1_IsTest] FROM [Test3] LEFT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id] LEFT JOIN [Test1] ON [TableName].[Id] = [Test1].[Id];"
             };
         }
 
@@ -316,12 +316,12 @@ namespace GSqlQuery.Runner.Test.Data
         {
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Id as Test3_Id,Test3.Name as Test3_Name,TableName.Create as Test6_Create,Test1.IsTest as Test1_IsTest FROM Test3 RIGHT JOIN TableName ON Test3.Id = TableName.Id RIGHT JOIN Test1 ON TableName.Id = Test1.Id;"
+                new ConnectionOptions < IDbConnection > (new DefaultFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT Test3.Name as Test3_Name,Test3.Id as Test3_Id,TableName.Create as Test6_Create,Test1.IsTest as Test1_IsTest FROM Test3 RIGHT JOIN TableName ON Test3.Id = TableName.Id RIGHT JOIN Test1 ON TableName.Id = Test1.Id;"
             };
 
             yield return new object[]
             {
-                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Id] as [Test3_Id],[Test3].[Name] as [Test3_Name],[TableName].[Create] as [Test6_Create],[Test1].[IsTest] as [Test1_IsTest] FROM [Test3] RIGHT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id] RIGHT JOIN [Test1] ON [TableName].[Id] = [Test1].[Id];"
+                new ConnectionOptions < IDbConnection > (new Models.TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock()),"SELECT [Test3].[Name] as [Test3_Name],[Test3].[Id] as [Test3_Id],[TableName].[Create] as [Test6_Create],[Test1].[IsTest] as [Test1_IsTest] FROM [Test3] RIGHT JOIN [TableName] ON [Test3].[Id] = [TableName].[Id] RIGHT JOIN [Test1] ON [TableName].[Id] = [Test1].[Id];"
             };
         }
 

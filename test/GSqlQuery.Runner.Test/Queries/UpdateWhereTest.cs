@@ -58,6 +58,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_with_expression_UpdateQuery()
         {
             AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_updateQueryBuilder, _connectionOptions);
+            where.Add(_equal);
             var andOr = where.AndOr;
             Assert.NotNull(andOr);
         }
@@ -95,6 +96,7 @@ namespace GSqlQuery.Runner.Test.Queries
         public void Should_get_the_IAndOr_interface_UpdateQuery()
         {
             AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, UpdateQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_updateQueryBuilder, _connectionOptions);
+            where.Add(_equal);
             var andOr = where.AndOr;
             Assert.NotNull(andOr);
         }

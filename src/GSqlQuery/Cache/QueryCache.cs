@@ -29,5 +29,10 @@ namespace GSqlQuery.Cache
         {
             return _queryCache.TryRemove(queryIdentity, out value);
         }
+
+        internal void Clear()
+        {
+            _queryCache.Clear();
+        }
     }
 }

@@ -85,7 +85,7 @@ namespace GSqlQuery.Extensions
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
-            SelectQueryIdentity identity = new SelectQueryIdentity(typeof(T), queryOptions.Formats.GetType(), dynamicQuery?.Properties, andOr);
+            SelectQueryIdentity identity = new SelectQueryIdentity(typeof(T), queryOptions.GetType(), queryOptions.Formats.GetType(), dynamicQuery?.Properties, andOr);
 
             return TryAddQueryCache<T, TReturn, TQueryOptions>(identity, identity.SearchCriteriaTypes, andOr, createQuery, getQuery);
         }
@@ -112,7 +112,7 @@ namespace GSqlQuery.Extensions
                 return createQuery();
             }
 
-            OrderByQueryIdentity identity = new OrderByQueryIdentity(typeof(T), QueryType.Read, queryOptions.Formats.GetType(), queryBuilderWithWhere?.GetType(), andOr?.GetType(), andOr, columnsOrders, dynamicColumns);
+            OrderByQueryIdentity identity = new OrderByQueryIdentity(typeof(T), QueryType.Read, queryOptions.GetType(), queryOptions.Formats.GetType(), queryBuilderWithWhere?.GetType(), andOr?.GetType(), andOr, columnsOrders, dynamicColumns);
 
             return TryAddQueryCache<T, TReturn, TQueryOptions>(identity, identity.SearchCriteriaTypes, andOr, createQuery, getQuery);
         }
@@ -139,7 +139,7 @@ namespace GSqlQuery.Extensions
                 return createQuery();
             }
 
-            CountIdentify identity = new CountIdentify(typeof(T), QueryType.Read, queryOptions.Formats.GetType(), queryBuilder?.GetType(), andOr?.GetType(), andOr, dynamicColumns);
+            CountIdentify identity = new CountIdentify(typeof(T), QueryType.Read, queryOptions.GetType(), queryOptions.Formats.GetType(), queryBuilder?.GetType(), andOr?.GetType(), andOr, dynamicColumns);
 
             return TryAddQueryCache<T, TReturn, TQueryOptions>(identity, identity.SearchCriteriaTypes, andOr, createQuery, getQuery);
         }
@@ -149,7 +149,7 @@ namespace GSqlQuery.Extensions
             where TReturn : IQuery<T, TQueryOptions>
             where TQueryOptions : QueryOptions
         {
-            JoinQueryIdentity identity = new JoinQueryIdentity(typeof(T), QueryType.Join, queryOptions.Formats.GetType(), joinInfos, andOr);
+            JoinQueryIdentity identity = new JoinQueryIdentity(typeof(T), QueryType.Join, queryOptions.GetType(), queryOptions.Formats.GetType(), joinInfos, andOr);
 
             return TryAddQueryCache<T, TReturn, TQueryOptions>(identity, identity.SearchCriteriaTypes, andOr, createQuery, getQuery);
         }
@@ -159,7 +159,7 @@ namespace GSqlQuery.Extensions
            where TReturn : IQuery<T, TQueryOptions>
            where TQueryOptions : QueryOptions
         {
-            DeleteQueryIdentity identity = new DeleteQueryIdentity(typeof(T), queryOptions.Formats.GetType(), entity is not null, andOr);
+            DeleteQueryIdentity identity = new DeleteQueryIdentity(typeof(T), queryOptions.GetType(), queryOptions.Formats.GetType(), entity is not null, andOr);
 
             if (entity is not null)
             {
@@ -176,7 +176,7 @@ namespace GSqlQuery.Extensions
           where TReturn : IQuery<T, TQueryOptions>
           where TQueryOptions : QueryOptions
         {
-            InsertQueryIdentity identity = new InsertQueryIdentity(typeof(T), queryOptions.Formats.GetType());
+            InsertQueryIdentity identity = new InsertQueryIdentity(typeof(T), queryOptions.GetType(), queryOptions.Formats.GetType());
 
             return TryAddQueryCacheByEntity<T, TReturn, TQueryOptions>(identity, entity, createQuery, getQuery);
 
@@ -192,7 +192,7 @@ namespace GSqlQuery.Extensions
                 return createQuery();
             }
 
-            UpdateQueryIdentity identity = new UpdateQueryIdentity(typeof(T), queryOptions.Formats.GetType(), expressions, andOr);
+            UpdateQueryIdentity identity = new UpdateQueryIdentity(typeof(T), queryOptions.GetType(), queryOptions.Formats.GetType(), expressions, andOr);
 
             if (QueryCache.Cache.TryGetValue(identity, out IQuery query))
             {

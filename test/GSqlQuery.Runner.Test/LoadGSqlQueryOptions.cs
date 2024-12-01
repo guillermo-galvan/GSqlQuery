@@ -27,7 +27,7 @@ namespace GSqlQuery.Runner.Test
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((q, p, pa) =>
+                .Returns<IQuery, PropertyOptionsCollection, IEnumerable<IDataParameter>>((q, p, pa) =>
                 {
 
                     if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];" ||
@@ -40,7 +40,7 @@ namespace GSqlQuery.Runner.Test
                 });
 
             mock.Setup(x => x.ExecuteReader<Test1>(It.IsAny<IDbConnection>(), It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
-                .Returns<IDbConnection, IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>>((c, q, p, pa) =>
+                .Returns<IDbConnection, IQuery, PropertyOptionsCollection, IEnumerable<IDataParameter>>((c, q, p, pa) =>
                 {
 
                     if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];" ||
@@ -79,7 +79,6 @@ namespace GSqlQuery.Runner.Test
             mock.Setup(x => x.ExecuteScalar<object>(It.IsAny<CountQuery<Test1, IDbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<CountQuery<Test1, IDbConnection>, IEnumerable<IDataParameter>>((q, pa) =>
                 {
-
                     if (q.Text.Contains("SELECT COUNT([Test1].[Id]) FROM [Test1];"))
                     {
                         return 1;
@@ -91,7 +90,6 @@ namespace GSqlQuery.Runner.Test
             mock.Setup(x => x.ExecuteScalar<object>(It.IsAny<IDbConnection>(), It.IsAny<CountQuery<Test1, IDbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                .Returns<IDbConnection, CountQuery<Test1, IDbConnection>, IEnumerable<IDataParameter>>((c, q, pa) =>
                {
-
                    if (q.Text.Contains("SELECT COUNT([Test1].[Id]) FROM [Test1];"))
                    {
                        return 1;
@@ -103,7 +101,6 @@ namespace GSqlQuery.Runner.Test
             mock.Setup(x => x.ExecuteScalar<object>(It.IsAny<CountQuery<Test3, IDbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<CountQuery<Test3, IDbConnection>, IEnumerable<IDataParameter>>((q, pa) =>
                 {
-
                     if (q.Text.Contains("SELECT COUNT(TableName.Id) FROM TableName;"))
                     {
                         return 1;
@@ -115,7 +112,6 @@ namespace GSqlQuery.Runner.Test
             mock.Setup(x => x.ExecuteScalar<object>(It.IsAny<IDbConnection>(), It.IsAny<CountQuery<Test3, IDbConnection>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                .Returns<IDbConnection, CountQuery<Test3, IDbConnection>, IEnumerable<IDataParameter>>((c, q, pa) =>
                {
-
                    if (q.Text.Contains("SELECT COUNT([TableName].[Id]) FROM [TableName];"))
                    {
                        return 1;
@@ -127,7 +123,6 @@ namespace GSqlQuery.Runner.Test
             mock.Setup(x => x.ExecuteNonQuery(It.IsAny<InsertQuery<Test6>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<InsertQuery<Test6>, IEnumerable<IDataParameter>>((q, pa) =>
                 {
-
                     if (q.Text.Contains("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])"))
                     {
                         return 1;
@@ -139,7 +134,6 @@ namespace GSqlQuery.Runner.Test
             mock.Setup(x => x.ExecuteNonQuery(It.IsAny<IDbConnection>(), It.IsAny<InsertQuery<Test6>>(), It.IsAny<IEnumerable<IDataParameter>>()))
                 .Returns<IDbConnection, InsertQuery<Test6>, IEnumerable<IDataParameter>>((c, q, pa) =>
                 {
-
                     if (q.Text.Contains("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])"))
                     {
                         return 1;
@@ -207,7 +201,7 @@ namespace GSqlQuery.Runner.Test
 
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.ExecuteReaderAsync<Test1>(It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
-                .Returns<IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>, CancellationToken>((q, p, pa, t) =>
+                .Returns<IQuery, PropertyOptionsCollection, IEnumerable<IDataParameter>, CancellationToken>((q, p, pa, t) =>
                 {
 
                     if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];" ||
@@ -220,7 +214,7 @@ namespace GSqlQuery.Runner.Test
                 });
 
             mock.Setup(x => x.ExecuteReaderAsync<Test1>(It.IsAny<IDbConnection>(), It.IsAny<IQuery<Test1>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
-                .Returns<IDbConnection, IQuery, IEnumerable<PropertyOptions>, IEnumerable<IDataParameter>, CancellationToken>((c, q, p, pa, t) =>
+                .Returns<IDbConnection, IQuery, PropertyOptionsCollection, IEnumerable<IDataParameter>, CancellationToken>((c, q, p, pa, t) =>
                 {
 
                     if (q.Text == "SELECT [Test1].[Id],[Test1].[Name],[Test1].[Create],[Test1].[IsTest] FROM [Test1];" ||

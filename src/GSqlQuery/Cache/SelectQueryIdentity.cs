@@ -12,7 +12,7 @@ namespace GSqlQuery.Cache
 
         public Type Properties { get; }
 
-        public SelectQueryIdentity(Type entity, Type format, Type properties, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, QueryType.Read, format)
+        public SelectQueryIdentity(Type entity, Type queryOptions, Type format, Type properties, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, QueryType.Read, queryOptions, format)
         {
             Properties = properties;
 
@@ -29,6 +29,7 @@ namespace GSqlQuery.Cache
                 _hashCode = 17;
                 _hashCode = _hashCode * 23 + Entity.GetHashCode();
                 _hashCode = _hashCode * 23 + QueryType.GetHashCode();
+                _hashCode = _hashCode * 23 + QueryOptions.GetHashCode();
                 _hashCode = _hashCode * 23 + Format.GetHashCode();
                 _hashCode = _hashCode * 23 + (Properties?.GetHashCode() ?? 0);
                 foreach (var type in _searchCriteriaTypes)
@@ -78,9 +79,7 @@ namespace GSqlQuery.Cache
                 if (ReferenceEquals(this, selectQueryIdentity)) return true;
                 if (other is null) return false;
 
-                return QueryType == selectQueryIdentity.QueryType
-                    && Entity == selectQueryIdentity.Entity
-                    && Format == selectQueryIdentity.Format
+                return EqualsBase(selectQueryIdentity) 
                     && PropertiesValidation(selectQueryIdentity)
                     && SearchCriteriaTypesValidation(selectQueryIdentity);
             }

@@ -22,7 +22,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_count_query2()
         {
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = Test3.Select(_connectionOptions, x => x.Ids);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = Test3.Select(_connectionOptions, x => new { x.Ids });
             var result = queryBuilder.Count();
             var query = result.Build();
             Assert.NotNull(query.Text);

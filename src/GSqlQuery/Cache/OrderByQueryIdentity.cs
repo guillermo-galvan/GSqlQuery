@@ -28,7 +28,7 @@ namespace GSqlQuery.Cache
         public Type PropertiesColumns { get; }
 
         // agrega properties select
-        public OrderByQueryIdentity(Type entity, QueryType queryType, Type format, Type queryBuilderType, Type iAndOrType, ISearchCriteriaBuilder searchCriteriaBuilder, List<ColumnsOrderBy> columnsOrders, IDynamicColumns dynamicColumns) : base(entity, queryType, format)
+        public OrderByQueryIdentity(Type entity, QueryType queryType, Type queryOptions, Type format, Type queryBuilderType, Type iAndOrType, ISearchCriteriaBuilder searchCriteriaBuilder, List<ColumnsOrderBy> columnsOrders, IDynamicColumns dynamicColumns) : base(entity, queryType, queryOptions, format)
         {
             IQueryBuilderType = queryBuilderType;
             IAndOrType = iAndOrType;
@@ -52,6 +52,7 @@ namespace GSqlQuery.Cache
                 _hashCode = 17;
                 _hashCode = _hashCode * 23 + Entity.GetHashCode();
                 _hashCode = _hashCode * 23 + QueryType.GetHashCode();
+                _hashCode = _hashCode * 23 + QueryOptions.GetHashCode();
                 _hashCode = _hashCode * 23 + Format.GetHashCode();
                 _hashCode = _hashCode * 23 + (IQueryBuilderType?.GetHashCode() ?? 0);
                 _hashCode = _hashCode * 23 + (IAndOrType?.GetHashCode() ?? 0);
@@ -125,9 +126,7 @@ namespace GSqlQuery.Cache
         {
             if (other is OrderByQueryIdentity orderByQueryIdentity)
             {
-               return Entity == orderByQueryIdentity.Entity &&
-                QueryType == orderByQueryIdentity.QueryType &&
-                Format == orderByQueryIdentity.Format &&
+               return EqualsBase(orderByQueryIdentity) &&
                 IQueryBuilderType == orderByQueryIdentity.IQueryBuilderType &&
                 IAndOrType == orderByQueryIdentity.IAndOrType &&
                 SearchCriteriaTypesValidation(orderByQueryIdentity) &&

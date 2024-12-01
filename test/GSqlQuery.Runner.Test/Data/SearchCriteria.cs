@@ -1,4 +1,5 @@
-﻿using GSqlQuery.SearchCriteria;
+﻿using GSqlQuery.Runner.Test.Models;
+using GSqlQuery.SearchCriteria;
 using System;
 using System.Collections.Generic;
 
@@ -25,8 +26,9 @@ namespace GSqlQuery.Runner.Test.Data
 
         public CriteriaDetailCollection GetCriteria(ref uint parameterId)
         {
+            var tmp = ClassOptionsFactory.GetClassOptions(typeof(Test1));
             CriteriaDetails criterion = new CriteriaDetails("SELECT COUNT([Test1].[Id]) FROM [Test1];", []);
-            return new CriteriaDetailCollection(this, criterion.Criterion, null, criterion.Parameters);
+            return new CriteriaDetailCollection(this, criterion.Criterion, tmp.PropertyOptions.First(), criterion.Parameters);
         }
 
         public CriteriaDetailCollection ReplaceValue(CriteriaDetailCollection criteriaDetailCollection)

@@ -15,7 +15,7 @@ namespace GSqlQuery.Cache
 
         public List<Type> SearchCriteriaTypes => _searchCriteriaTypes;
 
-        public UpdateQueryIdentity(Type entity, Type format, IEnumerable<Expression> expressions, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, QueryType.Update, format)
+        public UpdateQueryIdentity(Type entity, Type queryOptions, Type format, IEnumerable<Expression> expressions, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, QueryType.Update, queryOptions, format)
         {
             Expressions = new List<Expression>(expressions);
 
@@ -32,6 +32,7 @@ namespace GSqlQuery.Cache
                 _hashCode = 17;
                 _hashCode = _hashCode * 23 + Entity.GetHashCode();
                 _hashCode = _hashCode * 23 + QueryType.GetHashCode();
+                _hashCode = _hashCode * 23 + QueryOptions.GetHashCode();
                 _hashCode = _hashCode * 23 + Format.GetHashCode();
 
                 foreach (Type type in _searchCriteriaTypes)
@@ -81,9 +82,7 @@ namespace GSqlQuery.Cache
         {
             if (other is UpdateQueryIdentity updateQueryIdentity)
             {
-                return Entity == updateQueryIdentity.Entity
-                    && QueryType == updateQueryIdentity.QueryType
-                    && Format == updateQueryIdentity.Format
+                return EqualsBase(updateQueryIdentity)
                     && SearchCriteriaTypesValidation(updateQueryIdentity)
                     && ExpressionsValidation(updateQueryIdentity);
             }

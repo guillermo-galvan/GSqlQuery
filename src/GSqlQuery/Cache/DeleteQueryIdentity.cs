@@ -12,7 +12,7 @@ namespace GSqlQuery.Cache
 
         public List<Type> SearchCriteriaTypes => _searchCriteriaTypes;
 
-        public DeleteQueryIdentity(Type entity, Type format, bool isEntityValue, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, QueryType.Delete, format)
+        public DeleteQueryIdentity(Type entity, Type queryOptions, Type format, bool isEntityValue, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, QueryType.Delete, queryOptions, format)
         {
             IsEntityValue = isEntityValue;
 
@@ -29,6 +29,7 @@ namespace GSqlQuery.Cache
                 _hashCode = 17;
                 _hashCode = _hashCode * 23 + Entity.GetHashCode();
                 _hashCode = _hashCode * 23 + QueryType.GetHashCode();
+                _hashCode = _hashCode * 23 + QueryOptions.GetHashCode();
                 _hashCode = _hashCode * 23 + Format.GetHashCode();
                 _hashCode = _hashCode * 23 + IsEntityValue.GetHashCode();
                 foreach (var type in _searchCriteriaTypes)
@@ -63,9 +64,7 @@ namespace GSqlQuery.Cache
                 if (ReferenceEquals(this, deleteQueryIdentity)) return true;
                 if (other is null) return false;
 
-                return QueryType == deleteQueryIdentity.QueryType
-                    && Entity == deleteQueryIdentity.Entity
-                    && Format == deleteQueryIdentity.Format
+                return EqualsBase(deleteQueryIdentity)
                     && IsEntityValue == deleteQueryIdentity.IsEntityValue
                     && SearchCriteriaTypesValidation(deleteQueryIdentity);
             }

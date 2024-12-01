@@ -104,7 +104,7 @@ namespace GSqlQuery.Cache
 
         public List<JoinPropertiesType> JoinPropertiesTypes => _joinPropertiesType;
 
-        public JoinQueryIdentity(Type entity, QueryType queryType, Type format, List<JoinInfo> joinInfos, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, queryType, format)
+        public JoinQueryIdentity(Type entity, QueryType queryType, Type queryOptions, Type format, List<JoinInfo> joinInfos, ISearchCriteriaBuilder searchCriteriaBuilder) : base(entity, queryType, queryOptions, format)
         {
             if (searchCriteriaBuilder != null)
             {
@@ -138,6 +138,7 @@ namespace GSqlQuery.Cache
                 _hashCode = 17;
                 _hashCode = _hashCode * 23 + Entity.GetHashCode();
                 _hashCode = _hashCode * 23 + QueryType.GetHashCode();
+                _hashCode = _hashCode * 23 + QueryOptions.GetHashCode();
                 _hashCode = _hashCode * 23 + Format.GetHashCode();
                 foreach (Type type in _searchCriteriaTypes)
                 {
@@ -186,9 +187,7 @@ namespace GSqlQuery.Cache
         {
             if (other is JoinQueryIdentity joinQueryIdentity)
             {
-                return Entity == joinQueryIdentity.Entity 
-                    && QueryType == joinQueryIdentity.QueryType 
-                    && Format == joinQueryIdentity.Format 
+                return EqualsBase(joinQueryIdentity)
                     && JoinPropertiesTypesValidation(joinQueryIdentity) 
                     && SearchCriteriaTypesValidation(joinQueryIdentity);
             }

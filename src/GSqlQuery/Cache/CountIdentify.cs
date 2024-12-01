@@ -17,8 +17,8 @@ namespace GSqlQuery.Cache
 
         public Type PropertiesColumns { get; }
 
-        public CountIdentify(Type entity, QueryType queryType, Type format, Type queryBuilderType, Type iAndOrType, ISearchCriteriaBuilder searchCriteriaBuilder,
-            IDynamicColumns dynamicColumns) : base(entity, queryType, format)
+        public CountIdentify(Type entity, QueryType queryType, Type queryOptions, Type format, Type queryBuilderType, Type iAndOrType, ISearchCriteriaBuilder searchCriteriaBuilder,
+            IDynamicColumns dynamicColumns) : base(entity, queryType, queryOptions, format)
         {
             IQueryBuilderType = queryBuilderType;
             IAndOrType = iAndOrType;
@@ -37,6 +37,7 @@ namespace GSqlQuery.Cache
                 _hashCode = 17;
                 _hashCode = _hashCode * 23 + Entity.GetHashCode();
                 _hashCode = _hashCode * 23 + QueryType.GetHashCode();
+                _hashCode = _hashCode * 23 + QueryOptions.GetHashCode();
                 _hashCode = _hashCode * 23 + Format.GetHashCode();
                 _hashCode = _hashCode * 23 + (IQueryBuilderType?.GetHashCode() ?? 0);
                 _hashCode = _hashCode * 23 + (IAndOrType?.GetHashCode() ?? 0);
@@ -85,9 +86,7 @@ namespace GSqlQuery.Cache
         {
             if (other is CountIdentify countIdentify)
             {
-                return Entity == countIdentify.Entity &&
-                 QueryType == countIdentify.QueryType &&
-                 Format == countIdentify.Format &&
+                return EqualsBase(countIdentify) &&
                  IQueryBuilderType == countIdentify.IQueryBuilderType &&
                  IAndOrType == countIdentify.IAndOrType &&
                  SearchCriteriaTypesValidation(countIdentify) &&

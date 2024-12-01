@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,25 +54,25 @@ namespace GSqlQuery
 
         public int Execute()
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQuery(query, _parameters);
         }
 
         public int Execute(TDbConnection connection)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQuery(connection, query, _parameters);
         }
 
         public Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(query, _parameters, cancellationToken);
         }
 
         public Task<int> ExecuteAsync(TDbConnection connection, CancellationToken cancellationToken = default)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), null, new Cache.PropertyOptionsCollection(_columns), null);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
             return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(connection, query, _parameters, cancellationToken);
         }
     }

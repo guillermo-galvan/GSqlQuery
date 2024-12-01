@@ -40,7 +40,7 @@ namespace GSqlQuery.Runner.Test
         public void Throw_exception_if_property_is_not_selected()
         {
             ConnectionOptions<IDbConnection> connectionOptions = new ConnectionOptions<IDbConnection>(new TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock());
-            Assert.Throws<InvalidOperationException>(() => Test3.Select(connectionOptions, x => x));
+            Assert.Throws<InvalidOperationException>(() => Test3.Select(connectionOptions, x => x).Build());
         }
 
         [Theory]
@@ -574,11 +574,12 @@ namespace GSqlQuery.Runner.Test
         {
             Expression<Func<Test3, object>> expression = x => new { x.Ids };
 
-            IQueryBuilderWithWhere<Test3, SelectQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = Test3.Select(connectionOptions, x => x.Ids);
-            var countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            IQueryBuilderWithWhere<Test3, SelectQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = Test3.Select(connectionOptions, x => new { x.Ids });
+            var countQuery = queryBuilder.OrderBy(x => new { x.Names }, OrderBy.ASC).OrderBy(x => new { x.Creates }, OrderBy.DESC);
             Assert.NotNull(countQuery);
-            Assert.NotEmpty(countQuery.Build().Text);
-            Assert.Equal(query, countQuery.Build().Text);
+            var result = countQuery.Build();
+            Assert.NotEmpty(result.Text);
+            Assert.Equal(query, result.Text);
         }
 
         [Theory]
@@ -586,9 +587,11 @@ namespace GSqlQuery.Runner.Test
         public void Should_generate_some_properties_from_the_orderby_query(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             IQueryBuilderWithWhere<Test3, SelectQuery<Test3, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = Test3.Select(connectionOptions, x => new { x.Ids, x.Names, x.Creates });
-           var countQuery = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC);
+            var countQuery = queryBuilder.OrderBy(x => new { x.Names }, OrderBy.ASC).OrderBy(x => new { x.Creates }, OrderBy.DESC);
+            var result = countQuery.Build();
+
             Assert.NotNull(countQuery);
-            Assert.NotEmpty(countQuery.Build().Text);
+            Assert.NotEmpty(result.Text);
             Assert.Equal(query, countQuery.Build().Text);
         }
 
@@ -597,7 +600,7 @@ namespace GSqlQuery.Runner.Test
         public void Should_return_the_orderby_query_with_where(ConnectionOptions<IDbConnection> connectionOptions, string queryText)
         {
             var queryBuilder = Test3.Select(connectionOptions, x => new { x.Ids, x.Names, x.Creates }).Where().Equal(x => x.IsTests, true).AndEqual(x => x.Ids, 12);
-            var query = queryBuilder.OrderBy(x => x.Names, OrderBy.ASC).OrderBy(x => x.Creates, OrderBy.DESC).Build();
+            var query = queryBuilder.OrderBy(x => new { x.Names }, OrderBy.ASC).OrderBy(x => new { x.Creates }, OrderBy.DESC).Build();
             Assert.NotNull(query);
             Assert.NotEmpty(query.Text);
 
@@ -619,8 +622,8 @@ namespace GSqlQuery.Runner.Test
         {
             var result = Test3.Select(connectionOptions)
                               .InnerJoin<Test6>().Equal(x =>  x.Table1.Ids, x => x.Table2.Ids )
-                              .OrderBy(x => x.Table1.Creates, OrderBy.DESC)
-                              .OrderBy(x => x.Table2.Names, OrderBy.ASC)
+                              .OrderBy(x => new {x.Table1.Creates}, OrderBy.DESC)
+                              .OrderBy(x => new {x.Table2.Names}, OrderBy.ASC)
                               .Build();
 
             Assert.NotEmpty(result.Text);
