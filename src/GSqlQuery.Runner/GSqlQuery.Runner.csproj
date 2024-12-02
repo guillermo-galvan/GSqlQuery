@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;net462;net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net462;net8.0;net9.0</TargetFrameworks>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	  
 		<Description>Create queries from a class and add the execution </Description>
@@ -14,6 +14,14 @@
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<PackageIcon>logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0|AnyCPU'">
+    <WarningLevel>8</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0|AnyCPU'">
+    <WarningLevel>8</WarningLevel>
   </PropertyGroup>
 
 	<ItemGroup>

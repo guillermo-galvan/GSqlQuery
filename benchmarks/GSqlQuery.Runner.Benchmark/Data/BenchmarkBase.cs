@@ -5,8 +5,8 @@ using System.Data;
 
 namespace GSqlQuery.Runner.Benchmark.Data
 {
-    [SimpleJob(RuntimeMoniker.Net80, baseline: true)]
-    [SimpleJob(RuntimeMoniker.Net70)]
+    [SimpleJob(RuntimeMoniker.Net90, baseline: true)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     [SimpleJob(RuntimeMoniker.Net462)]
     public abstract class BenchmarkBase
     {

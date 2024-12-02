@@ -1,12 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0</TargetFrameworks>
+		<TargetFrameworks>net9.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 
 		<SignAssembly>True</SignAssembly>
 
 		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\..\src\GsqlQuery_key.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0|AnyCPU'">
+	  <WarningLevel>8</WarningLevel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0|AnyCPU'">
+	  <WarningLevel>8</WarningLevel>
 	</PropertyGroup>
 
 	<ItemGroup>
