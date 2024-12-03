@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSqlQuery.Runner.DataBase;
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Threading;
@@ -14,7 +15,7 @@ namespace GSqlQuery.Runner
     {
         protected readonly TDbTransaction _transaction;
         protected readonly TIConnection _connection;
-        protected TransacctionDispose _transacctionDispose;
+        private SafeTransactionHandler _safeTransactionHandler;
 
         IConnection ITransaction.Connection => _connection;
 
@@ -26,13 +27,11 @@ namespace GSqlQuery.Runner
 
         object ITransaction.Transaction => _transaction;
 
-        public delegate void TransacctionDispose(ITransaction transaction);
-
         public Transaction(TIConnection connection, TDbTransaction transaction)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _transaction = transaction ?? throw new ArgumentNullException(nameof(transaction));
-            _transacctionDispose += _connection.RemoveTransaction;
+            _connection = connection;
+            _transaction = transaction;
+            _safeTransactionHandler = new SafeTransactionHandler(connection, transaction, this);
         }
 
         public virtual void Commit()
@@ -77,14 +76,8 @@ namespace GSqlQuery.Runner
         {
             if (disposing)
             {
-                if (_transacctionDispose != null)
-                {
-                    _transacctionDispose?.Invoke(this);
-                    _transacctionDispose -= _connection.RemoveTransaction;
-                    _transacctionDispose = null;
-                    _transaction?.Dispose();
-
-                }
+                _safeTransactionHandler?.Dispose();
+                _safeTransactionHandler = null;
             }
         }
 

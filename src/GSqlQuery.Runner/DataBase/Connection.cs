@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSqlQuery.Runner.DataBase;
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Threading;
@@ -6,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
-    public abstract class Connection<TItransaccion, TDbConnection, TDbTransaction, TDbCommand>(TDbConnection connection) :
-        IConnection<TItransaccion, TDbCommand>, IDisposable
+    public abstract class Connection<TItransaccion, TDbConnection, TDbTransaction, TDbCommand>(TDbConnection connection) : IConnection<TItransaccion, TDbCommand>, IDisposable
         where TItransaccion : ITransaction
         where TDbConnection : DbConnection
         where TDbTransaction : DbTransaction
         where TDbCommand : DbCommand
     {
-        protected TDbConnection _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+        private SafeConnectionHandler _safeConnectionHandler = new SafeConnectionHandler(connection);
+        protected TDbConnection _connection = connection;
         protected TItransaccion _transaction;
 
         public ConnectionState State => _connection == null ? ConnectionState.Broken : _connection.State;
@@ -37,7 +38,7 @@ namespace GSqlQuery.Runner
 
         public virtual void Close()
         {
-            _connection.Close();
+            _connection?.Close();
         }
 
         public virtual Task CloseAsync(CancellationToken cancellationToken = default)
@@ -47,7 +48,7 @@ namespace GSqlQuery.Runner
 #if NET5_0_OR_GREATER
             return _connection.CloseAsync();
 #else
-            _connection.Close();
+            _connection?.Close();
             return Task.CompletedTask;
 #endif
         }
@@ -60,21 +61,32 @@ namespace GSqlQuery.Runner
 
         public virtual void Open()
         {
-            _connection.Open();
+            _connection?.Open();
         }
 
         protected TItransaccion SetTransaction(TItransaccion transaction)
         {
-            _transaction = transaction;
-            return _transaction;
+            if (_safeConnectionHandler != null)
+            {
+                _safeConnectionHandler.Transaction = transaction;
+                _transaction = transaction;
+                return _transaction;
+            }
+
+            throw new InvalidOperationException("The connection is disposed");
         }
 
         public virtual void RemoveTransaction(ITransaction transaction)
         {
+            if (_safeConnectionHandler == null)
+            {
+                throw new InvalidOperationException("The connection is disposed");
+            }
+
             if (transaction.Equals(_transaction))
             {
+                _safeConnectionHandler.Transaction = null;
                 _transaction = default;
-                return;
             }
         }
 
@@ -121,11 +133,8 @@ namespace GSqlQuery.Runner
         {
             if (disposing)
             {
-                if (_connection != null)
-                {
-                    _connection.Dispose();
-                    _connection = null;
-                }
+                _safeConnectionHandler?.Dispose();
+                _safeConnectionHandler = null;
             }
         }
 
