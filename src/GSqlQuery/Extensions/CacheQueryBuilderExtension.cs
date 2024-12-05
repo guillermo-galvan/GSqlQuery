@@ -226,7 +226,7 @@ namespace GSqlQuery.Extensions
                             QueryCache.Cache.TryRemove(identity, out _);
                             return AddQueryCache(identity, createQuery);
                         }
-                        tmp[count] = criteria;
+                        tmp.Add(criteria);
                         count++;
                     }
 
