@@ -35,15 +35,15 @@ namespace GSqlQuery
                 (_typeJoinTowTable == gericDefinition ||
                 _typeJoinThreeTable == gericDefinition))
             {
-                return new JoinTransformTo<T, TDbDataReader>(classOptions.PropertyOptions.Count(), this);
+                return new JoinTransformTo<T, TDbDataReader>(classOptions.PropertyOptions.Count, this);
             }
             else if (!classOptions.IsConstructorByParam)
             {
-                return new TransformToByField<T, TDbDataReader>(classOptions.PropertyOptions.Count());
+                return new TransformToByField<T, TDbDataReader>(classOptions.PropertyOptions.Count);
             }
             else
             {
-                return new TransformToByConstructor<T, TDbDataReader>(classOptions.PropertyOptions.Count());
+                return new TransformToByConstructor<T, TDbDataReader>(classOptions.PropertyOptions.Count);
             }
         }
     }

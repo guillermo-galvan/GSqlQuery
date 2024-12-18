@@ -36,36 +36,32 @@ namespace GSqlQuery.Runner.Transforms
         protected readonly int _numColumns = numColumns;
         protected readonly ClassOptions _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
 
-        protected virtual IEnumerable<PropertyOptionsInEntity> GetOrdinalPropertiesInEntity
-            (PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
+        protected virtual IEnumerable<PropertyOptionsInEntity> GetOrdinalPropertiesInEntity(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
         {
             return (from pro in propertyOptions
                     join ca in query.Columns on pro.Value.ColumnAttribute.Name equals ca.Value.ColumnAttribute.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
                     select
-                        new PropertyOptionsInEntity(pro.Value,
-                        Nullable.GetUnderlyingType(pro.Value.PropertyInfo.PropertyType) ?? pro.Value.PropertyInfo.PropertyType,
-                        pro.Value.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(pro.Value.PropertyInfo.PropertyType) : null,
-                        left.Value != null ? reader.GetOrdinal(pro.Value.ColumnAttribute.Name) : null)).ToArray();
+                        new PropertyOptionsInEntity(pro.Value, pro.Value.Type, pro.Value.ValueDefault, left.Value != null ? reader.GetOrdinal(pro.Value.ColumnAttribute.Name) : null)).ToArray();
         }
 
-        private void Fill(TDbDataReader reader, IEnumerable<PropertyOptionsInEntity> columns, Queue<PropertyValue> propertyValues, Queue<T> result)
+        private void Fill(TDbDataReader reader, IEnumerable<PropertyOptionsInEntity> columns, List<PropertyValue> propertyValues, List<T> result)
         {
             foreach (PropertyOptionsInEntity item in columns)
             {
                 if (item.Ordinal.HasValue)
                 {
-                    propertyValues.Enqueue(new PropertyValue(item.Property, GetValue(item.Ordinal.Value, reader, item.Type)));
+                    propertyValues.Add(new PropertyValue(item.Property, GetValue(item.Ordinal.Value, reader, item.Type)));
                 }
                 else
                 {
-                    propertyValues.Enqueue(new PropertyValue(item.Property, item.DefaultValue));
+                    propertyValues.Add(new PropertyValue(item.Property, item.DefaultValue));
                 }
             }
 
             T tmp = CreateEntity(propertyValues);
             propertyValues.Clear();
-            result.Enqueue(tmp);
+            result.Add(tmp);
         }
 
         public virtual object GetValue(int ordinal, TDbDataReader reader, Type propertyType)
@@ -76,8 +72,8 @@ namespace GSqlQuery.Runner.Transforms
         public virtual IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
         {
             IEnumerable<PropertyOptionsInEntity> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
-            Queue<T> result = new Queue<T>();
-            Queue<PropertyValue> propertyValues = new Queue<PropertyValue>();
+            List<T> result = [];
+            List<PropertyValue> propertyValues = [];
 
             while (reader.Read())
             {
@@ -91,8 +87,8 @@ namespace GSqlQuery.Runner.Transforms
         {
             cancellationToken.ThrowIfCancellationRequested();
             IEnumerable<PropertyOptionsInEntity> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
-            Queue<T> result = new Queue<T>();
-            Queue<PropertyValue> propertyValues = new Queue<PropertyValue>();
+            List<T> result = [];
+            List<PropertyValue> propertyValues = [];
 
             while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {

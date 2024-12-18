@@ -22,7 +22,7 @@ namespace GSqlQuery
         where T : class
         where TQueryOptions : QueryOptions
     {
-        protected readonly Queue<ISearchCriteria> _searchCriterias = new Queue<ISearchCriteria>();
+        protected readonly List<ISearchCriteria> _searchCriterias = new List<ISearchCriteria>();
         internal readonly IQueryBuilderWithWhere<TReturn, TQueryOptions> _queryBuilderWithWhere;
 
         protected PropertyOptionsCollection Columns { get; set; }
@@ -68,7 +68,7 @@ namespace GSqlQuery
         /// <param name="criteria"></param>
         public void Add(ISearchCriteria criteria)
         {
-            _searchCriterias.Enqueue(criteria ?? throw new ArgumentNullException(nameof(criteria), ErrorMessages.ParameterNotNull));
+            _searchCriterias.Add(criteria ?? throw new ArgumentNullException(nameof(criteria), ErrorMessages.ParameterNotNull));
         }
 
         /// <summary>

@@ -74,7 +74,7 @@ namespace GSqlQuery.Queries
         internal string CreateQueryText(out PropertyOptionsCollection columns, out IEnumerable<CriteriaDetailCollection> criteria)
         {
             TSelectQuery selectQuery = _andorBuilder != null ? _andorBuilder.Build() : _queryBuilder.Build();
-            Queue<string> parts = new Queue<string>();
+            List<string> parts = [];
 
             foreach (ColumnsOrderBy x in _columnsByOrderBy)
             {
@@ -83,7 +83,7 @@ namespace GSqlQuery.Queries
                 IEnumerable<string> names = options.Columns.Values.Select(y => y.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Read));
                 string columnsName = string.Join(",", names);
                 string orderByQuery = "{0} {1}".Replace("{0}", columnsName).Replace("{1}", x.OrderBy.ToString());
-                parts.Enqueue(orderByQuery);
+                parts.Add(orderByQuery);
             }
 
             string columnsOrderby = string.Join(",", parts);

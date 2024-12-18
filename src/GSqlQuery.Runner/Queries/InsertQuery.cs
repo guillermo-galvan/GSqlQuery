@@ -40,8 +40,7 @@ namespace GSqlQuery
                 idResult = await DatabaseManagement.ExecuteScalarAsync<object>(connection, this, _parameters, cancellationToken).ConfigureAwait(false);
             }
 
-            Type newType = Nullable.GetUnderlyingType(_propertyOptionsAutoIncrementing.PropertyInfo.PropertyType);
-            idResult = newType == null ? Convert.ChangeType(idResult, _propertyOptionsAutoIncrementing.PropertyInfo.PropertyType) : Convert.ChangeType(idResult, newType);
+            idResult = Convert.ChangeType(idResult, _propertyOptionsAutoIncrementing.Type);
             _propertyOptionsAutoIncrementing.PropertyInfo.SetValue(Entity, idResult);
         }
 
@@ -57,8 +56,7 @@ namespace GSqlQuery
                 idResult = DatabaseManagement.ExecuteScalar<object>(connection, this, _parameters);
             }
 
-            Type newType = Nullable.GetUnderlyingType(_propertyOptionsAutoIncrementing.PropertyInfo.PropertyType);
-            idResult = newType == null ? Convert.ChangeType(idResult, _propertyOptionsAutoIncrementing.PropertyInfo.PropertyType) : Convert.ChangeType(idResult, newType);
+            idResult = Convert.ChangeType(idResult, _propertyOptionsAutoIncrementing.Type);
             _propertyOptionsAutoIncrementing.PropertyInfo.SetValue(Entity, idResult);
         }
 

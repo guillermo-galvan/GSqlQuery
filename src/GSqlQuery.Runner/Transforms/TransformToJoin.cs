@@ -78,10 +78,7 @@ namespace GSqlQuery.Runner.Transforms
                     join ca in propertyOptionsColumns on pro.Value.ColumnAttribute.Name equals ca.ColumnAttribute.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
                     select
-                        new PropertyOptionsInEntity(pro.Value,
-                        Nullable.GetUnderlyingType(pro.Value.PropertyInfo.PropertyType) ?? pro.Value.PropertyInfo.PropertyType,
-                        pro.Value.PropertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(pro.Value.PropertyInfo.PropertyType) : null,
-                        left != null ? reader.GetOrdinal($"{classOptions.Type.Name}_{pro.Value.ColumnAttribute.Name}") : null))
+                        new PropertyOptionsInEntity(pro.Value, pro.Value.Type, pro.Value.ValueDefault, left != null ? reader.GetOrdinal($"{classOptions.Type.Name}_{pro.Value.ColumnAttribute.Name}") : null))
                         .ToArray();
         }
 
@@ -105,7 +102,7 @@ namespace GSqlQuery.Runner.Transforms
             return result;
         }
 
-        private void Fill(TDbDataReader reader, Queue<PropertyValue> propertyValues, Queue<PropertyValue> jointPropertyValues, Queue<T> result)
+        private void Fill(TDbDataReader reader, List<PropertyValue> propertyValues, List<PropertyValue> jointPropertyValues, List<T> result)
         {
             foreach (JoinClassOptions<TDbDataReader> joinClassOptions in _joinClassOptions)
             {
@@ -113,29 +110,29 @@ namespace GSqlQuery.Runner.Transforms
                 {
                     if (item.Ordinal.HasValue)
                     {
-                        propertyValues.Enqueue(new PropertyValue(item.Property, joinClassOptions.Transform.GetValue(item.Ordinal.Value, reader, item.Type)));
+                        propertyValues.Add(new PropertyValue(item.Property, joinClassOptions.Transform.GetValue(item.Ordinal.Value, reader, item.Type)));
                     }
                     else
                     {
-                        propertyValues.Enqueue(new PropertyValue(item.Property, item.DefaultValue));
+                        propertyValues.Add(new PropertyValue(item.Property, item.DefaultValue));
                     }
                 }
                 object a = joinClassOptions.MethodInfo.Invoke(joinClassOptions.Class, [propertyValues]);
                 propertyValues.Clear();
-                jointPropertyValues.Enqueue(new PropertyValue(joinClassOptions.PropertyOptions, a));
+                jointPropertyValues.Add(new PropertyValue(joinClassOptions.PropertyOptions, a));
             }
 
             T tmp = CreateEntity(jointPropertyValues);
             jointPropertyValues.Clear();
-            result.Enqueue(tmp);
+            result.Add(tmp);
         }
 
         public override IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
         {
             _ = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
-            Queue<T> result = new Queue<T>();
-            Queue<PropertyValue> propertyValues = new Queue<PropertyValue>();
-            Queue<PropertyValue> jointPropertyValues = new Queue<PropertyValue>();
+            List<T> result = [];
+            List<PropertyValue> propertyValues = [];
+            List<PropertyValue> jointPropertyValues = [];
 
             while (reader.Read())
             {
@@ -149,9 +146,9 @@ namespace GSqlQuery.Runner.Transforms
         {
             cancellationToken.ThrowIfCancellationRequested();
             _ = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
-            Queue<T> result = new Queue<T>();
-            Queue<PropertyValue> propertyValues = new Queue<PropertyValue>();
-            Queue<PropertyValue> jointPropertyValues = new Queue<PropertyValue>();
+            List<T> result = [];
+            List<PropertyValue> propertyValues = [];
+            List<PropertyValue> jointPropertyValues = [];
 
             while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {

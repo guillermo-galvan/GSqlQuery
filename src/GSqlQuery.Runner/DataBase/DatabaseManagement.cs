@@ -128,7 +128,7 @@ namespace GSqlQuery.Runner
 
             using (TDbCommand command = CreateCommand(connection, query, parameters))
             {
-                using (TDbDataReader reader = (TDbDataReader)command.ExecuteReader())
+                using (TDbDataReader reader = (TDbDataReader)command.ExecuteReader(CommandBehavior.SingleResult))
                 {
                     return transformToEntity.Transform(propertyOptions, query, reader);
                 }
@@ -164,7 +164,7 @@ namespace GSqlQuery.Runner
 
             using (TDbCommand command = CreateCommand(connection, query, parameters))
             {
-                using (TDbDataReader reader = (TDbDataReader)await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
+                using (TDbDataReader reader = (TDbDataReader)await command.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken).ConfigureAwait(false))
                 {
                     return await transformToEntity.TransformAsync(propertyOptions, query, reader, cancellationToken).ConfigureAwait(false);
                 }

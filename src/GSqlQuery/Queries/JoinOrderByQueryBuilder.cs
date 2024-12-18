@@ -22,7 +22,6 @@ namespace GSqlQuery.Queries
     {
         protected readonly IQueryBuilderWithWhere<TSelectQuery, TQueryOptions> _queryBuilder;
         protected readonly IAndOr<T, TSelectQuery, TQueryOptions> _andorBuilder;
-        protected readonly Queue<ColumnsOrderBy> _columnsByOrderBy;
         protected readonly List<ColumnsJoinOrderBy> _expression = [];
 
         /// <summary>

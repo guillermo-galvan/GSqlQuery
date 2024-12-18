@@ -37,13 +37,13 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2))
             ];
 
-            Queue<CriteriaDetailCollection> result = new Queue<CriteriaDetailCollection>();
+            List<CriteriaDetailCollection> result = [];
             uint parameterId = 0;
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
                 CriteriaDetailCollection criteria = x.GetCriteria(ref parameterId);
-                result.Enqueue(criteria);
+                result.Add(criteria);
             }
 
             return result;
@@ -84,13 +84,13 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2)),
                 ClassOptionsFactory.GetClassOptions(typeof(T3)),
             ];
-            Queue<CriteriaDetailCollection> result = new Queue<CriteriaDetailCollection>();
+            List<CriteriaDetailCollection> result = [];
             uint parameterId = 0;
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
                 CriteriaDetailCollection criteria = x.GetCriteria(ref parameterId);
-                result.Enqueue(criteria);
+                result.Add(criteria);
             }
 
             return result;

@@ -251,7 +251,7 @@ namespace GSqlQuery.Queries
         /// <summary>
         /// Class constructor
         /// </summary>
-        /// <param name="joinInfos">Queue<JoinInfo></param>
+        /// <param name="joinInfos">List<JoinInfo></param>
         /// <param name="joinType">Join Type</param>
         /// <param name="formats">formats</param>
         /// <param name="columnsT3">Columns third table</param>

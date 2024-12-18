@@ -20,12 +20,12 @@ namespace GSqlQuery.Sqlite.Test
         {
             var query = Test1.Select(_connectionOptions).Build();
 
-            Queue<ParameterDetail> parameters = new Queue<ParameterDetail>();
+            List<ParameterDetail> parameters = [];
             if (query.Criteria != null)
             {
                 foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
                 {
-                    parameters.Enqueue(item);
+                    parameters.Add(item);
                 }
             }
 
@@ -39,12 +39,12 @@ namespace GSqlQuery.Sqlite.Test
         {
             var query = Test1.Select(_connectionOptions).Build();
 
-            Queue<ParameterDetail> parameters = new Queue<ParameterDetail>();
+            List<ParameterDetail> parameters = [];
             if (query.Criteria != null)
             {
                 foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
                 {
-                    parameters.Enqueue(item);
+                    parameters.Add(item);
                 }
             }
 

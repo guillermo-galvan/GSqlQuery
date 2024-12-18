@@ -54,7 +54,7 @@ namespace GSqlQuery.Queries
         internal AutoIncrementingClass GetValues()
         {
             IEnumerable<PropertyOptions> propertyOptions = Columns.Values.Where(x => !x.ColumnAttribute.IsAutoIncrementing);
-            Queue<ColumnParameterDetail> tmpColumnsParameters = new Queue<ColumnParameterDetail>();
+            List<ColumnParameterDetail> tmpColumnsParameters = [];
             int count = 0;
 
             foreach (PropertyOptions x in propertyOptions)
@@ -64,7 +64,7 @@ namespace GSqlQuery.Queries
                 string parameterName = "@PI" + count++;
                 ParameterDetail parameterDetail = new ParameterDetail(parameterName, value);
                 ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, new CriteriaDetailCollection(parameterName, x, [parameterDetail]));
-                tmpColumnsParameters.Enqueue(columnParameterDetail);
+                tmpColumnsParameters.Add(columnParameterDetail);
             }
 
             ColumnParameterDetail[] columnsParameters = [.. tmpColumnsParameters];

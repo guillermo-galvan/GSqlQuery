@@ -14,7 +14,7 @@ namespace GSqlQuery
             {
                 DataColumn dataColumn = new DataColumn
                 {
-                    DataType = Nullable.GetUnderlyingType(property.Value.PropertyInfo.PropertyType) ?? property.Value.PropertyInfo.PropertyType,
+                    DataType = property.Value.Type,
                     ColumnName = property.Value.ColumnAttribute.Name,
                     AutoIncrement = property.Value.ColumnAttribute.IsAutoIncrementing
                 };

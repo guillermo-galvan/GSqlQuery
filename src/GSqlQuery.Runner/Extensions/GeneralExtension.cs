@@ -15,7 +15,7 @@ namespace GSqlQuery.Runner
                 return databaseManagement.Events.GetParameter<T>(parameterDetails);
             }
 
-            return Enumerable.Empty<IDataParameter>();
+            return [];
         }
     }
 }
