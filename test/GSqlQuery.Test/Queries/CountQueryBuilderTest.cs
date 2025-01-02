@@ -1,8 +1,6 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System;
-using System.Linq;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries
@@ -19,7 +17,8 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), _queryOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions);
 
             var result = queryBuilder.Count();
 
@@ -27,7 +26,7 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(result.QueryOptions);
             Assert.NotNull(result.Columns);
             Assert.NotEmpty(result.Columns);
-            Assert.Equal(queryBuilder.Columns.Count(), result.Columns.Count());
+            Assert.Equal(queryBuilder.Columns.Count, result.Columns.Count);
         }
 
         [Fact]
@@ -40,7 +39,8 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), _queryOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions);
             var result = queryBuilder.Count();
             IWhere<Test1, CountQuery<Test1>, QueryOptions> where = result.Where();
             Assert.NotNull(where);
@@ -49,8 +49,8 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_count_query()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id }),
-                _queryOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id });
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions);
             var result = queryBuilder.Count();
             IQuery<Test1, QueryOptions> query = result.Build();
             Assert.NotNull(query.Text);

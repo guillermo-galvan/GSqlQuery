@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery
 {
@@ -6,7 +8,7 @@ namespace GSqlQuery
     /// Select query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public class SelectQuery<T> : Query<T, QueryOptions> 
+    public class SelectQuery<T> : Query<T, QueryOptions>
         where T : class
     {
         /// <summary>
@@ -17,8 +19,8 @@ namespace GSqlQuery
         /// <param name="criteria">Criteria</param>
         /// <param name="formats">Formats</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal SelectQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
-            base(ref text, columns, criteria, queryOptions)
+        internal SelectQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions) :
+            base(ref text, table, columns, criteria, queryOptions)
         { }
     }
 }

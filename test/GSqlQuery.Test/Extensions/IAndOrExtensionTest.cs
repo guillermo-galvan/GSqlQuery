@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
+﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,8 @@ namespace GSqlQuery.Test.Extensions
 
         public IAndOrExtensionTest()
         {
-            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), new QueryOptions(new DefaultFormats()));
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            _queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, new QueryOptions(new DefaultFormats()));
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace GSqlQuery.Test.Extensions
         {
             AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.Equal(x => x.Id, 1);
-            IEnumerable<CriteriaDetail> criterias = where.BuildCriteria();
+            IEnumerable<CriteriaDetailCollection> criterias = where.Create();
             string result = string.Join(" ", criterias.SelectMany(x => x.QueryPart));
 
             Assert.NotNull(result);

@@ -1,0 +1,150 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7D0A97FE-1371-448A-8A12-DB0912504CC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2ABE9810-8CEF-4FB1-9EC8-F204427D4463}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmark", "Benchmark", "{34D75E9D-77BF-4959-83CA-C7A989E1F3FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery", "src\GSqlQuery\GSqlQuery.csproj", "{76AA8C40-51C6-4476-B4AA-CA3E549DF54E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Runner", "src\GSqlQuery.Runner\GSqlQuery.Runner.csproj", "{62370E6F-49DB-469D-BC64-E5E4049DFAFE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Test", "test\GSqlQuery.Test\GSqlQuery.Test.csproj", "{146A2D23-4A7A-46F7-8005-F17165E6A725}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Runner.Test", "test\GSqlQuery.Runner.Test\GSqlQuery.Runner.Test.csproj", "{1AC3E3FB-A700-4A72-A302-FE78C2903888}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Benchmark", "benchmarks\GSqlQuery.Benchmark\GSqlQuery.Benchmark.csproj", "{1AEF9772-C682-42BB-B89A-870DBF61189C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GSqlQuery.Runner.Benchmark", "benchmarks\GSqlQuery.Runner.Benchmark\GSqlQuery.Runner.Benchmark.csproj", "{FC29B1E1-4BE6-4E0F-81C9-32CA31DC2EC1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{B6BBB013-1DAE-4FB6-9BB5-01D209F16ABC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "en", "en", "{0CEEB2BC-BAA7-4C78-8FA7-7148A3CDB476}"
+	ProjectSection(SolutionItems) = preProject
+		docs\en\ColumnAttribute.md = docs\en\ColumnAttribute.md
+		docs\en\Config.md = docs\en\Config.md
+		docs\en\Count.md = docs\en\Count.md
+		docs\en\Delete.md = docs\en\Delete.md
+		docs\en\Entity.md = docs\en\Entity.md
+		docs\en\IFormats.md = docs\en\IFormats.md
+		docs\en\Insert.md = docs\en\Insert.md
+		docs\en\IQuery.md = docs\en\IQuery.md
+		docs\en\Join.md = docs\en\Join.md
+		docs\en\Select.md = docs\en\Select.md
+		docs\en\TableAttribute.md = docs\en\TableAttribute.md
+		docs\en\Update.md = docs\en\Update.md
+		docs\en\Where.md = docs\en\Where.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "es", "es", "{4D9A870C-4EF9-4189-9EB8-66762548AB7D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\es\ColumnAttribute.md = docs\es\ColumnAttribute.md
+		docs\es\Config.md = docs\es\Config.md
+		docs\es\Count.md = docs\es\Count.md
+		docs\es\Delete.md = docs\es\Delete.md
+		docs\es\Entity.md = docs\es\Entity.md
+		docs\es\IFormats.md = docs\es\IFormats.md
+		docs\es\Insert.md = docs\es\Insert.md
+		docs\es\IQuery.md = docs\es\IQuery.md
+		docs\es\Join.md = docs\es\Join.md
+		docs\es\Select.md = docs\es\Select.md
+		docs\es\TableAttribute.md = docs\es\TableAttribute.md
+		docs\es\Update.md = docs\es\Update.md
+		docs\es\Where.md = docs\es\Where.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sqlite", "Sqlite", "{1217FF45-020F-4D04-9423-0529E53149CD}"
+	ProjectSection(SolutionItems) = preProject
+		docs\en\Sqlite\Config.md = docs\en\Sqlite\Config.md
+		docs\en\Sqlite\DatabaseManagementEvents.md = docs\en\Sqlite\DatabaseManagementEvents.md
+		docs\en\Sqlite\EntityExecute.md = docs\en\Sqlite\EntityExecute.md
+		docs\en\Sqlite\SqliteConnectionOptions.md = docs\en\Sqlite\SqliteConnectionOptions.md
+		docs\en\Sqlite\SqliteDatabaseManagement.md = docs\en\Sqlite\SqliteDatabaseManagement.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sqlite", "Sqlite", "{C5960518-630D-48E7-A372-D86F0CD5A58E}"
+	ProjectSection(SolutionItems) = preProject
+		docs\es\Sqlite\Config.md = docs\es\Sqlite\Config.md
+		docs\es\Sqlite\DatabaseManagementEvents.md = docs\es\Sqlite\DatabaseManagementEvents.md
+		docs\es\Sqlite\EntityExecute.md = docs\es\Sqlite\EntityExecute.md
+		docs\es\Sqlite\SqliteConnectionOptions.md = docs\es\Sqlite\SqliteConnectionOptions.md
+		docs\es\Sqlite\SqliteDatabaseManagement.md = docs\es\Sqlite\SqliteDatabaseManagement.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSqlQuery.Sqlite", "src\GSqlQuery.Sqlite\GSqlQuery.Sqlite.csproj", "{42B8D5F3-9F64-4D5C-BEB2-274A456EDC21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSqlQuery.Sqlite.Test", "test\GSqlQuery.Sqlite.Test\GSqlQuery.Sqlite.Test.csproj", "{583A2167-28E4-479D-B716-AB6AFAAF0331}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSqlQuery.Sqlite.Benchmark", "benchmarks\GSqlQuery.Sqlite.Benchmark\GSqlQuery.Sqlite.Benchmark.csproj", "{16F463BF-B86A-4423-9104-BD04B2CA2361}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76AA8C40-51C6-4476-B4AA-CA3E549DF54E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76AA8C40-51C6-4476-B4AA-CA3E549DF54E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76AA8C40-51C6-4476-B4AA-CA3E549DF54E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76AA8C40-51C6-4476-B4AA-CA3E549DF54E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62370E6F-49DB-469D-BC64-E5E4049DFAFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62370E6F-49DB-469D-BC64-E5E4049DFAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62370E6F-49DB-469D-BC64-E5E4049DFAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62370E6F-49DB-469D-BC64-E5E4049DFAFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{146A2D23-4A7A-46F7-8005-F17165E6A725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{146A2D23-4A7A-46F7-8005-F17165E6A725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{146A2D23-4A7A-46F7-8005-F17165E6A725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{146A2D23-4A7A-46F7-8005-F17165E6A725}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AC3E3FB-A700-4A72-A302-FE78C2903888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AC3E3FB-A700-4A72-A302-FE78C2903888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AC3E3FB-A700-4A72-A302-FE78C2903888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AC3E3FB-A700-4A72-A302-FE78C2903888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AEF9772-C682-42BB-B89A-870DBF61189C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AEF9772-C682-42BB-B89A-870DBF61189C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEF9772-C682-42BB-B89A-870DBF61189C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AEF9772-C682-42BB-B89A-870DBF61189C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC29B1E1-4BE6-4E0F-81C9-32CA31DC2EC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC29B1E1-4BE6-4E0F-81C9-32CA31DC2EC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC29B1E1-4BE6-4E0F-81C9-32CA31DC2EC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC29B1E1-4BE6-4E0F-81C9-32CA31DC2EC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B8D5F3-9F64-4D5C-BEB2-274A456EDC21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B8D5F3-9F64-4D5C-BEB2-274A456EDC21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B8D5F3-9F64-4D5C-BEB2-274A456EDC21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B8D5F3-9F64-4D5C-BEB2-274A456EDC21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{583A2167-28E4-479D-B716-AB6AFAAF0331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{583A2167-28E4-479D-B716-AB6AFAAF0331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{583A2167-28E4-479D-B716-AB6AFAAF0331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{583A2167-28E4-479D-B716-AB6AFAAF0331}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16F463BF-B86A-4423-9104-BD04B2CA2361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16F463BF-B86A-4423-9104-BD04B2CA2361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16F463BF-B86A-4423-9104-BD04B2CA2361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16F463BF-B86A-4423-9104-BD04B2CA2361}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{146A2D23-4A7A-46F7-8005-F17165E6A725} = {7D0A97FE-1371-448A-8A12-DB0912504CC2}
+		{1AC3E3FB-A700-4A72-A302-FE78C2903888} = {7D0A97FE-1371-448A-8A12-DB0912504CC2}
+		{1AEF9772-C682-42BB-B89A-870DBF61189C} = {34D75E9D-77BF-4959-83CA-C7A989E1F3FB}
+		{FC29B1E1-4BE6-4E0F-81C9-32CA31DC2EC1} = {34D75E9D-77BF-4959-83CA-C7A989E1F3FB}
+		{B6BBB013-1DAE-4FB6-9BB5-01D209F16ABC} = {2ABE9810-8CEF-4FB1-9EC8-F204427D4463}
+		{0CEEB2BC-BAA7-4C78-8FA7-7148A3CDB476} = {B6BBB013-1DAE-4FB6-9BB5-01D209F16ABC}
+		{4D9A870C-4EF9-4189-9EB8-66762548AB7D} = {B6BBB013-1DAE-4FB6-9BB5-01D209F16ABC}
+		{1217FF45-020F-4D04-9423-0529E53149CD} = {0CEEB2BC-BAA7-4C78-8FA7-7148A3CDB476}
+		{C5960518-630D-48E7-A372-D86F0CD5A58E} = {4D9A870C-4EF9-4189-9EB8-66762548AB7D}
+		{583A2167-28E4-479D-B716-AB6AFAAF0331} = {7D0A97FE-1371-448A-8A12-DB0912504CC2}
+		{16F463BF-B86A-4423-9104-BD04B2CA2361} = {34D75E9D-77BF-4959-83CA-C7A989E1F3FB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CEEC4D79-717A-4223-8088-6D56E57BC3A7}
+	EndGlobalSection
+EndGlobal

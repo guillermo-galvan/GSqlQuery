@@ -1,10 +1,7 @@
 ﻿using GSqlQuery.Queries;
 using GSqlQuery.Test.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
-using GSqlQuery.Extensions;
 
 namespace GSqlQuery.Test.Queries
 {
@@ -20,15 +17,12 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Properties_cannot_be_null()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), _queryOptions);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions);
 
             var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC);
 
             Assert.NotNull(result);
-            Assert.NotNull(result.QueryOptions);
-            Assert.NotNull(result.Columns);
-            Assert.NotEmpty(result.Columns);
-            Assert.Equal(queryBuilder.Columns.Count(), result.Columns.Count());
         }
 
         [Fact]
@@ -41,8 +35,9 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_orderBy_query()
         {
-            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id }), _queryOptions);
-            var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id });
+            SelectQueryBuilder<Test1> queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions);
+            var result = queryBuilder.OrderBy(x => new { x.Id }, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             IQuery<Test1, QueryOptions> query = result.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);
@@ -56,9 +51,10 @@ namespace GSqlQuery.Test.Queries
         [Fact]
         public void Should_return_an_orderBy_query_with_where()
         {
-            var queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id }), _queryOptions)
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id });
+            var queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, _queryOptions)
                                    .Where().Equal(x => x.IsTest, true).OrEqual(x => x.IsTest, false);
-            var result = queryBuilder.OrderBy(x => x.Id, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
+            var result = queryBuilder.OrderBy(x => new { x.Id }, OrderBy.ASC).OrderBy(x => new { x.Name, x.Create }, OrderBy.DESC);
             IQuery<Test1, QueryOptions> query = result.Build();
             Assert.NotNull(query.Text);
             Assert.NotEmpty(query.Text);

@@ -29,7 +29,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria()
+        public override IEnumerable<CriteriaDetailCollection> Create()
         {
             ClassOptions[] classOptions =
             [
@@ -37,12 +37,13 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2))
             ];
 
-            Queue<CriteriaDetail> result = new Queue<CriteriaDetail>();
+            List<CriteriaDetailCollection> result = [];
+            uint parameterId = 0;
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria(QueryOptions.Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
-                result.Enqueue(criteria);
+                CriteriaDetailCollection criteria = x.GetCriteria(ref parameterId);
+                result.Add(criteria);
             }
 
             return result;
@@ -75,7 +76,7 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <returns>The search criteria</returns>
-        public override IEnumerable<CriteriaDetail> BuildCriteria()
+        public override IEnumerable<CriteriaDetailCollection> Create()
         {
             ClassOptions[] classOptions =
             [
@@ -83,12 +84,13 @@ namespace GSqlQuery.Queries
                 ClassOptionsFactory.GetClassOptions(typeof(T2)),
                 ClassOptionsFactory.GetClassOptions(typeof(T3)),
             ];
-            Queue<CriteriaDetail> result = new Queue<CriteriaDetail>();
+            List<CriteriaDetailCollection> result = [];
+            uint parameterId = 0;
 
             foreach (ISearchCriteria x in _searchCriterias)
             {
-                CriteriaDetail criteria = x.GetCriteria(QueryOptions.Formats, classOptions.First(y => y.Table.Scheme == x.Table.Scheme && y.Table.Name == x.Table.Name).PropertyOptions);
-                result.Enqueue(criteria);
+                CriteriaDetailCollection criteria = x.GetCriteria(ref parameterId);
+                result.Add(criteria);
             }
 
             return result;

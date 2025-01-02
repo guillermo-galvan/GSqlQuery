@@ -17,9 +17,9 @@ namespace GSqlQuery
         /// <returns>Class Options</returns>
         public static ClassOptions GetClassOptions(Type type)
         {
-            return _entities.GetOrAdd(type, (model) =>
+            return _entities.GetOrAdd(type, (newType) =>
             {
-                return new ClassOptions(model);
+                return new ClassOptions(newType);
             });
         }
     }

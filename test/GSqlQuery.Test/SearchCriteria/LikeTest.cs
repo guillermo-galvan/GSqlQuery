@@ -3,37 +3,45 @@ using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Extensions;
 using GSqlQuery.Test.Models;
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace GSqlQuery.Test.SearchCriteria
 {
     public class LikeTest
     {
-        private readonly ColumnAttribute _columnAttribute;
+        private readonly PropertyOptions _columnAttribute;
         private readonly QueryOptions _queryOptions;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly ClassOptions _classOptions;
-        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
+        private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
+        private uint _parameterId = 0;
+        private readonly Expression<Func<Test1, int>> _dynamicQuery;
 
         public LikeTest()
         {
             _queryOptions = new QueryOptions(new DefaultFormats());
-            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), new QueryOptions(new DefaultFormats()));
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            _queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, new QueryOptions(new DefaultFormats()));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _columnAttribute = _classOptions.PropertyOptions.FirstOrDefault(x => x.ColumnAttribute.Name == nameof(Test1.Id)).ColumnAttribute;
-            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(_classOptions, _columnAttribute);
+            _columnAttribute = _classOptions.PropertyOptions[nameof(Test1.Id)];
+            _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(_classOptions, _columnAttribute);
+            _dynamicQuery = (x) => x.Id;
         }
 
         [Fact]
         public void Should_create_an_instance()
         {
-            Like test = new Like(_classOptionsTupla, new DefaultFormats(), "1");
+            var dynamicQuery = _dynamicQuery;
+            Like<Test1, int> test = new Like<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), "1", null, ref dynamicQuery);
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
-            Assert.NotNull(test.Column);
-            Assert.Equal("1", test.Value);
+            Assert.NotNull(test.Formats);
+            Assert.NotNull(test.Expression);
+            Assert.NotNull(test.ClassOptions);
+            Assert.Equal("1", test.Data);
             Assert.Null(test.LogicalOperator);
         }
 
@@ -42,12 +50,14 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", "der")]
         public void Should_create_an_instance_1(string logicalOperator, string value)
         {
-            Like test = new Like(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
+            var dynamicQuery = _dynamicQuery;
+            Like<Test1, int> test = new Like<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), value, logicalOperator, ref dynamicQuery);
 
             Assert.NotNull(test);
-            Assert.NotNull(test.Table);
-            Assert.NotNull(test.Column);
-            Assert.Equal(value, test.Value);
+            Assert.NotNull(test.Formats);
+            Assert.NotNull(test.Expression);
+            Assert.NotNull(test.ClassOptions);
+            Assert.Equal(value, test.Data);
             Assert.NotNull(test.LogicalOperator);
             Assert.Equal(logicalOperator, test.LogicalOperator);
         }
@@ -58,23 +68,26 @@ namespace GSqlQuery.Test.SearchCriteria
         [InlineData("OR", "pollo", "OR Test1.Id LIKE CONCAT('%', @Param, '%')")]
         public void Should_get_criteria_detail(string logicalOperator, string value, string querypart)
         {
-            Like test = new Like(_classOptionsTupla, new DefaultFormats(), value, logicalOperator);
-            var result = test.GetCriteria(_queryOptions.Formats, _classOptions.PropertyOptions);
+            var dynamicQuery = _dynamicQuery;
+            Like<Test1, int> test = new Like<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), value, logicalOperator, ref dynamicQuery);
+            var result = test.GetCriteria(ref _parameterId);
 
             Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.True(result.Count > 0);
+            Assert.NotEmpty(result.Keys);
+            Assert.NotEmpty(result.Values);
+            Assert.NotNull(result.PropertyOptions);
             Assert.NotNull(result.SearchCriteria);
-            Assert.NotNull(result.SearchCriteria.Column);
-            Assert.NotNull(result.SearchCriteria.Table);
-            Assert.NotNull(result.ParameterDetails);
-            Assert.NotEmpty(result.ParameterDetails);
-            var parameter = result.ParameterDetails.ElementAt(0);
+            Assert.NotNull(result.SearchCriteria.ClassOptions);
+            Assert.NotNull(result.SearchCriteria.Formats);
+            var parameter = result.Values.First();
             Assert.Equal(value, parameter.Value);
             Assert.NotNull(parameter.Name);
             Assert.NotEmpty(parameter.Name);
             Assert.Contains("@", parameter.Name);
             Assert.NotNull(result.QueryPart);
             Assert.NotEmpty(result.QueryPart);
-            var a = result.ParameterReplace();
             Assert.Equal(querypart, result.ParameterReplace());
         }
 
@@ -84,7 +97,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.Like(x => x.Id, "ds");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.Create();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Single(result);
@@ -96,7 +109,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.Like(x => x.Id, "1256").AndLike(x => x.IsTest, "1");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.Create();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -108,7 +121,7 @@ namespace GSqlQuery.Test.SearchCriteria
             AndOrBase<Test1, SelectQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, SelectQuery<Test1>, QueryOptions>(_queryBuilder, _queryBuilder.QueryOptions);
             var andOr = where.Like(x => x.Id, "1256").OrLike(x => x.IsTest, "45981");
             Assert.NotNull(andOr);
-            var result = andOr.BuildCriteria();
+            var result = andOr.Create();
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

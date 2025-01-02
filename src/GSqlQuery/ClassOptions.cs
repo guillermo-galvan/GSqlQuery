@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GSqlQuery.Cache;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +19,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get properties
         /// </summary>
-        public IEnumerable<PropertyOptions> PropertyOptions { get; private set; }
+        public PropertyOptionsCollection PropertyOptions { get; }
 
         /// <summary>
         /// Get default construtor
@@ -33,7 +34,9 @@ namespace GSqlQuery
         /// <summary>
         /// Get table
         /// </summary>
-        public TableAttribute Table { get; private set; }
+        public FormatTableNameCollection FormatTableName { get; private set; }
+
+        internal object Entity { get; set; }
 
         /// <summary>
         /// Class constructor
@@ -44,27 +47,41 @@ namespace GSqlQuery
         public ClassOptions(Type type)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
-            Table = GetTableAttribute();
-            PropertyOptions = GetProperties();
+            FormatTableName = GetTableAttribute();
+            PropertyOptions = new PropertyOptionsCollection(GetProperties());
             ConstructorInfo = GetConstructor() ?? throw new Exception("No constructor found");
         }
 
-        private Queue<PropertyOptions> GetProperties()
+        private IEnumerable<KeyValuePair<string, PropertyOptions>> GetProperties()
         {
             PropertyInfo[] properties = Type.GetProperties();
-            if(properties.Length == 0)
+            if (properties.Length == 0)
             {
                 throw new Exception($"{Type.Name} has no properties");
             }
-            IEnumerable<PropertyOptions> result = properties.Select(x => new PropertyOptions(0, x, (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute, Table));
-            return new Queue<PropertyOptions>(result);
+
+
+
+            return properties.Select(x =>
+            {
+                ColumnAttribute columnAttribute = (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute;
+                FormatColumnNameCollection formatColumnNameCollection = new FormatColumnNameCollection(columnAttribute, FormatTableName);
+                PropertyOptions propertyOptions = new PropertyOptions(0, x, (Attribute.GetCustomAttribute(x, typeof(ColumnAttribute)) ?? new ColumnAttribute(x.Name)) as ColumnAttribute, formatColumnNameCollection, FormatTableName.Table);
+
+                return new KeyValuePair<string, PropertyOptions>(x.Name, propertyOptions);
+            }).ToList();
         }
 
         private ConstructorInfo GetConstructor()
         {
-            ConstructorInfo[] constructorInfos = Type.GetConstructors();
+            ConstructorInfo[] constructorInfos = Type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-            ConstructorInfo ConstructorInfoDefault = null;
+            if (constructorInfos.Length == 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            ConstructorInfo constructorInfoDefault = null;
             ConstructorInfo result = null;
 
             foreach (ConstructorInfo item in constructorInfos)
@@ -73,9 +90,10 @@ namespace GSqlQuery
 
                 if (parameters.Length == 0)
                 {
-                    ConstructorInfoDefault = item;
+                    constructorInfoDefault = item;
+                    Entity = constructorInfoDefault.Invoke(null);
                 }
-                else if (parameters.Length > 0 && parameters.Length == PropertyOptions.Count())
+                else if (parameters.Length > 0 && parameters.Length == PropertyOptions.Count)
                 {
                     bool find = true;
                     byte position = 0;
@@ -84,17 +102,16 @@ namespace GSqlQuery
                     for (int i = 0; i < parameters.Length; i++)
                     {
                         var param = tmp[i];
-                        PropertyOptions typeparam = PropertyOptions.FirstOrDefault(x => x.PropertyInfo.Name.Equals(param.Name, StringComparison.CurrentCultureIgnoreCase) &&
-                                                                                         x.PropertyInfo.PropertyType == param.ParameterType);
+                        PropertyOptions propertyOptions = PropertyOptions[param.Name];
 
-                        if (typeparam == null)
+                        if (propertyOptions == null || propertyOptions.PropertyInfo.PropertyType != param.ParameterType)
                         {
                             find = false;
                             break;
                         }
                         else
                         {
-                            typeparam.PositionConstructor = position++;
+                            propertyOptions.PositionConstructor = position++;
                         }
                     }
 
@@ -102,14 +119,33 @@ namespace GSqlQuery
                 }
             }
 
+            Entity = Entity ?? CreateEntity(constructorInfos);
             IsConstructorByParam = result != null;
 
-            return result ?? ConstructorInfoDefault;
+            return result ?? constructorInfoDefault;
         }
 
-        private TableAttribute GetTableAttribute()
+        private FormatTableNameCollection GetTableAttribute()
         {
-            return (Attribute.GetCustomAttribute(Type, typeof(TableAttribute)) ?? new TableAttribute(Type.Name)) as TableAttribute;
+            TableAttribute tableAttribute = (Attribute.GetCustomAttribute(Type, typeof(TableAttribute)) ?? new TableAttribute(Type.Name)) as TableAttribute;
+            return new FormatTableNameCollection(tableAttribute);
+        }
+
+        private object CreateEntity(ConstructorInfo[] constructorInfos)
+        {
+            ConstructorInfo constructorInfo = constructorInfos[0];
+
+            ParameterInfo[] parameters = constructorInfo.GetParameters();
+            object[] objects = new object[parameters.Length];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                ParameterInfo param = parameters[i];
+                Type type = param.ParameterType;
+                objects[i] = type.IsValueType ? Activator.CreateInstance(type) : null;
+            }
+
+            return constructorInfo.Invoke(objects);
         }
     }
 }

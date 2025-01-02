@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        private Test5()
+        private Test5(int a, int v)
         { }
     }
 }

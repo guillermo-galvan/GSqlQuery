@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GSqlQuery
 {
@@ -16,8 +18,8 @@ namespace GSqlQuery
         /// <param name="criteria">Query criteria</param>
         /// <param name="queryOptions">QueryOptions</param>        
         /// <exception cref="ArgumentNullException"></exception>
-        internal UpdateQuery(string text, IEnumerable<PropertyOptions> columns, IEnumerable<CriteriaDetail> criteria, QueryOptions queryOptions) :
-            base(ref text, columns, criteria, queryOptions)
+        internal UpdateQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions) :
+            base(ref text, table, columns, criteria, queryOptions)
         { }
     }
 }

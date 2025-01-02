@@ -5,8 +5,12 @@ namespace GSqlQuery.SearchCriteria
     /// <summary>
     /// Search Criteria Builder 
     /// </summary>
-    public interface ISearchCriteriaBuilder<TReturn> : IBuilder<TReturn> where TReturn : IQuery
+    public interface ISearchCriteriaBuilder
     {
+        public IEnumerable<ISearchCriteria> SearchCriterias { get; }
+
+        public int Count { get; }
+
         /// <summary>
         /// Add a search criteria
         /// </summary>
@@ -17,6 +21,6 @@ namespace GSqlQuery.SearchCriteria
         /// Build the criteria
         /// </summary>
         /// <returns>Criteria detail enumerable</returns>
-        IEnumerable<CriteriaDetail> BuildCriteria();
+        IEnumerable<CriteriaDetailCollection> Create();
     }
 }

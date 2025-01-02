@@ -6,7 +6,7 @@ namespace GSqlQuery
     /// And or
     /// </summary>
     /// <typeparam name="TReturn"></typeparam>
-    public interface IAndOr<TReturn> : ISearchCriteriaBuilder<TReturn>, IBuilder<TReturn> where TReturn : IQuery
+    public interface IAndOr<TReturn> : ISearchCriteriaBuilder, IBuilder<TReturn> where TReturn : IQuery
     {
 
     }
@@ -16,11 +16,11 @@ namespace GSqlQuery
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn"></typeparam>
-    public interface IAndOr<T, TReturn, TQueryOptions> : ISearchCriteriaBuilder<TReturn>, IBuilder<TReturn>, IAndOr<TReturn>, IQueryOptions<TQueryOptions>
+    public interface IAndOr<T, TReturn, TQueryOptions> : ISearchCriteriaBuilder, IBuilder<TReturn>, IAndOr<TReturn>, IQueryOptions<TQueryOptions>
         where T : class
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {
-        
+
     }
 }

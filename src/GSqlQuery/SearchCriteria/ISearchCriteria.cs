@@ -1,21 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace GSqlQuery.SearchCriteria
+﻿namespace GSqlQuery.SearchCriteria
 {
     /// <summary>
     /// Search criteria
     /// </summary>
     public interface ISearchCriteria
     {
-        /// <summary>
-        /// Get Column
-        /// </summary>
-        ColumnAttribute Column { get; }
-
-        /// <summary>
-        /// Get Table
-        /// </summary>
-        TableAttribute Table { get; }
+        public object Value { get; }
 
         /// <summary>
         /// Get Formats
@@ -23,10 +13,17 @@ namespace GSqlQuery.SearchCriteria
         IFormats Formats { get; }
 
         /// <summary>
-        /// Get Criteria detail
+        /// Get ClassOptions
         /// </summary>
-        /// <param name="formats">formats</param>
-        /// <returns>Details of the criteria</returns>
-        CriteriaDetail GetCriteria(IFormats formats, IEnumerable<PropertyOptions> propertyOptions);
+        ClassOptions ClassOptions { get; }
+
+        /// <summary>
+        /// Get Detail Criteria
+        /// </summary>
+        /// <param name="parameterId">Id to identify the query parameter</param>
+        /// <returns>CriteriaDetailCollection</returns>
+        CriteriaDetailCollection GetCriteria(ref uint parameterId);
+
+        CriteriaDetailCollection ReplaceValue(CriteriaDetailCollection criteriaDetailCollection);
     }
 }

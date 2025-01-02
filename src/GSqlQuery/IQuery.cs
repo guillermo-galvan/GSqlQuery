@@ -1,33 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Cache;
+using System.Collections.Generic;
 
 namespace GSqlQuery
 {
     public interface IQuery
     {
         /// <summary>
+        /// Get Table
+        /// </summary>
+        TableAttribute Table { get; }
+
+        /// <summary>
         /// Query Text
         /// </summary>
-        string Text { get; set; }
+        string Text { get; }
 
         /// <summary>
         /// Columns of the query
         /// </summary>
-        IEnumerable<PropertyOptions> Columns { get; }
+        PropertyOptionsCollection Columns { get; }
 
         /// <summary>
         /// Query criteria
         /// </summary>
-        IEnumerable<CriteriaDetail> Criteria { get; }
+        IEnumerable<CriteriaDetailCollection> Criteria { get; }
     }
 
     /// <summary>
     /// Query
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public interface IQuery<T, TQueryOptions> : IQueryOptions<TQueryOptions>, IQuery 
+    public interface IQuery<T, TQueryOptions> : IQueryOptions<TQueryOptions>, IQuery
         where T : class
         where TQueryOptions : QueryOptions
     {
-        
+
     }
 }

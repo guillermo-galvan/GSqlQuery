@@ -1,5 +1,4 @@
-﻿using GSqlQuery.Extensions;
-using System;
+﻿using GSqlQuery.Cache;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,14 +15,14 @@ namespace GSqlQuery
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {
-        protected IEnumerable<CriteriaDetail> _criteria = null;
+        protected IEnumerable<CriteriaDetailCollection> _criteria = null;
         protected IAndOr<TReturn> _andOr;
 
         /// <summary>
         /// Class constructor
         /// </summary>
         /// <param name="formats"></param>
-        protected QueryBuilderWithCriteria(TQueryOptions queryOptions) : base(queryOptions)
+        protected QueryBuilderWithCriteria(TQueryOptions queryOptions, PropertyOptionsCollection columns = null) : base(queryOptions, columns)
         { }
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace GSqlQuery
         /// <returns></returns>
         protected string GetCriteria()
         {
-            _criteria ??= _andOr.BuildCriteria();
+            _criteria ??= _andOr.Create();
             IEnumerable<string> queryParts = _criteria.Select(x => x.QueryPart);
             return string.Join(" ", queryParts);
         }

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace GSqlQuery
 {
@@ -23,9 +24,16 @@ namespace GSqlQuery
         public ColumnAttribute ColumnAttribute { get; }
 
         /// <summary>
-        /// Get TableAttribute
+        /// Get FormatColumnName
         /// </summary>
-        public TableAttribute TableAttribute { get; }
+        public FormatColumnNameCollection FormatColumnName { get; }
+
+        /// <summary>
+        /// Get Table
+        /// </summary>
+        public TableAttribute Table { get; }
+
+        internal object DefaultValue { get; }
 
         /// <summary>
         /// Class constructor
@@ -33,13 +41,15 @@ namespace GSqlQuery
         /// <param name="positionObject">Position Constructor</param>
         /// <param name="propertyInfo">PropertyInfo</param>
         /// <param name="columnAttribute">ColumnAttribute</param>
-        /// <param name="tableAttribute">TableAttribute</param>
-        public PropertyOptions(int positionObject, PropertyInfo propertyInfo, ColumnAttribute columnAttribute, TableAttribute tableAttribute)
+        /// <param name="formatColumnName">FormatColumnNameCollection</param>
+        internal PropertyOptions(int positionObject, PropertyInfo propertyInfo, ColumnAttribute columnAttribute, FormatColumnNameCollection formatColumnName, TableAttribute table)
         {
             PositionConstructor = positionObject;
             PropertyInfo = propertyInfo;
             ColumnAttribute = columnAttribute;
-            TableAttribute = tableAttribute;
+            FormatColumnName = formatColumnName;
+            Table = table;
+            DefaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
         }
     }
 }

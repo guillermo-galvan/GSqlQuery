@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using GSqlQuery.Test.Models;
 using System;
 using System.Collections.Generic;
@@ -29,29 +30,30 @@ namespace GSqlQuery.Test.Extensions
         public void Should_return_the_classoption_and_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
             Assert.NotNull(options.ClassOptions);
-            Assert.NotNull(options.MemberInfo);
+            Assert.NotNull(options.Columns);
         }
 
         [Fact]
         public void Should_return_the_classoption_and_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
             Assert.NotNull(options.ClassOptions);
-            Assert.NotNull(options.MemberInfo);
+            Assert.NotNull(options.Columns.Key);
+            Assert.NotNull(options.Columns.Value);
         }
 
         [Fact]
         public void Should_vallidate_memeberinfos()
         {
             Expression<Func<Test1, object>> expression = x => new { x.Name, x.Create, x.IsTest };
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression);
+            ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GetOptionsAndMembers(expression);
 
             try
             {
-                ExpressionExtension.ValidateMemberInfos(QueryType.Delete, options);
+                ExpressionExtension.ValidateClassOptionsTupla(QueryType.Delete, options);
                 Assert.True(true);
             }
             catch (Exception)
@@ -64,9 +66,10 @@ namespace GSqlQuery.Test.Extensions
         public void Should_vallidate_memeberinfo()
         {
             Expression<Func<Test1, object>> expression = x => x.Name;
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            var result = ExpressionExtension.ValidateMemberInfo(options.MemberInfo, options.ClassOptions);
-            Assert.NotNull(result);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
+            Assert.NotNull(options.ClassOptions);
+            Assert.NotNull(options.Columns.Key);
+            Assert.NotNull(options.Columns.Value);
         }
 
         [Fact]
@@ -74,9 +77,8 @@ namespace GSqlQuery.Test.Extensions
         {
             Test1 model = new Test1(1, "Name", DateTime.Now, true);
             Expression<Func<Test1, object>> expression = x => x.Name;
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            var propertyOptions = ExpressionExtension.ValidateMemberInfo(options.MemberInfo, options.ClassOptions);
-            var result = ExpressionExtension.GetValue(propertyOptions,model);
+            ClassOptionsTupla<KeyValuePair<string, PropertyOptions>> options = ExpressionExtension.GetOptionsAndMember(expression);
+            var result = ExpressionExtension.GetValue(options.Columns.Value, model);
             Assert.NotNull(result);
             Assert.NotEmpty(result.ToString());
         }
@@ -85,11 +87,11 @@ namespace GSqlQuery.Test.Extensions
         public void Should_return_the_property_options()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test3));
-            var result = ExpressionExtension.GetPropertyQuery(classOptions,new string[] { nameof(Test3.Ids), nameof(Test3.IsTests), nameof(Test3.Creates) });
+            var result = ExpressionExtension.GetPropertyQuery(classOptions, new string[] { nameof(Test3.Ids), nameof(Test3.IsTests), nameof(Test3.Creates) });
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
-            Assert.Equal(3, result.Count());
+            Assert.Equal(3, result.Count);
         }
 
         [Fact]
@@ -97,10 +99,9 @@ namespace GSqlQuery.Test.Extensions
         {
             Expression<Func<Join<Test3, Test6>, int>> expression = x => x.Table1.Ids;
             var result = ExpressionExtension.GetJoinColumn(expression);
-            Assert.NotNull(result);
-            Assert.NotNull(result.Table);
-            Assert.NotNull(result.Column);
-            Assert.NotNull(result.MemberInfo);
+            Assert.NotNull(result.Key);
+            Assert.NotNull(result.Value);
+            Assert.Equal(nameof(Test3.Ids), result.Key);
         }
 
         [Fact]
@@ -108,10 +109,9 @@ namespace GSqlQuery.Test.Extensions
         {
             Expression<Func<Join<Test3, Test6, Test1>, int>> expression = x => x.Table1.Ids;
             var result = ExpressionExtension.GetJoinColumn(expression);
-            Assert.NotNull(result);
-            Assert.NotNull(result.Table);
-            Assert.NotNull(result.Column);
-            Assert.NotNull(result.MemberInfo);
+            Assert.NotNull(result.Key);
+            Assert.NotNull(result.Value);
+            Assert.Equal(nameof(Test3.Ids), result.Key);
         }
     }
 }

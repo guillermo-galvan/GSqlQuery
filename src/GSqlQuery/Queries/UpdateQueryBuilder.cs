@@ -1,33 +1,38 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery.Queries
 {
+    internal class UpdateColumns(Expression expression)
+    {
+        public Expression Expression { get; set; } = expression;
+
+        public object Value { get; set; }
+
+        public UpdateColumns(Expression expression, object value) : this(expression)
+        {
+            Value = value;
+        }
+    }
+
     /// <summary>
     ///  Update Query Builder
     /// </summary>
     /// <typeparam name="T">Type to create the query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
-    internal abstract class UpdateQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>, ISet<T, TReturn, TQueryOptions>
+    internal abstract class UpdateQueryBuilder<T, TReturn, TQueryOptions> : QueryBuilderWithCriteria<T, TReturn, TQueryOptions>, ISet<T, TReturn, TQueryOptions>, ISetByEntity<T, TReturn, TQueryOptions>
         where T : class
         where TReturn : IQuery<T, TQueryOptions>
          where TQueryOptions : QueryOptions
     {
-        private readonly IDictionary<ColumnAttribute, object> _columnValues;
+        private readonly List<UpdateColumns> _columnValues = [];
         protected readonly object _entity;
 
-        public IDictionary<ColumnAttribute, object> ColumnValues => _columnValues;
-
-        /// <summary>
-        /// Class constructor
-        /// </summary>
-        /// <param name="queryOptions">Formats</param>
-        private UpdateQueryBuilder(TQueryOptions queryOptions) : base(queryOptions)
-        { }
+        public List<UpdateColumns> ColumnValues => _columnValues;
 
         /// <summary>
         /// Class constructor
@@ -35,12 +40,10 @@ namespace GSqlQuery.Queries
         /// <param name="queryOptions">TQueryOptions</param>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="value">Value for update</param>
-        public UpdateQueryBuilder(TQueryOptions queryOptions, ClassOptionsTupla<MemberInfo> classOptionsTupla, object value) :
-            this(queryOptions)
+        public UpdateQueryBuilder(TQueryOptions queryOptions, Expression expression, object value) :
+            base(queryOptions)
         {
-            _columnValues = new Dictionary<ColumnAttribute, object>();
-            ColumnAttribute columnAttributes = ExpressionExtension.GetColumnQuery(classOptionsTupla ?? throw new ArgumentNullException(nameof(classOptionsTupla)));
-            _columnValues.Add(columnAttributes, value);
+            _columnValues.Add(new UpdateColumns(expression, value));
         }
 
         /// <summary>
@@ -50,16 +53,10 @@ namespace GSqlQuery.Queries
         /// <param name="entity">Entity</param>
         /// <param name="selectMember">Name of properties to search</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(TQueryOptions queryOptions, object entity, ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla) : this(queryOptions)
+        public UpdateQueryBuilder(TQueryOptions queryOptions, object entity, Expression expression) : base(queryOptions)
         {
             _entity = entity ?? throw new ArgumentNullException(nameof(entity));
-            _columnValues = new Dictionary<ColumnAttribute, object>();
-            IEnumerable<PropertyOptions> properties = ExpressionExtension.GetPropertyQuery(classOptionsTupla);
-
-            foreach (PropertyOptions item in properties)
-            {
-                _columnValues.Add(item.ColumnAttribute, item.PropertyInfo.GetValue(entity));
-            };
+            _columnValues.Add(new UpdateColumns(expression, null));
         }
 
         /// <summary>
@@ -67,14 +64,14 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <returns>Query Text</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        internal string CreateQuery()
+        internal string CreateQueryText()
         {
             if (_columnValues == null)
             {
                 throw new InvalidOperationException("Column values not found");
             }
 
-            Queue<CriteriaDetail> tmpCriteria = GetUpdateCliterias(_columnValues, Columns, _tableName);
+            List<CriteriaDetailCollection> tmpCriteria = GetUpdateCliterias();
             IEnumerable<string> queryParts = tmpCriteria.Select(x => x.QueryPart);
             string setParts = string.Join(",", queryParts);
             if (_andOr == null)
@@ -86,9 +83,9 @@ namespace GSqlQuery.Queries
             {
                 string criterias = GetCriteria();
 
-                foreach (CriteriaDetail item in _criteria)
+                foreach (CriteriaDetailCollection item in _criteria)
                 {
-                    tmpCriteria.Enqueue(item);
+                    tmpCriteria.Add(item);
                 }
 
                 _criteria = tmpCriteria;
@@ -96,18 +93,26 @@ namespace GSqlQuery.Queries
             }
         }
 
-        private Queue<CriteriaDetail> GetUpdateCliterias(IDictionary<ColumnAttribute, object> columnValues, IEnumerable<PropertyOptions> columns, string tableName)
+        private List<CriteriaDetailCollection> GetUpdateCliterias()
         {
-            Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
-            foreach (KeyValuePair<ColumnAttribute, object> item in columnValues)
+            List<CriteriaDetailCollection> criteriaDetails = [];
+            int count = 0;
+            foreach (UpdateColumns item in _columnValues)
             {
-                PropertyOptions options = columns.First(x => x.ColumnAttribute.Name == item.Key.Name);
-                string paramName = "@PU" + Helpers.GetIdParam().ToString();
-                string columName = QueryOptions.Formats.GetColumnName(tableName, item.Key, QueryType.Criteria);
-                string partQuery = columName + "=" + paramName;
-                ParameterDetail parameterDetail = new ParameterDetail(paramName, item.Value ?? DBNull.Value, options);
-                CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
-                criteriaDetails.Enqueue(criteriaDetail);
+                ClassOptionsTupla<PropertyOptionsCollection> properties = ExpressionExtension.GetOptionsAndMembers<T>(item.Expression);
+                ExpressionExtension.ValidateClassOptionsTupla(QueryType.Update, properties);
+
+                foreach (KeyValuePair<string, PropertyOptions> column in properties.Columns)
+                {
+                    string paramName = "@PU" + count++;
+                    string columName = column.Value.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Criteria);
+                    string partQuery = columName + "=" + paramName;
+
+                    object value = _entity == null ? item.Value : ExpressionExtension.GetValue(column.Value, _entity);
+                    ParameterDetail parameterDetail = new ParameterDetail(paramName, value ?? DBNull.Value);
+                    CriteriaDetailCollection criteriaDetail = new CriteriaDetailCollection(partQuery, column.Value, [parameterDetail]);
+                    criteriaDetails.Add(criteriaDetail);
+                }
             }
             return criteriaDetails;
         }
@@ -127,13 +132,7 @@ namespace GSqlQuery.Queries
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            PropertyOptions propertyOptions = ExpressionExtension.ValidateMemberInfo(options.MemberInfo, options.ClassOptions);
-
-            if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
-            {
-                _columnValues.Add(propertyOptions.ColumnAttribute, value);
-            }
+            _columnValues.Add(new UpdateColumns(expression, value));
         }
 
         /// <summary>
@@ -142,31 +141,14 @@ namespace GSqlQuery.Queries
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        internal void AddSet<TProperties>(object entity, Expression<Func<T, TProperties>> expression)
+        internal void AddSet<TProperties>(Expression<Func<T, TProperties>> expression)
         {
             if (expression == null)
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            if (entity == null)
-            {
-                throw new InvalidOperationException(ErrorMessages.EntityNotFound);
-            }
-
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GetOptionsAndMembers(expression, _classOptions);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Update, options);
-
-            foreach (MemberInfo item in options.MemberInfo)
-            {
-                PropertyOptions propertyOptions = ExpressionExtension.ValidateMemberInfo(item, options.ClassOptions);
-
-                if (!_columnValues.ContainsKey(propertyOptions.ColumnAttribute))
-                {
-                    object value = ExpressionExtension.GetValue(propertyOptions, entity);
-                    _columnValues.Add(propertyOptions.ColumnAttribute, value);
-                }
-            }
+            _columnValues.Add(new UpdateColumns(expression, null));
         }
 
         /// <summary>
@@ -188,11 +170,26 @@ namespace GSqlQuery.Queries
         /// <typeparam name="TProperties">The property or properties for the query</typeparam>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression)
+        public ISetByEntity<T, TReturn, TQueryOptions> Set<TProperties>(Expression<Func<T, TProperties>> expression)
         {
-            AddSet(_entity, expression);
+            AddSet(expression);
             return this;
         }
+
+        public override TReturn Build()
+        {
+            return CacheQueryBuilderExtension.CreateUpdateQuery<T, TReturn, TQueryOptions>(QueryOptions, _andOr, _entity, ColumnValues.Select(x => x.Expression), CreateQuery, GetQuery);
+
+            //return CreateQuery();
+        }
+
+        public TReturn CreateQuery()
+        {
+            string text = CreateQueryText();
+            return GetQuery(text, Columns, _criteria, QueryOptions);
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>
@@ -209,8 +206,8 @@ namespace GSqlQuery.Queries
         /// <param name="queryOptions">QueryOptions</param>
         /// <param name="value">Value for update</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UpdateQueryBuilder(QueryOptions queryOptions, ClassOptionsTupla<MemberInfo> classOptionsTupla, object value) :
-            base(queryOptions, classOptionsTupla, value)
+        public UpdateQueryBuilder(QueryOptions queryOptions, Expression expression, object value) :
+            base(queryOptions, expression, value)
         { }
 
         /// <summary>
@@ -219,14 +216,13 @@ namespace GSqlQuery.Queries
         /// <param name="queryOptions">QueryOptions</param>
         /// <param name="entity">Entity</param>
         /// <param name="selectMember">Name of properties to search</param>
-        public UpdateQueryBuilder(QueryOptions queryOptions, object entity, ClassOptionsTupla<IEnumerable<MemberInfo>> classOptionsTupla) :
-           base(queryOptions, entity, classOptionsTupla)
+        public UpdateQueryBuilder(QueryOptions queryOptions, object entity, Expression expression) :
+           base(queryOptions, entity, expression)
         { }
 
-        public override UpdateQuery<T> Build()
+        public override UpdateQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            string text = CreateQuery();
-            return new UpdateQuery<T>(text, Columns, _criteria, QueryOptions);
+            return new UpdateQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

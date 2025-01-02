@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -27,7 +28,7 @@ namespace GSqlQuery.Queries
         /// Create query
         /// </summary>
         /// <returns>Query text</returns>
-        internal string CreateQuery()
+        internal string CreateQueryText()
         {
             if (_andOr == null)
             {
@@ -44,7 +45,7 @@ namespace GSqlQuery.Queries
         /// Create query by entity
         /// </summary>
         /// <returns>Query text</returns>
-        internal string CreateQueryByEntty()
+        internal string CreateQueryTextByEntty()
         {
             _criteria = GetUpdateCliterias();
             string criteria = GetCriteria();
@@ -55,23 +56,40 @@ namespace GSqlQuery.Queries
         /// Get values
         /// </summary>
         /// <returns>AutoIncrementingClass</returns>
-        private Queue<CriteriaDetail> GetUpdateCliterias()
+        private List<CriteriaDetailCollection> GetUpdateCliterias()
         {
-            Queue<CriteriaDetail> criteriaDetails = new Queue<CriteriaDetail>();
+            List<CriteriaDetailCollection> criteriaDetails = [];
             int count = 0;
 
-            foreach (PropertyOptions item in Columns)
+            foreach (PropertyOptions item in Columns.Values)
             {
                 object value = ExpressionExtension.GetValue(item, _entity);
-                string paramName = "@PD" + Helpers.GetIdParam().ToString();
-                string columName = QueryOptions.Formats.GetColumnName(_tableName, item.ColumnAttribute, QueryType.Criteria);
+                string paramName = "@PD" + count;
+                string columName = item.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Criteria);
                 string partQuery = (count++ == 0 ? string.Empty : "AND ") + columName + "=" + paramName;
-                ParameterDetail parameterDetail = new ParameterDetail(paramName, value, item);
-                CriteriaDetail criteriaDetail = new CriteriaDetail(partQuery, [parameterDetail]);
-                criteriaDetails.Enqueue(criteriaDetail);
+                ParameterDetail parameterDetail = new ParameterDetail(paramName, value);
+                CriteriaDetailCollection criteriaDetail = new CriteriaDetailCollection(partQuery, item, [parameterDetail]);
+                criteriaDetails.Add(criteriaDetail);
             }
             return criteriaDetails;
         }
+
+        /// <summary>
+        /// Build the query
+        /// </summary>
+        /// <returns>Count Query</returns>
+        public override TReturn Build()
+        {
+            return CacheQueryBuilderExtension.CreateDeleteQuery<T, TReturn, TQueryOptions>(QueryOptions, _andOr, _entity, CreateQuery, GetQuery);
+        }
+
+        public TReturn CreateQuery()
+        {
+            string text = _entity == null ? CreateQueryText() : CreateQueryTextByEntty();
+            return GetQuery(text, Columns, _criteria, QueryOptions);
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>
@@ -96,14 +114,9 @@ namespace GSqlQuery.Queries
         public DeleteQueryBuilder(object entity, QueryOptions queryOptions) : base(entity, queryOptions)
         { }
 
-        /// <summary>
-        /// Build the query
-        /// </summary>
-        /// <returns>Count Query</returns>
-        public override DeleteQuery<T> Build()
+        public override DeleteQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            string text = _entity == null ? CreateQuery() : CreateQueryByEntty();
-            return new DeleteQuery<T>(text, Columns, _criteria, QueryOptions);
+            return new DeleteQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

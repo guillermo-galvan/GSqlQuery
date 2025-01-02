@@ -1,6 +1,6 @@
-﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -8,7 +8,15 @@ namespace GSqlQuery.SearchCriteria
     /// Represents the search criteria equal(=)
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    internal class Equal<T> : Criteria, ISearchCriteria
+    /// <remarks>
+    /// Initializes a new instance of the Equal class.
+    /// </remarks>
+    /// <param name="classOptions">ClassOptions</param>
+    /// <param name="formats">Formats</param>
+    /// <param name="value">Equality value</param>
+    /// <param name="logicalOperator">Logical Operator</param>
+    /// <param name="expression">Expression</param>
+    internal class Equal<T, TProperties>(ClassOptions classOptions, IFormats formats, TProperties value, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : Criteria<T, TProperties>(classOptions, formats, logicalOperator, ref expression), ISearchCriteria
     {
         protected virtual string RelationalOperator => "=";
 
@@ -17,46 +25,36 @@ namespace GSqlQuery.SearchCriteria
         /// <summary>
         /// Get equality value
         /// </summary>
-        public T Value { get; }
+        public TProperties Data { get; } = value;
 
-        /// <summary>
-        /// Initializes a new instance of the Equal class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        /// <param name="value">Equality value</param>
-        public Equal(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value) :
-            this(classOptionsTupla, formats, value, null)
-        { }
+        public override object Value => Data;
 
-        /// <summary>
-        /// Initializes a new instance of the Equal class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        /// <param name="value">Equality value</param>
-        /// <param name="logicalOperator">Logical Operator</param>
-        public Equal(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T value, string logicalOperator) :
-            base(classOptionsTupla, formats, logicalOperator)
+        protected override CriteriaDetails GetCriteriaDetails(ref uint parameterId)
         {
-            Value = value;
-            _task = CreteData();
-        }
+            string parameterName = "@" + ParameterPrefix + parameterId++;
 
-        private Task<CriteriaDetails> CreteData()
-        {
-            string tableName = TableAttributeExtension.GetTableName(Table, Formats);
-            string parameterName = "@" + ParameterPrefix + Helpers.GetIdParam();
-            string columName = Formats.GetColumnName(tableName, Column, QueryType.Criteria);
-
-            string criterion = "{0} {1} {2}".Replace("{0}", columName).Replace("{1}", RelationalOperator).Replace("{2}", parameterName);
+            string criterion = "{0} {1} {2}".Replace("{0}", _columnName).Replace("{1}", RelationalOperator).Replace("{2}", parameterName);
 
             if (!string.IsNullOrWhiteSpace(LogicalOperator))
             {
                 criterion = "{0} {1}".Replace("{0}", LogicalOperator).Replace("{1}", criterion);
             }
-            PropertyOptions property = GetPropertyOptions(Column, _classOptionsTupla.ClassOptions.PropertyOptions);
-            return Task.FromResult(new CriteriaDetails(criterion, [new ParameterDetail(parameterName, Value, property)]));
+
+            return new CriteriaDetails(criterion, [new ParameterDetail(parameterName, Data)]);
+        }
+
+        public override CriteriaDetailCollection ReplaceValue(CriteriaDetailCollection criteriaDetailCollection)
+        {
+            if (criteriaDetailCollection.SearchCriteria is Equal<T, TProperties> parameter)
+            {
+                CriteriaDetailCollection result = new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions);
+                string nameColumn = criteriaDetailCollection.Keys.First();
+
+                result[nameColumn] = new ParameterDetail(nameColumn, Data);
+                return result;
+            }
+
+            return null;
         }
     }
 }

@@ -3,24 +3,27 @@ using GSqlQuery.Queries;
 using GSqlQuery.SearchCriteria;
 using GSqlQuery.Test.Models;
 using System;
-using System.Collections.Generic;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace GSqlQuery.Test.Queries
 {
     public class CountWhereTest
     {
-        private readonly Equal<int> _equal;
+        private readonly Equal<Test1, int> _equal;
         private readonly SelectQueryBuilder<Test1> _queryBuilder;
         private readonly CountQueryBuilder<Test1> _countQueryBuilder;
-        private readonly ClassOptionsTupla<ColumnAttribute> _classOptionsTupla;
+        private readonly ClassOptionsTupla<PropertyOptions> _classOptionsTupla;
 
         public CountWhereTest()
         {
             var classOptions = ClassOptionsFactory.GetClassOptions(typeof(Test1));
-            _classOptionsTupla = new ClassOptionsTupla<ColumnAttribute>(classOptions, new ColumnAttribute("Id"));
-            _equal = new Equal<int>(_classOptionsTupla, new DefaultFormats(), 1);
-            _queryBuilder = new SelectQueryBuilder<Test1>(ExpressionExtension.GeTQueryOptionsAndMembers<Test1, object>((x) => new { x.Id, x.Name, x.Create }), new QueryOptions(new DefaultFormats()));
+            var propertyOptions = classOptions.PropertyOptions[nameof(Test1.Id)];
+            _classOptionsTupla = new ClassOptionsTupla<PropertyOptions>(classOptions, propertyOptions);
+            Expression<Func<Test1, int>> expression = (x) => x.Id;
+            _equal = new Equal<Test1, int>(_classOptionsTupla.ClassOptions, new DefaultFormats(), 1, null, ref expression);
+            DynamicQuery dynamicQuery = DynamicQueryCreate.Create((x) => new { x.Id, x.Name, x.Create });
+            _queryBuilder = new SelectQueryBuilder<Test1>(dynamicQuery, new QueryOptions(new DefaultFormats()));
             _countQueryBuilder = new CountQueryBuilder<Test1>(_queryBuilder);
         }
 
@@ -48,7 +51,7 @@ namespace GSqlQuery.Test.Queries
             Assert.NotNull(query);
             query.Add(_equal);
 
-            var criteria = ((ISearchCriteriaBuilder<CountQuery<Test1>>)query).BuildCriteria();
+            var criteria = ((ISearchCriteriaBuilder)query).Create();
             Assert.NotNull(criteria);
             Assert.NotEmpty(criteria);
         }
@@ -57,15 +60,17 @@ namespace GSqlQuery.Test.Queries
         public void Should_get_the_IAndOr_interface_with_expression_CountQuery()
         {
             AndOrBase<Test1, CountQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, CountQuery<Test1>, QueryOptions>(_countQueryBuilder, _countQueryBuilder.QueryOptions);
-            IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = GSqlQueryExtension.GetAndOr(where,x => x.Id);
+            where.Equal(x => x.Id, 1);
+            IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = where.AndOr;
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_with_expression_CountQuery()
+        public void Should_get_the_IAndOr_interface_with_expression_CountQuery_Null()
         {
-            AndOrBase<Test1, CountQuery<Test1>, QueryOptions> where = null;
-            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where, x => x.Id));
+            AndOrBase<Test1, CountQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, CountQuery<Test1>, QueryOptions>(_countQueryBuilder, _countQueryBuilder.QueryOptions);
+            IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = where.AndOr;
+            Assert.Null(andOr);
         }
 
         [Fact]
@@ -74,7 +79,7 @@ namespace GSqlQuery.Test.Queries
             IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = new AndOrBase<Test1, CountQuery<Test1>, QueryOptions>(_countQueryBuilder, _countQueryBuilder.QueryOptions);
             try
             {
-                GSqlQueryExtension.Validate(andOr,x => x.IsTest);
+                GSqlQueryExtension.Validate(andOr, x => x.IsTest);
                 Assert.True(true);
             }
             catch (Exception)
@@ -94,15 +99,17 @@ namespace GSqlQuery.Test.Queries
         public void Should_get_the_IAndOr_interface_CountQuery()
         {
             AndOrBase<Test1, CountQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, CountQuery<Test1>, QueryOptions>(_countQueryBuilder, _countQueryBuilder.QueryOptions);
-            IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = GSqlQueryExtension.GetAndOr(where);
+            where.Equal(x => x.Id, 1);
+            IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = where.AndOr;
             Assert.NotNull(andOr);
         }
 
         [Fact]
-        public void Throw_exception_if_expression_is_null_CountQuery()
+        public void Should_get_the_IAndOr_interface_CountQuery_Null()
         {
-            AndOrBase<Test1, CountQuery<Test1>, QueryOptions> where = null;
-            Assert.Throws<ArgumentNullException>(() => GSqlQueryExtension.GetAndOr(where));
+            AndOrBase<Test1, CountQuery<Test1>, QueryOptions> where = new AndOrBase<Test1, CountQuery<Test1>, QueryOptions>(_countQueryBuilder, _countQueryBuilder.QueryOptions);
+            IAndOr<Test1, CountQuery<Test1>, QueryOptions> andOr = where.AndOr;
+            Assert.Null(andOr);
         }
     }
 }

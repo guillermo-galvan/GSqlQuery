@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GSqlQuery.Queries;
+using System.Linq.Expressions;
 
 namespace GSqlQuery
 {
@@ -10,7 +11,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get columns
         /// </summary>
-        public IEnumerable<PropertyOptions> Columns { get; }
+        public DynamicQuery DynamicQuery { get; }
 
         /// <summary>
         /// Order by Type
@@ -22,9 +23,33 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="columns">columns</param>
         /// <param name="orderBy">Order by Type</param>
-        public ColumnsOrderBy(IEnumerable<PropertyOptions> columns, OrderBy orderBy)
+        public ColumnsOrderBy(DynamicQuery dynamicQuery, OrderBy orderBy)
         {
-            Columns = columns;
+            DynamicQuery = dynamicQuery;
+            OrderBy = orderBy;
+        }
+    }
+
+    internal sealed class ColumnsJoinOrderBy
+    {
+        /// <summary>
+        /// Get columns
+        /// </summary>
+        public Expression Expression { get; }
+
+        /// <summary>
+        /// Order by Type
+        /// </summary>
+        public OrderBy OrderBy { get; }
+
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        /// <param name="columns">columns</param>
+        /// <param name="orderBy">Order by Type</param>
+        public ColumnsJoinOrderBy(Expression expression, OrderBy orderBy)
+        {
+            Expression = expression;
             OrderBy = orderBy;
         }
     }

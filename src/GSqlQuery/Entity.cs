@@ -1,9 +1,6 @@
-﻿using GSqlQuery.Extensions;
-using GSqlQuery.Queries;
+﻿using GSqlQuery.Queries;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace GSqlQuery
 {
@@ -11,7 +8,7 @@ namespace GSqlQuery
     /// Entity 
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    public abstract class Entity<T> 
+    public abstract class Entity<T>
         where T : class
     {
         /// <summary>
@@ -22,21 +19,19 @@ namespace GSqlQuery
         /// <param name="expression">Expression to evaluate</param>
         /// <returns>Bulder</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IJoinQueryBuilder<T, SelectQuery<T>, QueryOptions> Select<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
+        public static IJoinQueryBuilder<T, SelectQuery<T>, QueryOptions> Select<TProperties>(QueryOptions queryOptions, Func<T, TProperties> func)
         {
             if (queryOptions == null)
             {
                 throw new ArgumentNullException(nameof(queryOptions), ErrorMessages.ParameterNotNull);
             }
 
-            if (expression == null)
+            if (func == null)
             {
-                throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
+                throw new ArgumentNullException(nameof(func), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Read, options);
-            return new SelectQueryBuilder<T>(options, queryOptions);
+            return new SelectQueryBuilder<T>(new DynamicQuery(typeof(T), typeof(TProperties)), queryOptions);
         }
 
         /// <summary>
@@ -108,8 +103,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
 
-            ClassOptionsTupla<MemberInfo> options = ExpressionExtension.GetOptionsAndMember(expression);
-            return new UpdateQueryBuilder<T>(queryOptions, options, value);
+            return new UpdateQueryBuilder<T>(queryOptions, expression, value);
         }
 
         /// <summary>
@@ -119,7 +113,7 @@ namespace GSqlQuery
         /// <param name="queryOptions">QueryOptions</param>
         /// <param name="expression">The expression representing the property or properties</param>
         /// <returns>Instance of ISet</returns>
-        public ISet<T, UpdateQuery<T>, QueryOptions> Update<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
+        public ISetByEntity<T, UpdateQuery<T>, QueryOptions> Update<TProperties>(QueryOptions queryOptions, Expression<Func<T, TProperties>> expression)
         {
             if (queryOptions == null)
             {
@@ -130,9 +124,8 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            ClassOptionsTupla<IEnumerable<MemberInfo>> options = ExpressionExtension.GeTQueryOptionsAndMembers(expression);
-            ExpressionExtension.ValidateMemberInfos(QueryType.Update, options);
-            return new UpdateQueryBuilder<T>(queryOptions, this, options);
+
+            return new UpdateQueryBuilder<T>(queryOptions, this, expression);
         }
 
         /// <summary>

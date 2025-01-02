@@ -1,23 +1,15 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.Queries
 {
     /// <summary>
     /// Join Criteria Part
     /// </summary>
-    internal class JoinCriteriaPart
+    internal class JoinCriteriaPart(DynamicQuery dynamicQuery, Expression expression)
     {
-        public JoinCriteriaPart(ColumnAttribute columnAttribute, TableAttribute table, MemberInfo memberInfos)
-        {
-            Column = columnAttribute;
-            Table = table;
-            MemberInfo = memberInfos;
-        }
+        public DynamicQuery DynamicQuery { get; set; } = dynamicQuery;
 
-        public ColumnAttribute Column { get; set; }
-
-        public TableAttribute Table { get; set; }
-
-        public MemberInfo MemberInfo { get; set; }
+        public Expression Expression { get; set; } = expression;
     }
 }

@@ -1,5 +1,6 @@
-﻿using GSqlQuery.Extensions;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -10,26 +11,15 @@ namespace GSqlQuery.SearchCriteria
     /// <remarks>
     /// Initializes a new instance of the NotIn class.
     /// </remarks>
-    /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+    /// <param name="classOptions">ClassOptionsTupla</param>
     /// <param name="formats">Formats</param>
     /// <param name="values">Equality value</param>
     /// <param name="logicalOperator">Logical operator </param>
-    /// <exception cref="ArgumentNullException"></exception>
-    internal class NotIn<T>(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values, string logicalOperator)
-        : In<T>(classOptionsTupla, formats, values, logicalOperator)
+    /// <param name="dynamicQuery">DynamicQuery</param>
+    internal class NotIn<T, TProperties>(ClassOptions classOptions, IFormats formats, IEnumerable<TProperties> values, string logicalOperator, ref Expression<Func<T, TProperties>> expression) : In<T, TProperties>(classOptions, formats, values, logicalOperator, ref expression)
     {
         protected override string RelationalOperator => "NOT IN";
 
         protected override string ParameterPrefix => "PI";
-
-        /// <summary>
-        /// Initializes a new instance of the NotIn class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        /// <param name="values">Equality value</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public NotIn(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, IEnumerable<T> values) : this(classOptionsTupla, formats, values, null)
-        { }
     }
 }

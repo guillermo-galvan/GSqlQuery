@@ -37,7 +37,7 @@ namespace GSqlQuery.Test
         [Fact]
         public void Throw_exception_if_property_is_not_selected()
         {
-            Assert.Throws<InvalidOperationException>(() => Entity<Test1>.Select(_queryOptions, x => x));
+            Assert.Throws<InvalidOperationException>(() => Entity<Test1>.Select(_queryOptions, x => x).Build());
         }
 
         [Theory]

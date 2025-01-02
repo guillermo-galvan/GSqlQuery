@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace GSqlQuery.SearchCriteria
 {
@@ -6,29 +7,17 @@ namespace GSqlQuery.SearchCriteria
     ///  Represents the search criteria NOT BETWEEN
     /// </summary>
     /// <typeparam name="T">The type to query</typeparam>
-    /// <param name="classOptionsTupla">ClassOptionsTupla</param>
+    /// <param name="classOptions">ClassOptions</param>
     /// <param name="formats">Formats</param>
     /// <param name="initialValue">Initial value</param>
     /// <param name="finalValue">Final value</param>
     /// <param name="logicalOperator">Logical Operator</param>
-    internal class NotBetween<T>(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue, string logicalOperator) :
-        Between<T>(classOptionsTupla, formats, initialValue, finalValue, logicalOperator)
+    /// <param name="dynamicQuery">DynamicQuery</param>
+    internal class NotBetween<T, TProperties>(ClassOptions classOptions, IFormats formats, TProperties initialValue, TProperties finalValue, string logicalOperator, Expression<Func<T, TProperties>> expression) :
+        Between<T, TProperties>(classOptions, formats, initialValue, finalValue, logicalOperator, expression)
     {
         protected override string RelationalOperator => "NOT BETWEEN";
 
         protected override string ParameterPrefix => "PNB";
-
-        /// <summary>
-        /// Initializes a new instance of the NotBetween2 class.
-        /// </summary>
-        /// <param name="classOptionsTupla">ClassOptionsTupla</param>
-        /// <param name="formats">Formats</param>
-        /// <param name="initialValue">Initial value</param>
-        /// <param name="finalValue">Final value</param>
-        public NotBetween(ClassOptionsTupla<ColumnAttribute> classOptionsTupla, IFormats formats, T initialValue, T finalValue) :
-            this(classOptionsTupla, formats, initialValue, finalValue, null)
-        {
-
-        }
     }
 }

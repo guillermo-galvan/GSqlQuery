@@ -30,7 +30,7 @@ namespace GSqlQuery.Benchmark.Query
         {
             return User.Select(_queryOptions)
                        .RightJoin<UserRequest>().Equal(x => x.Table1.Id, x => x.Table2.UserId)
-                       .OrderBy(x => new {x.Table1.Id}, OrderBy.ASC)
+                       .OrderBy(x => new { x.Table1.Id }, OrderBy.ASC)
                        .Build();
         }
 
@@ -40,7 +40,7 @@ namespace GSqlQuery.Benchmark.Query
             return User.Select(_queryOptions)
                        .RightJoin<UserRequest>().Equal(x => x.Table1.Id, x => x.Table2.UserId)
                        .Where()
-                       .Equal(x => x.Table1.Id , 1)
+                       .Equal(x => x.Table1.Id, 1)
                        .OrderBy(x => new { x.Table1.Id }, OrderBy.ASC)
                        .Build();
         }

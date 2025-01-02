@@ -1,6 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
 using System;
-using System.Collections.Generic;
 
 namespace GSqlQuery
 {
@@ -10,7 +9,7 @@ namespace GSqlQuery
     /// <typeparam name="T">The type to query</typeparam>
     /// <typeparam name="TReturn">Query</typeparam>
     public abstract class QueryBuilderBase<T, TReturn, TQueryOptions> : IBuilder<TReturn>, IQueryBuilder<TReturn, TQueryOptions>
-        where T : class 
+        where T : class
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
     {
@@ -20,7 +19,7 @@ namespace GSqlQuery
         /// <summary>
         /// Get columns
         /// </summary>
-        public IEnumerable<PropertyOptions> Columns { get; protected set; }
+        public PropertyOptionsCollection Columns { get; protected set; }
 
         /// <summary>
         /// Query Options
@@ -32,12 +31,12 @@ namespace GSqlQuery
         /// </summary>
         /// <param name="formats">Formats</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public QueryBuilderBase(TQueryOptions queryOptions)
+        public QueryBuilderBase(TQueryOptions queryOptions, PropertyOptionsCollection columns = null)
         {
             QueryOptions = queryOptions ?? throw new ArgumentNullException(nameof(queryOptions));
             _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
-            Columns = _classOptions.PropertyOptions;
-            _tableName = TableAttributeExtension.GetTableName(_classOptions.Table, QueryOptions.Formats);
+            Columns = columns ?? _classOptions.PropertyOptions;
+            _tableName = _classOptions.FormatTableName.GetTableName(QueryOptions.Formats);
         }
 
         /// <summary>

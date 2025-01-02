@@ -1,4 +1,5 @@
-﻿using GSqlQuery.Extensions;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,20 +26,18 @@ namespace GSqlQuery.Queries
         /// </summary>
         /// <param name="criteria">Criterias</param>
         /// <returns>Query text</returns>
-        internal string CreateQuery(out IEnumerable<CriteriaDetail> criteria)
+        internal string CreateQueryText(out IEnumerable<CriteriaDetailCollection> criteria)
         {
             AutoIncrementingClass autoIncrementingClass = GetValues();
 
-            IEnumerable<ParameterDetail> parameters = autoIncrementingClass.ColumnParameters.Select(x => x.ParameterDetail);
+            IEnumerable<ParameterDetail> parameters = autoIncrementingClass.ColumnParameters.SelectMany(x => x.CriteriaDetail.Values);
             string querypart = string.Join(",", parameters.Select(x => x.Name));
 
-
-            CriteriaDetail criteriaDetail = new CriteriaDetail(querypart, parameters);
-            criteria = [criteriaDetail];
+            criteria = autoIncrementingClass.ColumnParameters.Select(x => x.CriteriaDetail);
             IEnumerable<string> columnsName = autoIncrementingClass.ColumnParameters.Select(x => x.ColumnName);
             string columnNames = string.Join(",", columnsName);
 
-            string text = ConstFormat.INSERT.Replace("{0}", _tableName).Replace("{1}", columnNames).Replace("{2}", criteriaDetail.QueryPart);
+            string text = ConstFormat.INSERT.Replace("{0}", _tableName).Replace("{1}", columnNames).Replace("{2}", querypart);
 
             if (autoIncrementingClass.WithAutoIncrementing)
             {
@@ -54,24 +53,38 @@ namespace GSqlQuery.Queries
         /// <returns>AutoIncrementingClass</returns>
         internal AutoIncrementingClass GetValues()
         {
-            IEnumerable<PropertyOptions> propertyOptions = Columns.Where(x => !x.ColumnAttribute.IsAutoIncrementing);
-            Queue<ColumnParameterDetail> tmpColumnsParameters = new Queue<ColumnParameterDetail>();
+            IEnumerable<PropertyOptions> propertyOptions = Columns.Values.Where(x => !x.ColumnAttribute.IsAutoIncrementing);
+            List<ColumnParameterDetail> tmpColumnsParameters = [];
+            int count = 0;
 
             foreach (PropertyOptions x in propertyOptions)
             {
-                string columnName = QueryOptions.Formats.GetColumnName(_tableName, x.ColumnAttribute, QueryType.Create);
+                string columnName = x.FormatColumnName.GetColumnName(QueryOptions.Formats, QueryType.Create);
                 object value = ExpressionExtension.GetValue(x, _entity);
-                string parameterName = "@PI" + Helpers.GetIdParam();
-                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value, x);
-                ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, parameterDetail);
-                tmpColumnsParameters.Enqueue(columnParameterDetail);
+                string parameterName = "@PI" + count++;
+                ParameterDetail parameterDetail = new ParameterDetail(parameterName, value);
+                ColumnParameterDetail columnParameterDetail = new ColumnParameterDetail(columnName, new CriteriaDetailCollection(parameterName, x, [parameterDetail]));
+                tmpColumnsParameters.Add(columnParameterDetail);
             }
 
             ColumnParameterDetail[] columnsParameters = [.. tmpColumnsParameters];
 
-            bool isAutoIncrement = Columns.Count() != columnsParameters.Length;
+            bool isAutoIncrement = Columns.Count != columnsParameters.Length;
             return new AutoIncrementingClass(isAutoIncrement, columnsParameters);
         }
+
+        public override TReturn Build()
+        {
+            return CacheQueryBuilderExtension.CreateInsertQuery<T, TReturn, TQueryOptions>(QueryOptions, entity, CreateQuery, GetQuery);
+        }
+
+        public TReturn CreateQuery()
+        {
+            string text = CreateQueryText(out IEnumerable<CriteriaDetailCollection> criteria);
+            return GetQuery(text, Columns, criteria, QueryOptions);
+        }
+
+        public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);
     }
 
     /// <summary>
@@ -83,15 +96,9 @@ namespace GSqlQuery.Queries
     internal class InsertQueryBuilder<T>(QueryOptions queryOptions, object entity) : InsertQueryBuilder<T, InsertQuery<T>, QueryOptions>(queryOptions, entity)
         where T : class
     {
-
-        /// <summary>
-        /// Build the query
-        /// </summary>
-        /// <returns>Insert Query</returns>
-        public override InsertQuery<T> Build()
+        public override InsertQuery<T> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, QueryOptions queryOptions)
         {
-            string query = CreateQuery(out IEnumerable<CriteriaDetail> criteria);
-            return new InsertQuery<T>(query, Columns, criteria, QueryOptions);
+            return new InsertQuery<T>(text, _classOptions.FormatTableName.Table, columns, criteria, queryOptions);
         }
     }
 }

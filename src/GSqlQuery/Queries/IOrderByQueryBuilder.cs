@@ -1,19 +1,20 @@
-﻿using GSqlQuery.Extensions;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System;
 
-namespace GSqlQuery.Queries
+namespace GSqlQuery
 {
     /// <summary>
     /// Order By Query Builder
     /// </summary>
-    internal interface IOrderByQueryBuilder
+    public interface IOrderByQueryBuilder<T, TReturn, TQueryOptions> : IBuilder<TReturn>
+        where T : class
+        where TReturn : IQuery<T, TQueryOptions>
+        where TQueryOptions : QueryOptions
     {
         /// <summary>
         /// Add Columns
         /// </summary>
         /// <param name="selectMember">Name of properties to search</param>
         /// <param name="orderBy">Order by Type</param>
-        void AddOrderBy(ClassOptionsTupla<IEnumerable<MemberInfo>> selectMember, OrderBy orderBy);
+        void AddOrderBy<TProperties>(Func<T, TProperties> func, OrderBy orderBy);
     }
 }
