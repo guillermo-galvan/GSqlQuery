@@ -1,12 +1,9 @@
-﻿using GSqlQuery;
-using GSqlQuery.Runner;
+﻿using GSqlQuery.Runner;
 using GSqlQuery.Runner.Transforms;
+using GSqlQuery.Runner.TypeHandles;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
-using System.Linq;
 
 namespace GSqlQuery
 {
@@ -16,8 +13,6 @@ namespace GSqlQuery
 
         private readonly Type _typeJoinTowTable = typeof(Join<,>);
         private readonly Type _typeJoinThreeTable = typeof(Join<,,>);
-
-        public abstract IEnumerable<IDataParameter> GetParameter<T>(IEnumerable<ParameterDetail> parameters);
 
         public virtual void WriteTrace(string message, object[] param)
         {
@@ -46,5 +41,12 @@ namespace GSqlQuery
                 return new TransformToByConstructor<T, TDbDataReader>(classOptions.PropertyOptions.Count);
             }
         }
+
+        public virtual ITypeHandler<TDbDataReader> GetHandler<TDbDataReader>(Type property) where TDbDataReader : DbDataReader
+        {
+            return GetTypeHandler<TDbDataReader>(property) ?? new DefaultNullableTypeHandler<TDbDataReader>(property);
+        }
+
+        protected abstract ITypeHandler<TDbDataReader> GetTypeHandler<TDbDataReader>(Type property) where TDbDataReader : DbDataReader;
     }
 }

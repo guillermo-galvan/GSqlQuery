@@ -13,13 +13,12 @@ namespace GSqlQuery.Runner.Transforms
             where TDbDataReader : DbDataReader
     {
         private object _class;
-        private ITransformTo<TDbDataReader> _transformTo;
 
         public PropertyOptions PropertyOptions { get; set; }
 
         public ClassOptions ClassOptions { get; set; }
 
-        public IEnumerable<PropertyOptionsInEntity> PropertyOptionsInEntities { get; set; }
+        public IEnumerable<DataReaderPropertyDetail> PropertyOptionsInEntities { get; set; }
 
         public MethodInfo MethodInfo { get; set; }
 
@@ -29,15 +28,8 @@ namespace GSqlQuery.Runner.Transforms
             set
             {
                 _class = value;
-
-                if (_class is ITransformTo<TDbDataReader> tmp)
-                {
-                    _transformTo = tmp;
-                }
             }
         }
-
-        public ITransformTo<TDbDataReader> Transform => _transformTo;
 
         public int Position { get; set; }
     }
@@ -71,20 +63,19 @@ namespace GSqlQuery.Runner.Transforms
             }
         }
 
-        protected static IEnumerable<PropertyOptionsInEntity> GetPropertiesJoin(ClassOptions classOptions,
-            IEnumerable<PropertyOptions> propertyOptionsColumns, DbDataReader reader)
+        protected static IEnumerable<DataReaderPropertyDetail> GetPropertiesJoin(ClassOptions classOptions,IEnumerable<PropertyOptions> propertyOptionsColumns, DbDataReader reader)
         {
             return (from pro in classOptions.PropertyOptions
                     join ca in propertyOptionsColumns on pro.Value.ColumnAttribute.Name equals ca.ColumnAttribute.Name into leftJoin
                     from left in leftJoin.DefaultIfEmpty()
                     select
-                        new PropertyOptionsInEntity(pro.Value, pro.Value.Type, pro.Value.ValueDefault, left != null ? reader.GetOrdinal($"{classOptions.Type.Name}_{pro.Value.ColumnAttribute.Name}") : null))
+                        new DataReaderPropertyDetail(pro.Value, left != null ? reader.GetOrdinal($"{classOptions.Type.Name}_{pro.Value.ColumnAttribute.Name}") : null))
                         .ToArray();
         }
 
-        protected override IEnumerable<PropertyOptionsInEntity> GetOrdinalPropertiesInEntity(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
+        protected override IEnumerable<DataReaderPropertyDetail> GetOrdinalPropertiesInEntity(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
         {
-            List<PropertyOptionsInEntity> result = [];
+            List<DataReaderPropertyDetail> result = [];
 
             IEnumerable<IGrouping<string, KeyValuePair<string, PropertyOptions>>> columnGroup = query.Columns.GroupBy(x => x.Value.Table.Name);
 
@@ -102,19 +93,22 @@ namespace GSqlQuery.Runner.Transforms
             return result;
         }
 
-        private void Fill(TDbDataReader reader, List<PropertyValue> propertyValues, List<PropertyValue> jointPropertyValues, List<T> result)
+        private void Fill(TDbDataReader reader, IEnumerable<DataReaderPropertyDetail> columns, Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers, List<T> result)
         {
+            List<PropertyValue> propertyValues = [];
+            List<PropertyValue> jointPropertyValues = [];
+
             foreach (JoinClassOptions<TDbDataReader> joinClassOptions in _joinClassOptions)
             {
-                foreach (PropertyOptionsInEntity item in joinClassOptions.PropertyOptionsInEntities)
+                foreach (DataReaderPropertyDetail item in joinClassOptions.PropertyOptionsInEntities)
                 {
-                    if (item.Ordinal.HasValue)
+                    if (item.Ordinal.HasValue && !reader.IsDBNull(item.Ordinal.Value))
                     {
-                        propertyValues.Add(new PropertyValue(item.Property, joinClassOptions.Transform.GetValue(item.Ordinal.Value, reader, item.Type)));
+                        propertyValues.Add(new PropertyValue(item.Property, typeHandlers[item.Ordinal.Value].GetValue(reader, item)));
                     }
                     else
                     {
-                        propertyValues.Add(new PropertyValue(item.Property, item.DefaultValue));
+                        propertyValues.Add(new PropertyValue(item.Property, item.Property.DefaultValue));
                     }
                 }
                 object a = joinClassOptions.MethodInfo.Invoke(joinClassOptions.Class, [propertyValues]);
@@ -127,32 +121,30 @@ namespace GSqlQuery.Runner.Transforms
             result.Add(tmp);
         }
 
-        public override IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
+        public override IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events)
         {
-            _ = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
+            IEnumerable<DataReaderPropertyDetail> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
             List<T> result = [];
-            List<PropertyValue> propertyValues = [];
-            List<PropertyValue> jointPropertyValues = [];
+            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = GetTypeHandlers(columns, events);
 
             while (reader.Read())
             {
-                Fill(reader, propertyValues, jointPropertyValues, result);
+                Fill(reader, columns, typeHandlers, result);
             }
 
             return result;
         }
 
-        public override async Task<IEnumerable<T>> TransformAsync(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, CancellationToken cancellationToken = default)
+        public override async Task<IEnumerable<T>> TransformAsync(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _ = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
+            IEnumerable<DataReaderPropertyDetail> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
             List<T> result = [];
-            List<PropertyValue> propertyValues = [];
-            List<PropertyValue> jointPropertyValues = [];
+            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = GetTypeHandlers(columns, events);
 
             while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                Fill(reader, propertyValues, jointPropertyValues, result);
+                Fill(reader, columns, typeHandlers, result);
             }
 
             return result;

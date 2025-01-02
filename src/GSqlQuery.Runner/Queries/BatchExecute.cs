@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +15,7 @@ namespace GSqlQuery
     {
         private readonly ConnectionOptions<TDbConnection> _connectionOptions;
         private readonly List<IQuery> _queries;
-        private readonly List<IDataParameter> _parameters;
+        private readonly List<CriteriaDetailCollection> _criteriaDetailCollections;
         private readonly StringBuilder _queryBuilder;
         private readonly List<KeyValuePair<string, PropertyOptions>> _columns;
         private uint _paramId = 0;
@@ -27,7 +28,7 @@ namespace GSqlQuery
         {
             _connectionOptions = connectionOptions;
             _queries = new List<IQuery>();
-            _parameters = new List<IDataParameter>();
+            _criteriaDetailCollections = [];
             _queryBuilder = new StringBuilder();
             _columns = [];
         }
@@ -36,20 +37,32 @@ namespace GSqlQuery
             where T : class
         {
             IQuery query = expression.Invoke(_connectionOptions);
-            IEnumerable<IDataParameter> parameters = GeneralExtension.GetParameters<T, TDbConnection>(query, _connectionOptions.DatabaseManagement);
 
             string paramName = string.Empty;
             Dictionary<string, string> replacements = [];
 
-
-            if (parameters.Any())
+            if (query.Criteria != null && query.Criteria.Any())
             {
-                foreach (IDataParameter item in parameters)
+                foreach (CriteriaDetailCollection criteriaDetailCollection in query.Criteria.Where(x => x.Values.Any()))
                 {
-                    paramName = item.ParameterName + _paramId++;
-                    replacements.Add(item.ParameterName, paramName);
-                    item.ParameterName = paramName;
-                    _parameters.Add(item);
+                    List<ParameterDetail> parameterDetails = [];
+
+                    foreach (ParameterDetail parameterDetail in criteriaDetailCollection.Values)
+                    {
+                        paramName = parameterDetail.Name + _paramId++;
+                        replacements.Add(parameterDetail.Name, paramName);
+                        parameterDetails.Add(new ParameterDetail(paramName, parameterDetail.Value));
+                    }
+
+                    if (criteriaDetailCollection.SearchCriteria == null)
+                    {
+                        _criteriaDetailCollections.Add(new CriteriaDetailCollection(criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions, [.. parameterDetails]));
+                    }
+                    else
+                    {
+                        _criteriaDetailCollections.Add(new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions, [.. parameterDetails])); 
+                    }
+                    
                 }
 
                 _queryBuilder.Append(ReemplazarTextoConRegex(query.Text, replacements));
@@ -73,26 +86,26 @@ namespace GSqlQuery
 
         public int Execute()
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
-            return _connectionOptions.DatabaseManagement.ExecuteNonQuery(query, _parameters);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), _criteriaDetailCollections);
+            return _connectionOptions.DatabaseManagement.ExecuteNonQuery(query);
         }
 
         public int Execute(TDbConnection connection)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
-            return _connectionOptions.DatabaseManagement.ExecuteNonQuery(connection, query, _parameters);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), _criteriaDetailCollections);
+            return _connectionOptions.DatabaseManagement.ExecuteNonQuery(connection, query);
         }
 
         public Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
-            return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(query, _parameters, cancellationToken);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), _criteriaDetailCollections);
+            return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(query, cancellationToken);
         }
 
         public Task<int> ExecuteAsync(TDbConnection connection, CancellationToken cancellationToken = default)
         {
-            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), null);
-            return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(connection, query, _parameters, cancellationToken);
+            BatchQuery query = new BatchQuery(_queryBuilder.ToString(), _queries.First().Table, new Cache.PropertyOptionsCollection(_columns), _criteriaDetailCollections);
+            return _connectionOptions.DatabaseManagement.ExecuteNonQueryAsync(connection, query, cancellationToken);
         }
     }
 }

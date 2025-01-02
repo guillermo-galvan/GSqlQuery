@@ -1,8 +1,9 @@
 ﻿using GSqlQuery.Cache;
 using GSqlQuery.Runner;
+using GSqlQuery.Runner.TypeHandles;
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +17,6 @@ namespace GSqlQuery
         public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
         private readonly PropertyOptions _propertyOptionsAutoIncrementing = null;
-        private readonly IEnumerable<IDataParameter> _parameters;
 
 
         internal InsertQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> connectionOptions, object entity, PropertyOptions propertyOptionsAutoIncrementing)
@@ -25,7 +25,6 @@ namespace GSqlQuery
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _propertyOptionsAutoIncrementing = propertyOptionsAutoIncrementing;
             DatabaseManagement = connectionOptions.DatabaseManagement;
-            _parameters = GeneralExtension.GetParameters<T, TDbConnection>(this, DatabaseManagement);
         }
 
         private async Task InsertAutoIncrementingAsync(TDbConnection connection = default, CancellationToken cancellationToken = default)
@@ -33,14 +32,14 @@ namespace GSqlQuery
             object idResult;
             if (connection == null)
             {
-                idResult = await DatabaseManagement.ExecuteScalarAsync<object>(this, _parameters, cancellationToken).ConfigureAwait(false);
+                idResult = await DatabaseManagement.ExecuteScalarAsync<object>(this, cancellationToken).ConfigureAwait(false);
             }
             else
             {
-                idResult = await DatabaseManagement.ExecuteScalarAsync<object>(connection, this, _parameters, cancellationToken).ConfigureAwait(false);
+                idResult = await DatabaseManagement.ExecuteScalarAsync<object>(connection, this, cancellationToken).ConfigureAwait(false);
             }
 
-            idResult = Convert.ChangeType(idResult, _propertyOptionsAutoIncrementing.Type);
+            idResult = GeneralExtension.ConvertToValue(_propertyOptionsAutoIncrementing.PropertyInfo.PropertyType, idResult);
             _propertyOptionsAutoIncrementing.PropertyInfo.SetValue(Entity, idResult);
         }
 
@@ -49,14 +48,14 @@ namespace GSqlQuery
             object idResult;
             if (connection == null)
             {
-                idResult = DatabaseManagement.ExecuteScalar<object>(this, _parameters);
+                idResult = DatabaseManagement.ExecuteScalar<object>(this);
             }
             else
             {
-                idResult = DatabaseManagement.ExecuteScalar<object>(connection, this, _parameters);
+                idResult = DatabaseManagement.ExecuteScalar<object>(connection, this);
             }
 
-            idResult = Convert.ChangeType(idResult, _propertyOptionsAutoIncrementing.Type);
+            idResult = GeneralExtension.ConvertToValue( _propertyOptionsAutoIncrementing.PropertyInfo.PropertyType,idResult);
             _propertyOptionsAutoIncrementing.PropertyInfo.SetValue(Entity, idResult);
         }
 
@@ -68,7 +67,7 @@ namespace GSqlQuery
             }
             else
             {
-                DatabaseManagement.ExecuteNonQuery(this, _parameters);
+                DatabaseManagement.ExecuteNonQuery(this);
             }
 
             return (T)Entity;
@@ -87,7 +86,7 @@ namespace GSqlQuery
             }
             else
             {
-                DatabaseManagement.ExecuteNonQuery(dbConnection, this, _parameters);
+                DatabaseManagement.ExecuteNonQuery(dbConnection, this);
             }
 
             return (T)Entity;
@@ -102,7 +101,7 @@ namespace GSqlQuery
             }
             else
             {
-                await DatabaseManagement.ExecuteNonQueryAsync(this, _parameters, cancellationToken).ConfigureAwait(false);
+                await DatabaseManagement.ExecuteNonQueryAsync(this, cancellationToken).ConfigureAwait(false);
             }
 
             return (T)Entity;
@@ -121,7 +120,7 @@ namespace GSqlQuery
             }
             else
             {
-                await DatabaseManagement.ExecuteNonQueryAsync(dbConnection, this, _parameters, cancellationToken).ConfigureAwait(false);
+                await DatabaseManagement.ExecuteNonQueryAsync(dbConnection, this, cancellationToken).ConfigureAwait(false);
             }
 
             return (T)Entity;

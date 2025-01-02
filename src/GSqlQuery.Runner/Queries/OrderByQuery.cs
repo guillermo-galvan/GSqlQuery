@@ -11,7 +11,6 @@ namespace GSqlQuery
     public class OrderByQuery<T, TDbConnection> : Query<T, ConnectionOptions<TDbConnection>>, IExecute<IEnumerable<T>, TDbConnection>, IQuery<T>
         where T : class
     {
-        private readonly IEnumerable<IDataParameter> _parameters;
 
         public IDatabaseManagement<TDbConnection> DatabaseManagement { get; }
 
@@ -19,12 +18,11 @@ namespace GSqlQuery
             base(ref text, table, columns, criteria, connectionOptions)
         {
             DatabaseManagement = connectionOptions.DatabaseManagement;
-            _parameters = GeneralExtension.GetParameters<T, TDbConnection>(this, DatabaseManagement);
         }
 
         public IEnumerable<T> Execute()
         {
-            return DatabaseManagement.ExecuteReader(this, Columns, _parameters);
+            return DatabaseManagement.ExecuteReader(this, Columns);
         }
 
         public IEnumerable<T> Execute(TDbConnection dbConnection)
@@ -33,13 +31,13 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(dbConnection), ErrorMessages.ParameterNotNull);
             }
-            return DatabaseManagement.ExecuteReader(dbConnection, this, Columns, _parameters);
+            return DatabaseManagement.ExecuteReader(dbConnection, this, Columns);
         }
 
         public Task<IEnumerable<T>> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return DatabaseManagement.ExecuteReaderAsync(this, Columns, _parameters, cancellationToken);
+            return DatabaseManagement.ExecuteReaderAsync(this, Columns, cancellationToken);
         }
 
         public Task<IEnumerable<T>> ExecuteAsync(TDbConnection dbConnection, CancellationToken cancellationToken = default)
@@ -49,7 +47,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(dbConnection), ErrorMessages.ParameterNotNull);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            return DatabaseManagement.ExecuteReaderAsync(dbConnection, this, Columns, _parameters, cancellationToken);
+            return DatabaseManagement.ExecuteReaderAsync(dbConnection, this, Columns, cancellationToken);
         }
     }
 }

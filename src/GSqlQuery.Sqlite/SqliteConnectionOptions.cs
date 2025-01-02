@@ -6,7 +6,7 @@
             base(new SqliteFormats(), new SqliteDatabaseManagement(connectionString))
         { }
 
-        public SqliteConnectionOptions(string connectionString, DatabaseManagementEvents events) :
+        public SqliteConnectionOptions(string connectionString, SqliteDatabaseManagementEvents events) :
             base(new SqliteFormats(), new SqliteDatabaseManagement(connectionString, events))
         { }
 

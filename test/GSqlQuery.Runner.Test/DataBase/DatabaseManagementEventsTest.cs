@@ -17,49 +17,6 @@ namespace GSqlQuery.Runner.Test.DataBase
         }
 
         [Fact]
-        public void GetParameter()
-        {
-            var query = EntityExecute<Test1>.Select(_connectionOptions).Build();
-
-            List<ParameterDetail> parameters = [];
-
-            if (query.Criteria != null)
-            {
-                foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
-                {
-                    parameters.Add(item);
-                }
-            }
-
-            var events = new TestDatabaseManagmentEvents();
-
-            var result = events.GetParameter<Test1>(parameters);
-            Assert.NotNull(result);
-            Assert.Equal(parameters.Count, result.Count());
-        }
-
-        [Fact]
-        public void OnGetParameter()
-        {
-            var query = EntityExecute<Test1>.Select(_connectionOptions).Build();
-
-            List<ParameterDetail> parameters = [];
-            if (query.Criteria != null)
-            {
-                foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
-                {
-                    parameters.Add(item);
-                }
-            }
-
-            var events = new TestDatabaseManagmentEvents();
-
-            var result = events.GetParameter<Test1>(parameters);
-            Assert.NotNull(result);
-            Assert.Empty(result);
-        }
-
-        [Fact]
         public void WriteTrace()
         {
             var events = new TestDatabaseManagmentEvents() { IsTraceActive = true };

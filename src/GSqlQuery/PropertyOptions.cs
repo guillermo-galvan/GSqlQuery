@@ -33,11 +33,7 @@ namespace GSqlQuery
         /// </summary>
         public TableAttribute Table { get; }
 
-        // crear struture para el tipo en internal
-
-        internal Type Type { get; }
-
-        internal object ValueDefault { get; }
+        internal object DefaultValue { get; }
 
         /// <summary>
         /// Class constructor
@@ -53,8 +49,7 @@ namespace GSqlQuery
             ColumnAttribute = columnAttribute;
             FormatColumnName = formatColumnName;
             Table = table;
-            Type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
-            ValueDefault = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+            DefaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
         }
     }
 }

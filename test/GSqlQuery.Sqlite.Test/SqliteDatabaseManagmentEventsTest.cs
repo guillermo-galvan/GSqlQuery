@@ -14,43 +14,5 @@ namespace GSqlQuery.Sqlite.Test
         {
             _connectionOptions = new SqliteConnectionOptions(Helper.ConnectionString);
         }
-
-        [Fact]
-        public void GetParameter()
-        {
-            var query = Test1.Select(_connectionOptions).Build();
-
-            List<ParameterDetail> parameters = [];
-            if (query.Criteria != null)
-            {
-                foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
-                {
-                    parameters.Add(item);
-                }
-            }
-
-            var result = _connectionOptions.DatabaseManagement.Events.GetParameter<Test1>(parameters);
-            Assert.NotNull(result);
-            Assert.Equal(parameters.Count, result.Count());
-        }
-
-        [Fact]
-        public void OnGetParameter()
-        {
-            var query = Test1.Select(_connectionOptions).Build();
-
-            List<ParameterDetail> parameters = [];
-            if (query.Criteria != null)
-            {
-                foreach (var item in query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values))
-                {
-                    parameters.Add(item);
-                }
-            }
-
-            var result = _connectionOptions.DatabaseManagement.Events.GetParameter<Test1>(parameters);
-            Assert.NotNull(result);
-            Assert.Empty(result);
-        }
     }
 }

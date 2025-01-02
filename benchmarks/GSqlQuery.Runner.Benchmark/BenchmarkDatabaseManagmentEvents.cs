@@ -1,21 +1,12 @@
-﻿using Moq;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System;
 
 namespace GSqlQuery.Runner.Benchmark
 {
     internal class BenchmarkDatabaseManagmentEvents : DatabaseManagementEvents
     {
-        private readonly Mock<IDataParameter> _parameter;
-        public BenchmarkDatabaseManagmentEvents()
+        protected override ITypeHandler<TDbDataReader> GetTypeHandler<TDbDataReader>(Type property)
         {
-            _parameter = new Mock<IDataParameter>();
-        }
-
-        public override IEnumerable<IDataParameter> GetParameter<T>(IEnumerable<ParameterDetail> parameters)
-        {
-            return parameters.Select(x => _parameter.Object);
+            return null;
         }
     }
 }

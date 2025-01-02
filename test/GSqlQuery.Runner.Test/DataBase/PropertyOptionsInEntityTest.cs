@@ -9,13 +9,12 @@ namespace GSqlQuery.Runner.Test.DataBase
         [Fact]
         public void PropertyOptionsInEntity()
         {
-            PropertyOptionsInEntity propertyOptionsInEntity = 
-                new PropertyOptionsInEntity(ClassOptionsFactory.GetClassOptions(typeof(Test1)).PropertyOptions.Values.FirstOrDefault(), typeof(Test1), null, 0);
+            DataReaderPropertyDetail propertyOptionsInEntity = 
+                new DataReaderPropertyDetail(ClassOptionsFactory.GetClassOptions(typeof(Test1)).PropertyOptions.Values.FirstOrDefault(), 0);
 
             Assert.NotNull(propertyOptionsInEntity.Property);
-            Assert.NotNull(propertyOptionsInEntity.Type);
             Assert.NotNull(propertyOptionsInEntity.Ordinal);
-            Assert.Null(propertyOptionsInEntity.DefaultValue);
+            Assert.NotNull(propertyOptionsInEntity.Property .DefaultValue);
         }
     }
 }

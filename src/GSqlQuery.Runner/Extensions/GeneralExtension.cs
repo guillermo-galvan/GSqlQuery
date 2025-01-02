@@ -1,21 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System;
 
 namespace GSqlQuery.Runner
 {
     public static class GeneralExtension
     {
-        public static IEnumerable<IDataParameter> GetParameters<T, TDbConnection>(IQuery query,
-            IDatabaseManagement<TDbConnection> databaseManagement) where T : class
+        public static object ConvertToValue(Type type, object value)
         {
-            if (query.Criteria != null && query.Criteria.Any())
-            {
-                IEnumerable<ParameterDetail> parameterDetails = query.Criteria.Where(x => x.Values.Any()).SelectMany(x => x.Values);
-                return databaseManagement.Events.GetParameter<T>(parameterDetails);
-            }
-
-            return [];
+            Type typeTmp = Nullable.GetUnderlyingType(type) ?? type;
+            return Convert.ChangeType(value, typeTmp);
         }
     }
 }

@@ -1,17 +1,16 @@
 ﻿using GSqlQuery.Runner;
+using GSqlQuery.Runner.TypeHandles;
 using Microsoft.Data.Sqlite;
+using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
-    public sealed class SqliteDatabaseManagement : DatabaseManagement<SqliteDatabaseConnection, SqliteDatabaseTransaction, SqliteCommand, SqliteTransaction, SqliteDataReader>, IDatabaseManagement<SqliteDatabaseConnection>
+    public sealed class SqliteDatabaseManagement(string connectionString, SqliteDatabaseManagementEvents events) : DatabaseManagement<SqliteDatabaseConnection, SqliteDatabaseTransaction, SqliteCommand, SqliteTransaction, SqliteDataReader>(connectionString, events), IDatabaseManagement<SqliteDatabaseConnection>
     {
-        public SqliteDatabaseManagement(string connectionString) : base(connectionString, new SqliteDatabaseManagementEvents())
-        { }
-
-        public SqliteDatabaseManagement(string connectionString, DatabaseManagementEvents events) : base(connectionString, events)
+        public SqliteDatabaseManagement(string connectionString) : this(connectionString, new SqliteDatabaseManagementEvents())
         { }
 
         public override SqliteDatabaseConnection GetConnection()

@@ -54,6 +54,8 @@ namespace GSqlQuery.Cache
                     return EqualsParameter((ParameterExpression)x, (ParameterExpression)y);
                 case ExpressionType.New:
                     return EqualsNew((NewExpression)x, (NewExpression)y);
+                case ExpressionType.Convert:
+                    return EqualsConvert((UnaryExpression)x, (UnaryExpression)y);
                 default:
                     throw new NotImplementedException($"Tipo de expresión no manejado: '{x.NodeType}'");
             }
@@ -113,6 +115,11 @@ namespace GSqlQuery.Cache
             }
 
             return true;
+        }
+
+        private bool EqualsConvert(UnaryExpression x, UnaryExpression y)
+        {
+            return x.Method == y.Method && Visit(x.Operand, y.Operand);
         }
     }
 }

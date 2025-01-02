@@ -26,7 +26,7 @@ namespace GSqlQuery.Runner.Test.DataBase
             mockIDatabaseManagement.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mockIDatabaseManagement.Setup(x => x.GetConnection()).Returns(mockIConnection.Object);
 
-            mockIDatabaseManagement.Setup(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mockIDatabaseManagement.Setup(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>()))
                 .Returns(Enumerable.Empty<Join<Test1, Test3>>());
 
             var connectionOptions = new ConnectionOptions<IConnection>(new TestFormats(), mockIDatabaseManagement.Object);
@@ -34,7 +34,7 @@ namespace GSqlQuery.Runner.Test.DataBase
             var result = EntityExecute<Test1>.Select(connectionOptions).LeftJoin<Test3>().NotEqual(x => x.Table2.Ids, x => x.Table1.Id).Build().ExecuteWithTransaction();
 
             Assert.Empty(result);
-            mockIDatabaseManagement.Verify(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()), Times.Once);
+            mockIDatabaseManagement.Verify(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>()), Times.Once);
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace GSqlQuery.Runner.Test.DataBase
             mockIDatabaseManagement.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mockIDatabaseManagement.Setup(x => x.GetConnection()).Returns(mockIConnection.Object);
 
-            mockIDatabaseManagement.Setup(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()))
+            mockIDatabaseManagement.Setup(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>()))
                 .Returns(Enumerable.Empty<Join<Test1, Test3>>());
 
             var connectionOptions = new ConnectionOptions<IConnection>(new TestFormats(), mockIDatabaseManagement.Object);
@@ -63,7 +63,7 @@ namespace GSqlQuery.Runner.Test.DataBase
                 {
                     var result = EntityExecute<Test1>.Select(connectionOptions).LeftJoin<Test3>().NotEqual(x => x.Table2.Ids, x => x.Table1.Id).Build().ExecuteWithTransaction(transaction);
                     Assert.Empty(result);
-                    mockIDatabaseManagement.Verify(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>()), Times.Once);
+                    mockIDatabaseManagement.Verify(x => x.ExecuteReader(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>()), Times.Once);
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace GSqlQuery.Runner.Test.DataBase
             mockIDatabaseManagement.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mockIDatabaseManagement.Setup(x => x.GetConnectionAsync(It.IsAny<CancellationToken>())).ReturnsAsync(mockIConnection.Object);
 
-            mockIDatabaseManagement.Setup(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
+            mockIDatabaseManagement.Setup(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Enumerable.Empty<Join<Test1, Test3>>());
 
             var connectionOptions = new ConnectionOptions<IConnection>(new TestFormats(), mockIDatabaseManagement.Object);
@@ -91,7 +91,7 @@ namespace GSqlQuery.Runner.Test.DataBase
             var result = await EntityExecute<Test1>.Select(connectionOptions).LeftJoin<Test3>().NotEqual(x => x.Table2.Ids, x => x.Table1.Id).Build().ExecuteWithTransactionAsync();
 
             Assert.Empty(result);
-            mockIDatabaseManagement.Verify(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockIDatabaseManagement.Verify(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace GSqlQuery.Runner.Test.DataBase
             mockIDatabaseManagement.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mockIDatabaseManagement.Setup(x => x.GetConnectionAsync(It.IsAny<CancellationToken>())).ReturnsAsync(mockIConnection.Object);
 
-            mockIDatabaseManagement.Setup(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()))
+            mockIDatabaseManagement.Setup(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Enumerable.Empty<Join<Test1, Test3>>());
 
             var connectionOptions = new ConnectionOptions<IConnection>(new TestFormats(), mockIDatabaseManagement.Object);
@@ -120,7 +120,7 @@ namespace GSqlQuery.Runner.Test.DataBase
                 {
                     var result = await EntityExecute<Test1>.Select(connectionOptions).LeftJoin<Test3>().NotEqual(x => x.Table2.Ids, x => x.Table1.Id).Build().ExecuteWithTransactionAsync(transaction);
                     Assert.Empty(result);
-                    mockIDatabaseManagement.Verify(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<IEnumerable<IDataParameter>>(), It.IsAny<CancellationToken>()), Times.Once);
+                    mockIDatabaseManagement.Verify(x => x.ExecuteReaderAsync(It.IsAny<IConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>(), It.IsAny<CancellationToken>()), Times.Once);
                 }
             }
         }
