@@ -63,7 +63,7 @@ namespace GSqlQuery.Runner.Transforms
             }
         }
 
-        protected static IEnumerable<DataReaderPropertyDetail> GetPropertiesJoin(ClassOptions classOptions,IEnumerable<PropertyOptions> propertyOptionsColumns, DbDataReader reader)
+        protected static IEnumerable<DataReaderPropertyDetail> GetPropertiesJoin(ClassOptions classOptions, IEnumerable<PropertyOptions> propertyOptionsColumns, DbDataReader reader)
         {
             return (from pro in classOptions.PropertyOptions
                     join ca in propertyOptionsColumns on pro.Value.ColumnAttribute.Name equals ca.ColumnAttribute.Name into leftJoin
@@ -82,7 +82,7 @@ namespace GSqlQuery.Runner.Transforms
             foreach (JoinClassOptions<TDbDataReader> item in _joinClassOptions)
             {
                 IGrouping<string, KeyValuePair<string, PropertyOptions>> tmpColumns = columnGroup.First(x => x.Key == item.ClassOptions.FormatTableName.Table.Name);
-                item.PropertyOptionsInEntities = GetPropertiesJoin(item.ClassOptions, tmpColumns.Select(x =>x.Value), reader);
+                item.PropertyOptionsInEntities = GetPropertiesJoin(item.ClassOptions, tmpColumns.Select(x => x.Value), reader);
                 result.AddRange(item.PropertyOptionsInEntities);
 
                 MethodInfo methodInfo = _events.GetType().GetMethod("GetTransformTo").MakeGenericMethod(item.ClassOptions.Type, reader.GetType());

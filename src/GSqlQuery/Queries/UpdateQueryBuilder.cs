@@ -13,7 +13,7 @@ namespace GSqlQuery.Queries
 
         public object Value { get; set; }
 
-        public UpdateColumns(Expression expression, object value) :  this(expression)
+        public UpdateColumns(Expression expression, object value) : this(expression)
         {
             Value = value;
         }
@@ -29,7 +29,7 @@ namespace GSqlQuery.Queries
         where TReturn : IQuery<T, TQueryOptions>
          where TQueryOptions : QueryOptions
     {
-        private readonly List<UpdateColumns> _columnValues= [] ;
+        private readonly List<UpdateColumns> _columnValues = [];
         protected readonly object _entity;
 
         public List<UpdateColumns> ColumnValues => _columnValues;
@@ -43,7 +43,7 @@ namespace GSqlQuery.Queries
         public UpdateQueryBuilder(TQueryOptions queryOptions, Expression expression, object value) :
             base(queryOptions)
         {
-            _columnValues.Add(new UpdateColumns(expression, value)); 
+            _columnValues.Add(new UpdateColumns(expression, value));
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace GSqlQuery.Queries
                     ParameterDetail parameterDetail = new ParameterDetail(paramName, value ?? DBNull.Value);
                     CriteriaDetailCollection criteriaDetail = new CriteriaDetailCollection(partQuery, column.Value, [parameterDetail]);
                     criteriaDetails.Add(criteriaDetail);
-                }  
+                }
             }
             return criteriaDetails;
         }
@@ -180,7 +180,7 @@ namespace GSqlQuery.Queries
         {
             return CacheQueryBuilderExtension.CreateUpdateQuery<T, TReturn, TQueryOptions>(QueryOptions, _andOr, _entity, ColumnValues.Select(x => x.Expression), CreateQuery, GetQuery);
 
-             //return CreateQuery();
+            //return CreateQuery();
         }
 
         public TReturn CreateQuery()

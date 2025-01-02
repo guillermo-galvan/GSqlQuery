@@ -187,7 +187,7 @@ namespace GSqlQuery.Extensions
           where TReturn : IQuery<T, TQueryOptions>
           where TQueryOptions : QueryOptions
         {
-            if(entity == null)
+            if (entity == null)
             {
                 return createQuery();
             }

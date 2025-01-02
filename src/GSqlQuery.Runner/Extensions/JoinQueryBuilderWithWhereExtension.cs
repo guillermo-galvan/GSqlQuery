@@ -39,7 +39,7 @@ namespace GSqlQuery
             where T2 : class
             where TReturn : IQuery<Join<T1, T2>, ConnectionOptions<TDbConnection>>
         {
-            return AddColumn<T1,T2, TReturn, TDbConnection, TProperties>(joinQueryBuilderWith, null, field1, criteriaEnum, field2);
+            return AddColumn<T1, T2, TReturn, TDbConnection, TProperties>(joinQueryBuilderWith, null, field1, criteriaEnum, field2);
         }
 
         public static Runner.IJoinQueryBuilderWithWhere<T1, T2, TReturn, TDbConnection> AndEqual<T1, T2, TReturn, TDbConnection, TProperties>(
@@ -47,7 +47,7 @@ namespace GSqlQuery
             Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
-            where T2 : class 
+            where T2 : class
             where TReturn : IQuery<Join<T1, T2>, ConnectionOptions<TDbConnection>>
         {
             return AddColumn(joinQueryBuilderWith, "AND", field1, JoinCriteriaType.Equal, field2);
@@ -173,7 +173,7 @@ namespace GSqlQuery
         {
             return AddColumn(joinQueryBuilderWith, "OR", field1, JoinCriteriaType.LessThanOrEqual, field2);
         }
-#endregion
+        #endregion
 
         #region ThreeTable
 

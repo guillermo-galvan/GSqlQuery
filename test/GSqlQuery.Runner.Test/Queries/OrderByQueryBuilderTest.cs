@@ -47,7 +47,7 @@ namespace GSqlQuery.Runner.Test.Queries
             Assert.NotEmpty(query.Text);
             Assert.NotNull(query.Columns);
             Assert.NotEmpty(query.Columns);
-            Assert.NotNull(query.DatabaseManagement); 
+            Assert.NotNull(query.DatabaseManagement);
             Assert.NotNull(query.QueryOptions);
             Assert.NotNull(query.QueryOptions.Formats);
             Assert.NotNull(query.QueryOptions.DatabaseManagement);

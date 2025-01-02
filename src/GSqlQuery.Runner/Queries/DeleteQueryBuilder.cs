@@ -12,7 +12,7 @@ namespace GSqlQuery.Runner.Queries
         { }
 
         public DeleteQueryBuilder(object entity, ConnectionOptions<TDbConnection> connectionOptions) : base(entity, connectionOptions)
-        {}
+        { }
 
         public override DeleteQuery<T, TDbConnection> GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> queryOptions)
         {

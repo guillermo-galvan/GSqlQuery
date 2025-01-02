@@ -1,10 +1,10 @@
-﻿using System;
+﻿using GSqlQuery.Cache;
+using GSqlQuery.Runner;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using GSqlQuery.Cache;
-using GSqlQuery.Runner;
 
 namespace GSqlQuery
 {

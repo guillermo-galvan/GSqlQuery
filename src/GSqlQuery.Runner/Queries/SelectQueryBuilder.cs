@@ -12,9 +12,9 @@ namespace GSqlQuery.Runner.Queries
         GSqlQuery.IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>
         where T : class
     {
-        public SelectQueryBuilder(DynamicQuery dynamicQuery, ConnectionOptions<TDbConnection> connectionOptions) : 
+        public SelectQueryBuilder(DynamicQuery dynamicQuery, ConnectionOptions<TDbConnection> connectionOptions) :
             base(dynamicQuery, connectionOptions)
-        {  }
+        { }
 
         public SelectQueryBuilder(ConnectionOptions<TDbConnection> connectionOptions) : base(connectionOptions)
         { }
@@ -77,12 +77,12 @@ namespace GSqlQuery.Runner.Queries
 
         IComparisonOperators<Join<T, TJoin>, GSqlQuery.JoinQuery<Join<T, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>> GSqlQuery.IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>.LeftJoin<TJoin>()
         {
-            return (IComparisonOperators<Join<T, TJoin>, GSqlQuery.JoinQuery<Join<T, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>)new JoinQueryBuilderWithWhere<T, TJoin, TDbConnection>( JoinType.Left, QueryOptions);
+            return (IComparisonOperators<Join<T, TJoin>, GSqlQuery.JoinQuery<Join<T, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>)new JoinQueryBuilderWithWhere<T, TJoin, TDbConnection>(JoinType.Left, QueryOptions);
         }
 
         IComparisonOperators<Join<T, TJoin>, GSqlQuery.JoinQuery<Join<T, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>> GSqlQuery.IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>.RightJoin<TJoin>()
         {
-            return (IComparisonOperators<Join<T, TJoin>, GSqlQuery.JoinQuery<Join<T, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>)new JoinQueryBuilderWithWhere<T, TJoin, TDbConnection>( JoinType.Right, QueryOptions);
+            return (IComparisonOperators<Join<T, TJoin>, GSqlQuery.JoinQuery<Join<T, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>)new JoinQueryBuilderWithWhere<T, TJoin, TDbConnection>(JoinType.Right, QueryOptions);
         }
 
         IComparisonOperators<Join<T, TJoin>, GSqlQuery.JoinQuery<Join<T, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>> GSqlQuery.IJoinQueryBuilder<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>>.InnerJoin<TJoin>(Func<TJoin, object> func)

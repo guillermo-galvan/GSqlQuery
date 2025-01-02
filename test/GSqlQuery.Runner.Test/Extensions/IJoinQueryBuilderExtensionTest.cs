@@ -18,7 +18,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1,Test3>>>(), It.IsAny<PropertyOptionsCollection>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>()))
                 .Returns<IQuery<Join<Test1, Test3>>, PropertyOptionsCollection>((q, p) =>
                 {
                     return Enumerable.Empty<Join<Test1, Test3>>();

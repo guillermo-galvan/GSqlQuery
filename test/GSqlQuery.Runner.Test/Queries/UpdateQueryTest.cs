@@ -78,7 +78,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
-            UpdateQuery<Test3, IDbConnection> query = new UpdateQuery<Test3, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;", classOption.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)],  _connectionOptionsAsync);
+            UpdateQuery<Test3, IDbConnection> query = new UpdateQuery<Test3, IDbConnection>("UPDATE [TableName] SET [TableName].[Id]=@Param,[TableName].[Name]=@Param,[TableName].[Create]=@Param,[TableName].[IsTests]=@Param;", classOption.FormatTableName.Table, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptionsAsync);
             var result = await query.ExecuteAsync(CancellationToken.None);
             Assert.Equal(1, result);
         }

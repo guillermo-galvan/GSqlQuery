@@ -179,7 +179,7 @@ namespace GSqlQuery.Sqlite.Test
             using (var connection = _connectionOptions.DatabaseManagement.GetConnection())
             {
                 var transaction = connection.BeginTransaction();
-                transaction= null;
+                transaction = null;
                 Assert.Null(transaction?.Connection);
             }
         }

@@ -39,7 +39,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(field2), ErrorMessages.ParameterNotNull);
             }
 
-            if ( joinQueryBuilderWith is Runner.IJoinQueryBuilderWithWhere<T1, T2, TReturn, TDbConnection> result)
+            if (joinQueryBuilderWith is Runner.IJoinQueryBuilderWithWhere<T1, T2, TReturn, TDbConnection> result)
             {
                 return JoinQueryBuilderWithWhereExtension.AddColumn(result, field1, criteriaEnum, field2);
             }
@@ -59,7 +59,7 @@ namespace GSqlQuery
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
         /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
-        public static Runner.IJoinQueryBuilderWithWhere<T1, T2, TReturn, TDbConnection> Equal<T1, T2, TReturn, TDbConnection, TProperties> (this IComparisonOperators<Join<T1, T2>, TReturn, ConnectionOptions<TDbConnection>> joinQueryBuilderWith, Expression<Func<Join<T1, T2>, TProperties>> field1,
+        public static Runner.IJoinQueryBuilderWithWhere<T1, T2, TReturn, TDbConnection> Equal<T1, T2, TReturn, TDbConnection, TProperties>(this IComparisonOperators<Join<T1, T2>, TReturn, ConnectionOptions<TDbConnection>> joinQueryBuilderWith, Expression<Func<Join<T1, T2>, TProperties>> field1,
             Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
@@ -80,7 +80,7 @@ namespace GSqlQuery
         /// <param name="field1">Expression for field 1</param>
         /// <param name="field2">Expression for field 2</param>
         /// <returns>IJoinQueryBuilderWithWhere&lt;<typeparamref name="T1"/>,<typeparamref name="T2"/>,<typeparamref name="TReturn"/>,<typeparamref name="TQueryOptions"/>&gt;</returns>
-        public static Runner.IJoinQueryBuilderWithWhere<T1, T2, TReturn, TDbConnection> NotEqual<T1, T2, TReturn, TDbConnection, TProperties> (this IComparisonOperators<Join<T1, T2>, TReturn, ConnectionOptions<TDbConnection>> joinQueryBuilderWith, Expression<Func<Join<T1, T2>, TProperties>> field1, Expression<Func<Join<T1, T2>, TProperties>> field2)
+        public static Runner.IJoinQueryBuilderWithWhere<T1, T2, TReturn, TDbConnection> NotEqual<T1, T2, TReturn, TDbConnection, TProperties>(this IComparisonOperators<Join<T1, T2>, TReturn, ConnectionOptions<TDbConnection>> joinQueryBuilderWith, Expression<Func<Join<T1, T2>, TProperties>> field1, Expression<Func<Join<T1, T2>, TProperties>> field2)
             where T1 : class
             where T2 : class
             where TReturn : IQuery<Join<T1, T2>, ConnectionOptions<TDbConnection>>
@@ -216,7 +216,7 @@ namespace GSqlQuery
                 throw new ArgumentNullException(nameof(field2), ErrorMessages.ParameterNotNull);
             }
 
-            if (joinQueryBuilderWith is Runner.IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TDbConnection> result )
+            if (joinQueryBuilderWith is Runner.IJoinQueryBuilderWithWhere<T1, T2, T3, TReturn, TDbConnection> result)
             {
                 return JoinQueryBuilderWithWhereExtension.AddColumn(result, field1, criteriaEnum, field2);
             }

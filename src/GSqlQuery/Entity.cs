@@ -124,7 +124,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(expression), ErrorMessages.ParameterNotNull);
             }
-            
+
             return new UpdateQueryBuilder<T>(queryOptions, this, expression);
         }
 

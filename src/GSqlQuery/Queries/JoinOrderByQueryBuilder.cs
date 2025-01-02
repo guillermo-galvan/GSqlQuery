@@ -82,8 +82,8 @@ namespace GSqlQuery.Queries
             columns = selectQuery.Columns;
             criteria = selectQuery.Criteria;
             string text = selectQuery.Text.Replace(";", string.Empty);
-           
-            
+
+
             if (_andorBuilder == null)
             {
                 return ConstFormat.JOINSELECTORDERBY.Replace("{0}", text).Replace("{1}", columnsOrderby);

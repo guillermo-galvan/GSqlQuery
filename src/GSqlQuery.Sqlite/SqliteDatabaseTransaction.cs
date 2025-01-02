@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GSqlQuery.Sqlite
 {
-    public sealed class SqliteDatabaseTransaction(SqliteDatabaseConnection connection, SqliteTransaction transaction) : Transaction<SqliteDatabaseConnection, SqliteCommand,  SqliteTransaction, SqliteConnection>(connection, transaction)
+    public sealed class SqliteDatabaseTransaction(SqliteDatabaseConnection connection, SqliteTransaction transaction) : Transaction<SqliteDatabaseConnection, SqliteCommand, SqliteTransaction, SqliteConnection>(connection, transaction)
     {
         ~SqliteDatabaseTransaction()
         {

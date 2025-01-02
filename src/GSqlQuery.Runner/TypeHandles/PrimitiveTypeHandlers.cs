@@ -5,7 +5,7 @@ using System.Data.Common;
 
 namespace GSqlQuery.Runner.TypeHandles
 {
-    internal class ByteTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader> 
+    internal class ByteTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
         public override object GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
@@ -33,7 +33,7 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class ShortTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader> 
+    internal class ShortTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
         public override object GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
@@ -47,7 +47,7 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class ShortNullableTypeHandler<TDbDataReader> : NullableTypeHandler<short,TDbDataReader> 
+    internal class ShortNullableTypeHandler<TDbDataReader> : NullableTypeHandler<short, TDbDataReader>
         where TDbDataReader : DbDataReader
     {
         public override short GetNotNullValue(object value)
@@ -77,7 +77,7 @@ namespace GSqlQuery.Runner.TypeHandles
     internal class IntNullableTypeHandler<TDbDataReader> : NullableTypeHandler<int, TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override int GetNotNullValue(object  value)
+        public override int GetNotNullValue(object value)
         {
             return (int)value;
         }
@@ -163,7 +163,7 @@ namespace GSqlQuery.Runner.TypeHandles
     {
         public override double GetNotNullValue(object value)
         {
-            return ( double) value;
+            return (double)value;
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -298,7 +298,7 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class CharArrayNullableTypeHandler<TDbDataReader> : NullableTypeHandler<char[],TDbDataReader>
+    internal class CharArrayNullableTypeHandler<TDbDataReader> : NullableTypeHandler<char[], TDbDataReader>
         where TDbDataReader : DbDataReader
     {
         public override char[] GetNotNullValue(object value)
@@ -343,5 +343,3 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 }
-
-

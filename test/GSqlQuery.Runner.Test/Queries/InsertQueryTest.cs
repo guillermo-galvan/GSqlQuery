@@ -67,7 +67,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test6));
 
-            InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])", _tableAttribute, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptions,new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.Value.ColumnAttribute.IsAutoIncrementing).Value);
+            InsertQuery<Test6, IDbConnection> query = new InsertQuery<Test6, IDbConnection>("INSERT INTO [TableName] ([TableName].[Id],[TableName].[Name],[TableName].[Create],[TableName].[IsTests])", _tableAttribute, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptions, new Test6(1, null, DateTime.Now, true), classOption.PropertyOptions.FirstOrDefault(x => x.Value.ColumnAttribute.IsAutoIncrementing).Value);
             var result = query.Execute();
             Assert.NotNull(result);
         }

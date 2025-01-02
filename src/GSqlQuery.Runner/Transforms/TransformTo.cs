@@ -57,7 +57,7 @@ namespace GSqlQuery.Runner
         public virtual IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events)
         {
             IEnumerable<DataReaderPropertyDetail> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
-            List<T> result = [];            
+            List<T> result = [];
             Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = GetTypeHandlers(columns, events);
 
             while (reader.Read())

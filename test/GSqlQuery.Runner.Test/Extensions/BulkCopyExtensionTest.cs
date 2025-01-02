@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Xunit;
-using GSqlQuery.Runner.Test.Models;
+﻿using GSqlQuery.Runner.Test.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace GSqlQuery.Runner.Test.Extensions
 {
@@ -22,11 +22,11 @@ namespace GSqlQuery.Runner.Test.Extensions
         [Fact]
         public void FillTable_ok()
         {
-            IEnumerable<Test1> test1s = Enumerable.Range(0,100).Select(x => new Test1() 
+            IEnumerable<Test1> test1s = Enumerable.Range(0, 100).Select(x => new Test1()
             {
                 Id = x,
                 Create = DateTime.Now,
-                IsTest = x %2 == 0,
+                IsTest = x % 2 == 0,
                 Name = $"{x}Name"
             });
 
@@ -44,7 +44,7 @@ namespace GSqlQuery.Runner.Test.Extensions
             {
                 FilmId = x,
                 Description = "Description",
-                LanguageId = 1, 
+                LanguageId = 1,
                 LastUpdate = DateTime.Now,
                 Length = null,
                 OriginalLanguageId = 1,

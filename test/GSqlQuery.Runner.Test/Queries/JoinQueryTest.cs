@@ -40,7 +40,7 @@ namespace GSqlQuery.Runner.Test.Queries
             mock.Setup(x => x.Events).Returns(new TestDatabaseManagmentEvents());
             mock.Setup(x => x.GetConnection()).Returns(() => LoadGSqlQueryOptions.GetIDbConnection());
 
-            mock.Setup(x => x.ExecuteReader(It.IsAny<IDbConnection>(),It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>()))
+            mock.Setup(x => x.ExecuteReader(It.IsAny<IDbConnection>(), It.IsAny<IQuery<Join<Test1, Test3>>>(), It.IsAny<PropertyOptionsCollection>()))
                 .Returns(Enumerable.Empty<Join<Test1, Test3>>);
 
             ConnectionOptions<IDbConnection> connectionOptions = new ConnectionOptions<IDbConnection>(new TestFormats(), mock.Object);

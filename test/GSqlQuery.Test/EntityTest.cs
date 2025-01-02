@@ -23,7 +23,7 @@ namespace GSqlQuery.Test
         [Fact]
         public void borrar_despues()
         {
-            Test3 test3 = new Test3 ( 1, "Test1", DateTime.Now, true);
+            Test3 test3 = new Test3(1, "Test1", DateTime.Now, true);
             var select = test3.Update(_queryOptions, x => x.Ids).Set(x => x.Names).Set(x => x.Creates).Set(x => x.IsTests)
                             .Where().Equal(x => x.IsTests, true).AndEqual(x => x.Creates, DateTime.Now);
 

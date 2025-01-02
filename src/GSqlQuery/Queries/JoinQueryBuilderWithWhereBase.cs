@@ -39,7 +39,7 @@ namespace GSqlQuery.Queries
 
             foreach (JoinInfo joinInfo in joinInfos)
             {
-                PropertyOptionsCollection columns =  null;
+                PropertyOptionsCollection columns = null;
                 if (joinInfo.DynamicQuery != null)
                 {
                     ClassOptionsTupla<PropertyOptionsCollection> options = ExpressionExtension.GeTQueryOptionsAndMembersByFunc(joinInfo.DynamicQuery);

@@ -37,9 +37,9 @@ namespace GSqlQuery
 
         DynamicQuery IDynamicColumns.DynamicQuery
         {
-            get 
+            get
             {
-                if(_queryBuilderWithWhere is IDynamicColumns tmp)
+                if (_queryBuilderWithWhere is IDynamicColumns tmp)
                 {
                     return tmp.DynamicQuery;
                 }

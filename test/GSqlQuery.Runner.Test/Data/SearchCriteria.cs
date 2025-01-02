@@ -20,7 +20,7 @@ namespace GSqlQuery.Runner.Test.Data
         public SearchCriteria(IFormats formats, TableAttribute table, ColumnAttribute columnAttribute)
         {
             Column = columnAttribute;
-            Table  = table;
+            Table = table;
             Formats = formats;
         }
 

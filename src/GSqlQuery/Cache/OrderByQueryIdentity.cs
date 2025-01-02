@@ -126,12 +126,12 @@ namespace GSqlQuery.Cache
         {
             if (other is OrderByQueryIdentity orderByQueryIdentity)
             {
-               return EqualsBase(orderByQueryIdentity) &&
-                IQueryBuilderType == orderByQueryIdentity.IQueryBuilderType &&
-                IAndOrType == orderByQueryIdentity.IAndOrType &&
-                SearchCriteriaTypesValidation(orderByQueryIdentity) &&
-                PropertiesTypesValidation(orderByQueryIdentity) &&
-                PropertiesColumnsValidation(orderByQueryIdentity);
+                return EqualsBase(orderByQueryIdentity) &&
+                 IQueryBuilderType == orderByQueryIdentity.IQueryBuilderType &&
+                 IAndOrType == orderByQueryIdentity.IAndOrType &&
+                 SearchCriteriaTypesValidation(orderByQueryIdentity) &&
+                 PropertiesTypesValidation(orderByQueryIdentity) &&
+                 PropertiesColumnsValidation(orderByQueryIdentity);
             }
 
             return false;

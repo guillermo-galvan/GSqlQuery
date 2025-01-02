@@ -16,7 +16,7 @@ namespace GSqlQuery
             return new CountQueryBuilder<T, TDbConnection>(queryBuilder);
         }
 
-        public static IOrderByQueryBuilder<T, OrderByQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> OrderBy<T, TProperties, TDbConnection> (this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> queryBuilder, Func<T, TProperties> func, OrderBy orderBy)
+        public static IOrderByQueryBuilder<T, OrderByQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> OrderBy<T, TProperties, TDbConnection>(this IQueryBuilderWithWhere<T, SelectQuery<T, TDbConnection>, ConnectionOptions<TDbConnection>> queryBuilder, Func<T, TProperties> func, OrderBy orderBy)
            where T : class
         {
             if (queryBuilder == null)
@@ -28,7 +28,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(func), ErrorMessages.ParameterNotNull);
             }
-            
+
             return new OrderByQueryBuilder<T, TDbConnection>(new DynamicQuery(typeof(T), typeof(TProperties)), orderBy, queryBuilder);
         }
 
@@ -45,7 +45,7 @@ namespace GSqlQuery
             {
                 throw new ArgumentNullException(nameof(func), ErrorMessages.ParameterNotNull);
             }
-            
+
             return new OrderByQueryBuilder<T, TDbConnection>(new DynamicQuery(typeof(T), typeof(TProperties)), orderBy, queryBuilder);
         }
     }

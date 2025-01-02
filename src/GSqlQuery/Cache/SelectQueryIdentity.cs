@@ -79,7 +79,7 @@ namespace GSqlQuery.Cache
                 if (ReferenceEquals(this, selectQueryIdentity)) return true;
                 if (other is null) return false;
 
-                return EqualsBase(selectQueryIdentity) 
+                return EqualsBase(selectQueryIdentity)
                     && PropertiesValidation(selectQueryIdentity)
                     && SearchCriteriaTypesValidation(selectQueryIdentity);
             }

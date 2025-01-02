@@ -54,7 +54,7 @@ namespace GSqlQuery.Runner.Test.Queries
             var classOption = ClassOptionsFactory.GetClassOptions(typeof(Test3));
 
             DeleteQuery<Test3, IDbConnection> query = new DeleteQuery<Test3, IDbConnection>("DELETE FROM [TableName];", _tableAttribute, _classOptions.PropertyOptions, [_equal.GetCriteria(ref _parameterId)], _connectionOptions);
-        
+
             var result = query.Execute();
             Assert.Equal(1, result);
         }

@@ -50,7 +50,7 @@ namespace GSqlQuery.Queries
 
         public override TReturn Build()
         {
-            return CacheQueryBuilderExtension.CreateCountSelectQuery<T, TReturn, TQueryOptions, TSelectQuery>(QueryOptions, _queryBuilder, _andOr, CreateQuery, GetQuery );
+            return CacheQueryBuilderExtension.CreateCountSelectQuery<T, TReturn, TQueryOptions, TSelectQuery>(QueryOptions, _queryBuilder, _andOr, CreateQuery, GetQuery);
         }
 
         public abstract TReturn GetQuery(string text, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, TQueryOptions queryOptions);

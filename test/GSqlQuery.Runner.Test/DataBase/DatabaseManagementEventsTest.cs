@@ -21,7 +21,7 @@ namespace GSqlQuery.Runner.Test.DataBase
         {
             var events = new TestDatabaseManagmentEvents() { IsTraceActive = true };
 
-            events.WriteTrace("test", new object[] { "test"});
+            events.WriteTrace("test", new object[] { "test" });
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace GSqlQuery.Runner.Test.DataBase
             IQuery<Join<Test1, Test3>, ConnectionOptions<IDbConnection>> query = EntityExecute<Test1>.Select(_connectionOptions).InnerJoin<Test3>().Equal(x => x.Table1.Id, x => x.Table2.Ids).Build();
             var events = new TestDatabaseManagmentEvents();
 
-            var result = events.GetTransformTo<Join<Test1,Test3>, DbDataReader>(ClassOptionsFactory.GetClassOptions(typeof(Join<Test1, Test3>)));
+            var result = events.GetTransformTo<Join<Test1, Test3>, DbDataReader>(ClassOptionsFactory.GetClassOptions(typeof(Join<Test1, Test3>)));
             Assert.IsType<Transforms.JoinTransformTo<Join<Test1, Test3>, DbDataReader>>(result);
         }
 

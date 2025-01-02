@@ -107,7 +107,7 @@ namespace GSqlQuery.Runner.Queries
 
         IComparisonOperators<Join<T1, T2, TJoin>, GSqlQuery.JoinQuery<Join<T1, T2, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>> GSqlQuery.IJoinQueryBuilderWithWhere<T1, T2, GSqlQuery.JoinQuery<Join<T1, T2>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>.InnerJoin<TJoin>()
         {
-            return (IComparisonOperators<Join<T1, T2, TJoin>, GSqlQuery.JoinQuery<Join<T1, T2, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>) new JoinQueryBuilderWithWhere<T1, T2, TJoin, TDbConnection>(_joinInfos, JoinType.Inner, QueryOptions);
+            return (IComparisonOperators<Join<T1, T2, TJoin>, GSqlQuery.JoinQuery<Join<T1, T2, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>)new JoinQueryBuilderWithWhere<T1, T2, TJoin, TDbConnection>(_joinInfos, JoinType.Inner, QueryOptions);
         }
 
         IComparisonOperators<Join<T1, T2, TJoin>, GSqlQuery.JoinQuery<Join<T1, T2, TJoin>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>> GSqlQuery.IJoinQueryBuilderWithWhere<T1, T2, GSqlQuery.JoinQuery<Join<T1, T2>, ConnectionOptions<TDbConnection>>, ConnectionOptions<TDbConnection>>.LeftJoin<TJoin>()

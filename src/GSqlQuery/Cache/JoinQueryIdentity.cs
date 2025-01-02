@@ -42,9 +42,9 @@ namespace GSqlQuery.Cache
                 return false;
             }
 
-            return LeftPart.Equals(other.LeftPart) && 
-                   JoinCriteria == other.JoinCriteria && 
-                   RigthPart.Equals(other.RigthPart) && 
+            return LeftPart.Equals(other.LeftPart) &&
+                   JoinCriteria == other.JoinCriteria &&
+                   RigthPart.Equals(other.RigthPart) &&
                    LogicalOperator == other.LogicalOperator;
         }
     }
@@ -63,7 +63,7 @@ namespace GSqlQuery.Cache
 
         private bool JoinCriteriaTypesValid(JoinPropertiesType other)
         {
-            if(JoinCriteriaTypes.Count != other.JoinCriteriaTypes.Count)
+            if (JoinCriteriaTypes.Count != other.JoinCriteriaTypes.Count)
             {
                 return false;
             }
@@ -86,11 +86,11 @@ namespace GSqlQuery.Cache
                 return false;
             }
 
-           return Entity == other.Entity &&
-                  Property == other.Property &&
-                  JoinEnum == other.JoinEnum &&
-                  IsMain == other.IsMain &&
-                  JoinCriteriaTypesValid(other);
+            return Entity == other.Entity &&
+                   Property == other.Property &&
+                   JoinEnum == other.JoinEnum &&
+                   IsMain == other.IsMain &&
+                   JoinCriteriaTypesValid(other);
         }
     }
 
@@ -188,7 +188,7 @@ namespace GSqlQuery.Cache
             if (other is JoinQueryIdentity joinQueryIdentity)
             {
                 return EqualsBase(joinQueryIdentity)
-                    && JoinPropertiesTypesValidation(joinQueryIdentity) 
+                    && JoinPropertiesTypesValidation(joinQueryIdentity)
                     && SearchCriteriaTypesValidation(joinQueryIdentity);
             }
 

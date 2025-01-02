@@ -20,7 +20,7 @@ namespace GSqlQuery
 
 
         internal InsertQuery(string text, TableAttribute table, PropertyOptionsCollection columns, IEnumerable<CriteriaDetailCollection> criteria, ConnectionOptions<TDbConnection> connectionOptions, object entity, PropertyOptions propertyOptionsAutoIncrementing)
-            : base(ref text, table,columns, criteria, connectionOptions)
+            : base(ref text, table, columns, criteria, connectionOptions)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
             _propertyOptionsAutoIncrementing = propertyOptionsAutoIncrementing;
@@ -55,7 +55,7 @@ namespace GSqlQuery
                 idResult = DatabaseManagement.ExecuteScalar<object>(connection, this);
             }
 
-            idResult = GeneralExtension.ConvertToValue( _propertyOptionsAutoIncrementing.PropertyInfo.PropertyType,idResult);
+            idResult = GeneralExtension.ConvertToValue(_propertyOptionsAutoIncrementing.PropertyInfo.PropertyType, idResult);
             _propertyOptionsAutoIncrementing.PropertyInfo.SetValue(Entity, idResult);
         }
 

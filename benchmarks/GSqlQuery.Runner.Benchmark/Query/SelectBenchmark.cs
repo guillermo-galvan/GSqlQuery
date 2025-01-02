@@ -55,7 +55,7 @@ namespace GSqlQuery.Runner.Benchmark.Query
         private readonly IEnumerable<long> _ids;
         public Select() : base()
         {
-            _ids = Enumerable.Range(0,10).Select(x => (long)x);
+            _ids = Enumerable.Range(0, 10).Select(x => (long)x);
         }
 
         [Benchmark]

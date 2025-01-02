@@ -94,7 +94,7 @@ namespace GSqlQuery.Runner.Test.Queries
         {
             AndOrBase<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> where = new AndOrBase<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>>(_selectQueryBuilder, _connectionOptions);
             where.Add(_equal);
-            IAndOr<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> andOr =where.AndOr;
+            IAndOr<Test1, SelectQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> andOr = where.AndOr;
             Assert.NotNull(andOr);
         }
     }

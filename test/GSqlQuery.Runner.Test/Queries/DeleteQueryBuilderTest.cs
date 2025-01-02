@@ -57,7 +57,7 @@ namespace GSqlQuery.Runner.Test.Queries
         [Fact]
         public void Should_return_an_implementation_of_the_IWhere_interface3()
         {
-            IQueryBuilderWithWhere<DeleteQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder = 
+            IQueryBuilderWithWhere<DeleteQuery<Test1, IDbConnection>, ConnectionOptions<IDbConnection>> queryBuilder =
                 new DeleteQueryBuilder<Test1, IDbConnection>(_connectionOptions);
             var where = queryBuilder.Where();
             Assert.NotNull(where);

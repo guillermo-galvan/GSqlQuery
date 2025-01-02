@@ -60,9 +60,9 @@ namespace GSqlQuery
                     }
                     else
                     {
-                        _criteriaDetailCollections.Add(new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions, [.. parameterDetails])); 
+                        _criteriaDetailCollections.Add(new CriteriaDetailCollection(criteriaDetailCollection.SearchCriteria, criteriaDetailCollection.QueryPart, criteriaDetailCollection.PropertyOptions, [.. parameterDetails]));
                     }
-                    
+
                 }
 
                 _queryBuilder.Append(ReemplazarTextoConRegex(query.Text, replacements));

@@ -1,11 +1,11 @@
-﻿using GSqlQuery.Runner.Test.Data;
+﻿using GSqlQuery;
+using GSqlQuery.Runner.Test.Data;
 using GSqlQuery.Runner.Test.Extensions;
 using GSqlQuery.Runner.Test.Models;
 using System;
 using System.Data;
 using System.Linq.Expressions;
 using Xunit;
-using GSqlQuery;
 
 namespace GSqlQuery.Runner.Test
 {
@@ -15,11 +15,11 @@ namespace GSqlQuery.Runner.Test
         public void borrar_desepues()
         {
             ConnectionOptions<IDbConnection> connectionOptions = new ConnectionOptions<IDbConnection>(new TestFormats(), LoadGSqlQueryOptions.GetDatabaseManagmentMock());
-            var select = Test3.Select(connectionOptions, x => new {x.Ids, x.IsTests});
+            var select = Test3.Select(connectionOptions, x => new { x.Ids, x.IsTests });
             var where = select.Where();
             var criteria = where.Between(x => x.Creates, DateTime.Now.AddDays(30), DateTime.Now);
             var result = select.Build();
-            
+
         }
 
         [Fact]
@@ -621,9 +621,9 @@ namespace GSqlQuery.Runner.Test
         public void Should_generate_the_inner_join_two_tables_orderBy_query(ConnectionOptions<IDbConnection> connectionOptions, string query)
         {
             var result = Test3.Select(connectionOptions)
-                              .InnerJoin<Test6>().Equal(x =>  x.Table1.Ids, x => x.Table2.Ids )
-                              .OrderBy(x => new {x.Table1.Creates}, OrderBy.DESC)
-                              .OrderBy(x => new {x.Table2.Names}, OrderBy.ASC)
+                              .InnerJoin<Test6>().Equal(x => x.Table1.Ids, x => x.Table2.Ids)
+                              .OrderBy(x => new { x.Table1.Creates }, OrderBy.DESC)
+                              .OrderBy(x => new { x.Table2.Names }, OrderBy.ASC)
                               .Build();
 
             Assert.NotEmpty(result.Text);

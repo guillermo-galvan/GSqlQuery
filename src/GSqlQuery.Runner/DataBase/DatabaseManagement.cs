@@ -37,7 +37,7 @@ namespace GSqlQuery.Runner
             {
                 foreach (CriteriaDetailCollection criteriaDetailCollection in query.Criteria.Where(x => x.Values.Any()))
                 {
-                    ITypeHandler<TDbDataReader> typeHandler  = Events.GetHandler<TDbDataReader>(criteriaDetailCollection.PropertyOptions.PropertyInfo.PropertyType);
+                    ITypeHandler<TDbDataReader> typeHandler = Events.GetHandler<TDbDataReader>(criteriaDetailCollection.PropertyOptions.PropertyInfo.PropertyType);
 
                     foreach (ParameterDetail parameterDetail in criteriaDetailCollection.Values)
                     {
@@ -74,7 +74,7 @@ namespace GSqlQuery.Runner
                 {
                     Events.WriteTrace("ExecuteNonQuery Query: {@Text} Parameters: {@parameters}", [query.Text, command.Parameters]);
                 }
-                 
+
                 return command.ExecuteNonQuery();
             }
         }
@@ -206,7 +206,7 @@ namespace GSqlQuery.Runner
                 }
 
                 object resultCommand = command.ExecuteScalar();
-                return (T)GeneralExtension.ConvertToValue(typeof(T),resultCommand);
+                return (T)GeneralExtension.ConvertToValue(typeof(T), resultCommand);
             }
         }
 
