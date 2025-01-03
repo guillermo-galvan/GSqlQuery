@@ -61,24 +61,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "es", "es", "{4D9A870C-4EF9-
 		docs\es\Where.md = docs\es\Where.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sqlite", "Sqlite", "{1217FF45-020F-4D04-9423-0529E53149CD}"
-	ProjectSection(SolutionItems) = preProject
-		docs\en\Sqlite\Config.md = docs\en\Sqlite\Config.md
-		docs\en\Sqlite\DatabaseManagementEvents.md = docs\en\Sqlite\DatabaseManagementEvents.md
-		docs\en\Sqlite\EntityExecute.md = docs\en\Sqlite\EntityExecute.md
-		docs\en\Sqlite\SqliteConnectionOptions.md = docs\en\Sqlite\SqliteConnectionOptions.md
-		docs\en\Sqlite\SqliteDatabaseManagement.md = docs\en\Sqlite\SqliteDatabaseManagement.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sqlite", "Sqlite", "{C5960518-630D-48E7-A372-D86F0CD5A58E}"
-	ProjectSection(SolutionItems) = preProject
-		docs\es\Sqlite\Config.md = docs\es\Sqlite\Config.md
-		docs\es\Sqlite\DatabaseManagementEvents.md = docs\es\Sqlite\DatabaseManagementEvents.md
-		docs\es\Sqlite\EntityExecute.md = docs\es\Sqlite\EntityExecute.md
-		docs\es\Sqlite\SqliteConnectionOptions.md = docs\es\Sqlite\SqliteConnectionOptions.md
-		docs\es\Sqlite\SqliteDatabaseManagement.md = docs\es\Sqlite\SqliteDatabaseManagement.md
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSqlQuery.Sqlite", "src\GSqlQuery.Sqlite\GSqlQuery.Sqlite.csproj", "{42B8D5F3-9F64-4D5C-BEB2-274A456EDC21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSqlQuery.Sqlite.Test", "test\GSqlQuery.Sqlite.Test\GSqlQuery.Sqlite.Test.csproj", "{583A2167-28E4-479D-B716-AB6AFAAF0331}"
@@ -139,8 +121,6 @@ Global
 		{B6BBB013-1DAE-4FB6-9BB5-01D209F16ABC} = {2ABE9810-8CEF-4FB1-9EC8-F204427D4463}
 		{0CEEB2BC-BAA7-4C78-8FA7-7148A3CDB476} = {B6BBB013-1DAE-4FB6-9BB5-01D209F16ABC}
 		{4D9A870C-4EF9-4189-9EB8-66762548AB7D} = {B6BBB013-1DAE-4FB6-9BB5-01D209F16ABC}
-		{1217FF45-020F-4D04-9423-0529E53149CD} = {0CEEB2BC-BAA7-4C78-8FA7-7148A3CDB476}
-		{C5960518-630D-48E7-A372-D86F0CD5A58E} = {4D9A870C-4EF9-4189-9EB8-66762548AB7D}
 		{583A2167-28E4-479D-B716-AB6AFAAF0331} = {7D0A97FE-1371-448A-8A12-DB0912504CC2}
 		{16F463BF-B86A-4423-9104-BD04B2CA2361} = {34D75E9D-77BF-4959-83CA-C7A989E1F3FB}
 	EndGlobalSection
