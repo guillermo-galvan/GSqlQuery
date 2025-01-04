@@ -33,18 +33,15 @@ namespace GSqlQuery.Runner
             TDbCommand command = connection.GetDbCommand();
             command.CommandText = query.Text;
 
-            if (query.Criteria != null && query.Criteria.Any())
+            foreach (CriteriaDetailCollection criteriaDetailCollection in query.Criteria?.Where(x => x.Values.Any()) ?? [])
             {
-                foreach (CriteriaDetailCollection criteriaDetailCollection in query.Criteria.Where(x => x.Values.Any()))
-                {
-                    ITypeHandler<TDbDataReader> typeHandler = Events.GetHandler<TDbDataReader>(criteriaDetailCollection.PropertyOptions.PropertyInfo.PropertyType);
+                ITypeHandler<TDbDataReader> typeHandler = Events.GetHandler<TDbDataReader>(criteriaDetailCollection.PropertyOptions.PropertyInfo.PropertyType);
 
-                    foreach (ParameterDetail parameterDetail in criteriaDetailCollection.Values)
-                    {
-                        IDataParameter parameter = command.CreateParameter();
-                        typeHandler.SetValueDataParameter(parameter, parameterDetail);
-                        command.Parameters.Add(parameter);
-                    }
+                foreach (ParameterDetail parameterDetail in criteriaDetailCollection.Values)
+                {
+                    IDataParameter parameter = command.CreateParameter();
+                    typeHandler.SetValueDataParameter(parameter, parameterDetail);
+                    command.Parameters.Add(parameter);
                 }
             }
 

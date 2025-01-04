@@ -101,6 +101,11 @@ namespace GSqlQuery.Cache
             }
         }
 
+        public bool ContainsKey(string key)
+        {
+            return _index.ContainsKey(key);
+        }
+
         public IEnumerator<KeyValuePair<string, PropertyOptions>> GetEnumerator()
         {
             foreach (KeyValuePair<string, PropertyOptions> item in _keyValues)

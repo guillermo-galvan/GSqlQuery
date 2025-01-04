@@ -19,12 +19,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class ByteNullableTypeHandler<TDbDataReader> : NullableTypeHandler<byte, TDbDataReader>
+    internal class ByteNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override byte GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (byte)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetByte(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -47,13 +47,14 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class ShortNullableTypeHandler<TDbDataReader> : NullableTypeHandler<short, TDbDataReader>
+    internal class ShortNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override short GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (short)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetInt16(dataReaderPropertyDetail.Ordinal!.Value);
         }
+
         protected override void SetDataType(IDataParameter dataParameter)
         {
             dataParameter.DbType = DbType.Int16;
@@ -74,12 +75,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class IntNullableTypeHandler<TDbDataReader> : NullableTypeHandler<int, TDbDataReader>
+    internal class IntNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override int GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (int)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetInt32(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -102,12 +103,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class LongNullableTypeHandler<TDbDataReader> : NullableTypeHandler<long, TDbDataReader>
+    internal class LongNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override long GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (long)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetInt64(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -130,12 +131,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class FloatNullableTypeHandler<TDbDataReader> : NullableTypeHandler<float, TDbDataReader>
+    internal class FloatNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override float GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (float)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetFloat(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -158,12 +159,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class DoubleNullableTypeHandler<TDbDataReader> : NullableTypeHandler<double, TDbDataReader>
+    internal class DoubleNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override double GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (double)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetDouble(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -214,12 +215,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class CharNullableTypeHandler<TDbDataReader> : NullableTypeHandler<char, TDbDataReader>
+    internal class CharNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override char GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (char)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetChar(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -256,12 +257,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class StringNullableTypeHandler<TDbDataReader> : NullableTypeHandler<string, TDbDataReader>
+    internal class StringNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override string GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return (string)value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetString(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -298,13 +299,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class CharArrayNullableTypeHandler<TDbDataReader> : NullableTypeHandler<char[], TDbDataReader>
+    internal class CharArrayNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override char[] GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            string tmp = (string)value;
-            return tmp.ToCharArray();
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetString(dataReaderPropertyDetail.Ordinal!.Value).ToCharArray();
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -313,12 +313,12 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class ObjectNullableTypeHandler<TDbDataReader> : NullableTypeHandler<object, TDbDataReader>
+    internal class ObjectNullableTypeHandler<TDbDataReader> : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
-        public override object GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
         {
-            return value;
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : reader.GetValue(dataReaderPropertyDetail.Ordinal!.Value);
         }
 
         protected override void SetDataType(IDataParameter dataParameter)
@@ -327,12 +327,17 @@ namespace GSqlQuery.Runner.TypeHandles
         }
     }
 
-    internal class DefaultNullableTypeHandler<TDbDataReader>(Type type) : NullableTypeHandler<object, TDbDataReader>
+    internal class DefaultNullableTypeHandler<TDbDataReader>(Type type) : TypeHandler<TDbDataReader>
         where TDbDataReader : DbDataReader
     {
         private readonly Type _type = type;
 
-        public override object GetNotNullValue(object value)
+        public override object? GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail)
+        {
+            return reader.IsDBNull(dataReaderPropertyDetail.Ordinal!.Value) ? null : GeneralExtension.ConvertToValue(_type, reader.GetValue(dataReaderPropertyDetail.Ordinal!.Value));
+        }
+
+        public object GetNotNullValue(object value)
         {
             return GeneralExtension.ConvertToValue(_type, value);
         }

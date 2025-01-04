@@ -23,14 +23,20 @@ namespace GSqlQuery.Runner
                         new DataReaderPropertyDetail(pro.Value, left.Value != null ? reader.GetOrdinal(pro.Value.ColumnAttribute.Name) : null)).ToArray();
         }
 
-        private void Fill(TDbDataReader reader, IEnumerable<DataReaderPropertyDetail> columns, Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers, List<T> result)
+        private void Fill(TDbDataReader reader, IEnumerable<DataReaderPropertyDetail> columns, DatabaseManagementEvents events, Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers, List<T> result)
         {
             List<PropertyValue> propertyValues = [];
             foreach (DataReaderPropertyDetail item in columns)
             {
                 if (item.Ordinal.HasValue)
                 {
-                    propertyValues.Add(new PropertyValue(item.Property, typeHandlers[item.Ordinal.Value].GetValue(reader, item)));
+                    if (!typeHandlers.TryGetValue(item.Ordinal.Value, out ITypeHandler<TDbDataReader> typeHandlersTmp))
+                    {
+                        typeHandlersTmp = events.GetHandler<TDbDataReader>(item.Property.PropertyInfo.PropertyType);
+                        typeHandlers.Add(item.Ordinal.Value, typeHandlersTmp);
+                    }
+
+                    propertyValues.Add(new PropertyValue(item.Property, typeHandlersTmp.GetValue(reader, item)));
                 }
                 else
                 {
@@ -42,27 +48,15 @@ namespace GSqlQuery.Runner
             result.Add(tmp);
         }
 
-        protected Dictionary<int, ITypeHandler<TDbDataReader>> GetTypeHandlers(IEnumerable<DataReaderPropertyDetail> columns, DatabaseManagementEvents events)
-        {
-            Dictionary<int, ITypeHandler<TDbDataReader>> result = [];
-
-            foreach (DataReaderPropertyDetail item in columns.Where(x => x.Ordinal.HasValue))
-            {
-                result.Add(item.Ordinal.Value, events.GetHandler<TDbDataReader>(item.Property.PropertyInfo.PropertyType));
-            }
-
-            return result;
-        }
-
         public virtual IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events)
         {
             IEnumerable<DataReaderPropertyDetail> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
             List<T> result = [];
-            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = GetTypeHandlers(columns, events);
+            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = [];
 
             while (reader.Read())
             {
-                Fill(reader, columns, typeHandlers, result);
+                Fill(reader, columns, events, typeHandlers, result);
             }
 
             return result;
@@ -73,11 +67,11 @@ namespace GSqlQuery.Runner
             cancellationToken.ThrowIfCancellationRequested();
             IEnumerable<DataReaderPropertyDetail> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
             List<T> result = [];
-            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = GetTypeHandlers(columns, events);
+            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = [];
 
             while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                Fill(reader, columns, typeHandlers, result);
+                Fill(reader, columns, events, typeHandlers, result);
             }
 
             return result;

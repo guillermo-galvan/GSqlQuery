@@ -5,7 +5,7 @@ namespace GSqlQuery
     /// <summary>
     /// Order By Query Builder
     /// </summary>
-    public interface IOrderByQueryBuilder<T, TReturn, TQueryOptions> : IBuilder<TReturn>
+    public interface IOrderByQueryBuilder<T, TReturn, TQueryOptions> : IBuilder<TReturn>, IQueryOptions<TQueryOptions>
         where T : class
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
