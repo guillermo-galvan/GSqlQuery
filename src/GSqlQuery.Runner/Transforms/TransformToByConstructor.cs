@@ -1,22 +1,29 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
+﻿using System.Data.Common;
+using System.Reflection;
 
 namespace GSqlQuery.Runner.Transforms
 {
-    internal class TransformToByConstructor<T, TDbDataReader>(int numColumns) : TransformTo<T, TDbDataReader>(numColumns)
+    internal class TransformToByConstructor<T, TDbDataReader> : TransformTo<T, TDbDataReader>
         where T : class
         where TDbDataReader : DbDataReader
     {
-        public override T CreateEntity(IEnumerable<PropertyValue> propertyValues)
+        private readonly ConstructorInfo _constructorInfo;
+        private readonly object[] _fields;
+
+        public TransformToByConstructor(int numColumns) : base(numColumns)
         {
-            object[] fields = new object[_numColumns];
+            _constructorInfo = _classOptions.ConstructorInfo;
+            _fields = new object[numColumns];
+        }
 
-            foreach (PropertyValue item in propertyValues)
-            {
-                fields[item.Property.PositionConstructor] = item.Value;
-            }
+        public override T GetEntity()
+        {
+            return (T)_constructorInfo.Invoke(_fields);
+        }
 
-            return (T)_classOptions.ConstructorInfo.Invoke(fields);
+        public override void SetValue(PropertyOptions property, object value)
+        {
+            _fields[property.PositionConstructor] = value;
         }
     }
 }

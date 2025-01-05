@@ -14,55 +14,40 @@ namespace GSqlQuery.Runner
         protected readonly int _numColumns = numColumns;
         protected readonly ClassOptions _classOptions = ClassOptionsFactory.GetClassOptions(typeof(T));
 
-        protected virtual IEnumerable<DataReaderPropertyDetail> GetOrdinalPropertiesInEntity(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader)
+        private class PropertyOptionsConfig(PropertyOptions propertyOptions)
         {
-            return (from pro in propertyOptions
-                    join ca in query.Columns on pro.Value.ColumnAttribute.Name equals ca.Value.ColumnAttribute.Name into leftJoin
-                    from left in leftJoin.DefaultIfEmpty()
-                    select
-                        new DataReaderPropertyDetail(pro.Value, left.Value != null ? reader.GetOrdinal(pro.Value.ColumnAttribute.Name) : null)).ToArray();
-        }
+            public PropertyOptions PropertyOptions { get; } = propertyOptions;
 
-        private void Fill(TDbDataReader reader, IEnumerable<DataReaderPropertyDetail> columns, Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers, List<T> result)
-        {
-            List<PropertyValue> propertyValues = [];
-            foreach (DataReaderPropertyDetail item in columns)
-            {
-                if (item.Ordinal.HasValue)
-                {
-                    propertyValues.Add(new PropertyValue(item.Property, typeHandlers[item.Ordinal.Value].GetValue(reader, item)));
-                }
-                else
-                {
-                    propertyValues.Add(new PropertyValue(item.Property, item.Property.DefaultValue));
-                }
-            }
+            public int Ordinal { get; set; } = -1;
 
-            T tmp = CreateEntity(propertyValues);
-            result.Add(tmp);
-        }
-
-        protected Dictionary<int, ITypeHandler<TDbDataReader>> GetTypeHandlers(IEnumerable<DataReaderPropertyDetail> columns, DatabaseManagementEvents events)
-        {
-            Dictionary<int, ITypeHandler<TDbDataReader>> result = [];
-
-            foreach (DataReaderPropertyDetail item in columns.Where(x => x.Ordinal.HasValue))
-            {
-                result.Add(item.Ordinal.Value, events.GetHandler<TDbDataReader>(item.Property.PropertyInfo.PropertyType));
-            }
-
-            return result;
+            public ITypeHandler<TDbDataReader> TypeHandler { get; set; } = null;
         }
 
         public virtual IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events)
         {
-            IEnumerable<DataReaderPropertyDetail> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
             List<T> result = [];
-            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = GetTypeHandlers(columns, events);
+            Dictionary<string, PropertyOptionsConfig> queryColumns = query.Columns.ToDictionary(c => c.Value.ColumnAttribute.Name, c => new PropertyOptionsConfig(c.Value));
 
             while (reader.Read())
             {
-                Fill(reader, columns, typeHandlers, result);
+                foreach (KeyValuePair<string, PropertyOptions> propertyOption in propertyOptions)
+                {
+                    // Intentar obtener la columna correspondiente en la consulta
+                    if (queryColumns.TryGetValue(propertyOption.Value.ColumnAttribute.Name, out PropertyOptionsConfig propertyOptionConfig))
+                    {
+                        if (propertyOptionConfig.Ordinal == -1)
+                        {
+                            // Obtener el índice ordinal de la columna en el DbDataReader
+                            propertyOptionConfig.Ordinal = reader.GetOrdinal(propertyOption.Value.ColumnAttribute.Name);
+                        }
+
+                        propertyOptionConfig.TypeHandler ??= events.GetHandler<TDbDataReader>(propertyOptionConfig.PropertyOptions.PropertyInfo.PropertyType);
+
+                        SetValue(propertyOptionConfig.PropertyOptions, propertyOptionConfig.TypeHandler.GetValue(reader, propertyOptionConfig.Ordinal));
+                    }
+                }
+
+                result.Add(GetEntity());
             }
 
             return result;
@@ -71,18 +56,36 @@ namespace GSqlQuery.Runner
         public async virtual Task<IEnumerable<T>> TransformAsync(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            IEnumerable<DataReaderPropertyDetail> columns = GetOrdinalPropertiesInEntity(propertyOptions, query, reader);
             List<T> result = [];
-            Dictionary<int, ITypeHandler<TDbDataReader>> typeHandlers = GetTypeHandlers(columns, events);
+            Dictionary<string, PropertyOptionsConfig> queryColumns = query.Columns.ToDictionary(c => c.Value.ColumnAttribute.Name, c => new PropertyOptionsConfig(c.Value));
 
             while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                Fill(reader, columns, typeHandlers, result);
+                foreach (KeyValuePair<string, PropertyOptions> propertyOption in propertyOptions)
+                {
+                    // Intentar obtener la columna correspondiente en la consulta
+                    if (queryColumns.TryGetValue(propertyOption.Value.ColumnAttribute.Name, out PropertyOptionsConfig propertyOptionConfig))
+                    {
+                        if (propertyOptionConfig.Ordinal == -1)
+                        {
+                            // Obtener el índice ordinal de la columna en el DbDataReader
+                            propertyOptionConfig.Ordinal = reader.GetOrdinal(propertyOption.Value.ColumnAttribute.Name);
+                        }
+
+                        propertyOptionConfig.TypeHandler ??= events.GetHandler<TDbDataReader>(propertyOptionConfig.PropertyOptions.PropertyInfo.PropertyType);
+
+                        SetValue(propertyOptionConfig.PropertyOptions, await propertyOptionConfig.TypeHandler.GetValueAsync(reader, propertyOptionConfig.Ordinal, cancellationToken).ConfigureAwait(false));
+                    }
+                }
+
+                result.Add(GetEntity());
             }
 
             return result;
         }
 
-        public abstract T CreateEntity(IEnumerable<PropertyValue> propertyValues);
+        public abstract void SetValue(PropertyOptions property, object value);
+
+        public abstract T GetEntity();
     }
 }

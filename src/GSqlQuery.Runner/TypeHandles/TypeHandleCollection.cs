@@ -53,7 +53,7 @@ namespace GSqlQuery.Runner.TypeHandles
             _typeHandles[type] = typeHandler;
         }
 
-        public bool Contains(Type type)
+        public bool ContainsKey(Type type)
         {
             return _typeHandles.ContainsKey(type);
         }
