@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Reflection;
 
 namespace GSqlQuery.Runner.Transforms
@@ -17,14 +16,14 @@ namespace GSqlQuery.Runner.Transforms
             _fields = new object[numColumns];
         }
 
-        public override T CreateEntity(IEnumerable<PropertyValue> propertyValues)
+        public override T GetEntity()
         {
-            foreach (PropertyValue item in propertyValues)
-            {
-                _fields[item.Property.PositionConstructor] = item.Value;
-            }
-
             return (T)_constructorInfo.Invoke(_fields);
+        }
+
+        public override void SetValue(PropertyOptions property, object value)
+        {
+            _fields[property.PositionConstructor] = value;
         }
     }
 }

@@ -10,10 +10,12 @@ namespace GSqlQuery.Runner
         where T : class
         where TDbDataReader : DbDataReader
     {
-        T CreateEntity(IEnumerable<PropertyValue> propertyValues);
-
         IEnumerable<T> Transform(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events);
 
         Task<IEnumerable<T>> TransformAsync(PropertyOptionsCollection propertyOptions, IQuery<T> query, TDbDataReader reader, DatabaseManagementEvents events, CancellationToken cancellationToken = default);
+
+        void SetValue(PropertyOptions property, object value);
+
+        T GetEntity();
     }
 }

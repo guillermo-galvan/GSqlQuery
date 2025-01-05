@@ -1,6 +1,6 @@
 ﻿namespace GSqlQuery
 {
-    public sealed class DataReaderPropertyDetail
+    internal sealed class DataReaderPropertyDetail
     {
         public PropertyOptions Property { get; }
 

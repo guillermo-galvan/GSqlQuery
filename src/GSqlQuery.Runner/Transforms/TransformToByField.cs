@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Reflection;
 
 namespace GSqlQuery.Runner.Transforms
@@ -9,25 +8,24 @@ namespace GSqlQuery.Runner.Transforms
         where TDbDataReader : DbDataReader
     {
         private readonly ConstructorInfo _constructorInfo;
+        private object _entity;
 
         public TransformToByField(int numColumns) : base(numColumns)
         {
             _constructorInfo = _classOptions.ConstructorInfo;
+            _entity = _constructorInfo.Invoke(null);
         }
 
-        public override T CreateEntity(IEnumerable<PropertyValue> propertyValues)
+        public override T GetEntity()
         {
-            object result = _constructorInfo.Invoke(null);
+            T result = (T)_entity;
+            _entity = _constructorInfo.Invoke(null);
+            return result;
+        }
 
-            foreach (PropertyValue item in propertyValues)
-            {
-                if (item.Value != null)
-                {
-                    item.Property.PropertyInfo.SetValue(result, item.Value);
-                }
-            }
-
-            return (T)result;
+        public override void SetValue(PropertyOptions property, object value)
+        {
+            property.PropertyInfo.SetValue(_entity, value);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GSqlQuery.Runner
 {
@@ -11,6 +13,8 @@ namespace GSqlQuery.Runner
     public interface ITypeHandler<TDbDataReader> : ITypeHandler
         where TDbDataReader : DbDataReader
     {
-        object GetValue(TDbDataReader reader, DataReaderPropertyDetail dataReaderPropertyDetail);
+        object GetValue(TDbDataReader reader, int ordinal);
+
+        Task<object> GetValueAsync(TDbDataReader reader, int ordinal, CancellationToken cancellationToken);
     }
 }
