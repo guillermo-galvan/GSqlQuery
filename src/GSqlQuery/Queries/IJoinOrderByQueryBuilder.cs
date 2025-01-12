@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace GSqlQuery
 {
-    public interface IJoinOrderByQueryBuilder<T, TReturn, TQueryOptions> : IBuilder<TReturn>
+    public interface IJoinOrderByQueryBuilder<T, TReturn, TQueryOptions> : IBuilder<TReturn>, IQueryOptions<TQueryOptions>
         where T : class
         where TReturn : IQuery<T, TQueryOptions>
         where TQueryOptions : QueryOptions
